@@ -1,5 +1,8 @@
 package org.wikimodel.core.model;
 
+/**
+ * @author MikhailKotelnikov
+ */
 public interface IStringValue extends IValue {
 
 	/**
