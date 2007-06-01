@@ -1,19 +1,30 @@
 package org.wikimodel.core.model;
 
+/**
+ * This is a common interface for all typed values.
+ * 
+ * @author MikhailKotelnikov
+ */
 public interface ITypedValue extends IValue {
 
-	/**
-	 * @return a string-serialized representation of this value
-	 */
-	String getAsString();
+    /**
+     * Returns a string-serialized representation of this value
+     * 
+     * @return a string-serialized representation of this value
+     */
+    String getAsString();
 
-	/**
-	 * @return the xml type of the value
-	 */
-	IId getDataType();
+    /**
+     * Returns the URI of the type of the value
+     * 
+     * @return the URI of the type of the value
+     */
+    String getDataType();
 
-	/**
-	 * @return the typed value object
-	 */
-	Object getValue();
+    /**
+     * Returns the typed value object
+     * 
+     * @return the typed value object
+     */
+    Object getValue();
 }
