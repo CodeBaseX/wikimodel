@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Wikimodel Plug-in
+Bundle-SymbolicName: org.wikimodel.wem
+Bundle-Version: 1.0.0
+Export-Package: org.wikimodel.wem,
+ org.wikimodel.wem.common,
+ org.wikimodel.wem.creole,
+ org.wikimodel.wem.gwiki,
+ org.wikimodel.wem.jspwiki,
+ org.wikimodel.wem.mediawiki,
+ org.wikimodel.wem.util,
+ org.wikimodel.wem.xwiki
