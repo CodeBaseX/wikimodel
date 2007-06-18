@@ -18,7 +18,6 @@ import org.wikimodel.wem.IWemListener;
 import org.wikimodel.wem.IWikiParser;
 import org.wikimodel.wem.PrintListener;
 import org.wikimodel.wem.WikiParserException;
-import org.wikimodel.wem.creole.javacc.ParseException;
 
 /**
  * @author MikhailKotelnikov
@@ -36,7 +35,6 @@ public abstract class AbstractWikiParserTest extends TestCase {
 
     /**
      * @param string
-     * @throws ParseException
      * @throws WikiParserException
      */
     protected void test(String string) throws WikiParserException {
