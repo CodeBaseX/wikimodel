@@ -13,7 +13,6 @@ package org.wikimodel.wem.test;
 import org.wikimodel.wem.IWikiParser;
 import org.wikimodel.wem.WikiParserException;
 import org.wikimodel.wem.creole.CreoleWikiParser;
-import org.wikimodel.wem.creole.javacc.ParseException;
 
 /**
  * @author MikhailKotelnikov
@@ -105,7 +104,6 @@ public class CreoleWikiParserTest extends AbstractWikiParserTest {
     }
 
     /**
-     * @throws ParseException
      */
     public void testQuot() throws WikiParserException {
         test("This is a paragraph\n\n and this is a quotations\n the second line");
