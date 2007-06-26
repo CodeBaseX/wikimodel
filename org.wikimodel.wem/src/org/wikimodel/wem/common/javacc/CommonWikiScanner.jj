@@ -462,6 +462,7 @@ void tableRow():
     Token t = null;
     WikiParameters rowParams = WikiParameters.EMPTY;
     WikiParameters cellParams = WikiParameters.EMPTY;
+    boolean head = false; 
 }
 {
     t = getTABLE_ROW()
@@ -469,12 +470,16 @@ void tableRow():
         String str = t.image.trim();
         if (str.startsWith("{{"))  {
             int idx = str.indexOf("}}");
-            String p  = str.substring(0, idx + 2); 
+            String p  = str.substring(2, idx + 2); 
             str = str.substring(idx + 2);
+            head = (str.startsWith("!!") || str.startsWith("||"));
             rowParams = newWikiParameters(p);
             cellParams = newWikiParameters(str);
+        } else {
+            head = (str.startsWith("!!") || str.startsWith("||"));
+            str = str.substring(2);
+            cellParams = newWikiParameters(str);
         }
-        boolean head = (str.startsWith("!!") || str.startsWith("||")); 
         fContext.beginTableRow(head, rowParams, cellParams);
     }
     ( LOOKAHEAD(2) block() )*
