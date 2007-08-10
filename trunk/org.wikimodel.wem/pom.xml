@@ -1,0 +1,74 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+
+	<parent>
+		<groupId>org.semanticdesktop</groupId>
+		<artifactId>swecr.parent</artifactId>
+		<version>0.0.14</version>
+	</parent>
+
+
+	<groupId>org.wikimodel</groupId>
+	<artifactId>wem</artifactId>
+	<version>2.0.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>WikiEventModel</name>
+	<url>http://code.google.com/p/wikimodel/</url>
+	<inceptionYear>2005</inceptionYear>
+	<description>
+		WikiEventModel makes parsing wiki syntax easier with a unified
+		event model.
+	</description>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>net.java.dev.javacc</groupId>
+			<artifactId>javacc</artifactId>
+			<version>4.0</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- testing dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>compile</scope>
+		</dependency>
+
+	</dependencies>
+
+	<!-- to define where to put the site for this bundle -->
+	<distributionManagement>
+		<site>
+			<id>theoretiker-site</id>
+			<name>WEM site</name>
+			<!--  mvn creates new dirs if necessary -->
+			<url>
+				scp://theoretiker.org/home/max/public_html/semweb4j.org/site/wem
+			</url>
+		</site>
+	</distributionManagement>
+
+	<!-- to find the parent -->
+	<repositories>
+		<repository>
+			<id>theoretiker-repo</id>
+			<name>Semweb4j.org maven repo</name>
+			<url>http://semweb4j.org/repo/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+</project>
