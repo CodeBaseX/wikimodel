@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.wikimodel.wem.mediawiki.javacc;
 
-import org.wikimodel.wem.WikiStyle;
 import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.impl.IWikiScannerContext;
 
