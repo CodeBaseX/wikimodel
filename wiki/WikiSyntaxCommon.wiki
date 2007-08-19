@@ -44,6 +44,28 @@ Ordered list:
 ===== Heading5 =====
 }}}
 
+=== Tables === 
+Recommended syntax:
+{{{
+!! Header 1 !! Header 2
+:: Cell 1   :: Cell 2
+}}}
+This syntax is recommended because it can be entered using almost any keyboard layouts without changing the current localized keyboard settings. 
+
+Recognized syntax:
+{{{
+|| Header 1 || Header 2
+| Cell 1    | Cell 2
+}}}
+
+Tables with parameters:
+{{{
+{{width="100%"}}
+!!{{colspan='2'}} Table Header 
+{{style='background-color:red'}}:: Cell One :: Cell Two
+{{style='background-color:blue'}}:: Cell Three :: Cell Four
+}}}
+
 === Verbatim Block ===
 Verbatim content is not interpreted by the parser and is returned to the listeners as is.
 
