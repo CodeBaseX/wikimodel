@@ -10,26 +10,49 @@ The common Wiki Syntax was developed as the "native" Wiki Model Syntax. It conta
 
 == Block elements ==
 ===  Lists ===
-{{{
 Unordered list:
+{{{
 * item one
 * item two
   * subitem 1
   * subitem 2
 * item three
-
+}}}
 or:
+{{{
 - item one 
 - item two
   - subitem
   - ... 
 }}}
 
-{{{
 Ordered list:
+{{{
 + item one
 + item two
   + subitem 1
   + subitem 2
 + item three
+}}}
+
+=== Headers ===
+{{{
+= Heading1 =
+== Heading2 ==
+=== Heading3 ===
+==== Heading4 ====
+===== Heading5 =====
+}}}
+
+=== Verbatim Block ===
+Verbatim content is not interpreted by the parser and is returned to the listeners as is.
+
+{{{
+{{{ This is a 
+    verbatim 
+  block.
+  {{{ And this is an 
+     internal verbatim
+   block }}}
+}}}
 }}}
