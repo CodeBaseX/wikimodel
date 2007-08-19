@@ -12,7 +12,8 @@ The main goal of this project is creation of a “standard” model for wiki doc
    * [http://www.jspwiki.org JspWiki]
    * [http://www.mediawiki.org MediaWiki] 
    * [http://www.xwiki.org XWiki]
-   * and other on the way (Confluence, MoinMoin, TWiki...)
+   * WikiSyntaxCommon - a "native" WikiModel syntax providing functionalities like embedded documents,  properties and so on.
+   * ... and other on the way (Confluence, MoinMoin, TWiki...)
 
 For all of these wiki syntaxes the same event model is used. 
 
