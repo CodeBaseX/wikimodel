@@ -48,11 +48,11 @@ Ordered list:
 Verbatim content is not interpreted by the parser and is returned to the listeners as is.
 
 {{{
-{{{ This is a 
+ {{{ This is a 
     verbatim 
   block.
   {{{ And this is an 
      internal verbatim
    block }}}
-}}}
+ }}}
 }}}
