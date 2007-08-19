@@ -1,0 +1,35 @@
+#summary A Common Wiki Syntax
+
+= Introduction =
+
+The common Wiki Syntax was developed as the "native" Wiki Model Syntax. It contains all syntactic elements covered by Wiki Model and contains the following specific elements not available in other syntaxes:
+ * _embedded documents_ - using this feature you can insert one table into another or a header in a list.
+ * _hierarchical properties_ are used to define specific "labeled" parts of wiki documents 
+
+= Details =
+
+== Block elements ==
+===  Lists ===
+{{{
+Unordered list:
+* item one
+* item two
+  * subitem 1
+  * subitem 2
+* item three
+
+or:
+- item one 
+- item two
+  - subitem
+  - ... 
+}}}
+
+{{{
+Ordered list:
++ item one
++ item two
+  + subitem 1
+  + subitem 2
++ item three
+}}}
