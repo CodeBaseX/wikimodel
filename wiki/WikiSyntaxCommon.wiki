@@ -44,6 +44,12 @@ Ordered list:
 ===== Heading5 =====
 }}}
 
+Headers with parameters (in this example the header is on the blue background):
+{{{
+{{style='background-color: blue'}}
+== Header 2 ==
+}}}
+
 === Tables === 
 Recommended syntax:
 {{{
