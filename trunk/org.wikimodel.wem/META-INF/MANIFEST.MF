@@ -5,10 +5,16 @@ Bundle-SymbolicName: org.wikimodel.wem
 Bundle-Version: 1.0.0
 Export-Package: org.wikimodel.wem,
  org.wikimodel.wem.common,
+ org.wikimodel.wem.common.javacc,
  org.wikimodel.wem.creole,
+ org.wikimodel.wem.creole.javacc,
  org.wikimodel.wem.gwiki,
+ org.wikimodel.wem.gwiki.javacc,
  org.wikimodel.wem.impl,
  org.wikimodel.wem.jspwiki,
+ org.wikimodel.wem.jspwiki.javacc,
  org.wikimodel.wem.mediawiki,
+ org.wikimodel.wem.mediawiki.javacc,
  org.wikimodel.wem.util,
- org.wikimodel.wem.xwiki
+ org.wikimodel.wem.xwiki,
+ org.wikimodel.wem.xwiki.javacc
