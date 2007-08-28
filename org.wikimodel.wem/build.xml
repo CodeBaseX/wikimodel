@@ -2,7 +2,7 @@
 <project name="project" default="all">
     <dirname property="project.dir" file="${ant.file}" />
 
-    <property name="project.src" value="${project.dir}/src" />
+    <property name="project.src" value="${project.dir}/src/main/java" />
     <property name="out.dir" value="${project.dir}/dist" />
     <property name="project.name" value="WikiModelV2" />
     <property name="project.bin.jar" value="${project.name}-bin.jar" />
