@@ -477,7 +477,11 @@ void tableRow():
             cellParams = newWikiParameters(str);
         } else {
             head = (str.startsWith("!!") || str.startsWith("||"));
-            str = str.substring(2);
+            if (head) {
+                str = str.substring(2);
+            } else {
+                str = str.substring(1);
+            }
             cellParams = newWikiParameters(str);
         }
         fContext.beginTableRow(head, rowParams, cellParams);
