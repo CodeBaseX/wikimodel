@@ -178,9 +178,43 @@ public class XWikiParserTest extends AbstractWikiParserTest {
     /**
      * @throws WikiParserException
      */
+    public void testVerbatimeInline() throws WikiParserException {
+        test(
+            "before{code}code{code}after",
+            "<p>before<code>code</code>after</p>");
+    }
+
+    /**
+     * @throws WikiParserException
+     */
     public void testVerbatimeBlocks() throws WikiParserException {
-        test("before{code}\n1 Not a header\n\n* Not a list{code}after text text text");
-        test("abc {{{ 123\n  CDE\n   345 }}} efg");
+        test("before\n" + "{code}code{code}" + "after", ""
+            + "<p>before</p>\n"
+            + "<pre>code</pre>\n"
+            + "<p>after</p>");
+
+        test("before\n"
+            + "{code}\n"
+            + "1 Not a header\n\n"
+            + "* Not a list\n"
+            + "{code}"
+            + "after\n"
+            + "{code}code again{code}", ""
+            + "<p>before</p>\n"
+            + "<pre>\n"
+            + "1 Not a header\n\n"
+            + "* Not a list\n"
+            + "</pre>\n"
+            + "<p>after</p>\n"
+            + "<pre>code again</pre>");
+
+        test("abc \n{code}123\nCDE\n345{code}efg", ""
+            + "<p>abc </p>\n"
+            + "<pre>123\n"
+            + "CDE\n"
+            + "345"
+            + "</pre>\n"
+            + "<p>efg</p>");
         test("abc\n{{{\n {{{ 123 \n}\\}} \n}}} efg");
         test("inline{{verbatime}}block");
         test("{{just like this...");
