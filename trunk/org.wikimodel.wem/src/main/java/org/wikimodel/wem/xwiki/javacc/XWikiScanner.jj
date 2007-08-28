@@ -45,7 +45,8 @@ PARSER_END(XWikiScanner)
     | <#HEADER: ( "1" ("." "1" ) {0, 5} ) (<SPACE>)* >
     | <#ESCAPE: ( "\\" ~["\\", " ", "\t", "\n", "\r"] ) >
     | <#BR: "\\\\" >
-    | <#VERBATIM: "{code}" ( ~[] )* "{code}" >
+    | <#NOT_CODE: ( ~["{"] | "{" ~["c"] | "{c" ~["o"] | "{co" ~["d"] | "{cod" ~["e"] | "{code" ~["}"] ) >
+    | <#VERBATIM: "{code}" ( <NOT_CODE> )* "{code}" >
     | <#REFERENCE:  ( "[" ( "\\" ~[] | ~["[", "]"] )* "]" ) >
     | <#HORLINE: "---" ("-")+ >
 

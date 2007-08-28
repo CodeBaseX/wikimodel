@@ -241,6 +241,10 @@ public class PrintInlineListener implements IWemListener {
     public void endTableRow(WikiParameters params) {
     }
 
+    protected String getEol() {
+        return "\n";
+    }
+
     /**
      * @see org.wikimodel.wem.IWemListener#onEscape(java.lang.String)
      */
@@ -347,7 +351,8 @@ public class PrintInlineListener implements IWemListener {
     protected void println(String str) {
         if (fBuffer != null) {
             fBuffer.append(str);
-            fBuffer.append("\n");
+            String eol = getEol();
+            fBuffer.append(eol);
         } else {
             System.out.println(str);
         }

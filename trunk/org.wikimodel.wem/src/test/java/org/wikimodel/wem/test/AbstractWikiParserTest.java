@@ -24,6 +24,8 @@ import org.wikimodel.wem.WikiParserException;
  */
 public abstract class AbstractWikiParserTest extends TestCase {
 
+    private boolean fOutputEnabled;
+
     /**
      * @param name
      */
@@ -31,28 +33,49 @@ public abstract class AbstractWikiParserTest extends TestCase {
         super(name);
     }
 
+    protected void enableOutput(boolean enable) {
+        fOutputEnabled = enable;
+    }
+
     protected abstract IWikiParser newWikiParser();
+
+    protected void println(String str) {
+        if (fOutputEnabled)
+            System.out.println(str);
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        enableOutput(true);
+    }
 
     /**
      * @param string
      * @throws WikiParserException
      */
     protected void test(String string) throws WikiParserException {
-        System.out
-            .println("==================================================");
+        test(string, null);
+    }
+
+    /**
+     * @param string
+     * @throws WikiParserException
+     */
+    protected void test(String string, String control)
+        throws WikiParserException {
+        println("==================================================");
         StringReader reader = new StringReader(string);
         IWikiParser parser = newWikiParser();
-        IWemListener listener = new PrintListener() {
-            @Override
-            protected void print(String str) {
-                super.print(str);
-            }
-
-            @Override
-            protected void println(String string) {
-                super.println(string);
-            }
-        };
+        StringBuffer buf = new StringBuffer();
+        IWemListener listener = new PrintListener(buf);
         parser.parse(reader, listener);
+        String test = buf.toString();
+        println(test);
+        if (control != null) {
+            control = "<div class='doc'>\n" + control + "\n</div>\n";
+            assertEquals(control, test);
+        }
     }
+
 }
