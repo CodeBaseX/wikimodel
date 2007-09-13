@@ -29,7 +29,7 @@ public class WikiParameter {
      * @param key
      * @param value
      */
-    protected WikiParameter(String key, String value) {
+    public WikiParameter(String key, String value) {
         fKey = key;
         fValue = value;
     }
@@ -37,7 +37,7 @@ public class WikiParameter {
     /**
      * @param pair
      */
-    protected WikiParameter(WikiParameter pair) {
+    public WikiParameter(WikiParameter pair) {
         fKey = pair.getKey();
         fValue = pair.getValue();
     }
@@ -51,8 +51,8 @@ public class WikiParameter {
         if (!(obj instanceof WikiParameter))
             return false;
         WikiParameter pair = (WikiParameter) obj;
-        return fKey.equals(pair.fKey)
-            && (fValue == pair.fValue || (fValue != null && fValue
+        return fKey.equals(pair.fKey) &&
+            (fValue == pair.fValue || (fValue != null && fValue
                 .equals(pair.fValue)));
     }
 
@@ -93,8 +93,8 @@ public class WikiParameter {
                 } else if (ch == '.' || ch == '-') {
                     result = i > 0 && i < len - 1;
                 } else {
-                    result &= (i == 0 && Character.isLetter(ch))
-                        || Character.isLetterOrDigit(ch);
+                    result &= (i == 0 && Character.isLetter(ch)) ||
+                        Character.isLetterOrDigit(ch);
                 }
             }
             fValid = result ? Boolean.TRUE : Boolean.FALSE;

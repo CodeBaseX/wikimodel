@@ -373,11 +373,19 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         }
     }
 
+    private void checkParagraph() {
+        if (!isInParagraph()) {
+            beginParagraph();
+        }
+    }
+
     private void checkStyleOpened() {
         if (isInTable()) {
             checkTableCell();
         } else if (isInList()) {
             checkListItem();
+        } else if (isNoBlockElements()) {
+            checkParagraph();
         }
         openFormat();
     }
@@ -588,6 +596,10 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         return (fBlockType & IBlockTypes.LIST_LI) == IBlockTypes.LIST_LI;
     }
 
+    private boolean isInParagraph() {
+        return fBlockType == IBlockTypes.PARAGRAPH;
+    }
+
     public boolean isInTable() {
         return ((fBlockType & IBlockTypes.TABLE) == IBlockTypes.TABLE);
     }
@@ -598,6 +610,10 @@ class InternalWikiScannerContext implements IWikiScannerContext {
 
     public boolean isInTableRow() {
         return (fBlockType & IBlockTypes.TABLE_ROW) == IBlockTypes.TABLE_ROW;
+    }
+
+    private boolean isNoBlockElements() {
+        return (fBlockType == IBlockTypes.NONE);
     }
 
     public void onDefinitionListItemSplit() {

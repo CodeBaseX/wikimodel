@@ -77,8 +77,8 @@ public class WikiParameters {
      */
     protected static int removeSpaces(char[] array, int pos, StringBuffer buf) {
         buf.delete(0, buf.length());
-        for (; pos < array.length
-            && (array[pos] == '=' || Character.isSpaceChar(array[pos])); pos++) {
+        for (; pos < array.length &&
+            (array[pos] == '=' || Character.isSpaceChar(array[pos])); pos++) {
             if (array[pos] == '=')
                 buf.append(array[pos]);
         }
@@ -126,6 +126,14 @@ public class WikiParameters {
      */
     WikiParameters() {
         this((String) null);
+    }
+
+    /**
+     * @param list
+     */
+    public WikiParameters(List<WikiParameter> list) {
+        super();
+        fList.addAll(list);
     }
 
     /**
@@ -211,6 +219,27 @@ public class WikiParameters {
     @Override
     public int hashCode() {
         return fList.hashCode();
+    }
+
+    /**
+     * @param key the key of the parameter to remove
+     * @return a new copy of parameter list without the specified parameter; if
+     *         this parameter list does not contain such a key then this method
+     *         returns a reference to this object
+     */
+    public WikiParameters remove(String key) {
+        int pos = 0;
+        for (WikiParameter param : fList) {
+            if (key.equals(param.getKey()))
+                break;
+            pos++;
+        }
+        WikiParameters result = this;
+        if (pos < fList.size()) {
+            result = new WikiParameters(this.fList);
+            result.fList.remove(pos);
+        }
+        return result;
     }
 
     /**
