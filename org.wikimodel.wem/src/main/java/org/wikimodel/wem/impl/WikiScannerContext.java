@@ -190,7 +190,11 @@ public class WikiScannerContext implements IWikiScannerContext {
     }
 
     public InternalWikiScannerContext getContext() {
-        return !fStack.isEmpty() ? fStack.peek() : null;
+        if (!fStack.isEmpty())
+            return fStack.peek();
+        InternalWikiScannerContext context = new InternalWikiScannerContext(fListener);
+        fStack.push(context);
+        return context;
     }
 
     public int getTableCellCounter() {

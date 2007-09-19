@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.wikimodel.wem.test;
 
+import java.io.StringReader;
+
+import org.wikimodel.wem.IWemListener;
 import org.wikimodel.wem.IWikiParser;
+import org.wikimodel.wem.PrintListener;
 import org.wikimodel.wem.WikiParserException;
 import org.wikimodel.wem.xhtml.XhtmlParser;
 
@@ -29,6 +33,51 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
     @Override
     protected IWikiParser newWikiParser() {
         return new XhtmlParser();
+    }
+
+    protected void test(String string, String control)
+        throws WikiParserException {
+        println("==================================================");
+        StringReader reader = new StringReader(string);
+        IWikiParser parser = newWikiParser();
+        IWemListener listener = new PrintListener() {
+            protected void print(String str) {
+                System.out.print(str);
+            }
+
+            protected void println(String str) {
+                System.out.println(str);
+            }
+        };
+        parser.parse(reader, listener);
+    }
+
+    /**
+     * @throws WikiParserException
+     */
+    public void testTables() throws WikiParserException {
+        test("<html><table><tr><td>first cell</td><td>second cell</td></tr></table></html>");
+        test("<html><table><tr><td>first cell</td></tr></table></html>");
+        test("<html><table>"
+            + "<tr><th>first header</th><th>second header</th></tr>"
+            + "<tr><td>first cell</td><td>second cell</td></tr>"
+            + "</table></html>");
+        test("<html><table>"
+            + "<tr><th>first row</th><td>first cell</td></tr>"
+            + "<tr><th>second row</th><td>before <table><tr><td>first cell</td></tr></table> after</td></tr>"
+            + "<tr><th>third row</th><td>third cell</td></tr>"
+            + "</table></html>");
+
+        // "Bad-formed" tables...
+
+        // The content is completely ignored.
+        test("<html><table>first cell</table></html>");
+
+        // A "td" element directly in the table
+        test("<html><table><td>first cell</td></table></html>");
+
+        // Not a table at all
+        test("<html><td>first cell</td></html>");
     }
 
     /**
@@ -100,6 +149,7 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testParagraphs() throws WikiParserException {
+        test("<html><p>paragraph</p></html>");
     }
 
     /**
@@ -112,12 +162,6 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testReferences() throws WikiParserException {
-    }
-
-    /**
-     * @throws WikiParserException
-     */
-    public void testTables() throws WikiParserException {
     }
 
     /**
