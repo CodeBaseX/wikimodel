@@ -362,7 +362,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
             checkTableCell();
         } else if (isInList()) {
             checkListItem();
-        } else {
+        } else if (!isInTableCell() && !isInListItem()) {
             closeBlock();
         }
     }

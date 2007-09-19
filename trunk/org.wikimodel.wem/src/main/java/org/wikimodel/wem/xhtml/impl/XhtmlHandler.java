@@ -15,8 +15,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.wikimodel.wem.WikiPageUtil;
 import org.wikimodel.wem.WikiParameter;
 import org.wikimodel.wem.WikiParameters;
+import org.wikimodel.wem.WikiStyle;
+import org.wikimodel.wem.impl.IWikiScannerContext;
 import org.wikimodel.wem.impl.WikiScannerContext;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 import org.xml.sax.Attributes;
@@ -31,11 +34,58 @@ public class XhtmlHandler extends DefaultHandler {
     // TODO: add management of embedded block elements.
     public static class TagHandler {
 
+        public boolean fAccumulateContent;
+
+        /**
+         * This flag is <code>true</code> if the current tag can have a text
+         * content
+         */
+        private boolean fContentContainer;
+
+        /**
+         * This flag shows if the current tag can be used as a container for
+         * embedded documents.
+         */
+        private boolean fDocumentContainer;
+
+        /**
+         * This flag shows if the current tag should be created as a direct
+         * child of a document.
+         */
+        private boolean fRequiresDocument;
+
+        /**
+         * @param documentContainer
+         * @param requiresDocument
+         * @param contentContainer
+         */
+        public TagHandler(
+            boolean documentContainer,
+            boolean requiresDocument,
+            boolean contentContainer) {
+            fDocumentContainer = documentContainer;
+            fRequiresDocument = requiresDocument;
+            fContentContainer = contentContainer;
+        }
+
         public void begin(TagContext context) {
         }
 
         public void end(TagContext context) {
         }
+
+        public boolean isContentContainer() {
+            return fContentContainer;
+        }
+
+        public boolean isDocumentContainer() {
+            return fDocumentContainer;
+        }
+
+        public boolean requiresDocument() {
+            return fRequiresDocument;
+        }
+
     }
 
     protected static class TagStack {
@@ -43,6 +93,8 @@ public class XhtmlHandler extends DefaultHandler {
         public class TagContext {
 
             private Attributes fAttributes;
+
+            private StringBuffer fContent;
 
             public TagHandler fHandler;
 
@@ -65,6 +117,21 @@ public class XhtmlHandler extends DefaultHandler {
                 fQName = qName;
                 fParent = parent;
                 fAttributes = attributes;
+            }
+
+            public boolean appendContent(char[] array, int start, int length) {
+                if (fHandler == null || !fHandler.fAccumulateContent)
+                    return false;
+                if (fContent == null) {
+                    fContent = new StringBuffer();
+                }
+                fContent.append(array, start, length);
+                return true;
+            }
+
+            public String getContent() {
+                return fContent != null ? WikiPageUtil.escapeXmlString(fContent
+                    .toString()) : "";
             }
 
             public String getLocalName() {
@@ -119,13 +186,25 @@ public class XhtmlHandler extends DefaultHandler {
                 return fUri;
             }
 
+            public boolean isContentContainer() {
+                return fHandler == null || fHandler.isContentContainer();
+            }
+
             public boolean isTag(String string) {
                 return string.equals(fLocalName.toLowerCase());
             }
 
         }
 
+        private static final int CHARACTER = 0;
+
         private static Map<String, TagHandler> fMap = new HashMap<String, TagHandler>();
+
+        private static final int NEW_LINE = 3;
+
+        private static final char SPACE = 1;
+
+        private static final int SPECIAL_SYMBOL = 2;
 
         public static void add(String tag, TagHandler handler) {
             fMap.put(tag, handler);
@@ -148,15 +227,100 @@ public class XhtmlHandler extends DefaultHandler {
             localName = fPeek.getName();
             TagHandler handler = fMap.get(localName);
             if (handler != null) {
-                handler.begin(fPeek);
                 fPeek.fHandler = handler;
+                if (requiresParentDocument(fPeek)) {
+                    fScannerContext.beginDocument();
+                }
+                handler.begin(fPeek);
             }
         }
 
         public void endElement() {
-            if (fPeek.fHandler != null)
-                fPeek.fHandler.end(fPeek);
+            TagHandler handler = fPeek.fHandler;
+            if (handler != null) {
+                handler.end(fPeek);
+            }
+            if (requiresParentDocument(fPeek)) {
+                fScannerContext.endDocument();
+            }
             fPeek = fPeek.fParent;
+        }
+
+        /**
+         * @param buf
+         * @param type
+         */
+        private void flushBuffer(StringBuffer buf, int type) {
+            if (buf.length() > 0) {
+                String str = buf.toString();
+                switch (type) {
+                    case SPACE:
+                        fScannerContext.onSpace(str);
+                        break;
+                    case SPECIAL_SYMBOL:
+                        fScannerContext.onSpecialSymbol(str);
+                        break;
+                    case CHARACTER:
+                        str = WikiPageUtil.escapeXmlString(str);
+                        fScannerContext.onWord(str);
+                        break;
+                    case NEW_LINE:
+                        fScannerContext.onNewLine();
+                        break;
+                }
+            }
+            buf.delete(0, buf.length());
+        }
+
+        private int getCharacterType(char ch) {
+            int type = CHARACTER;
+            switch (ch) {
+                case '!':
+                case '\'':
+                case '#':
+                case '$':
+                case '%':
+                case '&':
+                case '(':
+                case ')':
+                case '*':
+                case '+':
+                case ',':
+                case '-':
+                case '.':
+                case '/':
+                case ':':
+                case ';':
+                case '<':
+                case '=':
+                case '>':
+                case '?':
+                case '@':
+                case '[':
+                case '\\':
+                case ']':
+                case '^':
+                case '_':
+                case '`':
+                case '{':
+                case '|':
+                case '}':
+                case '~':
+                    type = SPECIAL_SYMBOL;
+                    break;
+                case ' ':
+                case '\t':
+                    type = SPACE;
+                    break;
+                case '\n':
+                case '\r':
+                    type = NEW_LINE;
+                    break;
+                default:
+                    type = CHARACTER;
+                    break;
+            }
+            return type;
         }
 
         public WikiScannerContext getScannerContext() {
@@ -164,35 +328,50 @@ public class XhtmlHandler extends DefaultHandler {
         }
 
         public void onCharacters(char[] array, int start, int length) {
-            StringBuffer buf = new StringBuffer();
-            boolean spaces = false;
-            for (int i = 0; i < length; i++) {
-                char ch = array[start + i];
-                if (Character.isSpaceChar(ch) != spaces) {
-                    if (buf.length() > 0) {
-                        String str = buf.toString();
-                        if (spaces)
-                            fScannerContext.onSpace(str);
-                        else
-                            fScannerContext.onWord(str);
+            if (!fPeek.isContentContainer())
+                return;
+            if (!fPeek.appendContent(array, start, length)) {
+                StringBuffer buf = new StringBuffer();
+                int type = CHARACTER;
+                for (int i = 0; i < length; i++) {
+                    char ch = array[start + i];
+                    int oldType = type;
+                    type = getCharacterType(ch);
+                    if (type != oldType) {
+                        flushBuffer(buf, type);
                     }
-                    spaces = !spaces;
-                    buf.delete(0, buf.length());
+                    buf.append(ch);
                 }
-                buf.append(ch);
+                flushBuffer(buf, type);
             }
-            if (buf.length() > 0) {
-                String str = buf.toString();
-                if (spaces)
-                    fScannerContext.onSpace(str);
-                else
-                    fScannerContext.onWord(str);
+        }
+
+        /**
+         * @param context
+         * @return <code>true</code> if the current tag represented by the
+         *         given context requires a parent document
+         */
+        private boolean requiresParentDocument(TagContext context) {
+            if (context == null)
+                return true;
+            if (context.fHandler == null ||
+                !context.fHandler.requiresDocument())
+                return false;
+            boolean inContainer = false;
+            TagContext parent = context.fParent;
+            while (parent != null) {
+                if (parent.fHandler != null) {
+                    inContainer = parent.fHandler.isDocumentContainer();
+                    break;
+                }
+                parent = parent.fParent;
             }
+            return inContainer;
         }
     }
 
     static {
-        TagStack.add("html", new TagHandler() {
+        TagStack.add("html", new TagHandler(false, false, true) {
             public void begin(TagContext context) {
                 context.getScannerContext().beginDocument();
             }
@@ -203,7 +382,7 @@ public class XhtmlHandler extends DefaultHandler {
         });
 
         // Simple block elements (p, pre, quotation...)
-        TagStack.add("p", new TagHandler() {
+        TagStack.add("p", new TagHandler(false, true, true) {
             public void begin(TagContext context) {
                 context.getScannerContext().beginParagraph(context.getParams());
             }
@@ -214,7 +393,7 @@ public class XhtmlHandler extends DefaultHandler {
         });
 
         // Tables
-        TagStack.add("table", new TagHandler() {
+        TagStack.add("table", new TagHandler(false, true, false) {
             public void begin(TagContext context) {
                 context.getScannerContext().beginTable(context.getParams());
             }
@@ -223,7 +402,7 @@ public class XhtmlHandler extends DefaultHandler {
                 context.getScannerContext().endTable();
             }
         });
-        TagStack.add("tr", new TagHandler() {
+        TagStack.add("tr", new TagHandler(false, false, false) {
             public void begin(TagContext context) {
                 context.getScannerContext().beginTableRow(false);
             }
@@ -232,20 +411,20 @@ public class XhtmlHandler extends DefaultHandler {
                 context.getScannerContext().endTableRow();
             }
         });
-        TagHandler handler = new TagHandler() {
+        TagHandler handler = new TagHandler(true, false, true) {
             public void begin(TagContext context) {
                 context.getScannerContext().beginTableCell(context.isTag("th"));
             }
 
             public void end(TagContext context) {
-                context.getScannerContext().endTableRow();
+                context.getScannerContext().endTableCell();
             }
         };
         TagStack.add("td", handler);
         TagStack.add("th", handler);
 
         // Lists
-        handler = new TagHandler() {
+        handler = new TagHandler(false, true, false) {
             public void begin(TagContext context) {
                 context.getScannerContext().beginList();
             }
@@ -256,7 +435,7 @@ public class XhtmlHandler extends DefaultHandler {
         };
         TagStack.add("ul", handler);
         TagStack.add("ol", handler);
-        TagStack.add("li", new TagHandler() {
+        TagStack.add("li", new TagHandler(true, false, true) {
             public void begin(TagContext context) {
                 context.getScannerContext().beginListItem("*");
             }
@@ -266,7 +445,7 @@ public class XhtmlHandler extends DefaultHandler {
             }
         });
 
-        TagStack.add("dl", new TagHandler() {
+        TagStack.add("dl", new TagHandler(false, true, false) {
             public void begin(TagContext context) {
                 context.getScannerContext().beginList();
             }
@@ -275,7 +454,7 @@ public class XhtmlHandler extends DefaultHandler {
                 context.getScannerContext().endList();
             }
         });
-        TagStack.add("dt", new TagHandler() {
+        TagStack.add("dt", new TagHandler(false, false, true) {
             public void begin(TagContext context) {
                 context.getScannerContext().beginListItem(";");
             }
@@ -284,7 +463,7 @@ public class XhtmlHandler extends DefaultHandler {
                 context.getScannerContext().endListItem();
             }
         });
-        TagStack.add("dd", new TagHandler() {
+        TagStack.add("dd", new TagHandler(true, false, true) {
             public void begin(TagContext context) {
                 context.getScannerContext().beginListItem(":");
             }
@@ -295,7 +474,7 @@ public class XhtmlHandler extends DefaultHandler {
         });
 
         // Headers
-        handler = new TagHandler() {
+        handler = new TagHandler(false, true, true) {
             public void begin(TagContext context) {
                 String tag = context.getName();
                 int level = Integer.parseInt(tag.substring(1, 2));
@@ -314,11 +493,69 @@ public class XhtmlHandler extends DefaultHandler {
         TagStack.add("h6", handler);
 
         // Unique block elements
-        TagStack.add("hr", new TagHandler() {
+        TagStack.add("hr", new TagHandler(false, true, false) {
             public void begin(TagContext context) {
                 context.getScannerContext().onHorizontalLine();
             }
         });
+        TagStack.add("pre", new TagHandler(false, true, true) {
+            {
+                fAccumulateContent = true;
+            }
+
+            public void end(TagContext context) {
+                String str = context.getContent();
+                context.getScannerContext().onVerbatim(str, false);
+            }
+        });
+
+        // In-line elements
+        TagStack.add("a", new TagHandler(false, false, true) {
+            {
+                fAccumulateContent = true;
+            }
+
+            public void begin(TagContext context) {
+            }
+
+            public void end(TagContext context) {
+                // TODO: it should be replaced by a normal parameters
+                WikiParameter ref = context.getParams().getParameter("href");
+                if (ref != null) {
+                    String content = context.getContent();
+                    context.getScannerContext().onReference(
+                        ref.getValue() + " " + content);
+                }
+            }
+        });
+
+        handler = new TagHandler(false, false, true) {
+            public void begin(TagContext context) {
+                context
+                    .getScannerContext()
+                    .onFormat(IWikiScannerContext.STRONG);
+            }
+
+            public void end(TagContext context) {
+                context
+                    .getScannerContext()
+                    .onFormat(IWikiScannerContext.STRONG);
+            }
+        };
+        TagStack.add("strong", handler);
+        TagStack.add("b", handler);
+
+        handler = new TagHandler(false, false, true) {
+            public void begin(TagContext context) {
+                context.getScannerContext().onFormat(IWikiScannerContext.EM);
+            }
+
+            public void end(TagContext context) {
+                context.getScannerContext().onFormat(IWikiScannerContext.EM);
+            }
+        };
+        TagStack.add("em", handler);
+        TagStack.add("i", handler);
     }
 
     protected String fDocumentSectionUri;

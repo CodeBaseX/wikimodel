@@ -310,7 +310,7 @@ public class PrintInlineListener implements IWemListener {
      * @see org.wikimodel.wem.IWemListener#onSpecialSymbol(java.lang.String)
      */
     public void onSpecialSymbol(String str) {
-        print(str);
+        print(WikiPageUtil.escapeXmlString(str));
     }
 
     /**
