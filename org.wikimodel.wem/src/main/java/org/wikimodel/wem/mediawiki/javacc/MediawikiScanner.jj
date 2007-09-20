@@ -136,16 +136,17 @@ TOKEN_MGR_DECLS: {
     | <#URI_USERINFO: ( <URI_UNRESERVED> | <URI_PCT_ENCODED> | <URI_SUB_DELIMS> | ":" )* >
     | <#URI_PATH_ABEMPTY: ( "/" <URI_SEGMENT> )* >
     | <#URI_PATH_ABSOLUTE: "/" ( <URI_SEGMENT_NZ> ( "/" <URI_SEGMENT> )* )? >
-    | <#URI_PATH_ROOTLESS: <URI_SEGMENT_NZ> ( "/" <URI_SEGMENT> )* >
+    | <#URI_PATH_ROOTLESS: <URI_SEGMENT_NZ_NC> ( "/" <URI_SEGMENT> )* >
     | <#URI_SEGMENT: (<URI_PCHAR>)* >
     | <#URI_SEGMENT_NZ: (<URI_PCHAR>)+ >
+    | <#URI_SEGMENT_NZ_NC: (<URI_UNRESERVED> | <URI_PCT_ENCODED> | <URI_SUB_DELIMS> | "@")+ >
     | <#URI_PORT: (<DIGIT>)+ >
-
       // A simplified version of the host: it does not contain explicit IP definitions
     | <#URI_HOST: ( <URI_REG_NAME> ) >
     | <#URI_REG_NAME: ( <URI_UNRESERVED> | <URI_PCT_ENCODED> | <URI_SUB_DELIMS> )* >
     // =========================================================================
 // </common-tokens>
+
 }
 
 <INITIAL_CONTEXT> TOKEN:

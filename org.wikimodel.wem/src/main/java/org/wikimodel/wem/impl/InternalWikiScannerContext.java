@@ -138,6 +138,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
                 }
 
                 public void beginTree(char type) {
+                    closeFormat();
                     switch (type) {
                         case '#':
                             fListener.beginList(fListParams, true);
@@ -422,7 +423,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         }
     }
 
-    private void closeFormat() {
+    public void closeFormat() {
         closeFormat(true);
     }
 

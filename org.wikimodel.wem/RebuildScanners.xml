@@ -2,7 +2,7 @@
 <project name="Grammar Rebuild Script" default="rebuild">
     <dirname property="project" file="${ant.file}" />
     <dirname property="workspace" file="${ant.file}/../" />
-    <property name="src" value="${project}/src" />
+    <property name="src" value="${project}/src/main/java" />
     <property name="javacc.home" value="${workspace}/org.semanticdesktop.wikimodel.javacc/lib" />
 
     <target name="rebuild" depends="clean, build" />

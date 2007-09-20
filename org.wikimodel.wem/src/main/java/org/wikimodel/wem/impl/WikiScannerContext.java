@@ -30,6 +30,7 @@ public class WikiScannerContext implements IWikiScannerContext {
         InternalWikiScannerContext context = getContext();
         if (context != null) {
             context.checkBlockContainer();
+            context.closeFormat();
         }
         context = new InternalWikiScannerContext(fListener);
         fStack.push(context);

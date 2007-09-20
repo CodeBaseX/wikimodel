@@ -65,65 +65,66 @@ public interface CommonWikiScannerConstants {
   int URI_PATH_ROOTLESS = 49;
   int URI_SEGMENT = 50;
   int URI_SEGMENT_NZ = 51;
-  int URI_PORT = 52;
-  int URI_HOST = 53;
-  int URI_REG_NAME = 54;
-  int I_BR = 55;
-  int I_ESCAPE = 56;
-  int I_HORLINE = 57;
-  int I_TABLE_ROW = 58;
-  int I_TABLE_CELL = 59;
-  int I_LIST_ITEM = 60;
-  int I_VERBATIM_INLINE = 61;
-  int I_VERBATIM_START = 62;
-  int I_QUOT_BLOCK = 63;
-  int I_QUOT_LINE = 64;
-  int I_DOC_BEGIN = 65;
-  int I_DOC_END = 66;
-  int I_INFO = 67;
-  int I_EXTENSION_BLOCK = 68;
-  int I_EXTENSION_INLINE = 69;
-  int I_PROPERTY = 70;
-  int I_PROPERTY_DOC = 71;
-  int I_PROPERTY_INLINE = 72;
-  int I_HEADER_BEGIN = 73;
-  int I_REFERENCE = 74;
-  int I_HEADER_END = 75;
-  int I_FORMAT_SYMBOL = 76;
-  int I_BLOCK_PARAMS = 77;
-  int I_URI = 78;
-  int I_NL = 79;
-  int I_SPACE = 80;
-  int I_WORD = 81;
-  int I_SPECIAL_SYMBOL = 82;
-  int D_BR = 83;
-  int D_ESCAPE = 84;
-  int D_HORLINE = 85;
-  int D_TABLE_ROW = 86;
-  int D_TABLE_CELL = 87;
-  int D_LIST_ITEM = 88;
-  int D_VERBATIM_INLINE = 89;
-  int D_VERBATIM_START = 90;
-  int D_QUOT_BLOCK = 91;
-  int D_QUOT_LINE = 92;
-  int D_DOC_BEGIN = 93;
-  int D_DOC_END = 94;
-  int D_INFO = 95;
-  int D_EXTENSION_BLOCK = 96;
-  int D_EXTENSION_INLINE = 97;
-  int D_PROPERTY = 98;
-  int D_PROPERTY_DOC = 99;
-  int D_PROPERTY_INLINE = 100;
-  int D_HEADER_BEGIN = 101;
-  int D_REFERENCE = 102;
-  int D_HEADER_END = 103;
-  int D_FORMAT_SYMBOL = 104;
-  int D_BLOCK_PARAMS = 105;
-  int D_URI = 106;
-  int D_NL = 107;
-  int D_SPACE = 108;
-  int D_WORD = 109;
-  int D_SPECIAL_SYMBOL = 110;
+  int URI_SEGMENT_NZ_NC = 52;
+  int URI_PORT = 53;
+  int URI_HOST = 54;
+  int URI_REG_NAME = 55;
+  int I_DOC_BEGIN = 56;
+  int I_DOC_END = 57;
+  int I_BR = 58;
+  int I_ESCAPE = 59;
+  int I_HORLINE = 60;
+  int I_TABLE_ROW = 61;
+  int I_TABLE_CELL = 62;
+  int I_LIST_ITEM = 63;
+  int I_VERBATIM_INLINE = 64;
+  int I_VERBATIM_START = 65;
+  int I_QUOT_BLOCK = 66;
+  int I_QUOT_LINE = 67;
+  int I_INFO = 68;
+  int I_EXTENSION_BLOCK = 69;
+  int I_EXTENSION_INLINE = 70;
+  int I_PROPERTY = 71;
+  int I_PROPERTY_DOC = 72;
+  int I_PROPERTY_INLINE = 73;
+  int I_HEADER_BEGIN = 74;
+  int I_REFERENCE = 75;
+  int I_HEADER_END = 76;
+  int I_FORMAT_SYMBOL = 77;
+  int I_BLOCK_PARAMS = 78;
+  int I_URI = 79;
+  int I_NL = 80;
+  int I_SPACE = 81;
+  int I_WORD = 82;
+  int I_SPECIAL_SYMBOL = 83;
+  int D_DOC_BEGIN = 84;
+  int D_DOC_END = 85;
+  int D_BR = 86;
+  int D_ESCAPE = 87;
+  int D_HORLINE = 88;
+  int D_TABLE_ROW = 89;
+  int D_TABLE_CELL = 90;
+  int D_LIST_ITEM = 91;
+  int D_VERBATIM_INLINE = 92;
+  int D_VERBATIM_START = 93;
+  int D_QUOT_BLOCK = 94;
+  int D_QUOT_LINE = 95;
+  int D_INFO = 96;
+  int D_EXTENSION_BLOCK = 97;
+  int D_EXTENSION_INLINE = 98;
+  int D_PROPERTY = 99;
+  int D_PROPERTY_DOC = 100;
+  int D_PROPERTY_INLINE = 101;
+  int D_HEADER_BEGIN = 102;
+  int D_REFERENCE = 103;
+  int D_HEADER_END = 104;
+  int D_FORMAT_SYMBOL = 105;
+  int D_BLOCK_PARAMS = 106;
+  int D_URI = 107;
+  int D_NL = 108;
+  int D_SPACE = 109;
+  int D_WORD = 110;
+  int D_SPECIAL_SYMBOL = 111;
 
   int VERBATIM_CONTEXT = 0;
   int DEFAULT = 1;
@@ -182,9 +183,12 @@ public interface CommonWikiScannerConstants {
     "<URI_PATH_ROOTLESS>",
     "<URI_SEGMENT>",
     "<URI_SEGMENT_NZ>",
+    "<URI_SEGMENT_NZ_NC>",
     "<URI_PORT>",
     "<URI_HOST>",
     "<URI_REG_NAME>",
+    "<I_DOC_BEGIN>",
+    "<I_DOC_END>",
     "<I_BR>",
     "<I_ESCAPE>",
     "<I_HORLINE>",
@@ -195,8 +199,6 @@ public interface CommonWikiScannerConstants {
     "<I_VERBATIM_START>",
     "<I_QUOT_BLOCK>",
     "<I_QUOT_LINE>",
-    "<I_DOC_BEGIN>",
-    "<I_DOC_END>",
     "<I_INFO>",
     "<I_EXTENSION_BLOCK>",
     "<I_EXTENSION_INLINE>",
@@ -213,6 +215,8 @@ public interface CommonWikiScannerConstants {
     "<I_SPACE>",
     "<I_WORD>",
     "<I_SPECIAL_SYMBOL>",
+    "<D_DOC_BEGIN>",
+    "<D_DOC_END>",
     "<D_BR>",
     "<D_ESCAPE>",
     "<D_HORLINE>",
@@ -223,8 +227,6 @@ public interface CommonWikiScannerConstants {
     "<D_VERBATIM_START>",
     "<D_QUOT_BLOCK>",
     "<D_QUOT_LINE>",
-    "<D_DOC_BEGIN>",
-    "<D_DOC_END>",
     "<D_INFO>",
     "<D_EXTENSION_BLOCK>",
     "<D_EXTENSION_INLINE>",

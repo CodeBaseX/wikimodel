@@ -31,6 +31,31 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         return new CommonWikiParser();
     }
 
+    public void test() throws WikiParserException {
+        test("----------------------------------------------\r\n"
+            + "= Example1 =\r\n"
+            + "\r\n"
+            + "The table below contains an embedded document.\r\n"
+            + "Using such embedded documents you can insert table\r\n"
+            + "in a list or a list in a table. And embedded documents\r\n"
+            + "can contain their own embedded documents!!!\r\n"
+            + "\r\n"
+            + "!! Header 1.1 !! Header 1.2\r\n"
+            + ":: Cell 2.1 :: Cell 2.2 with an embedded document: (((\r\n"
+            + "== This is an embedded document! ==\r\n"
+            + "* list item one\r\n"
+            + "* list item two\r\n"
+            + "  * sub-item A\r\n"
+            + "  * sub-item B\r\n"
+            + "* list item three\r\n"
+            + ")))\r\n"
+            + ":: Cell 3.1 :: Cell 3.2\r\n"
+            + "\r\n"
+            + "This is a paragraphs after the table...\r\n"
+            + "----------------------------------------------\r\n"
+            + "");
+    }
+
     /**
      * @throws WikiParserException
      */
@@ -56,14 +81,14 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
      */
     public void testEscape() throws WikiParserException {
         test("[a reference]");
-        test("[[not a reference]");
+        test("\\[not a reference]");
 
-        test("~First letter is escaped");
-        test("~[not a reference]");
-        test("~~escaped tilda");
-        test("~ just a tilda because there is an espace after this tilda...");
+        test("\\First letter is escaped");
+        test("\\[not a reference]");
+        test("\\\\escaped backslash");
+        test("\\ a line break because it is followed by a space");
 
-        test("!Heading\n~!Not a heading\n!Heading again!");
+        test("= Heading =\n\\= Not a heading =\n= Heading again! =");
     }
 
     /**
@@ -338,17 +363,26 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testReferences() throws WikiParserException {
+        test("Это (=ссылка=) на внешний документ...");
+        test("This is a (=reference=) to an external document...");
+
         test("before http://www.foo.bar/com after");
         test("before http://www.foo.bar/com?q=abc#ancor after");
         test("before wiki:Hello after");
-        test("before wiki~:Hello after");
+        test("before wiki\\:Hello after");
 
+        test("before abc:cde#efg after");
         test("before abc:cde#efg after");
         test("before first:second:third:anonymous@hello/path/?query=value#ancor after");
 
         test("download:MyDoc.pdf");
+        test("Reference: download:MyDoc.pdf :not a reference");
+
+        test("http://123.234.245.34/toto/titi/MyDoc.pdf");
 
         // Not references
+        test("download::MyDoc.pdf");
+        test("before abc::after");
         test("before abc: after");
         test("before abc# after");
         test("before #abc after");
@@ -356,8 +390,15 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
 
         // Explicit references.
         test("before [toto] after");
+        test("before (=toto=) after");
         test("before [#local ancor] after");
 
+        test("before (((doc-before(=toto=)doc-after))) after");
+        test("before ((((=toto=)))) after");
+        test(" ((((=toto=))))");
+        test("((((=toto=))))");
+        test("((((((toto))))))");
+        test("\n(((a(((toto)))b)))");
     }
 
     /**
@@ -381,7 +422,8 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
             + "</table>");
 
         test("::Cell 1 :: Cell 2");
-        test(" Not a Header :: Not a Cell");
+        test("Not a Header :: Not a Cell");
+        test("Not a Header::Not a Cell");
         test(":Term definition");
         test(";:Term definition");
 

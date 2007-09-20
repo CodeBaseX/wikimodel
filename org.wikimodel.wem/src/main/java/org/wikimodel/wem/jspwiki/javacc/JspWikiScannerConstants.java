@@ -51,43 +51,44 @@ public interface JspWikiScannerConstants {
   int URI_PATH_ROOTLESS = 35;
   int URI_SEGMENT = 36;
   int URI_SEGMENT_NZ = 37;
-  int URI_PORT = 38;
-  int URI_HOST = 39;
-  int URI_REG_NAME = 40;
-  int I_ESCAPE = 41;
-  int I_LIST_ITEM = 42;
-  int I_TABLE_ROW = 43;
-  int I_HEADER = 44;
-  int I_VERBATIM_BLOCK = 45;
-  int I_HORLINE = 46;
-  int I_REFERENCE = 47;
-  int I_TABLE_CELL = 48;
-  int I_DD = 49;
-  int I_VERBATIM_INLINE = 50;
-  int I_FORMAT_SYMBOL = 51;
-  int I_BR = 52;
-  int I_URI = 53;
-  int I_NL = 54;
-  int I_SPACE = 55;
-  int I_WORD = 56;
-  int I_SPECIAL_SYMBOL = 57;
-  int D_ESCAPE = 58;
-  int D_LIST_ITEM = 59;
-  int D_TABLE_ROW = 60;
-  int D_HEADER = 61;
-  int D_VERBATIM_BLOCK = 62;
-  int D_HORLINE = 63;
-  int D_REFERENCE = 64;
-  int D_TABLE_CELL = 65;
-  int D_DD = 66;
-  int D_VERBATIM_INLINE = 67;
-  int D_FORMAT_SYMBOL = 68;
-  int D_BR = 69;
-  int D_URI = 70;
-  int D_NL = 71;
-  int D_SPACE = 72;
-  int D_WORD = 73;
-  int D_SPECIAL_SYMBOL = 74;
+  int URI_SEGMENT_NZ_NC = 38;
+  int URI_PORT = 39;
+  int URI_HOST = 40;
+  int URI_REG_NAME = 41;
+  int I_ESCAPE = 42;
+  int I_LIST_ITEM = 43;
+  int I_TABLE_ROW = 44;
+  int I_HEADER = 45;
+  int I_VERBATIM_BLOCK = 46;
+  int I_HORLINE = 47;
+  int I_REFERENCE = 48;
+  int I_TABLE_CELL = 49;
+  int I_DD = 50;
+  int I_VERBATIM_INLINE = 51;
+  int I_FORMAT_SYMBOL = 52;
+  int I_BR = 53;
+  int I_URI = 54;
+  int I_NL = 55;
+  int I_SPACE = 56;
+  int I_WORD = 57;
+  int I_SPECIAL_SYMBOL = 58;
+  int D_ESCAPE = 59;
+  int D_LIST_ITEM = 60;
+  int D_TABLE_ROW = 61;
+  int D_HEADER = 62;
+  int D_VERBATIM_BLOCK = 63;
+  int D_HORLINE = 64;
+  int D_REFERENCE = 65;
+  int D_TABLE_CELL = 66;
+  int D_DD = 67;
+  int D_VERBATIM_INLINE = 68;
+  int D_FORMAT_SYMBOL = 69;
+  int D_BR = 70;
+  int D_URI = 71;
+  int D_NL = 72;
+  int D_SPACE = 73;
+  int D_WORD = 74;
+  int D_SPECIAL_SYMBOL = 75;
 
   int DEFAULT = 0;
   int INITIAL_CONTEXT = 1;
@@ -131,6 +132,7 @@ public interface JspWikiScannerConstants {
     "<URI_PATH_ROOTLESS>",
     "<URI_SEGMENT>",
     "<URI_SEGMENT_NZ>",
+    "<URI_SEGMENT_NZ_NC>",
     "<URI_PORT>",
     "<URI_HOST>",
     "<URI_REG_NAME>",

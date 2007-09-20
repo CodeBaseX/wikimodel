@@ -51,41 +51,42 @@ public interface XWikiScannerConstants {
   int URI_PATH_ROOTLESS = 35;
   int URI_SEGMENT = 36;
   int URI_SEGMENT_NZ = 37;
-  int URI_PORT = 38;
-  int URI_HOST = 39;
-  int URI_REG_NAME = 40;
-  int I_ESCAPE = 41;
-  int I_LIST_ITEM = 42;
-  int I_TABLE_DELIMITER = 43;
-  int I_HEADER = 44;
-  int I_VERBATIM_BLOCK = 45;
-  int I_HORLINE = 46;
-  int I_REFERENCE = 47;
-  int I_TABLE_CELL = 48;
-  int I_VERBATIM_INLINE = 49;
-  int I_FORMAT_SYMBOL = 50;
-  int I_BR = 51;
-  int I_URI = 52;
-  int I_NL = 53;
-  int I_SPACE = 54;
-  int I_WORD = 55;
-  int I_SPECIAL_SYMBOL = 56;
-  int D_ESCAPE = 57;
-  int D_LIST_ITEM = 58;
-  int D_TABLE_DELIMITER = 59;
-  int D_HEADER = 60;
-  int D_VERBATIM_BLOCK = 61;
-  int D_HORLINE = 62;
-  int D_REFERENCE = 63;
-  int D_TABLE_CELL = 64;
-  int D_VERBATIM_INLINE = 65;
-  int D_FORMAT_SYMBOL = 66;
-  int D_BR = 67;
-  int D_URI = 68;
-  int D_NL = 69;
-  int D_SPACE = 70;
-  int D_WORD = 71;
-  int D_SPECIAL_SYMBOL = 72;
+  int URI_SEGMENT_NZ_NC = 38;
+  int URI_PORT = 39;
+  int URI_HOST = 40;
+  int URI_REG_NAME = 41;
+  int I_ESCAPE = 42;
+  int I_LIST_ITEM = 43;
+  int I_TABLE_DELIMITER = 44;
+  int I_HEADER = 45;
+  int I_VERBATIM_BLOCK = 46;
+  int I_HORLINE = 47;
+  int I_REFERENCE = 48;
+  int I_TABLE_CELL = 49;
+  int I_VERBATIM_INLINE = 50;
+  int I_FORMAT_SYMBOL = 51;
+  int I_BR = 52;
+  int I_URI = 53;
+  int I_NL = 54;
+  int I_SPACE = 55;
+  int I_WORD = 56;
+  int I_SPECIAL_SYMBOL = 57;
+  int D_ESCAPE = 58;
+  int D_LIST_ITEM = 59;
+  int D_TABLE_DELIMITER = 60;
+  int D_HEADER = 61;
+  int D_VERBATIM_BLOCK = 62;
+  int D_HORLINE = 63;
+  int D_REFERENCE = 64;
+  int D_TABLE_CELL = 65;
+  int D_VERBATIM_INLINE = 66;
+  int D_FORMAT_SYMBOL = 67;
+  int D_BR = 68;
+  int D_URI = 69;
+  int D_NL = 70;
+  int D_SPACE = 71;
+  int D_WORD = 72;
+  int D_SPECIAL_SYMBOL = 73;
 
   int DEFAULT = 0;
   int INITIAL_CONTEXT = 1;
@@ -129,6 +130,7 @@ public interface XWikiScannerConstants {
     "<URI_PATH_ROOTLESS>",
     "<URI_SEGMENT>",
     "<URI_SEGMENT_NZ>",
+    "<URI_SEGMENT_NZ_NC>",
     "<URI_PORT>",
     "<URI_HOST>",
     "<URI_REG_NAME>",
