@@ -106,7 +106,7 @@ TOKEN_MGR_DECLS: {
     | <#BR: "\\" (<SPACE>)* <NEW_LINE> >
     | <#ESCAPE: ( "\\" ~["\t", "\n", "\r"]) >
     | <#VERBATIM_INLINE: "`" ( "\\" ~[] | ~["`"] )* "`" >
-    | <#REFERENCE:  ( "[" ( "\\" ~[] | ~["]"] )* "]" ) >
+    | <#REFERENCE:  ( "[" ( "\\" ~[] | ~["]"] )* "]" | "(=" ( "\\" ~[] | ~["="] | "=" ~[")"] )* "=)") >
     | <#HORLINE: "---" ("-")+ >
     | <#CELL: (<SPACE>)* ( "||" | "|" | "::" | "!!" ) (<PARAMS>)? (<SPACE>)* >
     | <#QUOT_BLOCK: "Q" (<PARAMS>)? ":" >
@@ -182,22 +182,27 @@ TOKEN_MGR_DECLS: {
     | <#URI_USERINFO: ( <URI_UNRESERVED> | <URI_PCT_ENCODED> | <URI_SUB_DELIMS> | ":" )* >
     | <#URI_PATH_ABEMPTY: ( "/" <URI_SEGMENT> )* >
     | <#URI_PATH_ABSOLUTE: "/" ( <URI_SEGMENT_NZ> ( "/" <URI_SEGMENT> )* )? >
-    | <#URI_PATH_ROOTLESS: <URI_SEGMENT_NZ> ( "/" <URI_SEGMENT> )* >
+    | <#URI_PATH_ROOTLESS: <URI_SEGMENT_NZ_NC> ( "/" <URI_SEGMENT> )* >
     | <#URI_SEGMENT: (<URI_PCHAR>)* >
     | <#URI_SEGMENT_NZ: (<URI_PCHAR>)+ >
+    | <#URI_SEGMENT_NZ_NC: (<URI_UNRESERVED> | <URI_PCT_ENCODED> | <URI_SUB_DELIMS> | "@")+ >
     | <#URI_PORT: (<DIGIT>)+ >
-
       // A simplified version of the host: it does not contain explicit IP definitions
     | <#URI_HOST: ( <URI_REG_NAME> ) >
     | <#URI_REG_NAME: ( <URI_UNRESERVED> | <URI_PCT_ENCODED> | <URI_SUB_DELIMS> )* >
     // =========================================================================
 // </common-tokens>
+
+
+
 }
 
 <INITIAL_CONTEXT> TOKEN:
 {
 // <initial-context>
-      <I_BR : <BR> > : DEFAULT
+      <I_DOC_BEGIN: <DOC_BEGIN> > : INITIAL_CONTEXT
+    | <I_DOC_END: <DOC_END> > : DEFAULT
+    | <I_BR : <BR> > : DEFAULT
     | <I_ESCAPE: <ESCAPE> > : DEFAULT
     | <I_HORLINE: (<NEW_LINE>)? <HORLINE> > : DEFAULT
     | <I_TABLE_ROW: (<NEW_LINE>)? ( <PARAMS> )? <CELL> > : DEFAULT
@@ -207,8 +212,6 @@ TOKEN_MGR_DECLS: {
     | <I_VERBATIM_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
     | <I_QUOT_BLOCK: (<NEW_LINE>)? <QUOT_BLOCK> > : DEFAULT
     | <I_QUOT_LINE: (<NEW_LINE>)? <QUOT_LINE> > : DEFAULT
-    | <I_DOC_BEGIN: <DOC_BEGIN> > : INITIAL_CONTEXT
-    | <I_DOC_END: <DOC_END> > : DEFAULT
     | <I_INFO: (<NEW_LINE>)? <INFO> > : DEFAULT
     | <I_EXTENSION_BLOCK:  (<NEW_LINE>)? <EXTENSION> > : DEFAULT
     | <I_EXTENSION_INLINE:  <EXTENSION> > : DEFAULT
@@ -233,7 +236,9 @@ TOKEN_MGR_DECLS: {
 <DEFAULT> TOKEN:
 {
 // <default-context>
-      <D_BR : <BR> > : DEFAULT
+      <D_DOC_BEGIN: <DOC_BEGIN> > : INITIAL_CONTEXT
+    | <D_DOC_END: <DOC_END> > : DEFAULT
+    | <D_BR : <BR> > : DEFAULT
     | <D_ESCAPE: <ESCAPE> > : DEFAULT
     | <D_HORLINE: <NEW_LINE> <HORLINE> > : DEFAULT
     | <D_TABLE_ROW: <NEW_LINE> ( <PARAMS> )? <CELL> > : DEFAULT
@@ -243,8 +248,6 @@ TOKEN_MGR_DECLS: {
     | <D_VERBATIM_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
     | <D_QUOT_BLOCK: <NEW_LINE> <QUOT_BLOCK> > : DEFAULT
     | <D_QUOT_LINE: <NEW_LINE> <QUOT_LINE> > : DEFAULT
-    | <D_DOC_BEGIN: <DOC_BEGIN> > : INITIAL_CONTEXT
-    | <D_DOC_END: <DOC_END> > : DEFAULT
     | <D_INFO: <NEW_LINE> <INFO> > : DEFAULT
     | <D_EXTENSION_BLOCK:  <NEW_LINE> <EXTENSION> > : DEFAULT
     | <D_EXTENSION_INLINE:  <EXTENSION> > : DEFAULT
@@ -270,6 +273,8 @@ TOKEN_MGR_DECLS: {
     Token getINTERNAL_VERBATIM_END(): {Token t=null;} {(t=<INTERNAL_VERBATIM_END>){return t;}}
     Token getINTERNAL_VERBATIM_CONTENT(): {Token t=null;} {(t=<INTERNAL_VERBATIM_CONTENT>){return t;}}
 // <getters>
+    Token getDOC_BEGIN(): {Token t=null;} {(t=<I_DOC_BEGIN>|t=<D_DOC_BEGIN>){return t;}}
+    Token getDOC_END(): {Token t=null;} {(t=<I_DOC_END>|t=<D_DOC_END>){return t;}}
     Token getBR(): {Token t=null;} {(t=<I_BR>|t=<D_BR>){return t;}}
     Token getESCAPE(): {Token t=null;} {(t=<I_ESCAPE>|t=<D_ESCAPE>){return t;}}
     Token getHORLINE(): {Token t=null;} {(t=<I_HORLINE>|t=<D_HORLINE>){return t;}}
@@ -280,8 +285,6 @@ TOKEN_MGR_DECLS: {
     Token getVERBATIM_START(): {Token t=null;} {(t=<I_VERBATIM_START>|t=<D_VERBATIM_START>){return t;}}
     Token getQUOT_BLOCK(): {Token t=null;} {(t=<I_QUOT_BLOCK>|t=<D_QUOT_BLOCK>){return t;}}
     Token getQUOT_LINE(): {Token t=null;} {(t=<I_QUOT_LINE>|t=<D_QUOT_LINE>){return t;}}
-    Token getDOC_BEGIN(): {Token t=null;} {(t=<I_DOC_BEGIN>|t=<D_DOC_BEGIN>){return t;}}
-    Token getDOC_END(): {Token t=null;} {(t=<I_DOC_END>|t=<D_DOC_END>){return t;}}
     Token getINFO(): {Token t=null;} {(t=<I_INFO>|t=<D_INFO>){return t;}}
     Token getEXTENSION_BLOCK(): {Token t=null;} {(t=<I_EXTENSION_BLOCK>|t=<D_EXTENSION_BLOCK>){return t;}}
     Token getEXTENSION_INLINE(): {Token t=null;} {(t=<I_EXTENSION_INLINE>|t=<D_EXTENSION_INLINE>){return t;}}
@@ -817,7 +820,7 @@ void line():
             (t = getREFERENCE() | t = getURI())
             {
             	str = t.image.trim();
-            	if (str.startsWith("[[") && str.endsWith("]]")) {
+            	if (str.startsWith("(=") && str.endsWith("=)")) {
             		str = str.substring(2, str.length() - 2);
             	} else  if (str.startsWith("[")) {
             		str = str.substring(1, str.length() - 1);
