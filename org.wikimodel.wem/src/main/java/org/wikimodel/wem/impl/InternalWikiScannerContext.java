@@ -662,6 +662,11 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         fListener.onLineBreak();
     }
 
+    public void onMacro(String macroName, WikiParameters params, String content) {
+        checkBlockContainer();
+        fListener.onMacro(macroName, params, content);
+    }
+
     public void onNewLine() {
         checkStyleOpened();
         fListener.onNewLine();

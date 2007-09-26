@@ -193,7 +193,8 @@ public class WikiScannerContext implements IWikiScannerContext {
     public InternalWikiScannerContext getContext() {
         if (!fStack.isEmpty())
             return fStack.peek();
-        InternalWikiScannerContext context = new InternalWikiScannerContext(fListener);
+        InternalWikiScannerContext context = new InternalWikiScannerContext(
+            fListener);
         fStack.push(context);
         return context;
     }
@@ -273,6 +274,10 @@ public class WikiScannerContext implements IWikiScannerContext {
 
     public void onLineBreak() {
         getContext().onLineBreak();
+    }
+
+    public void onMacro(String macroName, WikiParameters params, String content) {
+        getContext().onMacro(macroName, params, content);
     }
 
     public void onNewLine() {

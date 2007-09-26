@@ -16,16 +16,10 @@ package org.wikimodel.wem;
 public class PrintListener extends PrintInlineListener {
 
     /**
-     * 
+     * @param printer
      */
-    public PrintListener() {
-    }
-
-    /**
-     * @param buf
-     */
-    public PrintListener(StringBuffer buf) {
-        super(buf);
+    public PrintListener(IWikiPrinter printer) {
+        super(printer);
     }
 
     public void beginDefinitionDescription() {
@@ -68,9 +62,9 @@ public class PrintListener extends PrintInlineListener {
     }
 
     public void beginPropertyBlock(String propertyUri, boolean doc) {
-        print("<div class='property' url='"
-            + WikiPageUtil.escapeXmlAttribute(propertyUri)
-            + "'>");
+        print("<div class='property' url='" +
+            WikiPageUtil.escapeXmlAttribute(propertyUri) +
+            "'>");
         if (doc)
             println("");
     }
@@ -161,15 +155,25 @@ public class PrintListener extends PrintInlineListener {
      *      org.wikimodel.wem.WikiParameters)
      */
     public void onExtensionBlock(String extensionName, WikiParameters params) {
-        println("<div class='extension' extension='"
-            + extensionName
-            + "' "
-            + params
-            + " />");
+        println("<div class='extension' extension='" +
+            extensionName +
+            "' " +
+            params +
+            " />");
     }
 
     public void onHorizontalLine() {
         println("<hr />");
+    }
+
+    public void onMacro(String macroName, WikiParameters params, String content) {
+        println("<pre class='macro' macroName='" +
+            macroName +
+            "'" +
+            params +
+            "><![CDATA[" +
+            content +
+            "]]></pre>");
     }
 
     public void onTableCaption(String str) {

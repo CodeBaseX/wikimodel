@@ -13,6 +13,7 @@ package org.wikimodel.wem.creole.javacc;
 
 import org.wikimodel.wem.WikiStyle;
 import org.wikimodel.wem.impl.IWikiScannerContext;
+import org.wikimodel.wem.IWemConstants;
 
 /**
  * This is the internal wiki page parser generated from the grammar file.
@@ -606,8 +607,8 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
   }
 
   final public void quotLine() throws ParseException {
-        Token t = null;
-        int depthCounter = 0;
+    Token t = null;
+    int depthCounter = 0;
     label_6:
     while (true) {
       t = getSPACE();
@@ -684,13 +685,15 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
       case I_FORMAT_SYMBOL:
       case D_FORMAT_SYMBOL:
         t = getFORMAT_SYMBOL();
-                                str = t.image.trim();
-                                WikiStyle style = null;
-                                if ("**".equals(str)) {
-                                        style  = IWikiScannerContext.STRONG;
-                                } else if ("//".equals(str)) {
-                                        style  = IWikiScannerContext.EM;
-                                }
+                str = t.image.trim();
+                WikiStyle style = null;
+                if ("**".equals(str)) {
+                    style  = IWemConstants.STRONG;
+                } else if ("//".equals(str)) {
+                    style  = IWemConstants.EM;
+                } else if ("##".equals(str)) {
+                    style = IWemConstants.MONO;
+                }
                 fContext.onFormat(style);
         break;
       case I_HEADER_END:
@@ -829,11 +832,6 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
   final private boolean jj_3_7() {
     if (jj_3R_15()) return true;
     if (jj_3R_16()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_24() {
-    if (jj_3R_36()) return true;
     return false;
   }
 
@@ -1033,6 +1031,11 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3R_39() {
+    if (jj_3R_44()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_36() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1070,11 +1073,6 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
     jj_scanpos = xsp;
     if (jj_scan_token(60)) return true;
     }
-    return false;
-  }
-
-  final private boolean jj_3R_39() {
-    if (jj_3R_44()) return true;
     return false;
   }
 
@@ -1157,11 +1155,6 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3_8() {
-    if (jj_3R_17()) return true;
-    return false;
-  }
-
   final private boolean jj_3R_26() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1169,6 +1162,11 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
     jj_scanpos = xsp;
     if (jj_3R_39()) return true;
     }
+    return false;
+  }
+
+  final private boolean jj_3_8() {
+    if (jj_3R_17()) return true;
     return false;
   }
 
@@ -1190,6 +1188,11 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
 
   final private boolean jj_3_4() {
     if (jj_3R_13()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_24() {
+    if (jj_3R_36()) return true;
     return false;
   }
 

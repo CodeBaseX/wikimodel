@@ -35,23 +35,6 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
         return new XhtmlParser();
     }
 
-    protected void test(String string, String control)
-        throws WikiParserException {
-        println("==================================================");
-        StringReader reader = new StringReader(string);
-        IWikiParser parser = newWikiParser();
-        IWemListener listener = new PrintListener() {
-            protected void print(String str) {
-                System.out.print(str);
-            }
-
-            protected void println(String str) {
-                System.out.println(str);
-            }
-        };
-        parser.parse(reader, listener);
-    }
-
     /**
      * @throws WikiParserException
      */
