@@ -56,6 +56,14 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         test("!!Header:: Cell with a macro: \n"
             + " {code}this is a code{/code} \n"
             + " this is afer the code...");
+        test(""
+            + "* item one\n"
+            + "* item two\n"
+            + "  * subitem with a macro:\n"
+            + "  {code} this is a code{/code} \n"
+            + "  the same item (continuation)\n"
+            + "  * subitem two\n"
+            + "* item three");
     }
 
     public void test() throws WikiParserException {
