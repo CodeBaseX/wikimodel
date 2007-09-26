@@ -66,6 +66,16 @@ PARSER_END(CommonWikiScanner)
 TOKEN_MGR_DECLS: {
     int tableDepth = 0; 
     int verbatimBlockDepth = 0;
+    String macroName = "";
+    String getMacroName(StringBuffer buf) {
+        String str = buf.toString();
+        str = str.substring(1, str.length() - 1);
+        int idx = str.indexOf(" ");
+        if (idx > 0) {
+            str = str.substring(0, idx);
+        }
+        return str;
+    }
 }
 
 <VERBATIM_CONTEXT> TOKEN:
@@ -81,6 +91,21 @@ TOKEN_MGR_DECLS: {
         }
     | <INTERNAL_VERBATIM_CONTENT: <VERBATIM_CONTENT> > : VERBATIM_CONTEXT
 }
+
+<MACRO_CONTEXT> TOKEN:
+{
+      <INTERNAL_MACRO_START: <MACRO_START> > : MACRO_CONTEXT
+    | <INTERNAL_MACRO_END: <MACRO_END> > {
+            String name = image.toString(); 
+            if (name.startsWith("{/" + macroName)) {
+                SwitchTo(DEFAULT);
+            } else {
+                SwitchTo(MACRO_CONTEXT);
+            }
+        }
+    | <INTERNAL_MACRO_CONTENT: <MACRO_CONTENT> > : MACRO_CONTEXT
+}
+
 
 <DEFAULT, INITIAL_CONTEXT> TOKEN:
 {
@@ -98,6 +123,14 @@ TOKEN_MGR_DECLS: {
         | ~["}", "{"] 
         | "}" ~["}"] | "}}" ~["}"]
         | "{" ~["{"] | "{{" ~["{"]
+      )+ >
+    | <#MACRO_START: "{" (<CHAR>)+ (~["}"])* "}" >
+    | <#MACRO_END: "{/" (<CHAR>)+ "}" > 
+    | <#MACRO_CONTENT: ( 
+          "\\" ~[] 
+        | ~["{"] 
+        | "{" <SPACE> 
+        | "{" (~["}"])+ <NEW_LINE> 
       )+ >
     | <#INFO: "/" (<CHAR> | "!" | "?" | "*") "\\" >
     | <#EXTENSION: "$" (<CHAR>)+ (<SPACE>)* ( "(" ( "\\" ~[] | ~[")"] )* ")" )? >
@@ -192,9 +225,6 @@ TOKEN_MGR_DECLS: {
     | <#URI_REG_NAME: ( <URI_UNRESERVED> | <URI_PCT_ENCODED> | <URI_SUB_DELIMS> )* >
     // =========================================================================
 // </common-tokens>
-
-
-
 }
 
 <INITIAL_CONTEXT> TOKEN:
@@ -210,6 +240,7 @@ TOKEN_MGR_DECLS: {
     | <I_LIST_ITEM: (<NEW_LINE>)? <LIST_ITEM> > : DEFAULT
     | <I_VERBATIM_INLINE : <VERBATIM_INLINE> > : DEFAULT
     | <I_VERBATIM_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
+    | <I_MACRO_START: <MACRO_START> > { macroName = getMacroName(image); } : MACRO_CONTEXT
     | <I_QUOT_BLOCK: (<NEW_LINE>)? <QUOT_BLOCK> > : DEFAULT
     | <I_QUOT_LINE: (<NEW_LINE>)? <QUOT_LINE> > : DEFAULT
     | <I_INFO: (<NEW_LINE>)? <INFO> > : DEFAULT
@@ -246,6 +277,7 @@ TOKEN_MGR_DECLS: {
     | <D_LIST_ITEM: <NEW_LINE> <LIST_ITEM> > : DEFAULT
     | <D_VERBATIM_INLINE : <VERBATIM_INLINE> > : DEFAULT
     | <D_VERBATIM_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
+    | <D_MACRO_START: <MACRO_START> > { macroName = getMacroName(image); } : MACRO_CONTEXT
     | <D_QUOT_BLOCK: <NEW_LINE> <QUOT_BLOCK> > : DEFAULT
     | <D_QUOT_LINE: <NEW_LINE> <QUOT_LINE> > : DEFAULT
     | <D_INFO: <NEW_LINE> <INFO> > : DEFAULT
@@ -272,6 +304,9 @@ TOKEN_MGR_DECLS: {
     Token getINTERNAL_VERBATIM_START(): {Token t=null;} {(t=<INTERNAL_VERBATIM_START>){return t;}}
     Token getINTERNAL_VERBATIM_END(): {Token t=null;} {(t=<INTERNAL_VERBATIM_END>){return t;}}
     Token getINTERNAL_VERBATIM_CONTENT(): {Token t=null;} {(t=<INTERNAL_VERBATIM_CONTENT>){return t;}}
+    Token getINTERNAL_MACRO_START(): {Token t=null;} {(t=<INTERNAL_MACRO_START>){return t;}}
+    Token getINTERNAL_MACRO_END(): {Token t=null;} {(t=<INTERNAL_MACRO_END>){return t;}}
+    Token getINTERNAL_MACRO_CONTENT(): {Token t=null;} {(t=<INTERNAL_MACRO_CONTENT>){return t;}}
 // <getters>
     Token getDOC_BEGIN(): {Token t=null;} {(t=<I_DOC_BEGIN>|t=<D_DOC_BEGIN>){return t;}}
     Token getDOC_END(): {Token t=null;} {(t=<I_DOC_END>|t=<D_DOC_END>){return t;}}
@@ -283,6 +318,7 @@ TOKEN_MGR_DECLS: {
     Token getLIST_ITEM(): {Token t=null;} {(t=<I_LIST_ITEM>|t=<D_LIST_ITEM>){return t;}}
     Token getVERBATIM_INLINE(): {Token t=null;} {(t=<I_VERBATIM_INLINE>|t=<D_VERBATIM_INLINE>){return t;}}
     Token getVERBATIM_START(): {Token t=null;} {(t=<I_VERBATIM_START>|t=<D_VERBATIM_START>){return t;}}
+    Token getMACRO_START(): {Token t=null;} {(t=<I_MACRO_START>|t=<D_MACRO_START>){return t;}}
     Token getQUOT_BLOCK(): {Token t=null;} {(t=<I_QUOT_BLOCK>|t=<D_QUOT_BLOCK>){return t;}}
     Token getQUOT_LINE(): {Token t=null;} {(t=<I_QUOT_LINE>|t=<D_QUOT_LINE>){return t;}}
     Token getINFO(): {Token t=null;} {(t=<I_INFO>|t=<D_INFO>){return t;}}
@@ -331,6 +367,8 @@ void docElements():
     properties()
     |
     verbatimBlock()
+    |
+    macroBlock()
     |
     embeddedDocument()
     |
@@ -534,7 +572,7 @@ void block():
 {
 }
 {
-    ( embeddedDocument() | verbatimBlock() | extensionBlock() | lines() )
+    ( embeddedDocument() | verbatimBlock() | macroBlock() | extensionBlock() | lines() )
 }
 
 
@@ -565,6 +603,58 @@ void verbatimBlock():
         if (str.endsWith("}}}"))
             str = str.substring(0, str.length() - "}}}".length());
         fContext.onVerbatim(str, false);
+    }
+}
+
+void macroBlock():
+{
+    Token t = null;
+    StringBuffer buf = new StringBuffer();
+    String name = "";
+    WikiParameters params;
+    String paramStr = "";
+    int paramStrPos = -1;
+    String str = null;
+    boolean end = false;
+    String prevEnd = null;
+}
+{
+    t = getMACRO_START()
+    {
+        str = t.image.substring(1, t.image.length() - 1);
+        paramStrPos = str.indexOf(" ");
+        if (paramStrPos > 0) {
+            paramStr = str.substring(paramStrPos);
+            name = str.substring(0, paramStrPos);
+        } else {
+            name = str;
+        }
+        name = name.trim();
+    }
+    (LOOKAHEAD(2)
+        (
+              t = getINTERNAL_MACRO_CONTENT() { end = false; }
+            | t = getINTERNAL_MACRO_END() { end = true; }
+            | t = getINTERNAL_MACRO_START() { end = false; }
+        )
+        {
+            if (prevEnd != null) {
+                buf.append(prevEnd);
+            }
+            if (end) {
+                prevEnd = t.image;
+            } else {
+                prevEnd = null;
+                str = WikiScannerUtil.unescape(t.image, '\\');
+                buf.append(str);        
+            }
+        }
+    )*
+    (LOOKAHEAD(2) ( t = getINTERNAL_MACRO_END() | <EOF>) )? 
+    {
+        str = buf.toString();
+        params = new WikiParameters(paramStr);
+        fContext.onMacro(name, params, str);
     }
 }
 

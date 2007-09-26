@@ -19,6 +19,7 @@ package org.wikimodel.wem.creole.javacc;
 
 import org.wikimodel.wem.WikiStyle;
 import org.wikimodel.wem.impl.IWikiScannerContext;
+import org.wikimodel.wem.IWemConstants;
 
 /**
  * This is the internal wiki page parser generated from the grammar file.
@@ -49,7 +50,7 @@ PARSER_END(CreoleWikiScanner)
     | <#BR: "\\\\" >
     | <#CELL: "|" ("=") ? >
     | <#FORMAT_SYMBOL : (
-        "//" | "**"
+        "//" | "**" | "##"
         ) >
 
 // <common-tokens>
@@ -271,7 +272,7 @@ void tableRow():
 {
     t = getTABLE_ROW()
     {
-    	str = t.image.trim();
+        str = t.image.trim();
         fContext.beginTableRow(str.length() > 1);
         t = null;
     }
@@ -377,8 +378,8 @@ void quot():
 }
 void quotLine():
 {
-	Token t = null;
-	int depthCounter = 0;
+    Token t = null;
+    int depthCounter = 0;
 }
 {
     ( LOOKAHEAD(2) t = getSPACE() { depthCounter++; } )+
@@ -446,13 +447,15 @@ void line():
             |
             t = getFORMAT_SYMBOL()
             {
-				str = t.image.trim();
-				WikiStyle style = null;
-				if ("**".equals(str)) {
-					style  = IWikiScannerContext.STRONG;
-				} else if ("//".equals(str)) {
-					style  = IWikiScannerContext.EM;
-				}
+                str = t.image.trim();
+                WikiStyle style = null;
+                if ("**".equals(str)) {
+                    style  = IWemConstants.STRONG;
+                } else if ("//".equals(str)) {
+                    style  = IWemConstants.EM;
+                } else if ("##".equals(str)) {
+                    style = IWemConstants.MONO;
+                }
                 fContext.onFormat(style);
             }
             |

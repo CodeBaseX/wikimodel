@@ -31,6 +31,33 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         return new CommonWikiParser();
     }
 
+    public void testMacro() throws WikiParserException {
+        test("{toto}");
+        test("{toto}a{/toto}");
+        test("before{toto}macro{/toto}after");
+        test("before{toto a=b c=d}toto macro tata {/toto}after");
+        test("before{toto a=b c=d}toto {x qsdk} macro {sd} tata {/toto}after");
+
+        test("{toto}a{toto}");
+
+        // Not macros
+        test("{ toto a=b c=d}");
+
+        // Macro and its usage
+        test("This is a macro: {toto x:a=b x:c=d}\n"
+            + "<table>\n"
+            + "#foreach ($x in $table)\n"
+            + "  <tr>hello, $x</tr>\n"
+            + "#end\n"
+            + "</table>\n"
+            + "{/toto}\n\n"
+            + "And this is a usage of this macro: $toto(a=x b=y)");
+
+        test("!!Header:: Cell with a macro: \n"
+            + " {code}this is a code{/code} \n"
+            + " this is afer the code...");
+    }
+
     public void test() throws WikiParserException {
         test("----------------------------------------------\r\n"
             + "= Example1 =\r\n"

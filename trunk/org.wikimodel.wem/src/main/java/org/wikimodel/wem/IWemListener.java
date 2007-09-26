@@ -93,6 +93,8 @@ public interface IWemListener {
 
     void onLineBreak();
 
+    void onMacro(String macroName, WikiParameters params, String content);
+
     void onNewLine();
 
     void onReference(String ref);

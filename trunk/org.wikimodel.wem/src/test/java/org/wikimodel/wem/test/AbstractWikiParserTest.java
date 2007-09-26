@@ -16,8 +16,10 @@ import junit.framework.TestCase;
 
 import org.wikimodel.wem.IWemListener;
 import org.wikimodel.wem.IWikiParser;
+import org.wikimodel.wem.IWikiPrinter;
 import org.wikimodel.wem.PrintListener;
 import org.wikimodel.wem.WikiParserException;
+import org.wikimodel.wem.WikiPrinter;
 
 /**
  * @author MikhailKotelnikov
@@ -67,15 +69,52 @@ public abstract class AbstractWikiParserTest extends TestCase {
         println("==================================================");
         StringReader reader = new StringReader(string);
         IWikiParser parser = newWikiParser();
-        StringBuffer buf = new StringBuffer();
-        IWemListener listener = new PrintListener(buf);
+        final StringBuffer buf = new StringBuffer();
+        IWemListener listener = newParserListener(buf);
         parser.parse(reader, listener);
         String test = buf.toString();
         println(test);
+        checkResults(control, test);
+    }
+
+    /**
+     * @param control
+     * @param test
+     */
+    protected void checkResults(String control, String test) {
         if (control != null) {
             control = "<div class='doc'>\n" + control + "\n</div>\n";
             assertEquals(control, test);
         }
+    }
+
+    /**
+     * @param buf
+     * @return
+     */
+    protected IWemListener newParserListener(final StringBuffer buf) {
+        IWikiPrinter printer = newPrinter(buf);
+        IWemListener listener = new PrintListener(printer);
+        return listener;
+    }
+
+    /**
+     * @param buf
+     * @return
+     */
+    protected IWikiPrinter newPrinter(final StringBuffer buf) {
+        IWikiPrinter printer = new IWikiPrinter() {
+
+            public void print(String str) {
+                buf.append(str);
+            }
+
+            public void println(String str) {
+                buf.append(str);
+                buf.append("\n");
+            }
+        };
+        return printer;
     }
 
 }
