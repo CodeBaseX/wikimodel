@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This is a list of wiki parameters associated with a page element.
+ * This is a default implementation of the {@link IWikiParams} interface.
  * 
  * @author kotelnikov
  */
@@ -77,8 +77,8 @@ public class WikiParameters {
      */
     protected static int removeSpaces(char[] array, int pos, StringBuffer buf) {
         buf.delete(0, buf.length());
-        for (; pos < array.length
-            && (array[pos] == '=' || Character.isSpaceChar(array[pos])); pos++) {
+        for (; pos < array.length &&
+            (array[pos] == '=' || Character.isSpaceChar(array[pos])); pos++) {
             if (array[pos] == '=')
                 buf.append(array[pos]);
         }
@@ -129,36 +129,19 @@ public class WikiParameters {
     }
 
     /**
+     * @param list
+     */
+    public WikiParameters(List<WikiParameter> list) {
+        super();
+        fList.addAll(list);
+    }
+
+    /**
      * @param str
      */
     public WikiParameters(String str) {
         super();
         splitToPairs(str, fList);
-    }
-
-    /**
-     * A copy constructor.
-     * 
-     * @param params the parameters to copy
-     */
-    WikiParameters(WikiParameters params) {
-        fList.addAll(params.fList);
-    }
-
-    /**
-     * Creates and returns a new clone of this parameter object containing the
-     * specified key/value pair.
-     * 
-     * @param name the name of a new parameter to add
-     * @param value the value of a new parameter to add
-     * @return a new clone of this parameter object containing the specified
-     *         key/value pair
-     */
-    public WikiParameters addParameter(String name, String value) {
-        WikiParameter param = new WikiParameter(name, value);
-        WikiParameters clone = getClone();
-        clone.fList.add(param);
-        return clone;
     }
 
     /**
@@ -172,11 +155,6 @@ public class WikiParameters {
             return false;
         WikiParameters params = (WikiParameters) obj;
         return fList.equals(params.fList);
-    }
-
-    private WikiParameters getClone() {
-        WikiParameters clone = new WikiParameters(this);
-        return clone;
     }
 
     /**
@@ -236,33 +214,32 @@ public class WikiParameters {
     }
 
     /**
-     * Returns the value from the specified position
-     * 
-     * @param pos the position of the parameter
-     * @return the value from the specified position
-     */
-    public String getValue(int pos) {
-        WikiParameter parameter = getParameter(pos);
-        return (parameter != null) ? parameter.getValue() : null;
-    }
-
-    /**
-     * Returns the value corresponding to the specified key
-     * 
-     * @param key the key of the parameter
-     * @return the value corresponding to the specified key
-     */
-    public String getValue(String key) {
-        WikiParameter parameter = getParameter(key);
-        return (parameter != null) ? parameter.getValue() : null;
-    }
-
-    /**
      * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
         return fList.hashCode();
+    }
+
+    /**
+     * @param key the key of the parameter to remove
+     * @return a new copy of parameter list without the specified parameter; if
+     *         this parameter list does not contain such a key then this method
+     *         returns a reference to this object
+     */
+    public WikiParameters remove(String key) {
+        int pos = 0;
+        for (WikiParameter param : fList) {
+            if (key.equals(param.getKey()))
+                break;
+            pos++;
+        }
+        WikiParameters result = this;
+        if (pos < fList.size()) {
+            result = new WikiParameters(this.fList);
+            result.fList.remove(pos);
+        }
+        return result;
     }
 
     /**
