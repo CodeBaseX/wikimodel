@@ -77,8 +77,8 @@ public class WikiParameters {
      */
     protected static int removeSpaces(char[] array, int pos, StringBuffer buf) {
         buf.delete(0, buf.length());
-        for (; pos < array.length &&
-            (array[pos] == '=' || Character.isSpaceChar(array[pos])); pos++) {
+        for (; pos < array.length
+            && (array[pos] == '=' || Character.isSpaceChar(array[pos])); pos++) {
             if (array[pos] == '=')
                 buf.append(array[pos]);
         }
@@ -142,6 +142,21 @@ public class WikiParameters {
     public WikiParameters(String str) {
         super();
         splitToPairs(str, fList);
+    }
+
+    /**
+     * Creates a new copy of this parameter object with new specified key/value
+     * pair.
+     * 
+     * @param key the parameter name
+     * @param value the value of the parameter
+     * @return a new copy of parameters object with the given key/value pair
+     */
+    public WikiParameters addParameter(String key, String value) {
+        WikiParameters result = new WikiParameters();
+        result.fList.addAll(fList);
+        result.fList.add(new WikiParameter(key, value));
+        return result;
     }
 
     /**
@@ -239,6 +254,17 @@ public class WikiParameters {
             result = new WikiParameters(this.fList);
             result.fList.remove(pos);
         }
+        return result;
+    }
+
+    /**
+     * Returns a new list containing all parameters defined in this object.
+     * 
+     * @return a list of all parameters
+     */
+    public List<WikiParameter> toList() {
+        List<WikiParameter> result = new ArrayList<WikiParameter>();
+        result.addAll(fList);
         return result;
     }
 
