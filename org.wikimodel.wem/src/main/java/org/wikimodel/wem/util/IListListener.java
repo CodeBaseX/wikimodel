@@ -17,10 +17,10 @@ public interface IListListener {
 
     /**
      * Begins of a new row
-     * 
+     * @param treeType TODO
      * @param rowType the type of the row
      */
-    void beginRow(char rowType);
+    void beginRow(char treeType, char rowType);
 
     /**
      * Notifies about a new tree of the given type
@@ -31,10 +31,10 @@ public interface IListListener {
 
     /**
      * Ends of the row.
-     * 
+     * @param treeType TODO
      * @param rowType the type of the row
      */
-    void endRow(char rowType);
+    void endRow(char treeType, char rowType);
 
     /**
      * Ends of the tree of the given type

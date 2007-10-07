@@ -67,6 +67,11 @@ TOKEN_MGR_DECLS: {
     int tableDepth = 0; 
     int verbatimBlockDepth = 0;
     String macroName = "";
+    int macroDepth = 0;
+    void initMacro(StringBuffer buf) {
+        macroName = getMacroName(buf);
+        macroDepth = 1;
+    }
     String getMacroName(StringBuffer buf) {
         String str = buf.toString();
         str = str.substring(1, str.length() - 1);
@@ -94,15 +99,27 @@ TOKEN_MGR_DECLS: {
 
 <MACRO_CONTEXT> TOKEN:
 {
-      <INTERNAL_MACRO_START: <MACRO_START> > : MACRO_CONTEXT
-    | <INTERNAL_MACRO_END: <MACRO_END> > {
-            String name = image.toString(); 
-            if (name.startsWith("{/" + macroName)) {
-                SwitchTo(DEFAULT);
-            } else {
-                SwitchTo(MACRO_CONTEXT);
-            }
+    <INTERNAL_MACRO_START: <MACRO_START> > {
+        {
+            String name = getMacroName(image); 
+            if (name.equals(macroName)) {
+                macroDepth++;
+            }      
         }
+    } : MACRO_CONTEXT
+    | <INTERNAL_MACRO_END: <MACRO_END> > {
+        {
+            String name = getMacroName(image); 
+            int context = MACRO_CONTEXT;
+            if (name.startsWith("/" + macroName)) {
+                macroDepth--;
+                if (macroDepth == 0) {
+                    context = DEFAULT;
+                }
+            }
+            SwitchTo(context);
+        }
+    }
     | <INTERNAL_MACRO_CONTENT: <MACRO_CONTENT> > : MACRO_CONTEXT
 }
 
@@ -142,7 +159,7 @@ TOKEN_MGR_DECLS: {
     | <#REFERENCE:  ( "[" ( "\\" ~[] | ~["]"] )* "]" | "(=" ( "\\" ~[] | ~["="] | "=" ~[")"] )* "=)") >
     | <#HORLINE: "---" ("-")+ >
     | <#CELL: (<SPACE>)* ( "||" | "|" | "::" | "!!" ) (<PARAMS>)? (<SPACE>)* >
-    | <#QUOT_BLOCK: "Q" (<PARAMS>)? ":" >
+    | <#QUOT_BLOCK: ("Q" | "q") (<PARAMS>)? ":" >
     | <#QUOT_LINE: (">")+ >
     | <#FORMAT_SYMBOL : ( 
           "*"  // strong
@@ -240,7 +257,7 @@ TOKEN_MGR_DECLS: {
     | <I_LIST_ITEM: (<NEW_LINE>)? <LIST_ITEM> > : DEFAULT
     | <I_VERBATIM_INLINE : <VERBATIM_INLINE> > : DEFAULT
     | <I_VERBATIM_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
-    | <I_MACRO_START: <MACRO_START> > { macroName = getMacroName(image); } : MACRO_CONTEXT
+    | <I_MACRO_START: <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
     | <I_QUOT_BLOCK: (<NEW_LINE>)? <QUOT_BLOCK> > : DEFAULT
     | <I_QUOT_LINE: (<NEW_LINE>)? <QUOT_LINE> > : DEFAULT
     | <I_INFO: (<NEW_LINE>)? <INFO> > : DEFAULT
@@ -277,7 +294,7 @@ TOKEN_MGR_DECLS: {
     | <D_LIST_ITEM: <NEW_LINE> <LIST_ITEM> > : DEFAULT
     | <D_VERBATIM_INLINE : <VERBATIM_INLINE> > : DEFAULT
     | <D_VERBATIM_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
-    | <D_MACRO_START: <MACRO_START> > { macroName = getMacroName(image); } : MACRO_CONTEXT
+    | <D_MACRO_START: <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
     | <D_QUOT_BLOCK: <NEW_LINE> <QUOT_BLOCK> > : DEFAULT
     | <D_QUOT_LINE: <NEW_LINE> <QUOT_LINE> > : DEFAULT
     | <D_INFO: <NEW_LINE> <INFO> > : DEFAULT
@@ -650,7 +667,6 @@ void macroBlock():
             }
         }
     )*
-    (LOOKAHEAD(2) ( t = getINTERNAL_MACRO_END() | <EOF>) )? 
     {
         str = buf.toString();
         params = new WikiParameters(paramStr);
