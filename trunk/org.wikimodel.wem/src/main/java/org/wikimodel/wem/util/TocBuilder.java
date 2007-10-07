@@ -35,11 +35,17 @@ public class TocBuilder {
 
     /**
      * @param listener
+     */
+    public TocBuilder(ITocListener listener) {
+        this(listener, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+    }
+
+    /**
+     * @param listener
      * @param totalDepth
      */
     public TocBuilder(ITocListener listener, int totalDepth) {
         this(listener, Integer.MAX_VALUE, Integer.MAX_VALUE, totalDepth);
-
     }
 
     /**

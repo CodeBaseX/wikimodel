@@ -10,6 +10,11 @@
  *******************************************************************************/
 package org.wikimodel.wem.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.wikimodel.wem.util.AbstractListBuilder.IPos;
+
 /**
  * This is an internal utility class used as a context to keep in memory the
  * current state of parsed trees (list items).
@@ -18,67 +23,67 @@ package org.wikimodel.wem.util;
  */
 public class ListBuilder {
 
-    protected static class Node {
+    static class CharPos implements AbstractListBuilder.IPos {
 
-        protected Node fParent;
+        private int fPos;
 
-        protected char fRowType;
+        private char fRowChar;
 
-        protected int fShift;
+        private char fTreeChar;
 
-        protected char fTreeType;
-
-        /**
-         * @param shift
-         * @param treeType
-         * @param rowType
-         */
-        protected Node(int shift, char treeType, char rowType) {
-            fShift = shift;
-            fTreeType = treeType;
-            fRowType = rowType;
+        public CharPos(char treeChar, char rowChar, int pos) {
+            fPos = pos;
+            fTreeChar = treeChar;
+            fRowChar = rowChar;
         }
 
-        /**
-         * @return the depth of this element
-         */
-        public int getDepth() {
-            int depth = 0;
-            Node node = this;
-            while (node != null) {
-                node = node.fParent;
-                depth++;
-            }
-            return depth;
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this)
+                return true;
+            if (!(obj instanceof CharPos))
+                return false;
+            CharPos pos = (CharPos) obj;
+            return equalsData(pos) && pos.fPos == fPos;
         }
 
-        /**
-         * @return the type of the row
-         */
-        public char getType() {
-            return fTreeType;
+        public boolean equalsData(IPos pos) {
+            return ((CharPos) pos).fTreeChar == fTreeChar;
         }
 
-        /**
-         * @see java.lang.Object#toString()
-         */
-        public String toString() {
-            StringBuffer buf = new StringBuffer();
-            Node node = this;
-            while (node != null) {
-                buf.append(node.fTreeType);
-                node = node.fParent;
-            }
-            return buf.toString();
+        public int getPos() {
+            return fPos;
         }
+
     }
 
-    private IListListener fListener;
+    AbstractListBuilder fBuilder = new AbstractListBuilder() {
 
-    /**
-     *
-     */
-    public Node fNode;
+        @Override
+        protected void onBeginRow(IPos n) {
+            CharPos pos = (CharPos) n;
+            fListener.beginRow(pos.fTreeChar, pos.fRowChar);
+        }
+
+        @Override
+        protected void onBeginTree(IPos n) {
+            fListener.beginTree(((CharPos) n).fTreeChar);
+        }
+
+        @Override
+        protected void onEndRow(IPos n) {
+            CharPos pos = (CharPos) n;
+            fListener.endRow(pos.fTreeChar, pos.fRowChar);
+        }
+
+        @Override
+        protected void onEndTree(IPos n) {
+            fListener.endTree(((CharPos) n).fTreeChar);
+        }
+
+    };
+
+    private IListListener fListener;
 
     /**
      * @param listener
@@ -93,74 +98,25 @@ public class ListBuilder {
      * @param rowParams the parameters of the row
      */
     public void alignContext(String row) {
-        if (row == null || row.length() == 0) {
-            removeTail(fNode, true);
-            fNode = null;
-            return;
-        }
-        char[] array = row.toCharArray();
-        int i = 0;
-        Node current = fNode;
-        Node prev = null;
-        Node removed = null;
-        boolean newTree = false;
-        char rowType = '\0';
-        for (i = trimEol(array, i); i < array.length; i++) {
-            i = getNextCharPos(array, i);
-            if (i >= array.length)
-                break;
-            removed = null;
-            while (current != null && current.fShift < i) {
-                prev = current;
-                current = current.fParent;
+        List<IPos> list = getCharPositions(row);
+        fBuilder.doAlign(list);
+    }
+
+    private List<IPos> getCharPositions(String s) {
+        List<IPos> list = new ArrayList<IPos>();
+        char[] array = s.toCharArray();
+        int pos = 0;
+        for (int i = 0; i < array.length; i++) {
+            char ch = array[i];
+            if (ch == '\r' || ch == '\n')
+                continue;
+            if (!Character.isSpaceChar(ch)) {
+                char treeChar = getTreeType(ch);
+                list.add(new CharPos(treeChar, ch, pos));
             }
-            rowType = array[i];
-            char treeType = getTreeType(rowType);
-            if (current == null || current.fTreeType != treeType) {
-                newTree = true;
-                current = newNode(i, treeType, rowType);
-                if (prev == null) {
-                    removeTail(fNode, true);
-                    fNode = current;
-                } else {
-                    removeTail(prev, false);
-                    prev.fParent = current;
-                }
-                fListener.beginTree(treeType);
-                current.fRowType = rowType;
-                fListener.beginRow(current.fRowType);
-            } else {
-                removed = current;
-                current.fShift = i;
-            }
+            pos++;
         }
-        removeTail(removed, false);
-        if (!newTree) {
-            fListener.endRow(current.fRowType);
-            current.fRowType = rowType;
-            fListener.beginRow(current.fRowType);
-        }
-    }
-
-    /**
-     * @return the type of the current topmost row
-     */
-    public char getCurrentRowType() {
-        return fNode != null ? fNode.fTreeType : ' ';
-    }
-
-    /**
-     * @return the depth of this context
-     */
-    public int getDepth() {
-        return fNode != null ? fNode.getDepth() : 0;
-    }
-
-    private int getNextCharPos(char[] array, int i) {
-        for (; i < array.length && array[i] == ' '; i++) {
-            //
-        }
-        return i;
+        return list;
     }
 
     /**
@@ -169,41 +125,6 @@ public class ListBuilder {
      */
     protected char getTreeType(char rowType) {
         return rowType;
-    }
-
-    /**
-     * @param shift the current shift
-     * @param treeType
-     * @param rowType
-     * @return a new row info object
-     */
-    protected Node newNode(int shift, char treeType, char rowType) {
-        return new Node(shift, treeType, rowType);
-    }
-
-    private void removeTail(Node row, boolean endRow) {
-        if (row == null)
-            return;
-        removeTail(row.fParent, true);
-        if (endRow) {
-            fListener.endRow(row.fRowType);
-            fListener.endTree(row.fTreeType);
-        }
-        row.fParent = null;
-    }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        return fNode != null ? fNode.toString() : "";
-    }
-
-    private int trimEol(char[] array, int i) {
-        for (i = 0; i < array.length && (array[i] == '\n' || array[i] == '\r'); i++) {
-            //
-        }
-        return i;
     }
 
 }

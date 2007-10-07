@@ -32,6 +32,8 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
     }
 
     public void testMacro() throws WikiParserException {
+        test("{toto}a{toto}b{/toto}c{/toto}");
+
         test("{toto}");
         test("{toto}a{/toto}");
         test("before{toto}macro{/toto}after");

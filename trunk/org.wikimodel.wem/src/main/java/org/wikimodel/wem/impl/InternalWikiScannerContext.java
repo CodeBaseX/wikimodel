@@ -124,7 +124,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
                 fListParams = WikiParameters.EMPTY;
             IListListener listener = new IListListener() {
 
-                public void beginRow(char rowType) {
+                public void beginRow(char treeType, char rowType) {
                     if (rowType == ':') {
                         fBlockType = IBlockTypes.LIST_DL_DD;
                         fListener.beginDefinitionDescription();
@@ -155,7 +155,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
                     }
                 }
 
-                public void endRow(char rowType) {
+                public void endRow(char treeType, char rowType) {
                     closeFormat();
                     if (rowType == ':') {
                         fListener.endDefinitionDescription();
@@ -253,7 +253,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
                 fQuotParams = WikiParameters.EMPTY;
             IListListener listener = new IListListener() {
 
-                public void beginRow(char rowType) {
+                public void beginRow(char treeType, char rowType) {
                     fListener.beginQuotationLine();
                 }
 
@@ -261,7 +261,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
                     fListener.beginQuotation(fQuotParams);
                 }
 
-                public void endRow(char rowType) {
+                public void endRow(char treeType, char rowType) {
                     fListener.endQuotationLine();
                 }
 

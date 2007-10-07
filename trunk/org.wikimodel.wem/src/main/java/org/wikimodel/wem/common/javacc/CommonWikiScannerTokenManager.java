@@ -20,6 +20,11 @@ public class CommonWikiScannerTokenManager implements CommonWikiScannerConstants
     int tableDepth = 0;
     int verbatimBlockDepth = 0;
     String macroName = "";
+    int macroDepth = 0;
+    void initMacro(StringBuffer buf) {
+        macroName = getMacroName(buf);
+        macroDepth = 1;
+    }
     String getMacroName(StringBuffer buf) {
         String str = buf.toString();
         str = str.substring(1, str.length() - 1);
@@ -2326,7 +2331,7 @@ private final int jjMoveNfa_2(int startState, int curPos)
                      jjstateSet[jjnewStateCnt++] = 208;
                   break;
                case 243:
-                  if (curChar == 81)
+                  if ((0x2000000020000L & l) != 0L)
                      jjCheckNAddTwoStates(252, 250);
                   break;
                case 244:
@@ -4761,7 +4766,9 @@ private final int jjMoveNfa_3(int startState, int curPos)
                      if (kind > 90)
                         kind = 90;
                   }
-                  if (curChar == 124)
+                  if ((0x2000000020000L & l) != 0L)
+                     jjCheckNAddTwoStates(24, 22);
+                  else if (curChar == 124)
                      jjCheckNAddTwoStates(116, 133);
                   else if (curChar == 92)
                      jjAddStates(883, 886);
@@ -4771,8 +4778,6 @@ private final int jjMoveNfa_3(int startState, int curPos)
                      jjstateSet[jjnewStateCnt++] = 37;
                   else if (curChar == 91)
                      jjCheckNAddStates(511, 513);
-                  else if (curChar == 81)
-                     jjCheckNAddTwoStates(24, 22);
                   else if (curChar == 123)
                      jjCheckNAdd(12);
                   else if (curChar == 96)
@@ -4810,7 +4815,7 @@ private final int jjMoveNfa_3(int startState, int curPos)
                      kind = 72;
                   break;
                case 15:
-                  if (curChar == 81)
+                  if ((0x2000000020000L & l) != 0L)
                      jjCheckNAddTwoStates(24, 22);
                   break;
                case 16:
@@ -6301,16 +6306,32 @@ void TokenLexicalActions(Token matchedToken)
                 SwitchTo(VERBATIM_CONTEXT);
             }
          break;
+      case 4 :
+        if (image == null)
+            image = new StringBuffer();
+            image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
+        {
+            String name = getMacroName(image);
+            if (name.equals(macroName)) {
+                macroDepth++;
+            }
+        }
+         break;
       case 5 :
         if (image == null)
             image = new StringBuffer();
             image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
-            String name = image.toString();
-            if (name.startsWith("{/" + macroName)) {
-                SwitchTo(DEFAULT);
-            } else {
-                SwitchTo(MACRO_CONTEXT);
+        {
+            String name = getMacroName(image);
+            int context = MACRO_CONTEXT;
+            if (name.startsWith("/" + macroName)) {
+                macroDepth--;
+                if (macroDepth == 0) {
+                    context = DEFAULT;
+                }
             }
+            SwitchTo(context);
+        }
          break;
       case 71 :
         if (image == null)
@@ -6322,7 +6343,7 @@ void TokenLexicalActions(Token matchedToken)
         if (image == null)
             image = new StringBuffer();
             image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
-                                        macroName = getMacroName(image);
+                                        initMacro(image);
          break;
       case 100 :
         if (image == null)
@@ -6334,7 +6355,7 @@ void TokenLexicalActions(Token matchedToken)
         if (image == null)
             image = new StringBuffer();
             image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
-                                        macroName = getMacroName(image);
+                                        initMacro(image);
          break;
       default : 
          break;
