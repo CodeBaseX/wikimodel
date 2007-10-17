@@ -93,6 +93,10 @@ public abstract class AbstractListBuilder {
         return pos < 0 || pos >= list.size() ? null : list.get(pos);
     }
 
+    public IPos getPeek() {
+        return !fList.isEmpty() ? fList.get(fList.size() - 1) : null;
+    }
+
     protected abstract void onBeginRow(IPos n);
 
     protected abstract void onBeginTree(IPos n);
