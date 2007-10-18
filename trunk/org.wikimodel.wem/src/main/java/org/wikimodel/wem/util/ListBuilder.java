@@ -13,7 +13,7 @@ package org.wikimodel.wem.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.wikimodel.wem.util.AbstractListBuilder.IPos;
+import org.wikimodel.wem.util.TreeBuilder.IPos;
 
 /**
  * This is an internal utility class used as a context to keep in memory the
@@ -23,7 +23,7 @@ import org.wikimodel.wem.util.AbstractListBuilder.IPos;
  */
 public class ListBuilder {
 
-    static class CharPos implements AbstractListBuilder.IPos {
+    static class CharPos implements TreeBuilder.IPos {
 
         private int fPos;
 
@@ -57,31 +57,28 @@ public class ListBuilder {
 
     }
 
-    AbstractListBuilder fBuilder = new AbstractListBuilder() {
+    TreeBuilder fBuilder = new TreeBuilder(
+        new TreeBuilder.ITreeListener() {
 
-        @Override
-        protected void onBeginRow(IPos n) {
-            CharPos pos = (CharPos) n;
-            fListener.beginRow(pos.fTreeChar, pos.fRowChar);
-        }
+            public void onBeginRow(IPos n) {
+                CharPos pos = (CharPos) n;
+                fListener.beginRow(pos.fTreeChar, pos.fRowChar);
+            }
 
-        @Override
-        protected void onBeginTree(IPos n) {
-            fListener.beginTree(((CharPos) n).fTreeChar);
-        }
+            public void onBeginTree(IPos n) {
+                fListener.beginTree(((CharPos) n).fTreeChar);
+            }
 
-        @Override
-        protected void onEndRow(IPos n) {
-            CharPos pos = (CharPos) n;
-            fListener.endRow(pos.fTreeChar, pos.fRowChar);
-        }
+            public void onEndRow(IPos n) {
+                CharPos pos = (CharPos) n;
+                fListener.endRow(pos.fTreeChar, pos.fRowChar);
+            }
 
-        @Override
-        protected void onEndTree(IPos n) {
-            fListener.endTree(((CharPos) n).fTreeChar);
-        }
+            public void onEndTree(IPos n) {
+                fListener.endTree(((CharPos) n).fTreeChar);
+            }
 
-    };
+        });
 
     private IListListener fListener;
 
@@ -99,7 +96,7 @@ public class ListBuilder {
      */
     public void alignContext(String row) {
         List<IPos> list = getCharPositions(row);
-        fBuilder.doAlign(list);
+        fBuilder.align(list);
     }
 
     private List<IPos> getCharPositions(String s) {

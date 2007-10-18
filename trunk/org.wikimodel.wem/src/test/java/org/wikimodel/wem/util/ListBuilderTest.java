@@ -5,14 +5,14 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.wikimodel.wem.util.AbstractListBuilder.IPos;
+import org.wikimodel.wem.util.TreeBuilder.IPos;
 
 /**
  * @author MikhailKotelnikov
  */
 public class ListBuilderTest extends TestCase {
 
-    static class CharPos implements AbstractListBuilder.IPos {
+    static class CharPos implements TreeBuilder.IPos {
 
         private char fCh;
 
@@ -186,51 +186,47 @@ public class ListBuilderTest extends TestCase {
 
     private void testTwo(String string, String control) {
         final StringBuffer buf = new StringBuffer();
-        AbstractListBuilder builder = new AbstractListBuilder() {
+        TreeBuilder builder = new TreeBuilder(
+            new TreeBuilder.ITreeListener() {
+                private void closeTag(char ch) {
+                    buf.append("</").append(ch).append(">");
+                }
 
-            private void closeTag(char ch) {
-                buf.append("</").append(ch).append(">");
-            }
+                public void onBeginRow(IPos n) {
+                    CharPos p = (CharPos) n;
+                    char ch = p.fCh;
+                    openTag(ch);
+                }
 
-            @Override
-            protected void onBeginRow(IPos n) {
-                CharPos p = (CharPos) n;
-                char ch = p.fCh;
-                openTag(ch);
-            }
+                public void onBeginTree(IPos n) {
+                    CharPos p = (CharPos) n;
+                    char ch = p.fCh;
+                    openTag(Character.toUpperCase(ch));
+                }
 
-            @Override
-            protected void onBeginTree(IPos n) {
-                CharPos p = (CharPos) n;
-                char ch = p.fCh;
-                openTag(Character.toUpperCase(ch));
-            }
+                public void onEndRow(IPos n) {
+                    CharPos p = (CharPos) n;
+                    char ch = p.fCh;
+                    closeTag(ch);
+                }
 
-            @Override
-            protected void onEndRow(IPos n) {
-                CharPos p = (CharPos) n;
-                char ch = p.fCh;
-                closeTag(ch);
-            }
+                public void onEndTree(IPos n) {
+                    CharPos p = (CharPos) n;
+                    char ch = p.fCh;
+                    closeTag(Character.toUpperCase(ch));
+                }
 
-            @Override
-            protected void onEndTree(IPos n) {
-                CharPos p = (CharPos) n;
-                char ch = p.fCh;
-                closeTag(Character.toUpperCase(ch));
-            }
-
-            private void openTag(char str) {
-                buf.append("<").append(str).append(">");
-            }
-        };
+                private void openTag(char str) {
+                    buf.append("<").append(str).append(">");
+                }
+            });
         String[] lines = string.split("\n");
         for (String s : lines) {
             List<IPos> row = getCharPositions(s);
-            builder.doAlign(row);
+            builder.align(row);
         }
         List<IPos> empty = new ArrayList<IPos>();
-        builder.doAlign(empty);
+        builder.align(empty);
         assertEquals(control, buf.toString());
     }
 
