@@ -20,14 +20,14 @@ public class WikiScannerContext implements IWikiScannerContext {
 
     private IWemListener fListener;
 
-    private Stack<InternalWikiScannerContext> fStack = new Stack<InternalWikiScannerContext>();
+    private Stack<IWikiScannerContext> fStack = new Stack<IWikiScannerContext>();
 
     public WikiScannerContext(IWemListener listener) {
         fListener = listener;
     }
 
     public void beginDocument() {
-        InternalWikiScannerContext context = getContext();
+        InternalWikiScannerContext context = (InternalWikiScannerContext) getContext();
         if (context != null) {
             context.checkBlockContainer();
             context.closeFormat();
@@ -101,21 +101,8 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().beginTableCell(headCell);
     }
 
-    public void beginTableExplicit() {
-        getContext().beginTableExplicit();
-    }
-
     public void beginTableRow(boolean headCell) {
         getContext().beginTableRow(headCell);
-    }
-
-    /**
-     * @see org.wikimodel.wem.impl.WikiScannerContext#beginTableRow(boolean,
-     *      org.wikimodel.wem.WikiParameters)
-     */
-
-    public void beginTableRow(boolean headCell, WikiParameters params) {
-        getContext().beginTableRow(headCell, params);
     }
 
     public void beginTableRow(
@@ -190,7 +177,7 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().endTableRow();
     }
 
-    public InternalWikiScannerContext getContext() {
+    public IWikiScannerContext getContext() {
         if (!fStack.isEmpty())
             return fStack.peek();
         InternalWikiScannerContext context = new InternalWikiScannerContext(
@@ -312,17 +299,12 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().onTableCell(head, cellParams);
     }
 
-    public void onTableRow(boolean header) {
-        getContext().onTableRow(header);
-    }
-
     /**
-     * @see org.wikimodel.wem.impl.WikiScannerContext#onTableRow(boolean,
-     *      org.wikimodel.wem.WikiParameters)
+     * @see org.wikimodel.wem.impl.WikiScannerContext#onTableRow(org.wikimodel.wem.WikiParameters)
      */
 
-    public void onTableRow(boolean header, WikiParameters params) {
-        getContext().onTableRow(header, params);
+    public void onTableRow(WikiParameters params) {
+        getContext().onTableRow(params);
     }
 
     /**

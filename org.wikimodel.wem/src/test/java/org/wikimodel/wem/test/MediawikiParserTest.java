@@ -34,6 +34,40 @@ public class MediawikiParserTest extends AbstractWikiParserTest {
     /**
      * @throws WikiParserException
      */
+    public void testTables() throws WikiParserException {
+        test("{|\n|table\n|}");
+        test("{|\n"
+            + "| Cell 1.1 || Cell 1.2 \n"
+            + "|-\n"
+            + "| Cell 2.1 || Cell 2.2 \n"
+            + "|-\n"
+            + "| Cell 3.1 || Cell 3.2 \n"
+            + "|}");
+        test("before\n"
+            + "{|\n"
+            + "| Cell 1.1 || Cell 1.2 \n"
+            + "|-\n"
+            + "| Cell 2.1 || Cell 2.2 \n"
+            + "|-\n"
+            + "| Cell 3.1 || Cell 3.2 \n"
+            + "|}\n"
+            + "after");
+
+        // Bad-formed but recognized tables (bad-formed from the point of view
+        // of MediaWiki)
+        test("|cell\nthe same cell || the next cell");
+        test("!Head\nthe same head !! the next head\n"
+            + "|-\n"
+            + "| Cell || The next cell\n"
+            + "|- style='background-color: #eeeeee'\n"
+            + "|The third row");
+
+        test("before\n{|\n|table\n{|\nembedded\n|}\n|} after");
+    }
+
+    /**
+     * @throws WikiParserException
+     */
     public void testEscape() throws WikiParserException {
         test("[a reference]");
         test("[[not a reference]");
@@ -213,40 +247,6 @@ public class MediawikiParserTest extends AbstractWikiParserTest {
      */
     public void testSpecialSymbols() throws WikiParserException {
         test(":)");
-    }
-
-    /**
-     * @throws WikiParserException
-     */
-    public void testTables() throws WikiParserException {
-        test("{|\n|table\n|}");
-        test("{|\n"
-            + "| Cell 1.1 || Cell 1.2 \n"
-            + "|-\n"
-            + "| Cell 2.1 || Cell 2.2 \n"
-            + "|-\n"
-            + "| Cell 3.1 || Cell 3.2 \n"
-            + "|}");
-        test("before\n"
-            + "{|\n"
-            + "| Cell 1.1 || Cell 1.2 \n"
-            + "|-\n"
-            + "| Cell 2.1 || Cell 2.2 \n"
-            + "|-\n"
-            + "| Cell 3.1 || Cell 3.2 \n"
-            + "|}\n"
-            + "after");
-
-        // Bad-formed but recognized tables (bad-formed from the point of view
-        // of MediaWiki)
-        test("|cell\nthe same cell || the next cell");
-        test("!Head\nthe same head !! the next head\n"
-            + "|-\n"
-            + "| Cell || The next cell\n"
-            + "|- style='background-color: #eeeeee'\n"
-            + "|The third row");
-
-        test("before\n{|\n|table\n{|\nembedded\n|}\n|} after");
     }
 
     /**

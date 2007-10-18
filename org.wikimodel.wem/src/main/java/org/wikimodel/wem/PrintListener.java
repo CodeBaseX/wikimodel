@@ -74,7 +74,7 @@ public class PrintListener extends PrintInlineListener {
     }
 
     public void beginTable(WikiParameters params) {
-        println("<table" + params + ">");
+        println("<table" + params + "><tbody>");
     }
 
     public void beginTableCell(boolean tableHead, WikiParameters params) {
@@ -138,7 +138,7 @@ public class PrintListener extends PrintInlineListener {
     }
 
     public void endTable(WikiParameters params) {
-        println("</table>");
+        println("</tbody></table>");
     }
 
     public void endTableCell(boolean tableHead, WikiParameters params) {

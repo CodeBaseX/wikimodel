@@ -31,41 +31,26 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         return new CommonWikiParser();
     }
 
-    public void testMacro() throws WikiParserException {
-        test("{toto}a{toto}b{/toto}c{/toto}");
-
-        test("{toto}");
-        test("{toto}a{/toto}");
-        test("before{toto}macro{/toto}after");
-        test("before{toto a=b c=d}toto macro tata {/toto}after");
-        test("before{toto a=b c=d}toto {x qsdk} macro {sd} tata {/toto}after");
-
-        test("{toto}a{toto}");
-
-        // Not macros
-        test("{ toto a=b c=d}");
-
-        // Macro and its usage
-        test("This is a macro: {toto x:a=b x:c=d}\n"
-            + "<table>\n"
-            + "#foreach ($x in $table)\n"
-            + "  <tr>hello, $x</tr>\n"
-            + "#end\n"
-            + "</table>\n"
-            + "{/toto}\n\n"
-            + "And this is a usage of this macro: $toto(a=x b=y)");
-
-        test("!!Header:: Cell with a macro: \n"
-            + " {code}this is a code{/code} \n"
-            + " this is afer the code...");
-        test(""
-            + "* item one\n"
-            + "* item two\n"
-            + "  * subitem with a macro:\n"
-            + "  {code} this is a code{/code} \n"
-            + "  the same item (continuation)\n"
-            + "  * subitem two\n"
-            + "* item three");
+    /**
+     * @throws WikiParserException
+     */
+    public void testInfo() throws WikiParserException {
+        test("/i\\ item {{{formatted block}}} {macro}123{/macro} after");
+        test("before\n"
+            + "/i\\Information block:\n"
+            + "{{{pre\n"
+            + "  formatted\n"
+            + " block}}} sdlkgj\n"
+            + "qsdg\n\n"
+            + "after");
+        test("/!\\");
+        test("/i\\info");
+        test("/i\\Information block:\n"
+            + "first line\n"
+            + "second line\n"
+            + "third  line");
+        test("{{a=b}}\n/!\\");
+        test("{{a=b}}\n/i\\info");
     }
 
     public void test() throws WikiParserException {
@@ -273,20 +258,6 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
     /**
      * @throws WikiParserException
      */
-    public void testInfo() throws WikiParserException {
-        test("/!\\");
-        test("/i\\info");
-        test("/i\\Information block:\n"
-            + "first line\n"
-            + "second line\n"
-            + "third  line");
-        test("{{a=b}}\n/!\\");
-        test("{{a=b}}\n/i\\info");
-    }
-
-    /**
-     * @throws WikiParserException
-     */
     public void testLineBreak() throws WikiParserException {
         test("abc\\\ndef");
         test("abc\\  \ndef");
@@ -298,6 +269,7 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testLists() throws WikiParserException {
+        test("* item {{{formatted block}}} {macro}123{/macro} after");
         test("* first");
         test("*this is a bold, and not a list");
         test("** second");
@@ -335,6 +307,43 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
             + "----toto");
 
         test("{{a='b'}}\n* item one");
+    }
+
+    public void testMacro() throws WikiParserException {
+        test("{toto}a{toto}b{/toto}c{/toto}");
+
+        test("{toto}");
+        test("{toto}a{/toto}");
+        test("before{toto}macro{/toto}after");
+        test("before{toto a=b c=d}toto macro tata {/toto}after");
+        test("before{toto a=b c=d}toto {x qsdk} macro {sd} tata {/toto}after");
+
+        test("{toto}a{toto}");
+
+        // Not macros
+        test("{ toto a=b c=d}");
+
+        // Macro and its usage
+        test("This is a macro: {toto x:a=b x:c=d}\n"
+            + "<table>\n"
+            + "#foreach ($x in $table)\n"
+            + "  <tr>hello, $x</tr>\n"
+            + "#end\n"
+            + "</table>\n"
+            + "{/toto}\n\n"
+            + "And this is a usage of this macro: $toto(a=x b=y)");
+
+        test("!!Header:: Cell with a macro: \n"
+            + " {code}this is a code{/code} \n"
+            + " this is afer the code...");
+        test(""
+            + "* item one\n"
+            + "* item two\n"
+            + "  * subitem with a macro:\n"
+            + "  {code} this is a code{/code} \n"
+            + "  the same item (continuation)\n"
+            + "  * subitem two\n"
+            + "* item three");
     }
 
     /**
@@ -489,13 +498,13 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
      */
     public void testTables() throws WikiParserException {
         test("!! Header :: Cell ", ""
-            + "<table>\n"
+            + "<table><tbody>\n"
             + "  <tr><th>Header</th><td>Cell </td></tr>\n"
-            + "</table>");
+            + "</tbody></table>");
         test("!!   Header    ::    Cell    ", ""
-            + "<table>\n"
+            + "<table><tbody>\n"
             + "  <tr><th>Header</th><td>Cell    </td></tr>\n"
-            + "</table>");
+            + "</tbody></table>");
 
         test("::Cell 1 :: Cell 2");
         test("Not a Header :: Not a Cell");

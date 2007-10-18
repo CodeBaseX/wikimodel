@@ -623,7 +623,7 @@ public class MediawikiScanner implements MediawikiScannerConstants {
             str = t.image.trim();
             str = str.substring("|-".length()).trim();
             params = new WikiParameters(str);
-            fContext.onTableRow(false, params);
+            fContext.onTableRow(params);
         }
       break;
     case I_TABLE_CELL_NL:

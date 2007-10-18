@@ -381,6 +381,8 @@ void docElements():
     |
     LOOKAHEAD(2) list()
     |
+    LOOKAHEAD(2) info()
+    |
     properties()
     |
     verbatimBlock()
@@ -394,8 +396,6 @@ void docElements():
     horline()
     |
     quotBlock() 
-    |
-    LOOKAHEAD(2) info()
     |
     LOOKAHEAD(2) header() 
     |
@@ -531,7 +531,7 @@ void tableRow():
             String p  = str.substring(2, idx); 
             str = str.substring(idx + 2);
             head = (str.startsWith("!!") || str.startsWith("||"));
-            rowParams = newWikiParameters(p);
+            rowParams = new WikiParameters(p);
             cellParams = newWikiParameters(str);
         } else {
             head = (str.startsWith("!!") || str.startsWith("||"));
@@ -582,6 +582,29 @@ void listItem():
     ( LOOKAHEAD(2) block() )*
     {
         fContext.endListItem();
+    }
+}
+
+
+void info():
+{
+    String str = "";
+    Token t = null;
+    WikiParameters params = WikiParameters.EMPTY;
+}
+{
+    ( LOOKAHEAD(2) t = getBLOCK_PARAMS() { str = t.image.trim(); } )?
+    {
+        params = newWikiParameters(str);
+    }
+    t = getINFO()
+    {
+        str = t.image.trim();
+        fContext.beginInfo(str.charAt(1), params);
+    }
+    ( LOOKAHEAD(2) block() )*
+    {
+        fContext.endInfo();
     }
 }
 
@@ -713,32 +736,6 @@ void paragraph():
         }
     )
 }
-
-void info():
-{
-    Token t = null;
-    String str = "";
-    WikiParameters params = WikiParameters.EMPTY;
-}
-{
-    ( LOOKAHEAD(2)
-        t = getBLOCK_PARAMS()
-        {
-            str = t.image.trim(); 
-            params = newWikiParameters(str);
-        } 
-    )?
-    t = getINFO()
-    {
-        str = t.image.trim();
-        fContext.beginInfo(str.charAt(1), params);
-    }
-    ( LOOKAHEAD(2) lines() )?
-    {
-        fContext.endInfo();
-    }
-}
-
 
 void quotBlock():
 {
