@@ -1086,14 +1086,14 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
         String str = t.image.trim();
         if (str.startsWith("{{"))  {
             int idx = str.indexOf("}}");
-            String p  = str.substring(2, idx + 2);
+            String p  = str.substring(2, idx);
             str = str.substring(idx + 2);
             head = (str.startsWith("!!") || str.startsWith("||"));
             rowParams = newWikiParameters(p);
             cellParams = newWikiParameters(str);
         } else {
             head = (str.startsWith("!!") || str.startsWith("||"));
-            if (head) {
+            if (head || str.startsWith("::")) {
                 str = str.substring(2);
             } else {
                 str = str.substring(1);
