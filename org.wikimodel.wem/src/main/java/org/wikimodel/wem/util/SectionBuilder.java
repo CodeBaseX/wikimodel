@@ -6,19 +6,19 @@ package org.wikimodel.wem.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.wikimodel.wem.util.AbstractListBuilder.IPos;
+import org.wikimodel.wem.util.TreeBuilder.IPos;
 
 /**
  * @author kotelnikov
  */
 public class SectionBuilder<T> {
 
-    protected static class TocEntry<T> implements AbstractListBuilder.IPos {
+    protected static class TocEntry<T> implements TreeBuilder.IPos {
 
         T fData;
 
         int fDocLevel;
-        
+
         int fLevel;
 
         public TocEntry(int docLevel, int level, T data) {
@@ -39,33 +39,29 @@ public class SectionBuilder<T> {
 
     static int fDocLevel;
 
-    AbstractListBuilder fBuilder = new AbstractListBuilder() {
+    TreeBuilder fBuilder = new TreeBuilder(new TreeBuilder.ITreeListener() {
 
-        @Override
-        protected void onBeginRow(IPos n) {
+        public void onBeginRow(IPos n) {
             TocEntry<T> entry = (TocEntry<T>) n;
             fListener.beginSection(entry.fLevel, entry.fData);
         }
 
-        @Override
-        protected void onBeginTree(IPos n) {
+        public void onBeginTree(IPos n) {
             TocEntry<T> entry = (TocEntry<T>) n;
             fListener.beginLevel(entry.fLevel, entry.fData);
         }
 
-        @Override
-        protected void onEndRow(IPos n) {
+        public void onEndRow(IPos n) {
             TocEntry<T> entry = (TocEntry<T>) n;
             fListener.endSectionContent(entry.fLevel, entry.fData);
             fListener.endSection(entry.fLevel, entry.fData);
         }
 
-        @Override
-        protected void onEndTree(IPos n) {
+        public void onEndTree(IPos n) {
             TocEntry<T> entry = (TocEntry<T>) n;
             fListener.endLevel(entry.fLevel, entry.fData);
         }
-    };
+    });
 
     ISectionListener<T> fListener;
 
@@ -73,30 +69,21 @@ public class SectionBuilder<T> {
         fListener = listener;
     }
 
-    private void align(int level, T data) {
-        List<IPos> row = new ArrayList<IPos>();
-        if (level > 0) {
-            row.add(new TocEntry<T>(fDocLevel, level, data));
-        }
-        fBuilder.doAlign(row);
-    }
-
     public void beginDocument() {
         fDocLevel++;
     }
 
     public void beginHeader(int level, T data) {
-        align(level, data);
-        TocEntry<T> entry = (TocEntry<T>) fBuilder.getPeek();
+        TocEntry<T> entry = new TocEntry<T>(fDocLevel, level, data);
+        fBuilder.align(entry);
+
+        entry = (TocEntry<T>) fBuilder.getPeek();
         fListener.beginSectionHeader(entry.fLevel, entry.fData);
     }
 
-    public void close() {
-        fDocLevel = 0;
-        align(0, null);
-    }
-
     public void endDocument() {
+        TocEntry<T> entry = new TocEntry<T>(fDocLevel, 1, null);
+        fBuilder.trim(entry);
         fDocLevel--;
     }
 
@@ -105,4 +92,5 @@ public class SectionBuilder<T> {
         fListener.endSectionHeader(entry.fLevel, entry.fData);
         fListener.beginSectionContent(entry.fLevel, entry.fData);
     }
+
 }

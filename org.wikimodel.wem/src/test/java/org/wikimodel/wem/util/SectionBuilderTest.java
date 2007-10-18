@@ -62,6 +62,7 @@ public class SectionBuilderTest extends TestCase {
             }
 
         };
+
         fBuilder = new SectionBuilder<String>(listener);
     }
 
@@ -84,7 +85,7 @@ public class SectionBuilderTest extends TestCase {
         fBuilder.endHeader();
         check("<level><s><h1></h1><c><level><s><h3></h3><c></c></s><s><h3></h3><c>");
 
-        fBuilder.close();
+        fBuilder.endDocument();
         check("<level><s><h1></h1><c>"
             + "<level><s><h3></h3><c></c></s><s><h3></h3><c></c></s></level>"
             + "</c></s></level>");
