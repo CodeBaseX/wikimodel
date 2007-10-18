@@ -42,7 +42,6 @@
 
 === Google Wiki: Differences ===
 
- * Verbatim blocks can not be embedded.
  * All "=" symbols in headers will be skipped 
 
 === JspWiki: Differences ===

@@ -315,7 +315,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
 
     public void beginTableCell(boolean headCell, WikiParameters params) {
         if ((fBlockType & IBlockTypes.TABLE_ROW_CELL) != IBlockTypes.TABLE_ROW_CELL) {
-            beginTableRow(headCell);
+            beginTableRow(null);
             fTableHead = headCell;
             fTableCellParams = params != null ? params : WikiParameters.EMPTY;
             fListener.beginTableCell(fTableHead, fTableCellParams);
@@ -323,35 +323,34 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         }
     }
 
-    public void beginTableExplicit() {
-        beginTable();
-    }
-
     public void beginTableRow(boolean headCell) {
-        beginTableRow(headCell, null, null);
-    }
-
-    public void beginTableRow(boolean headCell, WikiParameters params) {
-        beginTableRow(headCell, params, null);
+        if (beginTableRow((WikiParameters) null)) {
+            beginTableCell(headCell, null);
+        }
     }
 
     public void beginTableRow(
         boolean head,
         WikiParameters rowParams,
         WikiParameters cellParams) {
+        if (beginTableRow(rowParams)) {
+            beginTableCell(head, cellParams);
+        }
+    }
+
+    private boolean beginTableRow(WikiParameters rowParams) {
+        boolean result = false;
         if ((fBlockType & IBlockTypes.TABLE_ROW) != IBlockTypes.TABLE_ROW) {
             beginTable();
             fBlockType = IBlockTypes.TABLE_ROW;
-            fTableHead = head;
             fTableCellCounter = 0;
             fTableRowParams = rowParams != null
                 ? rowParams
                 : WikiParameters.EMPTY;
-            fTableCellParams = cellParams != null
-                ? cellParams
-                : WikiParameters.EMPTY;
             fListener.beginTableRow(fTableRowParams);
+            result = true;
         }
+        return result;
     }
 
     public boolean canApplyDefintionSplitter() {
@@ -409,9 +408,6 @@ class InternalWikiScannerContext implements IWikiScannerContext {
                 break;
             case IBlockTypes.QUOT:
                 endQuot();
-                break;
-            case IBlockTypes.INFO:
-                endInfo();
                 break;
             default:
                 if ((fBlockType & IBlockTypes.TABLE) != 0) {
@@ -706,13 +702,9 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         beginTableCell(head, cellParams);
     }
 
-    public void onTableRow(boolean header) {
-        onTableRow(header, null);
-    }
-
-    public void onTableRow(boolean header, WikiParameters params) {
+    public void onTableRow(WikiParameters params) {
         endTableRow();
-        beginTableRow(header, params);
+        beginTableRow(params);
     }
 
     public void onVerbatim(String str, boolean inline) {

@@ -43,12 +43,22 @@ public interface IWikiScannerContext extends IWemConstants {
 
     void beginTableCell(boolean headCell);
 
-    void beginTableExplicit();
-
+    /**
+     * Starts a new table row and adds the first cell to the table.
+     * 
+     * @param headCell if this parameter is <code>true</code> then this method
+     *        starts the header cell at the beginning of the line
+     */
     void beginTableRow(boolean headCell);
 
-    void beginTableRow(boolean headCell, WikiParameters params);
-
+    /**
+     * Starts a new with the first row cell.
+     * 
+     * @param head if this parameter is <code>true</code> then this method
+     *        starts the header cell at the beginning of the line
+     * @param rowParams parameters of the row
+     * @param cellParams parameters of the first row cell
+     */
     void beginTableRow(
         boolean head,
         WikiParameters rowParams,
@@ -144,13 +154,16 @@ public interface IWikiScannerContext extends IWemConstants {
 
     void onTableCell(boolean head, WikiParameters cellParams);
 
-    void onTableRow(boolean header);
-
     /**
-     * @see org.wikimodel.wem.impl.WikiScannerContext#onTableRow(boolean,
-     *      org.wikimodel.wem.WikiParameters)
+     * Explicitly starts a new table row. This method should not create a new
+     * cell at the beginning of the line. To automatically create the first row
+     * cell the methods {@link #beginTableCell(boolean)} or
+     * {@link #beginTableRow(boolean, WikiParameters, WikiParameters)} should be
+     * used.
+     * 
+     * @param rowParameters
      */
-    void onTableRow(boolean header, WikiParameters params);
+    void onTableRow(WikiParameters params);
 
     /**
      * @see org.wikimodel.wem.impl.WikiScannerContext#onVerbatim(java.lang.String,
