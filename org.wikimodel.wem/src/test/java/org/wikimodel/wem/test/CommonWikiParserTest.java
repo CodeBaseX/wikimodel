@@ -319,6 +319,9 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         test("before{toto a=b c=d}toto {x qsdk} macro {sd} tata {/toto}after");
 
         test("{toto}a{toto}");
+        test("- before\n"
+            + "{code}this is a code{/code} \n"
+            + " this is afer the code...");
 
         // Not macros
         test("{ toto a=b c=d}");
@@ -350,16 +353,38 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testParagraphs() throws WikiParserException {
-        test("{{background='blue'}}");
-        test("{{background='blue'}}\n{{background=\'red\'}}\n{{background=\'green\'}}");
+        test("{{background='blue'}}", "<p background='blue'></p>");
+        test(""
+            + "{{background='blue'}}\n"
+            + "{{background='red'}}\n"
+            + "{{background='green'}}", ""
+            + "<p background='blue'></p>\n"
+            + "<p background='red'></p>\n"
+            + "<p background='green'></p>");
+        test(""
+            + "{{background='blue'}}first\n"
+            + "{{background='red'}}second\n"
+            + "{{background='green'}}third", ""
+            + "<p background='blue'>first</p>\n"
+            + "<p background='red'>second</p>\n"
+            + "<p background='green'>third</p>");
+        test(""
+            + "{{background='blue'}}\nfirst\n"
+            + "{{background='red'}}\nsecond\n"
+            + "{{background='green'}}\nthird", ""
+            + "<p background='blue'>first</p>\n"
+            + "<p background='red'>second</p>\n"
+            + "<p background='green'>third</p>");
 
-        test("{{background='blue'}}hello");
+        test("{{background='blue'}}hello", "<p background='blue'>hello</p>");
         test("{{background='blue'}}\n"
             + "First paragraph\r\n"
             + "\r\n"
             + "\r\n"
             + "\r\n"
-            + "");
+            + "", ""
+            + "<p background='blue'>First paragraph</p>\n"
+            + "<div style='height:3em;'></div>");
 
         test("First paragraph\r\n" + "\r\n" + "\r\n" + "\r\n" + "");
         test("First paragraph.\n"
@@ -428,12 +453,12 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
             + "    \r\n"
             + "\r\n"
             + "\r\n");
-        test("  first\n"
-            + "  second\n"
-            + "  third\n"
-            + "    subquot1\n"
-            + "    subquot2"
-            + "  fourth");
+        test("> first\n"
+            + ">> second\n"
+            + ">> third\n"
+            + ">>> subquot1\n"
+            + ">>> subquot2\n"
+            + ">> fourth");
         test("{{a='b'}}\n"
             + "  first\n"
             + "  second\n"

@@ -1,5 +1,7 @@
 package org.wikimodel.wem;
 
+import org.wikimodel.wem.util.WikiEntityUtil;
+
 /**
  * @author MikhailKotelnikov
  */
@@ -23,9 +25,9 @@ public class PrintInlineListener extends PrintTextListener {
      * @see org.wikimodel.wem.IWemListener#beginPropertyInline(java.lang.String)
      */
     public void beginPropertyInline(String str) {
-        print("<span class='property' url='" +
-            WikiPageUtil.escapeXmlAttribute(str) +
-            "'>");
+        print("<span class='property' url='"
+            + WikiPageUtil.escapeXmlAttribute(str)
+            + "'>");
     }
 
     /**
@@ -46,17 +48,17 @@ public class PrintInlineListener extends PrintTextListener {
      * @see org.wikimodel.wem.IWemListener#onEscape(java.lang.String)
      */
     public void onEscape(String str) {
-        print("<span class='escaped'>" +
-            WikiPageUtil.escapeXmlString(str) +
-            "</span>");
+        print("<span class='escaped'>"
+            + WikiPageUtil.escapeXmlString(str)
+            + "</span>");
     }
 
     public void onExtensionInline(String extensionName, WikiParameters params) {
-        print("<span class='extension' extension='" +
-            extensionName +
-            "' " +
-            params +
-            " />");
+        print("<span class='extension' extension='"
+            + extensionName
+            + "' "
+            + params
+            + " />");
     }
 
     /**
@@ -72,18 +74,27 @@ public class PrintInlineListener extends PrintTextListener {
      */
 
     public void onReference(String ref) {
-        print("<a href='" +
-            WikiPageUtil.escapeXmlAttribute(ref) +
-            "'>" +
-            WikiPageUtil.escapeXmlString(ref) +
-            "</a>");
+        print("<a href='"
+            + WikiPageUtil.escapeXmlAttribute(ref)
+            + "'>"
+            + WikiPageUtil.escapeXmlString(ref)
+            + "</a>");
     }
 
     /**
      * @see org.wikimodel.wem.IWemListener#onSpecialSymbol(java.lang.String)
      */
     public void onSpecialSymbol(String str) {
-        print(WikiPageUtil.escapeXmlString(str));
+        String entity = WikiEntityUtil.getHtmlSymbol(str);
+        if (entity != null) {
+            entity = "&" + entity + ";";
+            if (str.startsWith(" --")) {
+                entity = "&nbsp;" + entity + " ";
+            }
+        } else {
+            entity = WikiPageUtil.escapeXmlString(str);
+        }
+        print(entity);
     }
 
     /**

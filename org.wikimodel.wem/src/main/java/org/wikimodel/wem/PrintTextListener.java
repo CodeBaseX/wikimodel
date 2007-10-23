@@ -229,6 +229,10 @@ public class PrintTextListener implements IWemListener {
     public void endTableRow(WikiParameters params) {
     }
 
+    public void onEmptyLines(int count) {
+        //
+    }
+
     /**
      * @see org.wikimodel.wem.IWemListener#onEscape(java.lang.String)
      */
@@ -257,7 +261,13 @@ public class PrintTextListener implements IWemListener {
         println("");
     }
 
-    public void onMacro(String macroName, WikiParameters params, String content) {
+    public void onMacroBlock(String macroName, WikiParameters params, String content) {
+    }
+
+    public void onMacroInline(
+        String macroName,
+        WikiParameters params,
+        String content) {
     }
 
     /**

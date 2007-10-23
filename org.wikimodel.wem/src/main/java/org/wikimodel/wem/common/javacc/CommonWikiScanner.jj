@@ -57,7 +57,7 @@ public class CommonWikiScanner {
         } else {
             fContext.onExtensionInline(str, params);
         }
-    }    
+    }
 
 }
 
@@ -74,6 +74,7 @@ TOKEN_MGR_DECLS: {
     }
     String getMacroName(StringBuffer buf) {
         String str = buf.toString();
+        str = str.trim();
         str = str.substring(1, str.length() - 1);
         int idx = str.indexOf(" ");
         if (idx > 0) {
@@ -173,6 +174,30 @@ TOKEN_MGR_DECLS: {
         | "@@" // ins
         | "##" // del
         ) >
+    | <#SPECIAL_SYMBOLS: (
+          " - "
+        | " -- "
+        | ( " --- " | "---" )
+        | "<<" 
+        | ">>"
+        | "..."  
+        | "(" (<CHAR>|<SPECIAL_SYMBOL>) ")" 
+        | "(tm)" 
+        | "(TM)" 
+        | "&" (<CHAR>)+ ";" 
+
+        | "+/-"
+        | "!="
+        | ("-")* "->"
+        | "<-" ("-")*
+        | "<-" ("-")* ">"
+        | ("=")* "=>"
+        | "<=" ("=")* ">"
+        | "<=" ("=")*
+        | ">="
+        | "!="
+        | "~="        
+        )>
 
 
 // <common-tokens>
@@ -232,7 +257,7 @@ TOKEN_MGR_DECLS: {
     | <#URI_USERINFO: ( <URI_UNRESERVED> | <URI_PCT_ENCODED> | <URI_SUB_DELIMS> | ":" )* >
     | <#URI_PATH_ABEMPTY: ( "/" <URI_SEGMENT> )* >
     | <#URI_PATH_ABSOLUTE: "/" ( <URI_SEGMENT_NZ> ( "/" <URI_SEGMENT> )* )? >
-    | <#URI_PATH_ROOTLESS: <URI_SEGMENT_NZ_NC> ( "/" <URI_SEGMENT> )* >
+    | <#URI_PATH_ROOTLESS: <URI_PCHAR> <URI_SEGMENT_NZ_NC> ( "/" <URI_SEGMENT> )* >
     | <#URI_SEGMENT: (<URI_PCHAR>)* >
     | <#URI_SEGMENT_NZ: (<URI_PCHAR>)+ >
     | <#URI_SEGMENT_NZ_NC: (<URI_UNRESERVED> | <URI_PCT_ENCODED> | <URI_SUB_DELIMS> | "@")+ >
@@ -257,7 +282,8 @@ TOKEN_MGR_DECLS: {
     | <I_LIST_ITEM: (<NEW_LINE>)? <LIST_ITEM> > : DEFAULT
     | <I_VERBATIM_INLINE : <VERBATIM_INLINE> > : DEFAULT
     | <I_VERBATIM_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
-    | <I_MACRO_START: <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
+    | <I_MACRO_BLOCK_START: (<NEW_LINE>)? <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
+    | <I_MACRO_INLINE_START: <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
     | <I_QUOT_BLOCK: (<NEW_LINE>)? <QUOT_BLOCK> > : DEFAULT
     | <I_QUOT_LINE: (<NEW_LINE>)? <QUOT_LINE> > : DEFAULT
     | <I_INFO: (<NEW_LINE>)? <INFO> > : DEFAULT
@@ -271,6 +297,7 @@ TOKEN_MGR_DECLS: {
     | <I_HEADER_END: <HEADER> > : DEFAULT
     | <I_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
     | <I_BLOCK_PARAMS: (<NEW_LINE>)? <PARAMS> > : DEFAULT
+    | <I_SPECIAL_SYMBOLS: <SPECIAL_SYMBOLS> >: DEFAULT
 
     // "Standard" tokens. They are the same for all wikis.
     | <I_URI : <URI> > : DEFAULT
@@ -294,7 +321,8 @@ TOKEN_MGR_DECLS: {
     | <D_LIST_ITEM: <NEW_LINE> <LIST_ITEM> > : DEFAULT
     | <D_VERBATIM_INLINE : <VERBATIM_INLINE> > : DEFAULT
     | <D_VERBATIM_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
-    | <D_MACRO_START: <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
+    | <D_MACRO_BLOCK_START: <NEW_LINE> <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
+    | <D_MACRO_INLINE_START: <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
     | <D_QUOT_BLOCK: <NEW_LINE> <QUOT_BLOCK> > : DEFAULT
     | <D_QUOT_LINE: <NEW_LINE> <QUOT_LINE> > : DEFAULT
     | <D_INFO: <NEW_LINE> <INFO> > : DEFAULT
@@ -308,6 +336,7 @@ TOKEN_MGR_DECLS: {
     | <D_HEADER_END: <HEADER> > : DEFAULT
     | <D_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
     | <D_BLOCK_PARAMS: <NEW_LINE> <PARAMS> > : DEFAULT
+    | <D_SPECIAL_SYMBOLS: <SPECIAL_SYMBOLS> >: DEFAULT
 
     // "Standard" tokens. They are the same for all wikis.
     | <D_URI : <URI> > : DEFAULT
@@ -335,7 +364,8 @@ TOKEN_MGR_DECLS: {
     Token getLIST_ITEM(): {Token t=null;} {(t=<I_LIST_ITEM>|t=<D_LIST_ITEM>){return t;}}
     Token getVERBATIM_INLINE(): {Token t=null;} {(t=<I_VERBATIM_INLINE>|t=<D_VERBATIM_INLINE>){return t;}}
     Token getVERBATIM_START(): {Token t=null;} {(t=<I_VERBATIM_START>|t=<D_VERBATIM_START>){return t;}}
-    Token getMACRO_START(): {Token t=null;} {(t=<I_MACRO_START>|t=<D_MACRO_START>){return t;}}
+    Token getMACRO_BLOCK_START(): {Token t=null;} {(t=<I_MACRO_BLOCK_START>|t=<D_MACRO_BLOCK_START>){return t;}}
+    Token getMACRO_INLINE_START(): {Token t=null;} {(t=<I_MACRO_INLINE_START>|t=<D_MACRO_INLINE_START>){return t;}}
     Token getQUOT_BLOCK(): {Token t=null;} {(t=<I_QUOT_BLOCK>|t=<D_QUOT_BLOCK>){return t;}}
     Token getQUOT_LINE(): {Token t=null;} {(t=<I_QUOT_LINE>|t=<D_QUOT_LINE>){return t;}}
     Token getINFO(): {Token t=null;} {(t=<I_INFO>|t=<D_INFO>){return t;}}
@@ -349,6 +379,7 @@ TOKEN_MGR_DECLS: {
     Token getHEADER_END(): {Token t=null;} {(t=<I_HEADER_END>|t=<D_HEADER_END>){return t;}}
     Token getFORMAT_SYMBOL(): {Token t=null;} {(t=<I_FORMAT_SYMBOL>|t=<D_FORMAT_SYMBOL>){return t;}}
     Token getBLOCK_PARAMS(): {Token t=null;} {(t=<I_BLOCK_PARAMS>|t=<D_BLOCK_PARAMS>){return t;}}
+    Token getSPECIAL_SYMBOLS(): {Token t=null;} {(t=<I_SPECIAL_SYMBOLS>|t=<D_SPECIAL_SYMBOLS>){return t;}}
 
     // "Standard" tokens. They are the same for all wikis.
     Token getURI(): {Token t=null;} {(t=<I_URI>|t=<D_URI>){return t;}}
@@ -377,29 +408,32 @@ void docElements():
 {
 }
 {
+    // Block elements containing other blocks 
     LOOKAHEAD(2) table() 
     |
     LOOKAHEAD(2) list()
     |
     LOOKAHEAD(2) info()
-    |
-    properties()
-    |
-    verbatimBlock()
-    |
+
+    // Semantic blocks and embedded documents.
+    | ( properties() | embeddedDocument() )     
+
+    // Blocks for "hackers" - macros, extensions
+    | 
     macroBlock()
     |
-    embeddedDocument()
-    |
     extensionBlock()
+
+    // Non-interpreted content or empty content
+    | ( verbatimBlock() | horline() )
+
+    // Content blocks containing only inline tex<NEW_LINE>t
+    | 
+    LOOKAHEAD(2) header()
     |
-    horline()
+    LOOKAHEAD(2) quot()
     |
-    quotBlock() 
-    |
-    LOOKAHEAD(2) header() 
-    |
-    LOOKAHEAD(2) quot() 
+    LOOKAHEAD(2) quotBlock() 
     |
     LOOKAHEAD(2) paragraph()
     |
@@ -649,6 +683,16 @@ void verbatimBlock():
 void macroBlock():
 {
     Token t = null;
+}
+{
+    t = getMACRO_BLOCK_START()
+    {
+        macro(t, true);
+    }
+}
+
+void macro(Token t, boolean block):
+{
     StringBuffer buf = new StringBuffer();
     String name = "";
     WikiParameters params;
@@ -659,9 +703,9 @@ void macroBlock():
     String prevEnd = null;
 }
 {
-    t = getMACRO_START()
     {
-        str = t.image.substring(1, t.image.length() - 1);
+        str = t.image.trim();
+        str = str.substring(1, str.length() - 1);
         paramStrPos = str.indexOf(" ");
         if (paramStrPos > 0) {
             paramStr = str.substring(paramStrPos);
@@ -693,7 +737,11 @@ void macroBlock():
     {
         str = buf.toString();
         params = new WikiParameters(paramStr);
-        fContext.onMacro(name, params, str);
+        if (block) {
+            fContext.onMacroBlock(name, params, str);
+        } else {
+            fContext.onMacroInline(name, params, str);
+        }
     }
 }
 
@@ -801,9 +849,15 @@ void quotLine():
 
 void emptyParagraph():
 {
+    int count = 0;
 }
 {
-    getNL() (LOOKAHEAD(2) getNL() )*
+    getNL()  (LOOKAHEAD(2) getNL() { count++; } )*
+    {
+        if (count > 0) {
+            fContext.onEmptyLines(count);
+        }
+    }
 } 
 
 
@@ -863,6 +917,11 @@ void line():
             {
                 fContext.onSpace(t.image);
             }
+            |
+            t = getSPECIAL_SYMBOLS() // see also getSPECIAL_SYMBOL() below 
+            {
+                fContext.onSpecialSymbol(t.image);
+            }            
             |
             t = getFORMAT_SYMBOL()
             {
@@ -945,7 +1004,12 @@ void line():
                 }
             }
             |
-            t = getSPECIAL_SYMBOL()
+            t = getMACRO_INLINE_START() 
+            {
+                macro(t, false);
+            }
+            |
+            t = getSPECIAL_SYMBOL() // see also getSPECIAL_SYMBOLS() above 
             {
                 if (":".equals(t.image)) {
                     if (fContext.canApplyDefintionSplitter()) {
