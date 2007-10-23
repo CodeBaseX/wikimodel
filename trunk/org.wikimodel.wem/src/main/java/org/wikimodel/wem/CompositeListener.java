@@ -454,9 +454,27 @@ public class CompositeListener implements IWemListener {
         }
     }
 
-    public void onMacro(String macroName, WikiParameters params, String content) {
+    public void onMacroBlock(
+        String macroName,
+        WikiParameters params,
+        String content) {
         for (int i = 0; i < fListeners.length; i++) {
-            fListeners[i].onMacro(macroName, params, content);
+            fListeners[i].onMacroBlock(macroName, params, content);
+        }
+    }
+
+    public void onMacroInline(
+        String macroName,
+        WikiParameters params,
+        String content) {
+        for (int i = 0; i < fListeners.length; i++) {
+            fListeners[i].onMacroInline(macroName, params, content);
+        }
+    }
+
+    public void onEmptyLines(int count) {
+        for (int i = 0; i < fListeners.length; i++) {
+            fListeners[i].onEmptyLines(count);
         }
     }
 

@@ -62,9 +62,9 @@ public class PrintListener extends PrintInlineListener {
     }
 
     public void beginPropertyBlock(String propertyUri, boolean doc) {
-        print("<div class='property' url='" +
-            WikiPageUtil.escapeXmlAttribute(propertyUri) +
-            "'>");
+        print("<div class='property' url='"
+            + WikiPageUtil.escapeXmlAttribute(propertyUri)
+            + "'>");
         if (doc)
             println("");
     }
@@ -150,30 +150,52 @@ public class PrintListener extends PrintInlineListener {
         println("</tr>");
     }
 
+    public void onEmptyLines(int count) {
+        if (count > 1) {
+            println("<div style='height:" + count + "em;'></div>");
+        }
+    }
+
     /**
      * @see org.wikimodel.wem.PrintInlineListener#onExtensionBlock(java.lang.String,
      *      org.wikimodel.wem.WikiParameters)
      */
     public void onExtensionBlock(String extensionName, WikiParameters params) {
-        println("<div class='extension' extension='" +
-            extensionName +
-            "' " +
-            params +
-            " />");
+        println("<div class='extension' extension='"
+            + extensionName
+            + "' "
+            + params
+            + " />");
     }
 
     public void onHorizontalLine() {
         println("<hr />");
     }
 
-    public void onMacro(String macroName, WikiParameters params, String content) {
-        println("<pre class='macro' macroName='" +
-            macroName +
-            "'" +
-            params +
-            "><![CDATA[" +
-            content +
-            "]]></pre>");
+    public void onMacroBlock(
+        String macroName,
+        WikiParameters params,
+        String content) {
+        println("<pre class='macro' macroName='"
+            + macroName
+            + "'"
+            + params
+            + "><![CDATA["
+            + content
+            + "]]></pre>");
+    }
+
+    public void onMacroInline(
+        String macroName,
+        WikiParameters params,
+        String content) {
+        print("<span class='macro' macroName='"
+            + macroName
+            + "'"
+            + params
+            + "><![CDATA["
+            + content
+            + "]]></span>");
     }
 
     public void onTableCaption(String str) {

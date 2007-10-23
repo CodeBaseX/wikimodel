@@ -623,6 +623,11 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         fListener.beginDefinitionDescription();
     }
 
+    public void onEmptyLines(int count) {
+        closeBlock();
+        fListener.onEmptyLines(count);
+    }
+
     public void onEscape(String str) {
         checkStyleOpened();
         fListener.onEscape(str);
@@ -658,9 +663,20 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         fListener.onLineBreak();
     }
 
-    public void onMacro(String macroName, WikiParameters params, String content) {
+    public void onMacroBlock(
+        String macroName,
+        WikiParameters params,
+        String content) {
         checkBlockContainer();
-        fListener.onMacro(macroName, params, content);
+        fListener.onMacroBlock(macroName, params, content);
+    }
+
+    public void onMacroInline(
+        String macroName,
+        WikiParameters params,
+        String content) {
+        checkStyleOpened();
+        fListener.onMacroInline(macroName, params, content);
     }
 
     public void onNewLine() {

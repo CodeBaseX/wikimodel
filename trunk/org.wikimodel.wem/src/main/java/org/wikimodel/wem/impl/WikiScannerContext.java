@@ -230,6 +230,10 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().onDefinitionListItemSplit();
     }
 
+    public void onEmptyLines(int count) {
+        getContext().onEmptyLines(count);
+    }
+
     public void onEscape(String str) {
         getContext().onEscape(str);
     }
@@ -263,8 +267,18 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().onLineBreak();
     }
 
-    public void onMacro(String macroName, WikiParameters params, String content) {
-        getContext().onMacro(macroName, params, content);
+    public void onMacroBlock(
+        String macroName,
+        WikiParameters params,
+        String content) {
+        getContext().onMacroBlock(macroName, params, content);
+    }
+
+    public void onMacroInline(
+        String macroName,
+        WikiParameters params,
+        String content) {
+        getContext().onMacroInline(macroName, params, content);
     }
 
     public void onNewLine() {

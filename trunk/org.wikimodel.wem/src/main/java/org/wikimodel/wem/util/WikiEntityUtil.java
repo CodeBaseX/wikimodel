@@ -35,7 +35,7 @@ public class WikiEntityUtil {
         add("(No)", "8470", 8470);
         add(" -- ", "ndash", 8211);
         add("---", "mdash", 8212);
-        add(" --- ", "mdash; ", 8212);
+        add(" --- ", "mdash", 8212);
         add("...", "hellip", 8230);
         add("(*)", "bull", 8226);
         add("(R)", "reg", 174);
@@ -67,11 +67,31 @@ public class WikiEntityUtil {
         add("(8)", "infin", 8734);
         add("(~)", "sim", 8764);
         add("!=", "ne", 8800);
+
         add("->", "rarr", 8594);
+        add("-->", "rarr", 8594);
+        add("--->", "rarr", 8594);
+        
         add("<-", "larr", 8592);
+        add("<--", "larr", 8592);
+        add("<---", "larr", 8592);
+        
         add("<->", "harr", 8596);
+        add("<-->", "harr", 8596);
+        add("<--->", "harr", 8596);
+        
         add("=>", "rArr", 8658);
+        add("==>", "rArr", 8658);
+        add("===>", "rArr", 8658);
+
+        add("<=", "lArr", 8658);
+        add("<==", "lArr", 8658);
+        add("<===", "lArr", 8658);
+
         add("<=>", "hArr", 8660);
+        add("<==>", "hArr", 8660);
+        add("<===>", "hArr", 8660);
+
         add("<=", "le", 8804);
         add(">=", "ge", 8805);
         add("!=", "ne", 8800);

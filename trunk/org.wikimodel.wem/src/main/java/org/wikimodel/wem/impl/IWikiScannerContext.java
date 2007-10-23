@@ -118,6 +118,8 @@ public interface IWikiScannerContext extends IWemConstants {
 
     void onDefinitionListItemSplit();
 
+    void onEmptyLines(int count);
+
     void onEscape(String str);
 
     void onExtensionBlock(String extensionName, WikiParameters params);
@@ -136,7 +138,9 @@ public interface IWikiScannerContext extends IWemConstants {
 
     void onLineBreak();
 
-    void onMacro(String macroName, WikiParameters params, String content);
+    void onMacroBlock(String macroName, WikiParameters params, String content);
+
+    void onMacroInline(String macroName, WikiParameters params, String content);
 
     void onNewLine();
 
