@@ -127,39 +127,46 @@ TOKEN_MGR_DECLS: {
 
 <DEFAULT, INITIAL_CONTEXT> TOKEN:
 {
-      <#LI_COMMON: [ "+", "-", ":", ";"]>
+      <#LI_COMMON: [ "+", "-" ]>
     | <#LI_SPECIAL: [ "*" ]>
-    | <#LIST_ITEM: ( (<SPACE>)* (<LI_SPECIAL>|<LI_COMMON>) (<SPACE>)+ | (<LI_SPECIAL>|<LI_COMMON>){2,} (<SPACE>)* | <LI_COMMON> (<SPACE>)*) >
+    | <#DL: ["?", "!"]>
+    | <#LIST_ITEM:
+          (<SPACE>)* (<LI_SPECIAL>|<LI_COMMON>|<DL>) (<SPACE>)+
+        | (<LI_SPECIAL>|<LI_COMMON>){2,} (<SPACE>)*
+        | (<LI_COMMON>|<DL>) (<SPACE>)*
+        >
+        
     | <#PROPERTY: "%" ( (<CHAR>)+ | <URI> )>
     | <#PROPERTY_DOC: <PROPERTY> <DOC_BEGIN> >
     | <#DOC_BEGIN: (<SPACE>)* "(((" (<SPACE>)* >
     | <#DOC_END:   (<SPACE>)* ")))" (<SPACE>)* >
     | <#VERBATIM_START: "{{{" >
     | <#VERBATIM_END: "}}}" > 
+    | <#ESCAPED: ( "\\\\" | "\\" ~["\\"] ) >
     | <#VERBATIM_CONTENT: ( 
-          "\\" ~[] 
-        | ~["}", "{"] 
+          <ESCAPED> 
+        | ~["}", "{", "\\"] 
         | "}" ~["}"] | "}}" ~["}"]
         | "{" ~["{"] | "{{" ~["{"]
       )+ >
     | <#MACRO_START: "{" (<CHAR>)+ (~["}"])* "}" >
     | <#MACRO_END: "{/" (<CHAR>)+ "}" > 
     | <#MACRO_CONTENT: ( 
-          "\\" ~[] 
-        | ~["{"] 
+          <ESCAPED> 
+        | ~["{", "\\"] 
         | "{" <SPACE> 
         | "{" (~["}"])+ <NEW_LINE> 
       )+ >
     | <#INFO: "/" (<CHAR> | "!" | "?" | "*") "\\" >
-    | <#EXTENSION: "$" (<CHAR>)+ (<SPACE>)* ( "(" ( "\\" ~[] | ~[")"] )* ")" )? >
-    | <#PARAMS:   "{{" ( "\\" ~[] | ~["}", "{"] | "}" ~["}", "{"] )* "}}" >
+    | <#EXTENSION: "$" (<CHAR>)+ (<SPACE>)* ( "(" ( <ESCAPED> | ~[")", "\\"] )* ")" )? >
+    | <#PARAMS:   "{{" ( <ESCAPED> | ~["}", "{", "\\"] | "}" ~["}", "{"] )* "}}" >
     | <#HEADER: ("="){1, 6} >
     | <#BR: "\\" (<SPACE>)* <NEW_LINE> >
     | <#ESCAPE: ( "\\" ~["\t", "\n", "\r"]) >
-    | <#VERBATIM_INLINE: "`" ( "\\" ~[] | ~["`"] )* "`" >
-    | <#REFERENCE:  ( "[" ( "\\" ~[] | ~["]"] )* "]" | "(=" ( "\\" ~[] | ~["="] | "=" ~[")"] )* "=)") >
+    | <#VERBATIM_INLINE: ["`"] ( <ESCAPED> | ~["`", "\\"] )* ["`"] >
+    | <#REFERENCE:  ( "[" ( <ESCAPED> | ~["]", "\\"] )* "]" | "(=" ( <ESCAPED> | ~["=", "\\"] | "=" ~[")"] )* "=)") >
     | <#HORLINE: "---" ("-")+ >
-    | <#CELL: (<SPACE>)* ( "||" | "|" | "::" | "!!" ) (<PARAMS>)? (<SPACE>)* >
+    | <#CELL: ( "||" | "|" | "::" | "!!" ) (<PARAMS>)? >
     | <#QUOT_BLOCK: ("Q" | "q") (<PARAMS>)? ":" >
     | <#QUOT_LINE: (">")+ >
     | <#FORMAT_SYMBOL : ( 
@@ -168,7 +175,9 @@ TOKEN_MGR_DECLS: {
         | "__" // em
         | "$$" // code
         | "^^" // sup
+        | "^"  // sup
         | "~~" // sub
+        | "~"  // sub
         | "++" // big
         | "--" // small
         | "@@" // ins
@@ -610,7 +619,7 @@ void listItem():
     t = getLIST_ITEM()   
     {
         str = t.image;
-        str = str.replace('+', '#');
+        str = str.replace('+', '#').replace("!", ":").replace("?", ";");
         fContext.beginListItem(str);
     }
     ( LOOKAHEAD(2) block() )*
