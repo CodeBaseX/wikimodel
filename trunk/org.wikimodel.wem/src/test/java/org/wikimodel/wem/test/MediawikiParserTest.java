@@ -119,6 +119,13 @@ public class MediawikiParserTest extends AbstractWikiParserTest {
         test(" -----------");
         test("---abc");
     }
+    
+    
+    public void testImage() throws WikiParserException {
+    	
+    	test("[[Image:Yahoo Headquarters.jpg|thumb|right|250px|Yahoo headquarters in Sunnyvale]]"); 
+    	test("[[Image:Jerry Yang and David Filo.jpg|thumb|right|250px|Yahoo! co-founders [[Jerry Yang (entrepreneur)|Jerry Yang]] (left) and [[David Filo]] (right)]]");
+    }
 
     /**
      * @throws WikiParserException
