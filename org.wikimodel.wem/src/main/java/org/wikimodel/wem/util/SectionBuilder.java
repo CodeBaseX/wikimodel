@@ -3,9 +3,6 @@
  */
 package org.wikimodel.wem.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.wikimodel.wem.util.TreeBuilder.IPos;
 
 /**
