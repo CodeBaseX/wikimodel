@@ -70,7 +70,11 @@ public class PrintListener extends PrintInlineListener {
     }
 
     public void beginQuotation(WikiParameters params) {
-        print("<quot" + params + ">");
+        print("<blockquote" + params + ">");
+    }
+
+    public void beginQuotationLine() {
+        println("");
     }
 
     public void beginTable(WikiParameters params) {
@@ -128,10 +132,11 @@ public class PrintListener extends PrintInlineListener {
     public void endPropertyBlock(String propertyUri, boolean doc) {
         println("</div>");
     }
-
+    
     public void endQuotation(WikiParameters params) {
-        println("</quot>");
+        println("</blockquote>");
     }
+
 
     public void endQuotationLine() {
         println("");
