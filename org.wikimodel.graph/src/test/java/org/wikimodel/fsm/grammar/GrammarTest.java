@@ -3,6 +3,9 @@
  */
 package org.wikimodel.fsm.grammar;
 
+import java.io.InputStream;
+import java.io.StringReader;
+
 import junit.framework.TestCase;
 
 import org.wikimodel.fsm.FsmProcess;
@@ -10,6 +13,7 @@ import org.wikimodel.fsm.FsmProcessListener;
 import org.wikimodel.fsm.FsmState;
 import org.wikimodel.fsm.FsmStateDescriptorConfigurator;
 import org.wikimodel.fsm.IFsmProcessListener;
+import org.wikimodel.fsm.config.DescriptionReader;
 
 /**
  * @author kotelnikov
@@ -20,8 +24,11 @@ public class GrammarTest extends TestCase {
         private int fDepth;
 
         public void beginState(FsmState node) throws Exception {
-            println("<" + node.getKey() + ">");
-            fDepth++;
+            String name = node.getKey();
+            if (!name.startsWith("#")) {
+                println("<" + name + ">");
+                fDepth++;
+            }
         }
 
         private void println(String string) {
@@ -32,8 +39,11 @@ public class GrammarTest extends TestCase {
         }
 
         public void endState(FsmState node) throws Exception {
-            fDepth--;
-            println("</" + node.getKey() + ">");
+            String name = node.getKey();
+            if (!name.startsWith("#")) {
+                fDepth--;
+                println("</" + name + ">");
+            }
         }
     };
 
@@ -45,82 +55,52 @@ public class GrammarTest extends TestCase {
     }
 
     public void test() throws Exception {
-        FsmStateDescriptorConfigurator config = new FsmStateDescriptorConfigurator();
-        config.beginState("MAIN");
-        config.onTransition(null, "", "DOC");
-        config.onTransition("DOC", "", "DOC");
-        config.onTransition("DOC", "doc.end", null);
-        config.beginState("DOC");
-        {
-            config.onTransition(null, "", "BLOCK");
-            config.onTransition("BLOCK", "", "BLOCK");
-            config.onTransition("BLOCK", "doc.end", null);
-            config.beginState("BLOCK");
-            {
-                config.onTransition(null, "block.property", "BLOCK_PROPERTY");
-                config.onTransition(null, "block.info", "BLOCK_INFO");
-                config.onTransition(null, "block.quot", "BLOCK_QUOT");
-                config.onTransition(null, "ul", "UL");
-                config.onTransition(null, "ol", "OL");
-                config.onTransition(null, "dl", "DL");
-                config.onTransition(null, "table", "TABLE");
-                config.onTransition(null, "header", "HEADER");
-                config.onTransition(null, "hr", "HR");
-                config.onTransition(null, "empty", "EMPTY_PARAGRAPH");
-                config.onTransition(null, "", "P");
-                // begin of #block
-                // config.onTransition(null, "doc.begin", "DOC");
-                config.onTransition(null, "block.verbatim", "BLOCK_VERBATIM");
-                config.onTransition(null, "block.macro", "BLOCK_MACRO");
-                config.onTransition(null, "block.extension", "BLOCK_EXTENSION");
-                // end of #block
-
-                config.beginState("TABLE");
-                {
-                    config.onTransition(null, "", "TR");
-                    config.onTransition("TR", "table.tr", "TR");
-                    {
-                        config.beginState("TR");
-                        config.onTransition(null, "table.tr.th", "TH");
-                        config.onTransition(null, "", "TD");
-                        config.onTransition("TD", "table.tr.th", "TH");
-                        config.onTransition("TD", "table.tr.td", "TD");
-                        config.onTransition("TH", "table.tr.th", "TH");
-                        config.onTransition("TH", "table.tr.td", "TD");
-                        config.endState();
-                    }
-                }
-                config.endState(); // TABLE
-
-                config.beginState("UL");
-                {
-                    config.onTransition("LI", "ul.li", "LI");
-                    config.onTransition(null, "", "LI");
-                }
-                config.endState(); // UL
-            }
-            config.endState(); // BLOCK
-        }
-        config.endState(); // DOC
-
+        FsmStateDescriptorConfigurator config = readConfig("GrammarTest_test.xml");
         FsmProcess process = config.newProcess("MAIN", fListener);
-        test(process, "x", "MAIN/DOC/BLOCK/P");
-        test(process, "table.tr.th", "MAIN/DOC/BLOCK/TABLE/TR/TH");
-        test(process, "ul.li", "MAIN/DOC/BLOCK/UL/LI");
-        test(process, "ul.li", "MAIN/DOC/BLOCK/UL/LI");
+        test(process, "x", "MAIN/DOC/#INIT");
+        test(process, "x", "MAIN/DOC/#B/P/TEXT");
+        test(process, "table.tr.th", "MAIN/DOC/#B/TABLE/TR/TH/#IB/TEXT");
+        test(process, "list.li", "MAIN/DOC/#B/LIST/LI/#IB/TEXT");
+        test(process, "list.li", "MAIN/DOC/#B/LIST/LI/#IB/TEXT");
 
         // Default cell
-        test(process, "table", "MAIN/DOC/BLOCK/TABLE/TR/TD");
+        test(process, "table", "MAIN/DOC/#B/TABLE/TR/TD/#IB/TEXT");
         // New table line
-        test(process, "table.tr", "MAIN/DOC/BLOCK/TABLE/TR/TD");
+        test(process, "table.tr", "MAIN/DOC/#B/TABLE/TR/TD/#IB/TEXT");
         // New header cell in the same line
-        test(process, "table.tr.th", "MAIN/DOC/BLOCK/TABLE/TR/TH");
+        test(process, "table.tr.th", "MAIN/DOC/#B/TABLE/TR/TH/#IB/TEXT");
         // New table with a default cell
-        test(process, "table", "MAIN/DOC/BLOCK/TABLE/TR/TD");
+        test(process, "table", "MAIN/DOC/#B/TABLE/TR/TD/#IB/TEXT");
 
-        test(process, "ul.li", "MAIN/DOC/BLOCK/UL/LI");
-        test(process, "p", "MAIN/DOC/BLOCK/P");
+        test(process, "list.li", "MAIN/DOC/#B/LIST/LI/#IB/TEXT");
+        test(process, "list", "MAIN/DOC/#B/LIST/LI/LIST/LI/#IB/TEXT");
+        test(process, "list.li", "MAIN/DOC/#B/LIST/LI/LIST/LI/#IB/TEXT");
+        test(process, "list.li", "MAIN/DOC/#B/LIST/LI/LIST/LI/#IB/TEXT");
+        test(process, "list.end", "MAIN/DOC/#B/LIST/LI/#IB/TEXT");
+
+        test(process, "doc.begin", "MAIN/DOC/#B/LIST/LI/#IB/DOC/#INIT");
+        test(process, "header", "MAIN/DOC/#B/LIST/LI/#IB/DOC/#B/HEADER/TEXT");
+        test(process, "doc.end", "MAIN/DOC/#B/LIST/LI/#IB/TEXT");
+
+        test(process, "p", "MAIN/DOC/#B/P/TEXT");
         test(process, "doc.end", null);
+    }
+
+    private FsmStateDescriptorConfigurator readConfig(String str)
+        throws Exception {
+        Class cls = getClass();
+        String path = "/"
+            + cls.getPackage().getName().replace(".", "/")
+            + "/"
+            + str;
+        InputStream input = cls.getResourceAsStream(path);
+        try {
+            DescriptionReader descriptorReader = new DescriptionReader();
+            descriptorReader.parse(input);
+            return descriptorReader.getConfig();
+        } finally {
+            input.close();
+        }
     }
 
     public void testX() throws Exception {
