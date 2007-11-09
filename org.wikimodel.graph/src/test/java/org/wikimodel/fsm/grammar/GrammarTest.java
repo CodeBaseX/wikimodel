@@ -4,7 +4,6 @@
 package org.wikimodel.fsm.grammar;
 
 import java.io.InputStream;
-import java.io.StringReader;
 
 import junit.framework.TestCase;
 
