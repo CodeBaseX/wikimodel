@@ -123,15 +123,25 @@ public class PrintTextListener implements IWemListener {
     }
 
     /**
+     * This method is called at the end of each block element. It can be
+     * overloaded in subclasses.
+     */
+    protected void endBlock() {
+        //
+    }
+
+    /**
      * @see org.wikimodel.wem.IWemListener#endDefinitionDescription()
      */
     public void endDefinitionDescription() {
+        endBlock();
     }
 
     /**
      * @see org.wikimodel.wem.IWemListener#endDefinitionList(org.wikimodel.wem.WikiParameters)
      */
     public void endDefinitionList(WikiParameters params) {
+        endBlock();
     }
 
     /**
@@ -144,6 +154,7 @@ public class PrintTextListener implements IWemListener {
      * @see org.wikimodel.wem.IWemListener#endDocument()
      */
     public void endDocument() {
+        endBlock();
     }
 
     /**
@@ -156,6 +167,7 @@ public class PrintTextListener implements IWemListener {
      * @see org.wikimodel.wem.IWemListener#endHeader(int, WikiParameters)
      */
     public void endHeader(int level, WikiParameters params) {
+        endBlock();
     }
 
     /**
@@ -163,7 +175,7 @@ public class PrintTextListener implements IWemListener {
      *      org.wikimodel.wem.WikiParameters)
      */
     public void endInfoBlock(char infoType, WikiParameters params) {
-        //
+        endBlock();
     }
 
     /**
@@ -171,18 +183,21 @@ public class PrintTextListener implements IWemListener {
      *      boolean)
      */
     public void endList(WikiParameters params, boolean ordered) {
+        endBlock();
     }
 
     /**
      * @see org.wikimodel.wem.IWemListener#endListItem()
      */
     public void endListItem() {
+        endBlock();
     }
 
     /**
      * @see org.wikimodel.wem.IWemListener#endParagraph(org.wikimodel.wem.WikiParameters)
      */
     public void endParagraph(WikiParameters params) {
+        endBlock();
     }
 
     /**
@@ -190,6 +205,7 @@ public class PrintTextListener implements IWemListener {
      *      boolean)
      */
     public void endPropertyBlock(String propertyUri, boolean doc) {
+        endBlock();
     }
 
     /**
@@ -202,6 +218,7 @@ public class PrintTextListener implements IWemListener {
      * @see org.wikimodel.wem.IWemListener#endQuotation(org.wikimodel.wem.WikiParameters)
      */
     public void endQuotation(WikiParameters params) {
+        endBlock();
     }
 
     /**
@@ -215,6 +232,7 @@ public class PrintTextListener implements IWemListener {
      * @see org.wikimodel.wem.IWemListener#endTable(org.wikimodel.wem.WikiParameters)
      */
     public void endTable(WikiParameters params) {
+        endBlock();
     }
 
     /**
@@ -261,7 +279,10 @@ public class PrintTextListener implements IWemListener {
         println("");
     }
 
-    public void onMacroBlock(String macroName, WikiParameters params, String content) {
+    public void onMacroBlock(
+        String macroName,
+        WikiParameters params,
+        String content) {
     }
 
     public void onMacroInline(
