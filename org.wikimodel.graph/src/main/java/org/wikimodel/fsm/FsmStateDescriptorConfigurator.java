@@ -12,9 +12,9 @@ import java.util.Stack;
  */
 public class FsmStateDescriptorConfigurator {
 
-    private Map fDescriptors = new HashMap();
+    private Map<String, FsmStateDescriptor> fDescriptors = new HashMap<String, FsmStateDescriptor>();
 
-    private Stack fDescriptorStack = new Stack();
+    private Stack<FsmStateDescriptor> fDescriptorStack = new Stack<FsmStateDescriptor>();
 
     /**
      * 
@@ -23,13 +23,14 @@ public class FsmStateDescriptorConfigurator {
     }
 
     public void beginState(String stateKey) {
-        beginState(stateKey, new HashMap());
+        beginState(stateKey, new HashMap<String, Object>());
     }
 
-    public void beginState(String stateKey, Map params) {
+    public void beginState(String stateKey, Map<String, ?> params) {
         FsmStateDescriptor descriptor = newDescriptor(stateKey, params);
-        FsmStateDescriptor parentDescriptor = (FsmStateDescriptor) (!fDescriptorStack
-            .empty() ? fDescriptorStack.peek() : null);
+        FsmStateDescriptor parentDescriptor = (!fDescriptorStack.empty()
+            ? fDescriptorStack.peek()
+            : null);
         if (parentDescriptor != null) {
             parentDescriptor.addSubstateDescriptor(stateKey, descriptor);
         } else {
@@ -48,10 +49,12 @@ public class FsmStateDescriptorConfigurator {
      * @return a root state descriptor corresponding to the specified state key
      */
     public FsmStateDescriptor getDescriptor(String key) {
-        return (FsmStateDescriptor) fDescriptors.get(key);
+        return fDescriptors.get(key);
     }
 
-    protected FsmStateDescriptor newDescriptor(String stateKey, Map params) {
+    protected FsmStateDescriptor newDescriptor(
+        String stateKey,
+        Map<String, ?> params) {
         return new FsmStateDescriptor();
     }
 
@@ -63,12 +66,14 @@ public class FsmStateDescriptorConfigurator {
                 + stateKey
                 + "'.");
         }
-        return new FsmProcess(descriptor, stateKey, listener);
+        FsmState state = descriptor.newState(null, stateKey);
+        return new FsmProcess(state, listener);
     }
 
     public void onTransition(String from, String event, String to) {
-        FsmStateDescriptor parentDescriptor = (FsmStateDescriptor) (!fDescriptorStack
-            .empty() ? fDescriptorStack.peek() : null);
+        FsmStateDescriptor parentDescriptor = (!fDescriptorStack.empty()
+            ? fDescriptorStack.peek()
+            : null);
         parentDescriptor.addTransition(from, event, to);
     }
 

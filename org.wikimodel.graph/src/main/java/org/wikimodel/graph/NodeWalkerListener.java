@@ -6,7 +6,7 @@ package org.wikimodel.graph;
 /**
  * @author kotelnikov
  */
-public class NodeWalkerListener implements INodeWalkerListener {
+public class NodeWalkerListener<T> implements INodeWalkerListener<T> {
 
     /**
      * 
@@ -19,14 +19,14 @@ public class NodeWalkerListener implements INodeWalkerListener {
      * @see org.wikimodel.graph.INodeWalkerListener#beginNode(java.lang.Object,
      *      java.lang.Object)
      */
-    public void beginNode(Object parent, Object node) throws Exception {
+    public void beginNode(T parent, T node) {
     }
 
     /**
      * @see org.wikimodel.graph.INodeWalkerListener#endNode(java.lang.Object,
      *      java.lang.Object)
      */
-    public void endNode(Object parent, Object node) throws Exception {
+    public void endNode(T parent, T node) {
         // 
     }
 

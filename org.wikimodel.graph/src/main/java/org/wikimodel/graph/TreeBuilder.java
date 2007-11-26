@@ -32,12 +32,14 @@ import java.util.List;
  * 
  * @author kotelnikov
  */
-public class TreeBuilder extends NodeWalker implements INodeWalkerSource {
+public class TreeBuilder<T> extends NodeWalker<T>
+    implements
+    INodeWalkerSource<T> {
 
     /**
      * The path used as a source of nodes
      */
-    private List fPath = new ArrayList();
+    private List<T> fPath = new ArrayList<T>();
 
     private int fPathPos;
 
@@ -51,7 +53,7 @@ public class TreeBuilder extends NodeWalker implements INodeWalkerSource {
         fSource = this;
     }
 
-    public void align(List path, INodeWalkerListener listener) throws Exception {
+    public void align(List<T> path, INodeWalkerListener<T> listener) {
         fPath.clear();
         fPath.addAll(path);
         int pathSize = fPath.size();
@@ -61,8 +63,8 @@ public class TreeBuilder extends NodeWalker implements INodeWalkerSource {
         fStackPos = 0;
         fPathPos = 0;
         while (fStackPos < stackSize && fPathPos < pathSize) {
-            Object stackSegment = fStack.get(fStackPos);
-            Object pathSegment = fPath.get(fPathPos);
+            T stackSegment = fStack.get(fStackPos);
+            T pathSegment = fPath.get(fPathPos);
             stackShift += getLength(stackSegment);
             pathShift += getLength(pathSegment);
             if (stackShift >= pathShift) {
@@ -83,25 +85,25 @@ public class TreeBuilder extends NodeWalker implements INodeWalkerSource {
         }
     }
 
-    protected boolean equal(Object first, Object second) {
+    protected boolean equal(T first, T second) {
         return first == null || second == null ? first == second : first
             .equals(second);
     }
 
-    public Object getFirstSubnode(Object node) throws Exception {
+    public T getFirstSubnode(T node) {
         return shift();
     }
 
-    protected int getLength(Object node) {
+    protected int getLength(T node) {
         return 1;
     }
 
-    public Object getNextSubnode(Object parent, Object node) throws Exception {
+    public T getNextSubnode(T parent, T node) {
         return shift();
     }
 
-    private Object shift() {
-        Object result = null;
+    private T shift() {
+        T result = null;
         if (fStackPos < fStack.size())
             return null;
         if (fPathPos < fPath.size()) {

@@ -6,19 +6,21 @@ import java.util.Stack;
 /**
  * @author kotelnikov
  */
-public abstract class IteratorBasedNodeSource implements INodeWalkerSource {
+public abstract class IteratorBasedNodeSource<T>
+    implements
+    INodeWalkerSource<T> {
 
     /**
      * This stack contains current node iterators.
      */
-    private Stack fIteratorStack = new Stack();
+    private Stack<Iterator<T>> fIteratorStack = new Stack<Iterator<T>>();
 
     /**
      * @throws Exception
      */
     public void close() throws Exception {
         while (!fIteratorStack.empty()) {
-            Iterator iterator = (Iterator) fIteratorStack.pop();
+            Iterator<T> iterator = fIteratorStack.pop();
             deleteIterator(iterator);
         }
     }
@@ -26,11 +28,11 @@ public abstract class IteratorBasedNodeSource implements INodeWalkerSource {
     /**
      * @param iterator
      */
-    protected void deleteIterator(Iterator iterator) {
+    protected void deleteIterator(Iterator<T> iterator) {
     }
 
-    public Object getFirstSubnode(Object node) throws Exception {
-        Iterator iterator = newIterator(node);
+    public T getFirstSubnode(T node) {
+        Iterator<T> iterator = newIterator(node);
         fIteratorStack.push(iterator);
         return getNextIteratorValue();
     }
@@ -40,9 +42,10 @@ public abstract class IteratorBasedNodeSource implements INodeWalkerSource {
      * 
      * @return the next value in the currently active iterator
      */
-    protected Object getNextIteratorValue() {
-        Iterator iterator = !fIteratorStack.empty() ? (Iterator) fIteratorStack
-            .peek() : null;
+    protected T getNextIteratorValue() {
+        Iterator<T> iterator = !fIteratorStack.empty()
+            ? fIteratorStack.peek()
+            : null;
         return (iterator != null && iterator.hasNext())
             ? iterator.next()
             : null;
@@ -52,9 +55,10 @@ public abstract class IteratorBasedNodeSource implements INodeWalkerSource {
      * @see org.wikimodel.graph.INodeWalkerSource#getNextSubnode(java.lang.Object,
      *      java.lang.Object)
      */
-    public Object getNextSubnode(Object parent, Object node) throws Exception {
-        Iterator iterator = !fIteratorStack.empty() ? (Iterator) fIteratorStack
-            .pop() : null;
+    public T getNextSubnode(T parent, T node) {
+        Iterator<T> iterator = !fIteratorStack.empty()
+            ? fIteratorStack.pop()
+            : null;
         if (iterator != null)
             deleteIterator(iterator);
         return getNextIteratorValue();
@@ -66,9 +70,7 @@ public abstract class IteratorBasedNodeSource implements INodeWalkerSource {
      * @param currentNode for this node an iterator over all subnodes will be
      *        returned
      * @return a new iterator over all subnodes of the given node
-     * @throws Exception
      */
-    protected abstract Iterator newIterator(Object currentNode)
-        throws Exception;
+    protected abstract Iterator<T> newIterator(T currentNode);
 
 }

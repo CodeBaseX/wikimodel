@@ -6,16 +6,16 @@ package org.wikimodel.graph;
 /**
  * @author kotelnikov
  */
-public abstract class NodeWalkerListener1 implements INodeWalkerListener {
+public abstract class NodeWalkerListener1<T> implements INodeWalkerListener<T> {
 
     private boolean fIn;
 
-    private AbstractNodeWalker fWalker;
+    private AbstractNodeWalker<T> fWalker;
 
     /**
      * 
      */
-    public NodeWalkerListener1(AbstractNodeWalker walker) {
+    public NodeWalkerListener1(AbstractNodeWalker<T> walker) {
         fIn = false;
         fWalker = walker;
     }
@@ -24,7 +24,7 @@ public abstract class NodeWalkerListener1 implements INodeWalkerListener {
      * @see org.wikimodel.graph.INodeWalkerListener#beginNode(java.lang.Object,
      *      java.lang.Object)
      */
-    public final void beginNode(Object parent, Object node) throws Exception {
+    public final void beginNode(T parent, T node) {
         if (fIn && parent != null) {
             onBeginSubnodes(parent);
         }
@@ -36,7 +36,7 @@ public abstract class NodeWalkerListener1 implements INodeWalkerListener {
      * @see org.wikimodel.graph.INodeWalkerListener#endNode(java.lang.Object,
      *      java.lang.Object)
      */
-    public final void endNode(Object parent, Object node) throws Exception {
+    public final void endNode(T parent, T node) {
         // if (!fIn && parent != null) {
         // onEndSubnodes(parent);
         // }
@@ -47,14 +47,12 @@ public abstract class NodeWalkerListener1 implements INodeWalkerListener {
         }
     }
 
-    protected abstract void onBeginNode(Object parent, Object node)
-        throws Exception;
+    protected abstract void onBeginNode(T parent, T node);
 
-    protected abstract void onBeginSubnodes(Object parent) throws Exception;
+    protected abstract void onBeginSubnodes(T parent);
 
-    protected abstract void onEndNode(Object parent, Object node)
-        throws Exception;
+    protected abstract void onEndNode(T parent, T node);
 
-    protected abstract void onEndSubnodes(Object parent) throws Exception;
+    protected abstract void onEndSubnodes(T parent);
 
 }

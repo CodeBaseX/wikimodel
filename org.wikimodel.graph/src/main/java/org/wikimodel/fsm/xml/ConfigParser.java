@@ -7,11 +7,9 @@ package org.wikimodel.fsm.xml;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Stack;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -141,7 +139,7 @@ public class ConfigParser {
 
     class XmlNodeHandler extends DefaultHandler {
 
-        private Stack fHandlerStack = new Stack();
+        private Stack<NodeHandler> fHandlerStack = new Stack<NodeHandler>();
 
         private NodeInfo fRoot;
 
@@ -180,14 +178,13 @@ public class ConfigParser {
             String path = fRoot.getPath();
             NodeHandler handler = (NodeHandler) fHandlerMap.get(path);
             if (handler == null) {
-                for (Iterator iterator = fHandlerMap.entrySet().iterator(); iterator
-                    .hasNext();) {
-                    Map.Entry entry = (Entry) iterator.next();
-                    String mask = (String) entry.getKey();
+                for (Map.Entry<String, NodeHandler> entry : fHandlerMap
+                    .entrySet()) {
+                    String mask = entry.getKey();
                     Pattern regexp = Pattern.compile(mask);
                     Matcher matcher = regexp.matcher(path);
                     if (matcher.matches())
-                        handler = (NodeHandler) entry.getValue();
+                        handler = entry.getValue();
                     if (handler != null)
                         break;
                 }
@@ -211,7 +208,7 @@ public class ConfigParser {
         }
     }
 
-    Map fHandlerMap = new LinkedHashMap();
+    Map<String, NodeHandler> fHandlerMap = new LinkedHashMap<String, NodeHandler>();
 
     /**
      *

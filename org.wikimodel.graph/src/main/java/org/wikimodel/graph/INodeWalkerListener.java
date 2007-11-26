@@ -7,7 +7,7 @@ package org.wikimodel.graph;
  * 
  * @author kotelnikov
  */
-public interface INodeWalkerListener {
+public interface INodeWalkerListener<T> {
 
     /**
      * This method is launched before visiting <code>node</code> object. When
@@ -17,9 +17,8 @@ public interface INodeWalkerListener {
      * 
      * @param parent the parent node
      * @param node a new node to initialize
-     * @throws Exception
      */
-    void beginNode(Object parent, Object node) throws Exception;
+    void beginNode(T parent, T node);
 
     /**
      * This method is launched after visiting the given node. This method can
@@ -28,8 +27,7 @@ public interface INodeWalkerListener {
      * 
      * @param context node walker context
      * @param node a node to destroy.
-     * @throws Exception
      */
-    void endNode(Object parent, Object node) throws Exception;
+    void endNode(T parent, T node);
 
 }

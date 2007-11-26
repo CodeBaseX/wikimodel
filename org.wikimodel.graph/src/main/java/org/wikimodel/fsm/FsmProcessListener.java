@@ -33,20 +33,8 @@ public class FsmProcessListener implements IFsmProcessListener {
      * @see org.wikimodel.fsm.IFsmProcessListener#handleError(org.wikimodel.fsm.FsmState,
      *      java.lang.Throwable)
      */
-    public void handleError(FsmState state, Throwable t) throws Exception {
+    public void handleError(FsmState state, Throwable t) {
         //
-    }
-
-    /**
-     * @see org.wikimodel.fsm.IFsmProcessListener#newState(org.wikimodel.fsm.FsmState,
-     *      java.lang.String, org.wikimodel.fsm.IFsmStateDescriptor)
-     */
-    public FsmState newState(
-        FsmProcess process,
-        FsmState parent,
-        String stateKey,
-        IFsmStateDescriptor descriptor) {
-        return new FsmState(process, stateKey, descriptor, parent);
     }
 
 }
