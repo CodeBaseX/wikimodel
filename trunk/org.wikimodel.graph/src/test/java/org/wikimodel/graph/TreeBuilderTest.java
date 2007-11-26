@@ -17,7 +17,7 @@ public class TreeBuilderTest extends TestCase {
 
     static class NodeItem {
 
-        public static void addItems(List list, char[] line) {
+        public static void addItems(List<NodeItem> list, char[] line) {
             int len = 0;
             for (int i = 0; i < line.length; i++) {
                 char ch = line[i];
@@ -52,14 +52,14 @@ public class TreeBuilderTest extends TestCase {
         super(name);
     }
 
-    private List[] getPaths(String str) {
-        List pathList = new ArrayList();
+    private List<List<String>> getPaths(String str) {
+        List<List<String>> pathList = new ArrayList<List<String>>();
         String[] lines = str.split("\n");
         boolean empty = false;
         for (int l = 0; l < lines.length; l++) {
             String line = lines[l];
             char[] array = line.toCharArray();
-            List path = new ArrayList();
+            List<String> path = new ArrayList<String>();
             for (int i = 0; i < array.length; i++) {
                 path.add("" + array[i]);
             }
@@ -67,19 +67,19 @@ public class TreeBuilderTest extends TestCase {
             empty = path.isEmpty();
         }
         if (!empty)
-            pathList.add(new ArrayList());
-        List[] result = new List[pathList.size()];
-        result = (List[]) pathList.toArray(result);
-        return result;
+            pathList.add(new ArrayList<String>());
+        return pathList;
     }
 
-    private INodeWalkerListener newListener(final StringBuffer buf) {
-        final INodeWalkerListener listener = new INodeWalkerListener() {
-            public void beginNode(Object parent, Object node) throws Exception {
+    private <T> INodeWalkerListener<T> newListener(
+        Class<T> cls,
+        final StringBuffer buf) {
+        final INodeWalkerListener<T> listener = new INodeWalkerListener<T>() {
+            public void beginNode(T parent, T node) {
                 buf.append("<" + node + ">");
             }
 
-            public void endNode(Object parent, Object node) throws Exception {
+            public void endNode(T parent, T node) {
                 buf.append("</" + node + ">");
             }
         };
@@ -102,29 +102,29 @@ public class TreeBuilderTest extends TestCase {
 
     private void testOne(String str, String control) throws Exception {
         final StringBuffer buf = new StringBuffer();
-        final INodeWalkerListener listener = newListener(buf);
-        TreeBuilder builder = new TreeBuilder() {
+        final INodeWalkerListener<NodeItem> listener = newListener(
+            NodeItem.class,
+            buf);
+        TreeBuilder<NodeItem> builder = new TreeBuilder<NodeItem>() {
 
-            protected boolean equal(Object first, Object second) {
-                NodeItem firstItem = (NodeItem) first;
-                NodeItem secondItem = (NodeItem) second;
-                return firstItem.ch == secondItem.ch;
+            protected boolean equal(NodeItem first, NodeItem second) {
+                return first.ch == second.ch;
             }
 
-            protected int getLength(Object node) {
+            protected int getLength(NodeItem node) {
                 return ((NodeItem) node).len;
             }
         };
 
         String[] lines = str.split("\n");
         for (int l = 0; l < lines.length; l++) {
-            List list = new ArrayList();
+            List<NodeItem> list = new ArrayList<NodeItem>();
             String line = lines[l];
             NodeItem.addItems(list, line.toCharArray());
             builder.align(list, listener);
         }
 
-        List list = new ArrayList();
+        List<NodeItem> list = new ArrayList<NodeItem>();
         builder.align(list, listener);
         assertEquals(control, buf.toString());
     }
@@ -151,17 +151,17 @@ public class TreeBuilderTest extends TestCase {
 
     private void testTwo(String str, String control) throws Exception {
         StringBuffer buf = new StringBuffer();
-        INodeWalkerListener listener = newListener(buf);
-        TreeBuilder builder = new TreeBuilder() {
-            protected boolean equal(Object first, Object second) {
+        INodeWalkerListener<String> listener = newListener(String.class, buf);
+        TreeBuilder<String> builder = new TreeBuilder<String>() {
+            protected boolean equal(String first, String second) {
                 if (" ".equals(first) || " ".equals(second))
                     return true;
                 return super.equal(first, second);
             }
         };
-        List[] paths = getPaths(str);
-        for (int i = 0; i < paths.length; i++) {
-            builder.align(paths[i], listener);
+        List<List<String>> paths = getPaths(str);
+        for (List<String> path : paths) {
+            builder.align(path, listener);
         }
         assertEquals(control, buf.toString());
     }

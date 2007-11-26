@@ -12,12 +12,6 @@ public interface IFsmProcessListener {
 
     void endState(FsmState node) throws Exception;
 
-    void handleError(FsmState state, Throwable t) throws Exception;
-
-    FsmState newState(
-        FsmProcess process,
-        FsmState parent,
-        String stateKey,
-        IFsmStateDescriptor descriptor);
+    void handleError(FsmState state, Throwable t);
 
 }

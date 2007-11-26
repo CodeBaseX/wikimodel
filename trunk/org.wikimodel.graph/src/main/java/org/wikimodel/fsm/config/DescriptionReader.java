@@ -46,7 +46,7 @@ import org.xml.sax.Attributes;
  */
 public class DescriptionReader extends ConfigParser {
 
-    static Set fExcludedKeys = new HashSet();
+    static Set<String> fExcludedKeys = new HashSet<String>();
 
     protected static final String KEY_STATE_KEY = "key";
 
@@ -65,20 +65,12 @@ public class DescriptionReader extends ConfigParser {
 
     FsmStateDescriptorConfigurator fConfig;
 
-    /**
-     * 
-     *
-     */
-    public DescriptionReader() {
-        this(new FsmStateDescriptorConfigurator());
-    }
-
     public DescriptionReader(FsmStateDescriptorConfigurator config) {
         fConfig = config;
         addHandlers();
     }
 
-    protected void addAttributes(Map map, Attributes attributes) {
+    protected void addAttributes(Map<String, Object> map, Attributes attributes) {
         int len = attributes.getLength();
         for (int i = 0; i < len; i++) {
             String name = attributes.getQName(i);
@@ -114,7 +106,7 @@ public class DescriptionReader extends ConfigParser {
                 if (stateKey == null)
                     return;
 
-                Map map = new HashMap();
+                Map<String, Object> map = new HashMap<String, Object>();
                 addAttributes(map, attributes);
                 fConfig.beginState(stateKey, map);
             }
@@ -154,10 +146,6 @@ public class DescriptionReader extends ConfigParser {
         registerHandler(
             ".*/extension/transitions/transition",
             transitionConfigurator);
-    }
-
-    public FsmStateDescriptorConfigurator getConfig() {
-        return fConfig;
     }
 
     /**

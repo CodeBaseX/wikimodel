@@ -4,16 +4,51 @@
 package org.wikimodel.graph;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import junit.framework.TestCase;
 
+import org.wikimodel.graph.util.NodeWalkerIterator;
 import org.wikimodel.iterator.ShiftIterator;
 
 /**
  * @author kotelnikov
  */
 public class NodeWalkerTest extends TestCase {
+    //
+    // static abstract class NodeFilter<T> implements INodeWalkerSource<T> {
+    //
+    // private INodeWalkerSource<T> fSource;
+    //
+    // public NodeFilter(INodeWalkerSource<T> source) {
+    // fSource = source;
+    // }
+    //
+    // private T filter(T node, T subnode) {
+    // while (subnode != null && isFiltered(subnode)) {
+    // subnode = fSource.getNextSubnode(node, subnode);
+    // }
+    // return subnode;
+    // }
+    //
+    // public T getFirstSubnode(T node) {
+    // T next = fSource.getFirstSubnode(node);
+    // return filter(node, next);
+    // }
+    //
+    // public T getNextSubnode(T parent, T node) {
+    // T next = fSource.getNextSubnode(parent, node);
+    // return filter(parent, next);
+    // }
+    //
+    // /**
+    // * @param node the node to check
+    // * @return <code>true</code> if the specified should not be returned
+    // * by the filter
+    // */
+    // protected abstract boolean isFiltered(T node);
+    // }
 
     int fDepth;
 
@@ -35,70 +70,70 @@ public class NodeWalkerTest extends TestCase {
      * 
      */
     public void test() {
-        INodeWalkerSource source = new IteratorBasedNodeSource() {
-
-            protected Iterator newIterator(Object currentNode) throws Exception {
-                File f = (File) currentNode;
-                final File[] array = f.listFiles();
-                return new ShiftIterator() {
+        INodeWalkerSource<File> source = new IteratorBasedNodeSource<File>() {
+            protected Iterator<File> newIterator(File f) {
+                File[] a = f.listFiles();
+                if (a == null)
+                    return null;
+                Arrays.sort(a);
+                final File[] array = a;
+                return new ShiftIterator<File>() {
 
                     int pos = 0;
 
-                    protected Object shiftItem() {
-                        return array != null && pos < array.length
-                            ? array[pos++]
-                            : null;
+                    protected File shiftItem() {
+                        File result = null;
+                        while (result == null && pos < array.length) {
+                            File file = array[pos++];
+                            if (!isFiltered(file))
+                                result = file;
+                        }
+                        return result;
                     }
 
+                    private boolean isFiltered(File file) {
+                        return ".svn".equals(file.getName());
+                    }
                 };
             }
 
         };
+        // source = new NodeFilter<File>(source) {
+        //
+        // @Override
+        // protected boolean isFiltered(File node) {
+        // String name = node.getName();
+        // return ".svn".equals(name);
+        // }
+        //
+        // };
         File file = new File("./src");
-        final NodeWalker walker = new NodeWalker(source, file);
-        final INodeWalkerListener listener = new NodeWalkerListener1(walker) {
+        final INodeWalkerListener<File> listener = new NodeWalkerListener<File>() {
 
-            protected void onBeginNode(Object parent, Object node)
-                throws Exception {
-                print("<" + ((File) node).getName() + ">");
+            @Override
+            public void beginNode(File parent, File node) {
                 fDepth++;
             }
 
-            protected void onEndNode(Object parent, Object node)
-                throws Exception {
+            @Override
+            public void endNode(File parent, File node) {
                 fDepth--;
-                print("</" + ((File) node).getName() + ">");
-            }
-
-            protected void onBeginSubnodes(Object parent) throws Exception {
-                print("<children key='" + ((File) parent).getName() + "'>");
-            }
-
-            protected void onEndSubnodes(Object parent) throws Exception {
-                print("</children><!-- " + ((File) parent).getName() + " -->");
             }
 
         };
-        Iterator iterator = new ShiftIterator() {
 
-            protected Object shiftItem() {
-                try {
-                    while (!walker.isFinished()) {
-                        boolean in = walker.shift(listener);
-                        if (walker.getNextNode() == null)
-                            break;
-                        if (in)
-                            break;
-                    }
-                    return walker.getPeekNode();
-                } catch (Exception e) {
-                    return null;
-                }
+        Iterator<File> iterator = new NodeWalkerIterator<File>(
+            source,
+            listener,
+            file) {
+            @Override
+            protected AbstractNodeWalker.Mode getMode() {
+                return AbstractNodeWalker.Mode.EACH; // super.getMode();
             }
         };
 
         while (iterator.hasNext()) {
-            File f = (File) iterator.next();
+            File f = iterator.next();
             print("[" + f.getName() + "]");
         }
     }

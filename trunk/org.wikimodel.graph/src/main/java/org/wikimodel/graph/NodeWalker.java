@@ -5,36 +5,40 @@ package org.wikimodel.graph;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
+ * A default sub-class of the {@link AbstractNodeWalker} class which implements
+ * the stack of nodes using the standard {@link Stack} java class.
+ * 
  * @author kotelnikov
  */
-public class NodeWalker extends AbstractNodeWalker {
+public class NodeWalker<T> extends AbstractNodeWalker<T> {
 
-    protected List fStack = new ArrayList();
+    protected List<T> fStack = new ArrayList<T>();
 
-    public NodeWalker(INodeWalkerSource source, Object topNode) {
+    public NodeWalker(INodeWalkerSource<T> source, T topNode) {
         super(source, topNode);
     }
 
     /**
      * @see org.wikimodel.graph.AbstractNodeWalker#getPeekNode()
      */
-    public Object getPeekNode() {
+    public T getPeekNode() {
         return !fStack.isEmpty() ? fStack.get(fStack.size() - 1) : null;
     }
 
     /**
      * @see org.wikimodel.graph.AbstractNodeWalker#popNode()
      */
-    protected Object popNode() {
+    protected T popNode() {
         return !fStack.isEmpty() ? fStack.remove(fStack.size() - 1) : null;
     }
 
     /**
      * @see org.wikimodel.graph.AbstractNodeWalker#pushNode(java.lang.Object)
      */
-    protected void pushNode(Object currentNode) {
+    protected void pushNode(T currentNode) {
         fStack.add(currentNode);
     }
 
@@ -43,7 +47,7 @@ public class NodeWalker extends AbstractNodeWalker {
      * 
      * @param root a new root node of the tree to visit
      */
-    public void reset(Object root) {
+    public void reset(T root) {
         super.setNextNode(root);
         fStack.clear();
     }

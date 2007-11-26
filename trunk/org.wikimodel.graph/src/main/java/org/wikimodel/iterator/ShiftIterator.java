@@ -17,11 +17,11 @@ import java.util.Iterator;
  * 
  * @author kotelnikov
  */
-public abstract class ShiftIterator implements Iterator {
+public abstract class ShiftIterator<T> implements Iterator<T> {
 
     private boolean fDone;
 
-    protected Object fObject;
+    protected T fObject;
 
     /**
      * Constructor for ShiftIterator.
@@ -35,14 +35,14 @@ public abstract class ShiftIterator implements Iterator {
      * 
      * @param firstObject the first object returned by this iterator item source
      */
-    public ShiftIterator(Object firstObject) {
+    public ShiftIterator(T firstObject) {
         reset(firstObject);
     }
 
     /**
      * @return the current object of this iterator
      */
-    public Object getObject() {
+    public T getObject() {
         return fObject;
     }
 
@@ -58,7 +58,7 @@ public abstract class ShiftIterator implements Iterator {
      * 
      * @return the next object.
      */
-    public Object next() {
+    public T next() {
         return step(false) ? getObject() : null;
     }
 
@@ -81,12 +81,12 @@ public abstract class ShiftIterator implements Iterator {
      * 
      * @param object
      */
-    public void reset(Object object) {
+    public void reset(T object) {
         fObject = object;
         fDone = (fObject != null);
     }
 
-    protected abstract Object shiftItem();
+    protected abstract T shiftItem();
 
     /**
      * Go to the next node.

@@ -1,11 +1,7 @@
 package org.wikimodel.fsm.handle;
 
-import java.util.Hashtable;
-import java.util.Map;
-
 import org.wikimodel.fsm.FsmProcess;
 import org.wikimodel.fsm.FsmState;
-import org.wikimodel.fsm.IFsmEvent;
 import org.wikimodel.fsm.IFsmProcessListener;
 import org.wikimodel.fsm.IFsmStateDescriptor;
 
@@ -13,8 +9,6 @@ import org.wikimodel.fsm.IFsmStateDescriptor;
  * @author kotelnikov
  */
 public class FsmProcessor implements IFsmProcessListener {
-
-    private Map fStateBeanFactoryMap = new Hashtable();
 
     /**
      * 
@@ -26,11 +20,10 @@ public class FsmProcessor implements IFsmProcessListener {
     static class InternalFsmState extends FsmState {
 
         public InternalFsmState(
-            FsmProcess process,
+            FsmState parent,
             String key,
-            IFsmStateDescriptor descriptor,
-            FsmState parent) {
-            super(process, key, descriptor, parent);
+            IFsmStateDescriptor descriptor) {
+            super(parent, key, descriptor);
         }
 
         public IFsmStateBean getBean() {
@@ -56,20 +49,17 @@ public class FsmProcessor implements IFsmProcessListener {
         }
     }
 
-    public void handleError(FsmState node, Throwable t) throws Exception {
+    public void handleError(FsmState node, Throwable t) {
         InternalFsmState state = (InternalFsmState) node;
         IFsmStateBean bean = state.getBean();
         if (bean != null) {
-            bean.handleError(t);
+            try {
+                bean.handleError(t);
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
-    }
-
-    public FsmState newState(
-        FsmProcess process,
-        FsmState parent,
-        String stateKey,
-        IFsmStateDescriptor descriptor) {
-        return new InternalFsmState(process, stateKey, descriptor, parent);
     }
 
 }

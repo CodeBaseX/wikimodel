@@ -1,5 +1,7 @@
 package org.wikimodel.graph;
 
+import org.wikimodel.graph.util.NodeWalkerIterator;
+
 /**
  * This class is used to walk over graph structures.
  * 
@@ -8,22 +10,73 @@ package org.wikimodel.graph;
  * @author mkotelnikov
  */
 
-public abstract class AbstractNodeWalker {
+public abstract class AbstractNodeWalker<T> {
+
+    /**
+     * Possible modes of traversal of a graph; it defines when the iterator
+     * returns the control to the caller - after the entering in a node, after
+     * exiting from a node, for leaf nodes or for each step.
+     * 
+     * @see NodeWalkerIterator#getMode()
+     */
+    public enum Mode {
+
+        /**
+         * Returns control for each step - when the walker enters in a node and
+         * when it goes out
+         */
+        EACH,
+
+        /**
+         * Control is returned when the walker enters in a node
+         */
+        IN,
+
+        /**
+         * Controls is returned only for leaf nodes (nodes without children)
+         */
+        LEAF,
+
+        /**
+         * Controls is returned when the walker goes out of a node
+         */
+        OUT
+    }
+
+    /**
+     * The last visited node has at least one child node to visit.
+     */
+    public final static int CHILD = 1;
+
+    /**
+     * The last visited node has a sibling node at the same level to visit.
+     */
+    public final static int NEXT = 2;
+
+    /**
+     * The last visited node has no child nodes to visit
+     */
+    public final static int NO_CHILD = 4;
+
+    /**
+     * The last visited had no more non visited sibling on the same level.
+     */
+    public final static int NO_NEXT = 8;
 
     /**
      * The next node to add to the stack; it is the next visited node
      */
-    protected Object fNextNode;
+    protected T fNextNode;
 
     /**
      * The source of nodes in the graph
      */
-    protected INodeWalkerSource fSource;
+    protected INodeWalkerSource<T> fSource;
 
     /**
      * @param source
      */
-    public AbstractNodeWalker(INodeWalkerSource source, Object topNode) {
+    public AbstractNodeWalker(INodeWalkerSource<T> source, T topNode) {
         fSource = source;
         fNextNode = topNode;
     }
@@ -31,23 +84,24 @@ public abstract class AbstractNodeWalker {
     /**
      * @return the current active node
      */
-    public Object getCurrentNode() {
+    public T getCurrentNode() {
         return getPeekNode();
     }
 
     /**
      * @return the next node which should be activated
      */
-    public Object getNextNode() {
+    public T getNextNode() {
         return fNextNode;
     }
 
     /**
      * Returns the topmost node in the stack withot removing it from the stack
+     * throws
      * 
      * @return the topmost node in the stack
      */
-    protected abstract Object getPeekNode();
+    protected abstract T getPeekNode();
 
     /**
      * Returns <code>true</code> if the walking process is finished and the
@@ -66,21 +120,21 @@ public abstract class AbstractNodeWalker {
      * 
      * @return the removed topmost node of the stack
      */
-    protected abstract Object popNode();
+    protected abstract T popNode();
 
     /**
      * Pushes the given node in the top of the stack
      * 
      * @param currentNode
      */
-    protected abstract void pushNode(Object currentNode);
+    protected abstract void pushNode(T currentNode);
 
     /**
      * Sets the next node to visit.
      * 
      * @param nextNode the next node to visit
      */
-    public void setNextNode(Object nextNode) {
+    public void setNextNode(T nextNode) {
         fNextNode = nextNode;
     }
 
@@ -96,29 +150,75 @@ public abstract class AbstractNodeWalker {
      *        walker starts to traverse subnodes of a node or when it finish
      *        subnode traversing.
      * @return <code>true</code> if the walker goes down in the tree branches
-     *         and <code>false</code> if it goes one of a node
-     * @throws Exception
+     *         and <code>false</code> if it goes out of a node
      */
-    public boolean shift(INodeWalkerListener nodeListener) throws Exception {
-        boolean result = false;
+    public int shift(INodeWalkerListener<T> nodeListener) {
+        int status;
         if (fNextNode != null) {
-            Object node = fNextNode;
+            T node = fNextNode;
             fNextNode = fSource.getFirstSubnode(node);
-            Object parentNode = getPeekNode();
+            T parentNode = getPeekNode();
             if (parentNode != null || node != null) {
                 nodeListener.beginNode(parentNode, node);
             }
             pushNode(node);
-            result = true;
+            status = fNextNode != null ? CHILD : NO_CHILD;
         } else {
-            Object node = popNode();
-            Object parentNode = getPeekNode();
+            T node = popNode();
+            T parentNode = getPeekNode();
             fNextNode = fSource.getNextSubnode(parentNode, node);
             if (parentNode != null || node != null) {
                 nodeListener.endNode(parentNode, node);
             }
+            status = fNextNode != null ? NEXT : NO_NEXT;
         }
-        return result;
+        return status;
+    }
+
+    /**
+     * @param listener this listener is used to notify about events occurred
+     *        with each node: walker goes in the node or goes out from it, when
+     *        walker starts to traverse subnodes of a node or when it finish
+     *        subnode traversing.
+     * @param mask this mask defines when the walker returns the control to the
+     *        caller; if the status returned by the method
+     *        {@link #shift(INodeWalkerListener)} and this mask has common bits
+     *        then the control will be returned to the caller
+     * @return <code>true</code> if
+     */
+    public boolean shift(INodeWalkerListener<T> listener, int mask) {
+        int status = 0;
+        boolean ok = !isFinished();
+        while ((status & mask) == 0 && ok) {
+            status = shift(listener);
+            ok = !isFinished();
+        }
+        return ok;
+    }
+
+    /**
+     * @param listener this listener is used to notify about events occurred
+     *        with each node: walker goes in the node or goes out from it, when
+     *        walker starts to traverse subnodes of a node or when it finish
+     *        subnode traversing.
+     * @param mode a walking mode
+     * @return <code>true</code> if the there is at least one step to do
+     */
+    public boolean shift(INodeWalkerListener<T> listener, Mode mode) {
+        int mask = 0;
+        if (mode == Mode.IN) {
+            mask = AbstractNodeWalker.CHILD | AbstractNodeWalker.NO_CHILD;
+        } else if (mode == Mode.OUT) {
+            mask = AbstractNodeWalker.NO_CHILD | AbstractNodeWalker.NO_NEXT;
+        } else if (mode == Mode.LEAF) {
+            mask = AbstractNodeWalker.NO_CHILD;
+        } else if (mode == Mode.EACH) {
+            mask = AbstractNodeWalker.CHILD
+                | AbstractNodeWalker.NO_CHILD
+                | AbstractNodeWalker.NEXT
+                | AbstractNodeWalker.NO_NEXT;
+        }
+        return shift(listener, mask);
     }
 
 }

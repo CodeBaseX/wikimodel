@@ -8,20 +8,13 @@ package org.wikimodel.fsm;
  */
 public class FsmState {
 
-    protected IFsmStateDescriptor fDescriptor;
+    private IFsmStateDescriptor fDescriptor;
 
-    protected String fKey;
+    private String fKey;
 
-    protected FsmState fParent;
+    private FsmState fParent;
 
-    private FsmProcess fProcess;
-
-    public FsmState(
-        FsmProcess process,
-        String key,
-        IFsmStateDescriptor descriptor,
-        FsmState parent) {
-        fProcess = process;
+    public FsmState(FsmState parent, String key, IFsmStateDescriptor descriptor) {
         fKey = key;
         fParent = parent;
         fDescriptor = descriptor;
@@ -30,6 +23,7 @@ public class FsmState {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @SuppressWarnings("unchecked")
     public boolean equals(Object obj) {
         if (obj == this)
             return true;
@@ -74,10 +68,6 @@ public class FsmState {
             state = state.fParent;
         }
         return buf.toString();
-    }
-
-    public FsmProcess getProcess() {
-        return fProcess;
     }
 
     public int hashCode() {

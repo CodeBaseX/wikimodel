@@ -8,6 +8,9 @@ public class FsmEvent implements IFsmEvent {
         fKey = key;
     }
 
+    /**
+     * @return the key of this event
+     */
     public String getKey() {
         return fKey;
     }

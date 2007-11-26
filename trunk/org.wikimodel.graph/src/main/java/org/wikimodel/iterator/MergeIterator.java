@@ -37,26 +37,25 @@ import java.util.List;
  * 
  * @author kotelnikov
  */
-public class MergeIterator extends ShiftIterator {
+public class MergeIterator<T> extends ShiftIterator<T> {
 
-    private class Slot extends ShiftIterator implements Comparable {
+    private class Slot extends ShiftIterator<T> implements Comparable<Slot> {
 
-        private Iterator fIterator;
+        private Iterator<T> fIterator;
 
         /**
          * @param arrayElement
          */
-        public Slot(Iterator arrayElement) {
+        public Slot(Iterator<T> arrayElement) {
             fIterator = arrayElement;
         }
 
         /**
          * @see java.lang.Comparable#compareTo(Object)
          */
-        public int compareTo(Object o) {
-            if (o == this)
+        public int compareTo(Slot s) {
+            if (s == this)
                 return 0;
-            Slot s = (Slot) o;
             if (fObject == s.fObject)
                 return 0;
             return compareEntries(fObject, s.fObject);
@@ -65,16 +64,16 @@ public class MergeIterator extends ShiftIterator {
         /**
          * @see java.lang.Object#equals(java.lang.Object)
          */
+        @SuppressWarnings("unchecked")
         public boolean equals(Object obj) {
-            if (!(obj instanceof Slot))
-                return false;
-            return compareTo(obj) == 0;
+            Slot s = (Slot) obj;
+            return compareTo(s) == 0;
         }
 
         /**
          * @see org.semanticdesktop.common.iterator.ShiftIterator#shiftItem()
          */
-        protected Object shiftItem() {
+        protected T shiftItem() {
             return fIterator.hasNext() ? fIterator.next() : null;
         }
 
@@ -89,7 +88,7 @@ public class MergeIterator extends ShiftIterator {
 
     private boolean fFilterRepetedItems;
 
-    private List fList = new ArrayList();
+    private List<Slot> fList = new ArrayList<Slot>();
 
     /**
      * 
@@ -102,7 +101,7 @@ public class MergeIterator extends ShiftIterator {
     /**
      * @param array
      */
-    public MergeIterator(Iterator[] array) {
+    public MergeIterator(Iterator<T>[] array) {
         this(array, false);
     }
 
@@ -110,7 +109,7 @@ public class MergeIterator extends ShiftIterator {
      * @param array
      * @param filterRepetedItems
      */
-    public MergeIterator(Iterator[] array, boolean filterRepetedItems) {
+    public MergeIterator(Iterator<T>[] array, boolean filterRepetedItems) {
         setArray(array);
         fFilterRepetedItems = filterRepetedItems;
     }
@@ -140,12 +139,13 @@ public class MergeIterator extends ShiftIterator {
      * @param second the second element to compare
      * @return comparision result of the given entries
      */
-    protected int compareEntries(Object first, Object second) {
+    @SuppressWarnings("unchecked")
+    protected int compareEntries(T first, T second) {
         if (first == null || second == null) {
             // Puts all null elements at the end
             return first != null ? -1 : 1;
         }
-        return ((Comparable) first).compareTo(second);
+        return ((Comparable<T>) first).compareTo(second);
     }
 
     /**
@@ -153,7 +153,7 @@ public class MergeIterator extends ShiftIterator {
      * 
      * @param array
      */
-    public void setArray(Iterator[] array) {
+    public void setArray(Iterator<T>[] array) {
         fList.clear();
         int len = array != null ? array.length : 0;
         for (int i = 0; i < len; i++) {
@@ -165,13 +165,13 @@ public class MergeIterator extends ShiftIterator {
     /**
      * @see org.semanticdesktop.common.iterator.ShiftIterator#shiftItem()
      */
-    protected Object shiftItem() {
+    protected T shiftItem() {
         Object prev = fObject;
         while (true) {
             if (fList.isEmpty())
                 return null;
-            Slot s = (Slot) fList.remove(0);
-            Object result = s.next();
+            Slot s = fList.remove(0);
+            T result = s.next();
             addSlot(s);
             if (!fFilterRepetedItems || result == null || !result.equals(prev))
                 return result;
