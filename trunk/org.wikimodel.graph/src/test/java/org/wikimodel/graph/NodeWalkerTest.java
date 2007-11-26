@@ -128,7 +128,7 @@ public class NodeWalkerTest extends TestCase {
             file) {
             @Override
             protected AbstractNodeWalker.Mode getMode() {
-                return AbstractNodeWalker.Mode.EACH; // super.getMode();
+                return AbstractNodeWalker.Mode.IN; // super.getMode();
             }
         };
 
