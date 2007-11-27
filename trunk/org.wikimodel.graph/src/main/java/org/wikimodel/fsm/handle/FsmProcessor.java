@@ -1,6 +1,5 @@
 package org.wikimodel.fsm.handle;
 
-import org.wikimodel.fsm.FsmProcess;
 import org.wikimodel.fsm.FsmState;
 import org.wikimodel.fsm.IFsmProcessListener;
 import org.wikimodel.fsm.IFsmStateDescriptor;

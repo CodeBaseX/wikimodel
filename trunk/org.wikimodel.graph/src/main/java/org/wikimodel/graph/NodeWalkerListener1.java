@@ -6,16 +6,18 @@ package org.wikimodel.graph;
 /**
  * @author kotelnikov
  */
-public abstract class NodeWalkerListener1<T> implements INodeWalkerListener<T> {
+public abstract class NodeWalkerListener1<T, E extends Throwable>
+    implements
+    INodeWalkerListener<T, E> {
 
     private boolean fIn;
 
-    private AbstractNodeWalker<T> fWalker;
+    private AbstractNodeWalker<T, E> fWalker;
 
     /**
      * 
      */
-    public NodeWalkerListener1(AbstractNodeWalker<T> walker) {
+    public NodeWalkerListener1(AbstractNodeWalker<T, E> walker) {
         fIn = false;
         fWalker = walker;
     }

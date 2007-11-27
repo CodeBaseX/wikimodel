@@ -6,9 +6,9 @@ import java.util.Stack;
 /**
  * @author kotelnikov
  */
-public abstract class IteratorBasedNodeSource<T>
+public abstract class IteratorBasedNodeSource<T, E extends Throwable>
     implements
-    INodeWalkerSource<T> {
+    INodeWalkerSource<T, E> {
 
     /**
      * This stack contains current node iterators.
@@ -16,9 +16,9 @@ public abstract class IteratorBasedNodeSource<T>
     private Stack<Iterator<T>> fIteratorStack = new Stack<Iterator<T>>();
 
     /**
-     * @throws Exception
+     * @throws E
      */
-    public void close() throws Exception {
+    public void close() throws E {
         while (!fIteratorStack.empty()) {
             Iterator<T> iterator = fIteratorStack.pop();
             deleteIterator(iterator);
@@ -28,10 +28,10 @@ public abstract class IteratorBasedNodeSource<T>
     /**
      * @param iterator
      */
-    protected void deleteIterator(Iterator<T> iterator) {
+    protected void deleteIterator(Iterator<T> iterator) throws E {
     }
 
-    public T getFirstSubnode(T node) {
+    public T getFirstSubnode(T node) throws E {
         Iterator<T> iterator = newIterator(node);
         fIteratorStack.push(iterator);
         return getNextIteratorValue();
@@ -52,10 +52,11 @@ public abstract class IteratorBasedNodeSource<T>
     }
 
     /**
+     * @throws E
      * @see org.wikimodel.graph.INodeWalkerSource#getNextSubnode(java.lang.Object,
      *      java.lang.Object)
      */
-    public T getNextSubnode(T parent, T node) {
+    public T getNextSubnode(T parent, T node) throws E {
         Iterator<T> iterator = !fIteratorStack.empty()
             ? fIteratorStack.pop()
             : null;
@@ -71,6 +72,6 @@ public abstract class IteratorBasedNodeSource<T>
      *        returned
      * @return a new iterator over all subnodes of the given node
      */
-    protected abstract Iterator<T> newIterator(T currentNode);
+    protected abstract Iterator<T> newIterator(T currentNode) throws E;
 
 }

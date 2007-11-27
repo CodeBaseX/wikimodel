@@ -10,7 +10,7 @@ import org.wikimodel.graph.util.NodeWalkerIterator;
  * @author mkotelnikov
  */
 
-public abstract class AbstractNodeWalker<T> {
+public abstract class AbstractNodeWalker<T, E extends Throwable> {
 
     /**
      * Possible modes of traversal of a graph; it defines when the iterator
@@ -71,20 +71,21 @@ public abstract class AbstractNodeWalker<T> {
     /**
      * The source of nodes in the graph
      */
-    protected INodeWalkerSource<T> fSource;
+    protected INodeWalkerSource<T, E> fSource;
 
     /**
      * @param source
      */
-    public AbstractNodeWalker(INodeWalkerSource<T> source, T topNode) {
+    public AbstractNodeWalker(INodeWalkerSource<T, E> source, T topNode) {
         fSource = source;
         fNextNode = topNode;
     }
 
     /**
      * @return the current active node
+     * @throws E
      */
-    public T getCurrentNode() {
+    public T getCurrentNode() throws E {
         return getPeekNode();
     }
 
@@ -101,7 +102,7 @@ public abstract class AbstractNodeWalker<T> {
      * 
      * @return the topmost node in the stack
      */
-    protected abstract T getPeekNode();
+    protected abstract T getPeekNode() throws E;
 
     /**
      * Returns <code>true</code> if the walking process is finished and the
@@ -110,8 +111,9 @@ public abstract class AbstractNodeWalker<T> {
      * return <code>null</code>.
      * 
      * @return <code>true</code> if this walker can not make the next step
+     * @throws E
      */
-    public boolean isFinished() {
+    public boolean isFinished() throws E {
         return fNextNode == null && getPeekNode() == null;
     }
 
@@ -120,21 +122,21 @@ public abstract class AbstractNodeWalker<T> {
      * 
      * @return the removed topmost node of the stack
      */
-    protected abstract T popNode();
+    protected abstract T popNode() throws E;
 
     /**
      * Pushes the given node in the top of the stack
      * 
      * @param currentNode
      */
-    protected abstract void pushNode(T currentNode);
+    protected abstract void pushNode(T currentNode) throws E;
 
     /**
      * Sets the next node to visit.
      * 
      * @param nextNode the next node to visit
      */
-    public void setNextNode(T nextNode) {
+    public void setNextNode(T nextNode) throws E {
         fNextNode = nextNode;
     }
 
@@ -152,7 +154,7 @@ public abstract class AbstractNodeWalker<T> {
      * @return <code>true</code> if the walker goes down in the tree branches
      *         and <code>false</code> if it goes out of a node
      */
-    public int shift(INodeWalkerListener<T> nodeListener) {
+    public int shift(INodeWalkerListener<T, E> nodeListener) throws E {
         int status;
         if (fNextNode != null) {
             T node = fNextNode;
@@ -185,8 +187,9 @@ public abstract class AbstractNodeWalker<T> {
      *        {@link #shift(INodeWalkerListener)} and this mask has common bits
      *        then the control will be returned to the caller
      * @return <code>true</code> if
+     * @throws E
      */
-    public boolean shift(INodeWalkerListener<T> listener, int mask) {
+    public boolean shift(INodeWalkerListener<T, E> listener, int mask) throws E {
         int status = 0;
         boolean ok = !isFinished();
         while ((status & mask) == 0 && ok) {
@@ -203,8 +206,10 @@ public abstract class AbstractNodeWalker<T> {
      *        subnode traversing.
      * @param mode a walking mode
      * @return <code>true</code> if the there is at least one step to do
+     * @throws E
      */
-    public boolean shift(INodeWalkerListener<T> listener, Mode mode) {
+    public boolean shift(INodeWalkerListener<T, E> listener, Mode mode)
+        throws E {
         int mask = 0;
         if (mode == Mode.IN) {
             mask = AbstractNodeWalker.CHILD | AbstractNodeWalker.NO_CHILD;

@@ -40,19 +40,20 @@ public class MergeIteratorTest extends TestCase {
         test(new String[] { "123", "abc", "456" }, "123456abc");
     }
 
+    @SuppressWarnings("unchecked")
     private void test(String[] array, String control) {
-        Iterator[] iterators = new Iterator[array.length];
+        Iterator<String>[] iterators = new Iterator[array.length];
         for (int i = 0; i < array.length; i++) {
-            List list = new ArrayList();
+            List<String> list = new ArrayList<String>();
             for (int j = 0; j < array[i].length(); j++) {
                 list.add("" + array[i].charAt(j));
             }
             iterators[i] = list.iterator();
         }
-        MergeIterator iterator = new MergeIterator(iterators);
+        MergeIterator<String> iterator = new MergeIterator<String>(iterators);
         StringBuffer buf = new StringBuffer();
         while (iterator.hasNext()) {
-            String str = (String) iterator.next();
+            String str = iterator.next();
             buf.append(str);
         }
         assertEquals(control, buf.toString());
