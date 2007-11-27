@@ -43,6 +43,14 @@ Ordered list:
 ==== Heading4 ====
 ===== Heading5 =====
 }}}
+The "=" symbols at the end of lines are optional. So it is possible to write:
+{{{
+= Heading1
+== Heading2
+=== Heading3
+==== Heading4
+===== Heading5
+}}}
 
 Headers with parameters (in this example the header is on the blue background):
 {{{
@@ -101,5 +109,5 @@ Verbatim content is not interpreted by the parser and is returned to the listene
   {{{ And this is an 
      internal verbatim
    block }}}
- }}}
+  }}}
 }}}
