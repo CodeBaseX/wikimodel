@@ -6,10 +6,10 @@ This document contains references to other wiki syntax parsers and plain-text fo
 
 = Details =
 
-* [http://maven.apache.org/doxia/overview.html Doxia] - Java
-* [http://www.radeox.org/ Radeox] - Java
-* [http://en.wikipedia.org/wiki/Textile_(markup_language) Textile] (Wikipedia) - A markup language. 
-  * [http://www.plink-search.com/blog.html?fetch=news&get=PLink_Textile PLink Textile] 
-  * [http://philwilson.org/projects/jtextile/ jtextile]
-  * [http://sourceforge.net/projects/textile4j textile4j] - Java 
-* [http://docutils.sourceforge.net/ DocUtil] - Python
+ * [http://maven.apache.org/doxia/overview.html Doxia] - Java
+ * [http://www.radeox.org/ Radeox] - Java
+ * [http://en.wikipedia.org/wiki/Textile_(markup_language) Textile] (Wikipedia) - A markup language. 
+   * [http://www.plink-search.com/blog.html?fetch=news&get=PLink_Textile PLink Textile] 
+   * [http://philwilson.org/projects/jtextile/ jtextile]
+   * [http://sourceforge.net/projects/textile4j textile4j] - Java 
+ * [http://docutils.sourceforge.net/ DocUtil] - Python
