@@ -269,10 +269,16 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testLists() throws WikiParserException {
-        test("* item {{{formatted block}}} {macro}123{/macro} after");
-        test("* first");
-        test("*this is a bold, and not a list");
-        test("** second");
+        test(
+            "*this is a bold, and not a list",
+            "<p><strong>this is a bold, and not a list</strong></p>");
+        test("**bold**", "<p><strong>bold</strong></p>");
+
+        test("* first", "<ul>\n  <li>first</li>\n</ul>");
+        test(
+            "** second",
+            "<ul>\n  <li><ul>\n  <li>second</li>\n</ul>\n</li>\n</ul>");
+
         test("* item one\n"
             + "* item two\n"
             + "*+item three\n"
@@ -283,8 +289,14 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
             + "  is on multiple\n"
             + " lines");
 
-        test(";term:  definition");
-        test(";just term");
+        test(
+            "* item {{{formatted block}}} {macro}123{/macro} after",
+            "<ul>\n"
+                + "  <li>item <pre>formatted block</pre>\n"
+                + " <span class='macro' macroName='macro'><![CDATA[123]]></span> after</li>\n</ul>");
+
+        test("? term:  definition");
+        test("?just term");
         test(":just definition");
         test(";:just definition");
         test(":just definition");
