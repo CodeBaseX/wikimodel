@@ -127,13 +127,13 @@ TOKEN_MGR_DECLS: {
 
 <DEFAULT, INITIAL_CONTEXT> TOKEN:
 {
-      <#LI_COMMON: [ "+", "-" ]>
-    | <#LI_SPECIAL: [ "*" ]>
+      <#LI_COMMON: [ "+", "-", "*" ]>
     | <#DL: ["?", "!"]>
     | <#LIST_ITEM:
-          (<SPACE>)* (<LI_SPECIAL>|<LI_COMMON>|<DL>) (<SPACE>)+
-        | (<LI_SPECIAL>|<LI_COMMON>){2,} (<SPACE>)*
-        | (<LI_COMMON>|<DL>) (<SPACE>)*
+          (<SPACE>)* (<LI_COMMON> | <DL>) (<SPACE>)+ 
+        | (<DL>)+ (<SPACE>)* 
+        | (<LI_COMMON> | <DL>){2,} (<SPACE>)+ 
+        | (<LI_COMMON> | <DL>){3,} (<SPACE>)*
         >
         
     | <#PROPERTY: "%" ( (<CHAR>)+ | <URI> )>
