@@ -5,7 +5,7 @@ package org.wikimodel.graph;
  * 
  * @author mkotelnikov
  */
-public interface INodeWalkerSource<T> {
+public interface INodeWalkerSource<T, E extends Throwable> {
 
     /**
      * Returns the first subnode of the given node. If the given node is
@@ -14,7 +14,7 @@ public interface INodeWalkerSource<T> {
      * @param node for this node the first subnode should be returned
      * @return the first subnode of the specified node
      */
-    T getFirstSubnode(T node);
+    T getFirstSubnode(T node) throws E;
 
     /**
      * Returns the next sibling of the the given node. .
@@ -23,6 +23,6 @@ public interface INodeWalkerSource<T> {
      * @param node for this node the next sibling should be returned
      * @return the next sibling of the the given node.
      */
-    T getNextSubnode(T parent, T node);
+    T getNextSubnode(T parent, T node) throws E;
 
 }

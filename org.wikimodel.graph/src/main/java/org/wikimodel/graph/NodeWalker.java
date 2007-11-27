@@ -13,11 +13,13 @@ import java.util.Stack;
  * 
  * @author kotelnikov
  */
-public class NodeWalker<T> extends AbstractNodeWalker<T> {
+public class NodeWalker<T, E extends Throwable>
+    extends
+    AbstractNodeWalker<T, E> {
 
     protected List<T> fStack = new ArrayList<T>();
 
-    public NodeWalker(INodeWalkerSource<T> source, T topNode) {
+    public NodeWalker(INodeWalkerSource<T, E> source, T topNode) {
         super(source, topNode);
     }
 
@@ -46,8 +48,9 @@ public class NodeWalker<T> extends AbstractNodeWalker<T> {
      * Resets the stack and sets the given node as the next node to visit
      * 
      * @param root a new root node of the tree to visit
+     * @throws E
      */
-    public void reset(T root) {
+    public void reset(T root) throws E {
         super.setNextNode(root);
         fStack.clear();
     }

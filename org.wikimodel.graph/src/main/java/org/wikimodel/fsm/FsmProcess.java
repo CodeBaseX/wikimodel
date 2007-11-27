@@ -14,7 +14,7 @@ public class FsmProcess implements IFsmProcessConst {
 
     private IFsmEvent fEvent;
 
-    private INodeWalkerListener<FsmState> fListener = new INodeWalkerListener<FsmState>() {
+    private INodeWalkerListener<FsmState, RuntimeException> fListener = new INodeWalkerListener<FsmState, RuntimeException>() {
 
         public void beginNode(FsmState parent, FsmState node) {
             try {
@@ -40,8 +40,8 @@ public class FsmProcess implements IFsmProcessConst {
 
     private boolean fTerminated;
 
-    private AbstractNodeWalker<FsmState> fWalker = new AbstractNodeWalker<FsmState>(
-        new INodeWalkerSource<FsmState>() {
+    private AbstractNodeWalker<FsmState, RuntimeException> fWalker = new AbstractNodeWalker<FsmState, RuntimeException>(
+        new INodeWalkerSource<FsmState, RuntimeException>() {
 
             public FsmState getFirstSubnode(FsmState node) {
                 if (isTerminated())
@@ -134,9 +134,8 @@ public class FsmProcess implements IFsmProcessConst {
     /**
      * @param mask the "debugging" mask
      * @return <code>true</code> if the next step was successfully performed
-     * @throws Exception
      */
-    public boolean nextStep(AbstractNodeWalker.Mode mode) throws Exception {
+    public boolean nextStep(AbstractNodeWalker.Mode mode) {
         fTerminated = !fWalker.shift(fListener, mode);
         return !fTerminated;
     }

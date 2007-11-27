@@ -71,10 +71,10 @@ public class TreeBuilderTest extends TestCase {
         return pathList;
     }
 
-    private <T> INodeWalkerListener<T> newListener(
+    private <T> INodeWalkerListener<T, RuntimeException> newListener(
         Class<T> cls,
         final StringBuffer buf) {
-        final INodeWalkerListener<T> listener = new INodeWalkerListener<T>() {
+        final INodeWalkerListener<T, RuntimeException> listener = new INodeWalkerListener<T, RuntimeException>() {
             public void beginNode(T parent, T node) {
                 buf.append("<" + node + ">");
             }
@@ -102,10 +102,10 @@ public class TreeBuilderTest extends TestCase {
 
     private void testOne(String str, String control) throws Exception {
         final StringBuffer buf = new StringBuffer();
-        final INodeWalkerListener<NodeItem> listener = newListener(
+        final INodeWalkerListener<NodeItem, RuntimeException> listener = newListener(
             NodeItem.class,
             buf);
-        TreeBuilder<NodeItem> builder = new TreeBuilder<NodeItem>() {
+        TreeBuilder<NodeItem, RuntimeException> builder = new TreeBuilder<NodeItem, RuntimeException>() {
 
             protected boolean equal(NodeItem first, NodeItem second) {
                 return first.ch == second.ch;
@@ -151,8 +151,10 @@ public class TreeBuilderTest extends TestCase {
 
     private void testTwo(String str, String control) throws Exception {
         StringBuffer buf = new StringBuffer();
-        INodeWalkerListener<String> listener = newListener(String.class, buf);
-        TreeBuilder<String> builder = new TreeBuilder<String>() {
+        INodeWalkerListener<String, RuntimeException> listener = newListener(
+            String.class,
+            buf);
+        TreeBuilder<String, RuntimeException> builder = new TreeBuilder<String, RuntimeException>() {
             protected boolean equal(String first, String second) {
                 if (" ".equals(first) || " ".equals(second))
                     return true;

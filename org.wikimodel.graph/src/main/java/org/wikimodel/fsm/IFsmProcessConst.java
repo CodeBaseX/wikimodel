@@ -3,8 +3,6 @@
  */
 package org.wikimodel.fsm;
 
-import org.wikimodel.graph.AbstractNodeWalker;
-
 /**
  * @author kotelnikov
  */
@@ -24,6 +22,5 @@ public interface IFsmProcessConst {
      * The key of initial states
      */
     String STATE_INITIAL = "{initial}";
-
 
 }

@@ -70,7 +70,7 @@ public class NodeWalkerTest extends TestCase {
      * 
      */
     public void test() {
-        INodeWalkerSource<File> source = new IteratorBasedNodeSource<File>() {
+        INodeWalkerSource<File, RuntimeException> source = new IteratorBasedNodeSource<File, RuntimeException>() {
             protected Iterator<File> newIterator(File f) {
                 File[] a = f.listFiles();
                 if (a == null)
@@ -108,7 +108,7 @@ public class NodeWalkerTest extends TestCase {
         //
         // };
         File file = new File("./src");
-        final INodeWalkerListener<File> listener = new NodeWalkerListener<File>() {
+        final INodeWalkerListener<File, RuntimeException> listener = new NodeWalkerListener<File, RuntimeException>() {
 
             @Override
             public void beginNode(File parent, File node) {
@@ -122,7 +122,7 @@ public class NodeWalkerTest extends TestCase {
 
         };
 
-        Iterator<File> iterator = new NodeWalkerIterator<File>(
+        Iterator<File> iterator = new NodeWalkerIterator<File, RuntimeException>(
             source,
             listener,
             file) {

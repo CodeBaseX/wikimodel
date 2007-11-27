@@ -32,9 +32,9 @@ import java.util.List;
  * 
  * @author kotelnikov
  */
-public class TreeBuilder<T> extends NodeWalker<T>
+public class TreeBuilder<T, E extends Throwable> extends NodeWalker<T, E>
     implements
-    INodeWalkerSource<T> {
+    INodeWalkerSource<T, E> {
 
     /**
      * The path used as a source of nodes
@@ -53,7 +53,8 @@ public class TreeBuilder<T> extends NodeWalker<T>
         fSource = this;
     }
 
-    public void align(List<T> path, INodeWalkerListener<T> listener) {
+    public void align(List<T> path, INodeWalkerListener<T, E> listener)
+        throws E {
         fPath.clear();
         fPath.addAll(path);
         int pathSize = fPath.size();

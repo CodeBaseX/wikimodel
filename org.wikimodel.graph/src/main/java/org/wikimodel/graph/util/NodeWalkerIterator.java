@@ -17,18 +17,20 @@ import org.wikimodel.iterator.ShiftIterator;
  * 
  * @author kotelnikov
  */
-public class NodeWalkerIterator<T> extends ShiftIterator<T> {
+public class NodeWalkerIterator<T, E extends RuntimeException>
+    extends
+    ShiftIterator<T> {
 
     /**
      * The listener which is used to notify about individual steps of the
      * walking process.
      */
-    private INodeWalkerListener<T> fListener;
+    private INodeWalkerListener<T, E> fListener;
 
     /**
      * A node walker containing the current stack of nodes
      */
-    private AbstractNodeWalker<T> fWalker;
+    private AbstractNodeWalker<T, E> fWalker;
 
     /**
      * THe main constructor creating an internal node walker and initializing
@@ -38,14 +40,16 @@ public class NodeWalkerIterator<T> extends ShiftIterator<T> {
      * @param listener the listener used to notify about individual steps of the
      *        graph traversal process
      * @param topNode the topmost node of the graph; starting from this node the
-     *        graph iteration is started
+     *        graph iteration is started Exception,
      */
     public NodeWalkerIterator(
-        INodeWalkerSource<T> source,
-        INodeWalkerListener<T> listener,
+        INodeWalkerSource<T, E> source,
+        INodeWalkerListener<T, E> listener,
         T topNode) {
         fWalker = newNodeWalker(source, topNode);
-        fListener = listener != null ? listener : new NodeWalkerListener<T>();
+        fListener = listener != null
+            ? listener
+            : new NodeWalkerListener<T, E>();
     }
 
     /**
@@ -56,7 +60,7 @@ public class NodeWalkerIterator<T> extends ShiftIterator<T> {
      * @param topNode the topmost node of the graph from which the iteration
      *        process should be started
      */
-    public NodeWalkerIterator(INodeWalkerSource<T> source, T topNode) {
+    public NodeWalkerIterator(INodeWalkerSource<T, E> source, T topNode) {
         this(source, null, topNode);
     }
 
@@ -79,7 +83,7 @@ public class NodeWalkerIterator<T> extends ShiftIterator<T> {
      * 
      * @return the internal node walker
      */
-    public AbstractNodeWalker<T> getWalker() {
+    public AbstractNodeWalker<T, E> getWalker() {
         return fWalker;
     }
 
@@ -97,10 +101,10 @@ public class NodeWalkerIterator<T> extends ShiftIterator<T> {
      * @return a new node walker defining the current position of the iterator
      *         in the graph structure
      */
-    protected AbstractNodeWalker<T> newNodeWalker(
-        INodeWalkerSource<T> source,
+    protected AbstractNodeWalker<T, E> newNodeWalker(
+        INodeWalkerSource<T, E> source,
         T topNode) {
-        return new NodeWalker<T>(source, topNode);
+        return new NodeWalker<T, E>(source, topNode);
     }
 
     /**
