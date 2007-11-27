@@ -1,0 +1,38 @@
+#summary Description of advanced structural elements supported by the WikiModel (properties, embedded documents and so on)
+
+= Introduction =
+The WikiModel and the CommonWikiSyntax provides access to the following features:
+ * "embedded documents"
+ * semantic properties
+ * macros 
+
+= Embedded documents =
+
+The WikiModel introduces the notion of "embedded documents". The possible structure of such embedded document is exactly the same as the structure of the topmost document. It means that using these embedded documents it is possible to put block elements inside others blocks. This is a unique feature of the WikiModel. Embedded documents are delimited by the following syntactical elements: `(((`...`)))`
+
+Syntax for embedded documents:
+{{{
+The top-level document content
+(((
+... the embedded document ...
+)))
+... the top-level document again
+}}}
+
+The following example shows how a table can contain internal headers, lists and paragraphs:  
+{{{
+= The top-level document
+!! Table Header 1 !! Table Header 2 !! Table Header 3
+:: Cell One :: Cell Two (((
+= This is an embedded document
+
+The first paragraph of the embedded document
+
+- list item one
+- list item two
+  - sub-item 1
+  - sub-item 2
+))) :: Cell Three
+
+The next paragraph in the top-level document
+}}}
