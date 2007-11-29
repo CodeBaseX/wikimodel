@@ -2,12 +2,16 @@
 
 = Grammar =
 
-{{{
+*Note:* elements starting from the "#" symbol are used to re-group other elements but they don't have real representation in the document structure (ex: #internalBlock, #docElement...).  
 
+{{{
+// Top-level document. 
 doc :=  ( #docElement )*
+
+// Building blocks of documents. 
 #docElement := 
     (
-        // Block elements and containers of embedded documents  
+        // Block elements which can have embedded documents
           table 
         | list 
     
@@ -17,12 +21,13 @@ doc :=  ( #docElement )*
         | quot
         | paragraph
         | emptyParagraph
-        | verbatimBlock // pre
+        | verbatimBlock // pre-formatted text blocks
     
         // A special type of block elements. 
-        // It can contain embedded documents
+        // It can be considered as a paragraph with a "type".
+        // Blocks of this type can contain embedded documents.
         | info 
-        characters
+
         // Elements used to add additional (semantic) structure to documents
         | embeddedDocument
         | simpleProperty
@@ -33,14 +38,16 @@ doc :=  ( #docElement )*
         | extensionBlock
     )
 
+
+// Tables, table rows and table cells can have parameters.
 table := (tableRow)+
 tableRow := (tableCell)+
-tableCell := ( #block )*
+tableCell := ( #internalBlock )*
 
 list := (listItem)+
-listItem := ( #block )* ( list )*
+listItem := ( #internalBlock )* ( list )*
 
-#block := 
+#internalBlock := 
     ( 
           embeddedDocument 
         | verbatimBlock
@@ -62,7 +69,7 @@ emptyParagraph := ( newLine )+
 
 verbatimBlock := #characters
 
-info := ( #block )*
+info := ( #internalBlock )*
 
 embeddedDocument := ( #docElement )*
 
