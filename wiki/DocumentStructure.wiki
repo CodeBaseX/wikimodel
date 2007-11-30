@@ -33,7 +33,7 @@ doc :=  ( #docElement )*
         | simpleProperty
         | documentProperty
     
-        // For hakers
+        // For hackers
         | macroBlock
         | extensionBlock
     )
