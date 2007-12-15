@@ -2,12 +2,10 @@ package org.wikimodel.app.formatter;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,8 +15,6 @@ import org.wikimodel.wem.IWikiPrinter;
 import org.wikimodel.wem.PrintListener;
 import org.wikimodel.wem.WikiParserException;
 import org.wikimodel.wem.common.CommonWikiParser;
-import org.wikimodel.wem.images.ImageUtil;
-import org.wikimodel.wem.tex.TexSerializer;
 
 /**
  * @author kotelnikov
@@ -33,21 +29,21 @@ public class DocFormatter {
         WikiParserException {
         final File source = new File("./doc-txt");
         File dest = new File("./doc-html");
-        // DocFormatter formatter = new DocFormatter("txt", "html");
-        DocFormatter formatter = new DocFormatter("txt", "tex") {
-            @Override
-            protected IWemListener newSerializer(IWikiPrinter wikiPrinter) {
-                return new TexSerializer(wikiPrinter) {
-                    @Override
-                    protected InputStream getImageInput(String ref) throws IOException {
-                        File file = new File(source, ref);
-                        FileInputStream input = new FileInputStream(file);
-                        return input;
-                    }
-                };
-            }
-
-        };
+        DocFormatter formatter = new DocFormatter("txt", "html");
+        // DocFormatter formatter = new DocFormatter("txt", "tex") {
+        // @Override
+        // protected IWemListener newSerializer(IWikiPrinter wikiPrinter) {
+        // return new TexSerializer(wikiPrinter) {
+        // @Override
+        // protected InputStream getImageInput(String ref) throws IOException {
+        // File file = new File(source, ref);
+        // FileInputStream input = new FileInputStream(file);
+        // return input;
+        // }
+        // };
+        // }
+        //
+        // };
         formatter.formatDir(source, dest);
     }
 
