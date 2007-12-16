@@ -10,9 +10,6 @@
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
 package org.wikimodel.wem.creole.javacc;
-import org.wikimodel.wem.WikiStyle;
-import org.wikimodel.wem.impl.IWikiScannerContext;
-import org.wikimodel.wem.IWemConstants;
 
 public class CreoleWikiScannerTokenManager implements CreoleWikiScannerConstants
 {

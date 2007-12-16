@@ -18,7 +18,6 @@ import java.util.Map;
 import org.wikimodel.wem.WikiPageUtil;
 import org.wikimodel.wem.WikiParameter;
 import org.wikimodel.wem.WikiParameters;
-import org.wikimodel.wem.WikiStyle;
 import org.wikimodel.wem.impl.IWikiScannerContext;
 import org.wikimodel.wem.impl.WikiScannerContext;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
