@@ -10,11 +10,7 @@
  *******************************************************************************/
 package org.wikimodel.wem.test;
 
-import java.io.StringReader;
-
-import org.wikimodel.wem.IWemListener;
 import org.wikimodel.wem.IWikiParser;
-import org.wikimodel.wem.PrintListener;
 import org.wikimodel.wem.WikiParserException;
 import org.wikimodel.wem.xhtml.XhtmlParser;
 
