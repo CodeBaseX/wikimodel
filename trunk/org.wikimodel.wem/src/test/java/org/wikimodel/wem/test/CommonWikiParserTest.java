@@ -156,17 +156,45 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testExtensions() throws WikiParserException {
-        test("abc $abc after");
-        test("before\n$abc after");
+        // Inline extensions
+        test(" $abc ", "<p> <span class='extension' extension='abc'/> </p>");
+        test(
+            "abc $abc after",
+            "<p>abc <span class='extension' extension='abc'/> after</p>");
+        test(
+            "abc $abc() after",
+            "<p>abc <span class='extension' extension='abc'/> after</p>");
+        test(
+            "abc $abc(a=b c=d) after",
+            "<p>abc <span class='extension' extension='abc' a='b' c='d'/> after</p>");
+        test(
+            "before$abc(hello)after",
+            "<p>before<span class='extension' extension='abc' hello=''/>after</p>");
 
-        test("abc $abc(hello)");
-        test("before\n$abc(hello)after");
+        // Block extensions
+        test("$abc", "<div class='extension' extension='abc'/>");
+        test("$abc()", "<div class='extension' extension='abc'/>");
+        test(
+            "$abc(a=b c=d)",
+            "<div class='extension' extension='abc' a='b' c='d'/>");
+        test("$abc(a)", "<div class='extension' extension='abc' a=''/>");
 
-        test("before $inlineExtension after");
-        test("before$inlineExtension()after");
-        test(" $inlineExtension  ");
-
-        test("$blockExtension()after");
+        test("before\n$abc after", ""
+            + "<p>before</p>\n"
+            + "<div class='extension' extension='abc'/>\n"
+            + "<p> after</p>");
+        test("before\n$abc() after", ""
+            + "<p>before</p>\n"
+            + "<div class='extension' extension='abc'/>\n"
+            + "<p> after</p>");
+        test("before\n$abc(a=b c=d) after", ""
+            + "<p>before</p>\n"
+            + "<div class='extension' extension='abc' a='b' c='d'/>\n"
+            + "<p> after</p>");
+        test("before\n$abc(hello)after", ""
+            + "<p>before</p>\n"
+            + "<div class='extension' extension='abc' hello=''/>\n"
+            + "<p>after</p>");
     }
 
     /**
@@ -248,11 +276,14 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testHorLine() throws WikiParserException {
-        test("----");
-        test("-------");
-        test("-----------");
-        test(" -----------");
-        test("---abc");
+        test("----", "<hr />");
+        test("-------", "<hr />");
+        test("-----------", "<hr />");
+        test("----\nabc", "<hr />\n<p>abc</p>");
+        test("before\n----\nafter", "<p>before</p>\n<hr />\n<p>after</p>");
+
+        // Not lines
+        test(" -----------", "<p> &mdash;&mdash;&mdash;</p>");
     }
 
     /**
@@ -307,6 +338,8 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         test(";term one: definition one\n"
             + ";term two: definition two\n"
             + ";term three: definition three");
+        test(":Term definition");
+        test(";:Term definition");
 
         test(";One,\ntwo,\nbucle my shoes...:\n"
             + "...Three\nfour,\nClose the door\n"
@@ -485,42 +518,109 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testReferences() throws WikiParserException {
-        test("Это (=ссылка=) на внешний документ...");
-        test("This is a (=reference=) to an external document...");
+        test(
+            "Это (=ссылка=) на внешний документ...",
+            "<p>Это <a href='ссылка'>ссылка</a> на внешний документ&hellip;</p>");
+        test(
+            "Это (=http://www.google.com ссылка=) на внешний документ...",
+            "<p>Это <a href='http://www.google.com'>ссылка</a> на внешний документ&hellip;</p>");
+        test(
+            "This is a (=reference=) to an external document...",
+            "<p>This is a <a href='reference'>reference</a> to an external document&hellip;</p>");
+        test(
+            "This is a (=http://www.google.com reference=) to an external document...",
+            "<p>This is a <a href='http://www.google.com'>reference</a> to an external document&hellip;</p>");
 
-        test("before http://www.foo.bar/com after");
-        test("before http://www.foo.bar/com?q=abc#ancor after");
-        test("before wiki:Hello after");
-        test("before wiki\\:Hello after");
+        test(
+            "before http://www.foo.bar/com after",
+            "<p>before <a href='http://www.foo.bar/com'>http://www.foo.bar/com</a> after</p>");
+        test(
+            "before http://www.foo.bar/com?q=abc#ancor after",
+            "<p>before <a href='http://www.foo.bar/com?q=abc#ancor'>http://www.foo.bar/com?q=abc#ancor</a> after</p>");
+        test(
+            "before wiki:Hello after",
+            "<p>before <a href='wiki:Hello'>wiki:Hello</a> after</p>");
+        test(
+            "before abc:cde#efg after",
+            "<p>before <a href='abc:cde#efg'>abc:cde#efg</a> after</p>");
+        // Opaque URIs
+        test(
+            "before first:second:third:anonymous@hello/path/?query=value#ancor after",
+            "<p>before <a href='first:second:third:anonymous@hello/path/?query=value#ancor'>first:second:third:anonymous@hello/path/?query=value#ancor</a> after</p>");
+        test(
+            "http://123.234.245.34/toto/titi/MyDoc.pdf",
+            "<p><a href='http://123.234.245.34/toto/titi/MyDoc.pdf'>http://123.234.245.34/toto/titi/MyDoc.pdf</a></p>");
 
-        test("before abc:cde#efg after");
-        test("before abc:cde#efg after");
-        test("before first:second:third:anonymous@hello/path/?query=value#ancor after");
+        // "Magic" references (starting with "image:", "download:", ...)
+        test(
+            "before image:http://www.foo.com/bar.gif after",
+            "<p>before <img src='http://www.foo.com/bar.gif' title='http://www.foo.com/bar.gif'/> after</p>");
+        test(
+            "before download:http://www.foo.com/bar.zip after",
+            "<p>before <a href='http://www.foo.com/bar.zip'>http://www.foo.com/bar.zip</a> after</p>");
+        test("download:MyDoc.pdf", "<p><a href='MyDoc.pdf'>MyDoc.pdf</a></p>");
+        test(
+            "Reference: download:MyDoc.pdf :not a reference",
+            "<p>Reference: <a href='MyDoc.pdf'>MyDoc.pdf</a> :not a reference</p>");
 
-        test("download:MyDoc.pdf");
-        test("Reference: download:MyDoc.pdf :not a reference");
-
-        test("http://123.234.245.34/toto/titi/MyDoc.pdf");
+        // Escaped reference
+        test(
+            "before wiki\\:Hello after",
+            "<p>before wiki<span class='escaped'>:</span>Hello after</p>");
 
         // Not references
-        test("download::MyDoc.pdf");
-        test("before abc::after");
-        test("before abc: after");
-        test("before abc# after");
-        test("before #abc after");
-        test("before abc:#cde after");
+        test("download::MyDoc.pdf", "<p>download::MyDoc.pdf</p>");
+        test("before abc::after", "<p>before abc::after</p>");
+        test("before abc: after", "<p>before abc: after</p>");
+        test("before abc# after", "<p>before abc# after</p>");
+        test("before abc:#cde after", "<p>before abc:#cde after</p>");
 
         // Explicit references.
-        test("before [toto] after");
-        test("before (=toto=) after");
-        test("before [#local ancor] after");
+        test(
+            "before [toto] after",
+            "<p>before <a href='toto'>toto</a> after</p>");
+        test(
+            "before (=toto=) after",
+            "<p>before <a href='toto'>toto</a> after</p>");
+        test(
+            "before [#local ancor] after",
+            "<p>before <a href='#local'>ancor</a> after</p>");
 
-        test("before (((doc-before(=toto=)doc-after))) after");
-        test("before ((((=toto=)))) after");
-        test(" ((((=toto=))))");
-        test("((((=toto=))))");
-        test("((((((toto))))))");
-        test("\n(((a(((toto)))b)))");
+        test("before (((doc-before(=toto=)doc-after))) after", ""
+            + "<p>before</p>\n"
+            + "<div class='doc'>\n"
+            + "<p>doc-before<a href='toto'>toto</a>doc-after</p>\n"
+            + "</div>\n"
+            + "<p>after</p>");
+        test("before ((((=toto=)))) after", ""
+            + "<p>before</p>\n"
+            + "<div class='doc'>\n"
+            + "<p><a href='toto'>toto</a></p>\n"
+            + "</div>\n"
+            + "<p>after</p>");
+        test(" ((((=toto=))))", ""
+            + "<div class='doc'>\n"
+            + "<p><a href='toto'>toto</a></p>\n"
+            + "</div>");
+        test("((((=toto=))))", ""
+            + "<div class='doc'>\n"
+            + "<p><a href='toto'>toto</a></p>\n"
+            + "</div>");
+
+        test("((((((toto))))))", ""
+            + "<div class='doc'>\n"
+            + "<div class='doc'>\n"
+            + "<p>toto</p>\n"
+            + "</div>\n"
+            + "</div>");
+        test("(((a(((toto)))b)))", ""
+            + "<div class='doc'>\n"
+            + "<p>a</p>\n"
+            + "<div class='doc'>\n"
+            + "<p>toto</p>\n"
+            + "</div>\n"
+            + "<p>b</p>\n"
+            + "</div>");
     }
 
     /**
@@ -536,32 +636,72 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
     public void testTables() throws WikiParserException {
         test("!! Header :: Cell ", ""
             + "<table><tbody>\n"
-            + "  <tr><th>Header</th><td>Cell </td></tr>\n"
+            + "  <tr><th> Header </th><td> Cell </td></tr>\n"
             + "</tbody></table>");
         test("!!   Header    ::    Cell    ", ""
             + "<table><tbody>\n"
-            + "  <tr><th>Header</th><td>Cell    </td></tr>\n"
+            + "  <tr><th>   Header    </th><td>    Cell    </td></tr>\n"
             + "</tbody></table>");
 
-        test("::Cell 1 :: Cell 2");
-        test("Not a Header :: Not a Cell");
-        test("Not a Header::Not a Cell");
-        test(":Term definition");
-        test(";:Term definition");
+        test("::Cell 1 :: Cell 2", "<table><tbody>\n"
+            + "  <tr><td>Cell 1 </td><td> Cell 2</td></tr>\n"
+            + "</tbody></table>");
+        test("Not a Header :: Not a Cell", "<p>Not a Header :: Not a Cell</p>");
+        test("Not a Header::Not a Cell", "<p>Not a Header::Not a Cell</p>");
 
-        test("|| cell 1.1 || cell 1.2\n" + "|| cell 2.1|| cell 2.2");
-        test("|| Head 1.1 || Head 1.2\n" + "| cell 2.1| cell 2.2");
+        test("|| cell 1.1 || cell 1.2\n" + "|| cell 2.1|| cell 2.2", ""
+            + "<table><tbody>\n"
+            + "  <tr><th> cell 1.1 </th><th> cell 1.2</th></tr>\n"
+            + "  <tr><th> cell 2.1</th><th> cell 2.2</th></tr>\n"
+            + "</tbody></table>");
+        test("|| Head 1.1 || Head 1.2\n" + "| cell 2.1| cell 2.2", ""
+            + "<table><tbody>\n"
+            + "  <tr><th> Head 1.1 </th><th> Head 1.2</th></tr>\n"
+            + "  <tr><td> cell 2.1</td><td> cell 2.2</td></tr>\n"
+            + "</tbody></table>");
         test("|| Multi \nline  \nheader \n"
-            + "| Multi\nline\ncell\n\nOne,two,three...");
-        test("this is not || a table");
-        test("this is not | a table");
-        test("|| ''Italic header'' || __Bold header__\n"
-            + "| ''Italic cell'' | __Bold cell__\n");
-        // Bad formed formatting
-        test("|| ''Italic header || __Bold header \n"
-            + "| ''Italic cell | __Bold cell\n");
+            + "| Multi\nline\ncell\n\nOne,two,three", ""
+            + "<table><tbody>\n"
+            + "  <tr><th> Multi \nline  \nheader </th></tr>\n"
+            + "  <tr><td> Multi\nline\ncell</td></tr>\n"
+            + "</tbody></table>\n"
+            + "<p>One,two,three</p>");
+        test("this is not || a table", "<p>this is not || a table</p>");
+        test("this is not | a table", "<p>this is not | a table</p>");
+        test(
+            "|| __Italic header__ || *Bold header*\n"
+                + "| __Italic cell__ | *Bold cell*\n",
+            ""
+                + "<table><tbody>\n"
+                + "  <tr><th> <em>Italic header</em> </th><th> <strong>Bold header</strong></th></tr>\n"
+                + "  <tr><td> <em>Italic cell</em> </td><td> <strong>Bold cell</strong></td></tr>\n"
+                + "</tbody></table>");
+        test(
+            "|| __Italic header || *Bold header \n"
+                + "| __Italic cell | *Bold cell \n",
+            ""
+                + "<table><tbody>\n"
+                + "  <tr><th> <em>Italic header </em></th><th> <strong>Bold header </strong></th></tr>\n"
+                + "  <tr><td> <em>Italic cell </em></td><td> <strong>Bold cell </strong></td></tr>\n"
+                + "</tbody></table>");
 
-        test("{{a=b}}\n|| cell");
+        // Table parameters
+        test("{{a=b}}\n|| Header ", ""
+            + "<table a='b'><tbody>\n"
+            + "  <tr><th> Header </th></tr>\n"
+            + "</tbody></table>");
+        test("{{a=b}}\n!! Header ", ""
+            + "<table a='b'><tbody>\n"
+            + "  <tr><th> Header </th></tr>\n"
+            + "</tbody></table>");
+        test("{{a=b}}\n| cell ", ""
+            + "<table a='b'><tbody>\n"
+            + "  <tr><td> cell </td></tr>\n"
+            + "</tbody></table>");
+        test("{{a=b}}\n:: cell ", ""
+            + "<table a='b'><tbody>\n"
+            + "  <tr><td> cell </td></tr>\n"
+            + "</tbody></table>");
 
         // Row parameters
         test("{{a=b}}||cell");

@@ -35,54 +35,56 @@ public interface CreoleWikiScannerConstants {
   int URI_UNRESERVED = 19;
   int URI_RESERVED = 20;
   int URI_SCHEME = 21;
-  int URI_PCT_ENCODED = 22;
-  int URI_PCHAR = 23;
-  int URI_QUERY = 24;
-  int URI_FRAGMENT = 25;
-  int URI_HIER_PART = 26;
-  int URI_AUTHORITY = 27;
-  int URI_USERINFO = 28;
-  int URI_PATH_ABEMPTY = 29;
-  int URI_PATH_ABSOLUTE = 30;
-  int URI_PATH_ROOTLESS = 31;
-  int URI_SEGMENT = 32;
-  int URI_SEGMENT_NZ = 33;
-  int URI_SEGMENT_NZ_NC = 34;
-  int URI_PORT = 35;
-  int URI_HOST = 36;
-  int URI_REG_NAME = 37;
-  int I_LIST_ITEM = 38;
-  int I_TABLE_ROW = 39;
-  int I_HEADER_BEGIN = 40;
-  int I_VERBATIM_BLOCK = 41;
-  int I_HORLINE = 42;
-  int I_VERBATIM_INLINE = 43;
-  int I_REFERENCE = 44;
-  int I_HEADER_END = 45;
-  int I_TABLE_CELL = 46;
-  int I_BR = 47;
-  int I_FORMAT_SYMBOL = 48;
-  int I_URI = 49;
-  int I_NL = 50;
-  int I_SPACE = 51;
-  int I_WORD = 52;
-  int I_SPECIAL_SYMBOL = 53;
-  int D_LIST_ITEM = 54;
-  int D_TABLE_ROW = 55;
-  int D_HEADER_BEGIN = 56;
-  int D_VERBATIM_BLOCK = 57;
-  int D_HORLINE = 58;
-  int D_VERBATIM_INLINE = 59;
-  int D_REFERENCE = 60;
-  int D_HEADER_END = 61;
-  int D_TABLE_CELL = 62;
-  int D_BR = 63;
-  int D_FORMAT_SYMBOL = 64;
-  int D_URI = 65;
-  int D_NL = 66;
-  int D_SPACE = 67;
-  int D_WORD = 68;
-  int D_SPECIAL_SYMBOL = 69;
+  int URI_SCHEME_COMPOSITE = 22;
+  int URI_PCT_ENCODED = 23;
+  int URI_PCHAR_FIRST = 24;
+  int URI_PCHAR = 25;
+  int URI_QUERY = 26;
+  int URI_FRAGMENT = 27;
+  int URI_HIER_PART = 28;
+  int URI_AUTHORITY = 29;
+  int URI_USERINFO = 30;
+  int URI_PATH_ABEMPTY = 31;
+  int URI_PATH_ABSOLUTE = 32;
+  int URI_PATH_ROOTLESS = 33;
+  int URI_SEGMENT = 34;
+  int URI_SEGMENT_NZ = 35;
+  int URI_SEGMENT_NZ_NC = 36;
+  int URI_PORT = 37;
+  int URI_HOST = 38;
+  int URI_REG_NAME = 39;
+  int I_LIST_ITEM = 40;
+  int I_TABLE_ROW = 41;
+  int I_HEADER_BEGIN = 42;
+  int I_VERBATIM_BLOCK = 43;
+  int I_HORLINE = 44;
+  int I_VERBATIM_INLINE = 45;
+  int I_REFERENCE = 46;
+  int I_HEADER_END = 47;
+  int I_TABLE_CELL = 48;
+  int I_BR = 49;
+  int I_FORMAT_SYMBOL = 50;
+  int I_URI = 51;
+  int I_NL = 52;
+  int I_SPACE = 53;
+  int I_WORD = 54;
+  int I_SPECIAL_SYMBOL = 55;
+  int D_LIST_ITEM = 56;
+  int D_TABLE_ROW = 57;
+  int D_HEADER_BEGIN = 58;
+  int D_VERBATIM_BLOCK = 59;
+  int D_HORLINE = 60;
+  int D_VERBATIM_INLINE = 61;
+  int D_REFERENCE = 62;
+  int D_HEADER_END = 63;
+  int D_TABLE_CELL = 64;
+  int D_BR = 65;
+  int D_FORMAT_SYMBOL = 66;
+  int D_URI = 67;
+  int D_NL = 68;
+  int D_SPACE = 69;
+  int D_WORD = 70;
+  int D_SPECIAL_SYMBOL = 71;
 
   int DEFAULT = 0;
   int INITIAL_CONTEXT = 1;
@@ -110,7 +112,9 @@ public interface CreoleWikiScannerConstants {
     "<URI_UNRESERVED>",
     "<URI_RESERVED>",
     "<URI_SCHEME>",
+    "<URI_SCHEME_COMPOSITE>",
     "<URI_PCT_ENCODED>",
+    "<URI_PCHAR_FIRST>",
     "<URI_PCHAR>",
     "<URI_QUERY>",
     "<URI_FRAGMENT>",

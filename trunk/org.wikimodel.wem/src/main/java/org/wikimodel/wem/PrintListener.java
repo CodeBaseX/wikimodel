@@ -168,9 +168,9 @@ public class PrintListener extends PrintInlineListener {
     public void onExtensionBlock(String extensionName, WikiParameters params) {
         println("<div class='extension' extension='"
             + extensionName
-            + "' "
+            + "'"
             + params
-            + " />");
+            + "/>");
     }
 
     public void onHorizontalLine() {

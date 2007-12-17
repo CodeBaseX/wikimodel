@@ -26,16 +26,16 @@ public abstract class ReferenceHandler {
 		}
 
 		if (ref.startsWith(PREFIX_IMAGE)) {
-			if (label == null || "".equals(label)) {
-				label = "";
-			}
 			ref = ref.substring(PREFIX_IMAGE.length());
+            if (label == null || "".equals(label)) {
+                label = ref;
+            }
 			handleImage(ref, label);
 		} else if (ref.startsWith(PREFIX_DOWNLOAD)) {
-			if (label == null || "".equals(label)) {
-				label = "";
-			}
 			ref = ref.substring(PREFIX_DOWNLOAD.length());
+            if (label == null || "".equals(label)) {
+                label = ref;
+            }
 			handleDownload(ref, label);
 		} else {
 			if (label == null || "".equals(label)) {
