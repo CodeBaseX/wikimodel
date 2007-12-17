@@ -256,7 +256,6 @@ public class PrintTextListener implements IWemListener {
 			@Override
 			protected void handleImage(String ref, String label) {
 				handleReference(ref, label);
-				;
 			}
 
 			@Override

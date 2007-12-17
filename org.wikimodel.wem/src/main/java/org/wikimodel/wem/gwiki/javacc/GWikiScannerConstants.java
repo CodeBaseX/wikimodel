@@ -38,54 +38,56 @@ public interface GWikiScannerConstants {
   int URI_UNRESERVED = 22;
   int URI_RESERVED = 23;
   int URI_SCHEME = 24;
-  int URI_PCT_ENCODED = 25;
-  int URI_PCHAR = 26;
-  int URI_QUERY = 27;
-  int URI_FRAGMENT = 28;
-  int URI_HIER_PART = 29;
-  int URI_AUTHORITY = 30;
-  int URI_USERINFO = 31;
-  int URI_PATH_ABEMPTY = 32;
-  int URI_PATH_ABSOLUTE = 33;
-  int URI_PATH_ROOTLESS = 34;
-  int URI_SEGMENT = 35;
-  int URI_SEGMENT_NZ = 36;
-  int URI_SEGMENT_NZ_NC = 37;
-  int URI_PORT = 38;
-  int URI_HOST = 39;
-  int URI_REG_NAME = 40;
-  int I_VERBATIM_START = 41;
-  int I_ESCAPE = 42;
-  int I_LIST_ITEM = 43;
-  int I_TABLE_ROW = 44;
-  int I_PROPERTY = 45;
-  int I_HEADER_BEGIN = 46;
-  int I_REFERENCE = 47;
-  int I_HEADER_END = 48;
-  int I_TABLE_CELL = 49;
-  int I_VERBATIM_INLINE = 50;
-  int I_FORMAT_SYMBOL = 51;
-  int I_URI = 52;
-  int I_NL = 53;
-  int I_SPACE = 54;
-  int I_WORD = 55;
-  int I_SPECIAL_SYMBOL = 56;
-  int D_VERBATIM_START = 57;
-  int D_ESCAPE = 58;
-  int D_LIST_ITEM = 59;
-  int D_TABLE_ROW = 60;
-  int D_PROPERTY = 61;
-  int D_HEADER_BEGIN = 62;
-  int D_REFERENCE = 63;
-  int D_HEADER_END = 64;
-  int D_TABLE_CELL = 65;
-  int D_VERBATIM_INLINE = 66;
-  int D_FORMAT_SYMBOL = 67;
-  int D_URI = 68;
-  int D_NL = 69;
-  int D_SPACE = 70;
-  int D_WORD = 71;
-  int D_SPECIAL_SYMBOL = 72;
+  int URI_SCHEME_COMPOSITE = 25;
+  int URI_PCT_ENCODED = 26;
+  int URI_PCHAR_FIRST = 27;
+  int URI_PCHAR = 28;
+  int URI_QUERY = 29;
+  int URI_FRAGMENT = 30;
+  int URI_HIER_PART = 31;
+  int URI_AUTHORITY = 32;
+  int URI_USERINFO = 33;
+  int URI_PATH_ABEMPTY = 34;
+  int URI_PATH_ABSOLUTE = 35;
+  int URI_PATH_ROOTLESS = 36;
+  int URI_SEGMENT = 37;
+  int URI_SEGMENT_NZ = 38;
+  int URI_SEGMENT_NZ_NC = 39;
+  int URI_PORT = 40;
+  int URI_HOST = 41;
+  int URI_REG_NAME = 42;
+  int I_VERBATIM_START = 43;
+  int I_ESCAPE = 44;
+  int I_LIST_ITEM = 45;
+  int I_TABLE_ROW = 46;
+  int I_PROPERTY = 47;
+  int I_HEADER_BEGIN = 48;
+  int I_REFERENCE = 49;
+  int I_HEADER_END = 50;
+  int I_TABLE_CELL = 51;
+  int I_VERBATIM_INLINE = 52;
+  int I_FORMAT_SYMBOL = 53;
+  int I_URI = 54;
+  int I_NL = 55;
+  int I_SPACE = 56;
+  int I_WORD = 57;
+  int I_SPECIAL_SYMBOL = 58;
+  int D_VERBATIM_START = 59;
+  int D_ESCAPE = 60;
+  int D_LIST_ITEM = 61;
+  int D_TABLE_ROW = 62;
+  int D_PROPERTY = 63;
+  int D_HEADER_BEGIN = 64;
+  int D_REFERENCE = 65;
+  int D_HEADER_END = 66;
+  int D_TABLE_CELL = 67;
+  int D_VERBATIM_INLINE = 68;
+  int D_FORMAT_SYMBOL = 69;
+  int D_URI = 70;
+  int D_NL = 71;
+  int D_SPACE = 72;
+  int D_WORD = 73;
+  int D_SPECIAL_SYMBOL = 74;
 
   int VERBATIM_CONTEXT = 0;
   int DEFAULT = 1;
@@ -117,7 +119,9 @@ public interface GWikiScannerConstants {
     "<URI_UNRESERVED>",
     "<URI_RESERVED>",
     "<URI_SCHEME>",
+    "<URI_SCHEME_COMPOSITE>",
     "<URI_PCT_ENCODED>",
+    "<URI_PCHAR_FIRST>",
     "<URI_PCHAR>",
     "<URI_QUERY>",
     "<URI_FRAGMENT>",
