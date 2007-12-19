@@ -374,6 +374,41 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
             + "<pre class='macro' macroName='toto'><![CDATA[a]]></pre>\n"
             + "<p>after</p>");
 
+        // URIs as macro names
+        test(
+            "{x:toto}a{/x:toto}",
+            "<pre class='macro' macroName='x:toto'><![CDATA[a]]></pre>");
+        test(
+            "{x:toto}a{x:toto}b{/x:toto}c{/x:toto}",
+            "<pre class='macro' macroName='x:toto'><![CDATA[a{x:toto}b{/x:toto}c]]></pre>");
+        test("before\n{x:toto}a{/x:toto}\nafter", ""
+            + "<p>before</p>\n"
+            + "<pre class='macro' macroName='x:toto'><![CDATA[a]]></pre>\n"
+            + "<p>after</p>");
+        test("before\n{x:toto}a{/x:toto}after", ""
+            + "<p>before</p>\n"
+            + "<pre class='macro' macroName='x:toto'><![CDATA[a]]></pre>\n"
+            + "<p>after</p>");
+
+        // Empty macros
+        test(
+            "{x:toto /}",
+            "<pre class='macro' macroName='x:toto'><![CDATA[]]></pre>");
+        test(
+            "{x:toto a=b c=d /}",
+            "<pre class='macro' macroName='x:toto' a='b' c='d'><![CDATA[]]></pre>");
+        test("before\n{x:toto  a=b c=d/}\nafter", ""
+            + "<p>before</p>\n"
+            + "<pre class='macro' macroName='x:toto' a='b' c='d'><![CDATA[]]></pre>\n"
+            + "<p>after</p>");
+        test("before\n{x:toto  a='b' c='d'/}after", ""
+            + "<p>before</p>\n"
+            + "<pre class='macro' macroName='x:toto' a='b' c='d'><![CDATA[]]></pre>\n"
+            + "<p>after</p>");
+        test(
+            "before{x:toto /}after",
+            "<p>before<span class='macro' macroName='x:toto'><![CDATA[]]></span>after</p>");
+
         // Bad-formed block macros (not-closed)
         test("{toto}", "<pre class='macro' macroName='toto'><![CDATA[]]></pre>");
         test(
@@ -466,9 +501,27 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
                 + "</li>\n"
                 + "  <li>item three</li>\n"
                 + "</ul>");
-    }
 
-    public void testMacro_Issue6() throws WikiParserException {
+        // Macros with URIs as names
+        test(
+            "{x:y a=b c=d}",
+            "<pre class='macro' macroName='x:y' a='b' c='d'><![CDATA[]]></pre>");
+        test(
+            "before{x:y a=b c=d}macro content",
+            "<p>before<span class='macro' macroName='x:y' a='b' c='d'><![CDATA[macro content]]></span></p>");
+        test(
+            "before\n{x:y a=b c=d}macro content",
+            ""
+                + "<p>before</p>\n"
+                + "<pre class='macro' macroName='x:y' a='b' c='d'><![CDATA[macro content]]></pre>");
+        test(
+            "before\n{x:y a=b c=d/}\nafter",
+            ""
+                + "<p>before</p>\n"
+                + "<pre class='macro' macroName='x:y' a='b' c='d'><![CDATA[]]></pre>\n"
+                + "<p>after</p>");
+
+        // Not closed and bad-formed macros
         test(
             "a{a}{b}",
             "<p>a<span class='macro' macroName='a'><![CDATA[{b}]]></span></p>");
@@ -488,6 +541,7 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         test(
             "a {{x:}}, {{y:}} b",
             "<p>a {<span class='macro' macroName='x:'><![CDATA[}, {{y:}} b]]></span></p>");
+
     }
 
     /**
@@ -534,6 +588,7 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
             + "The second paragraph");
 
         test("\n<toto");
+
     }
 
     /**

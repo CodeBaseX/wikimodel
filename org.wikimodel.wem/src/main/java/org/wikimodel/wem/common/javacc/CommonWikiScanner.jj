@@ -151,6 +151,7 @@ TOKEN_MGR_DECLS: {
         | "{" ~["{"] | "{{" ~["{"]
       )+ >
     | <#MACRO_NAME: ( <URI> | (<CHAR>)+ ) >
+    | <#MACRO_EMPTY: "{" <MACRO_NAME> (~["}"])* "/}" >
     | <#MACRO_START: "{" <MACRO_NAME> (~["}"])* "}" >
     | <#MACRO_END: "{/" <MACRO_NAME> (<SPACE>)* "}" > 
     | <#MACRO_CONTENT: ( <ESCAPED> | <CHAR> | <SPACE> |<NEW_LINE> | <SPECIAL_SYMBOL> ) >
@@ -294,7 +295,9 @@ TOKEN_MGR_DECLS: {
     | <I_LIST_ITEM: (<NEW_LINE>)? <LIST_ITEM> > : DEFAULT
     | <I_VERBATIM_INLINE : <VERBATIM_INLINE> > : DEFAULT
     | <I_VERBATIM_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
+    | <I_MACRO_EMPTY_BLOCK: (<NEW_LINE>)? <MACRO_EMPTY> > : DEFAULT
     | <I_MACRO_BLOCK_START: (<NEW_LINE>)? <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
+    | <I_MACRO_EMPTY_INLINE: <MACRO_EMPTY> > : DEFAULT
     | <I_MACRO_INLINE_START: <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
     | <I_QUOT_BLOCK: (<NEW_LINE>)? <QUOT_BLOCK> > : DEFAULT
     | <I_QUOT_LINE: (<NEW_LINE>)? <QUOT_LINE> > : DEFAULT
@@ -333,7 +336,9 @@ TOKEN_MGR_DECLS: {
     | <D_LIST_ITEM: <NEW_LINE> <LIST_ITEM> > : DEFAULT
     | <D_VERBATIM_INLINE : <VERBATIM_INLINE> > : DEFAULT
     | <D_VERBATIM_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
+    | <D_MACRO_EMPTY_BLOCK: <NEW_LINE> <MACRO_EMPTY> > : DEFAULT
     | <D_MACRO_BLOCK_START: <NEW_LINE> <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
+    | <D_MACRO_EMPTY_INLINE: <MACRO_EMPTY> > : DEFAULT
     | <D_MACRO_INLINE_START: <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
     | <D_QUOT_BLOCK: <NEW_LINE> <QUOT_BLOCK> > : DEFAULT
     | <D_QUOT_LINE: <NEW_LINE> <QUOT_LINE> > : DEFAULT
@@ -376,7 +381,9 @@ TOKEN_MGR_DECLS: {
     Token getLIST_ITEM(): {Token t=null;} {(t=<I_LIST_ITEM>|t=<D_LIST_ITEM>){return t;}}
     Token getVERBATIM_INLINE(): {Token t=null;} {(t=<I_VERBATIM_INLINE>|t=<D_VERBATIM_INLINE>){return t;}}
     Token getVERBATIM_START(): {Token t=null;} {(t=<I_VERBATIM_START>|t=<D_VERBATIM_START>){return t;}}
+    Token getMACRO_EMPTY_BLOCK(): {Token t=null;} {(t=<I_MACRO_EMPTY_BLOCK>|t=<D_MACRO_EMPTY_BLOCK>){return t;}}
     Token getMACRO_BLOCK_START(): {Token t=null;} {(t=<I_MACRO_BLOCK_START>|t=<D_MACRO_BLOCK_START>){return t;}}
+    Token getMACRO_EMPTY_INLINE(): {Token t=null;} {(t=<I_MACRO_EMPTY_INLINE>|t=<D_MACRO_EMPTY_INLINE>){return t;}}
     Token getMACRO_INLINE_START(): {Token t=null;} {(t=<I_MACRO_INLINE_START>|t=<D_MACRO_INLINE_START>){return t;}}
     Token getQUOT_BLOCK(): {Token t=null;} {(t=<I_QUOT_BLOCK>|t=<D_QUOT_BLOCK>){return t;}}
     Token getQUOT_LINE(): {Token t=null;} {(t=<I_QUOT_LINE>|t=<D_QUOT_LINE>){return t;}}
@@ -697,12 +704,44 @@ void macroBlock():
     Token t = null;
 }
 {
+    t = getMACRO_EMPTY_BLOCK()
+    {
+        emptyMacro(t, true);
+    }
+    |
     t = getMACRO_BLOCK_START()
     {
         macro(t, true);
     }
 }
 
+void emptyMacro(Token t, boolean block):
+{
+}
+{
+    {
+        String str = t.image.trim();
+        str = str.substring(1, str.length() - 2);
+        String paramStr = "";
+        int paramStrPos = str.indexOf(" ");
+        String name = "";
+        if (paramStrPos > 0) {
+            paramStr = str.substring(paramStrPos);
+            name = str.substring(0, paramStrPos);
+        } else {
+            name = str;
+        }
+        name = name.trim();
+
+        str = "";
+        WikiParameters params = new WikiParameters(paramStr);
+        if (block) {
+            fContext.onMacroBlock(name, params, str);
+        } else {
+            fContext.onMacroInline(name, params, str);
+        }        
+    }
+}
 void macro(Token t, boolean block):
 {
     StringBuffer buf = new StringBuffer();
@@ -1014,6 +1053,11 @@ void line():
                 } else {
                     fContext.onSpecialSymbol(t.image);
                 }
+            }
+            |
+            t = getMACRO_EMPTY_INLINE()
+            {
+                emptyMacro(t, false);
             }
             |
             t = getMACRO_INLINE_START() 
