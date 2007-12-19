@@ -10,7 +10,13 @@
  *******************************************************************************/
 package org.wikimodel.wem.test;
 
+import java.io.IOException;
+import java.io.StringReader;
+
+import org.wikimodel.wem.IWemListener;
 import org.wikimodel.wem.IWikiParser;
+import org.wikimodel.wem.IWikiPrinter;
+import org.wikimodel.wem.PrintListener;
 import org.wikimodel.wem.WikiParserException;
 import org.wikimodel.wem.common.CommonWikiParser;
 
@@ -766,4 +772,36 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         test("before`after\nnext line", "<p>before`after\nnext line</p>");
     }
 
+	String[] tokenManagerExceptionCauses = {
+			"The link can also be a direct URL starting with {{http:}}, {{ftp:}}, {{mailto:}}, {{https:}}, or {{news:}}, in which case the link points to an external entity. For example, to point at the java.sun.com home page, use {{[[http://java.sun.com]}}, which becomes [http://java.sun.com/] or {{[[Java home page|http://java.sun.com]}}, which becomes [Java home page|http://java.sun.com].",
+			"Das anlegen einer neuen Instanz erfolgt mit zope-eigenen Skript {{/export/zope/bin/mkzopeinstance.py}}",
+			"Deduktionstheorem: M |= F <=> M u {-F} widerspruchsvoll <=> (M u -F) unerfüllbar",
+			" title  = {{OWL} {W}eb {O}ntology {L}anguage {G}uide},",
+			"{\"{o}} = ö",
+			"<tr><td><code>Include-Resource</code></td><td><a href='#LIST'>LIST</a> of iclause</td><td>The Include-Resource instruction makes it possible to include arbitrary resources; it contains a list of resource paths. The resources will be copied into the target jar file. The iclause can have the following forms:<br />&nbsp;<br /><code>iclause    ::= inline | copy</code><br /><code>copy       ::= '{' process '}' | process</code><br /><code>process    ::= assignment | simple</code><br /><code>assignment ::= PATH '=' PATH</code><br /><code>simple     ::= PATH</code><br /><code>inline     ::= '@' PATH ( '!/' PATH? ('/**' | '/*')? )?</code><br />&nbsp;<br />In the case of <code>assignment</code> or <code>simple</code>, the PATH parameter can point to a file or directory. The <code>simple</code> form will place the resource in the target JAR with only the file name, therefore without any path components. That is, including src/a/b.c will result in a resource b.c in the root of the target JAR. If the PATH points to a directory, the directory name itself is not used in the target JAR path. If the resource must be placed in a subdirectory of the target jar, use the <code>assignment</code> form. The <code>inline</code> requires a ZIP or JAR file, which will be completely expanded in the target JAR, unless followed with a file specification. The file specification can be a specific file in the jar or a directory followed by ** or *. The ** indicates recursively and the * indicates one level. If just a directory name is given, it will mean **.<br />The <code>simple</code> and <code>assigment</code> forms can be encoded with curly braces, like <code>{foo.txt}</code>. This indicates that the file should be preprocessed (or filtered as it is sometimes called). Preprocessed files can use the same variables and macros as defined in the <a href='#macros'>macro section</a>.<br />&nbsp;<br /><code>Include-Resource: @osgi.jar, <br />&nbsp;{LICENSE.txt}, <br />&nbsp;acme/Merge.class=src/acme/Merge.class</code></td></tr>",
+			"note ={\\url{http://heikohaller.de/literatur/diplomarbeit/}},",
+			"The magical incantation in the {{jspwiki.properties}} file is:",
+			"Then set your variable to true or false by \\newcommand{\\condition}{true} or \\newcommand{\\condition}{false}.",
+			"* Inpired by the Java types, we also define a {{SortedSet}} as ol with {{class=\"noduplicates\"}}.",
+			";:''__Tip__: If you want to insert the page name without the spaces, use {{<wiki:Variable var=\"pagename\" />}}.''",
+			"\\hfill {\\it Max V\"{o}lkel} \\",
+			"     <td headers=\"matches\">Punctuation: One of <tt>!\"#$%&'()*+,-./:;<=>?@[[\\]^_`{|}~</tt></td></tr>",
+			"ein Label \"{{global{global} }}\" gibt",
+			"* unsafe: {space}, ?<>#%{}|\\^~[]`" };
+
+	public void testIssue6() throws IOException, WikiParserException {
+		for (String in : tokenManagerExceptionCauses) {
+			IWikiParser wikiParser = new CommonWikiParser();
+			IWemListener listener = new PrintListener(new NullPrinter());
+			wikiParser.parse(new StringReader(in), listener);
+		}
+	}
+
+	class NullPrinter implements IWikiPrinter {
+		public void print(String str) {
+		}
+
+		public void println(String str) {
+		}
+	}
 }
