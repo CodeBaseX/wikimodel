@@ -10,13 +10,7 @@
  *******************************************************************************/
 package org.wikimodel.wem.test;
 
-import java.io.IOException;
-import java.io.StringReader;
-
-import org.wikimodel.wem.IWemListener;
 import org.wikimodel.wem.IWikiParser;
-import org.wikimodel.wem.IWikiPrinter;
-import org.wikimodel.wem.PrintListener;
 import org.wikimodel.wem.WikiParserException;
 import org.wikimodel.wem.common.CommonWikiParser;
 
@@ -37,7 +31,7 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         return new CommonWikiParser();
     }
 
-    public void test() throws WikiParserException {
+    public void testComplexFormatting() throws WikiParserException {
         test("%rdf:type toto:Document\r\n"
             + "\r\n"
             + "%title Hello World\r\n"
@@ -243,6 +237,10 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testHeaders() throws WikiParserException {
+        test("=Header1=", "<h1>Header1</h1>");
+        test("==Header2==", "<h2>Header2</h2>");
+        test("===Header3===", "<h3>Header3</h3>");
+        test("====Header4====", "<h4>Header4</h4>");
         test("=Header1", "<h1>Header1</h1>");
         test("==Header2", "<h2>Header2</h2>");
         test("===Header3", "<h3>Header3</h3>");
@@ -471,7 +469,25 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
     }
 
     public void testMacro_Issue6() throws WikiParserException {
-        test("a {{x:}}, {{y:}} b");
+        test(
+            "a{a}{b}",
+            "<p>a<span class='macro' macroName='a'><![CDATA[{b}]]></span></p>");
+        test(
+            "a{a}{b}{",
+            "<p>a<span class='macro' macroName='a'><![CDATA[{b}{]]></span></p>");
+        test(
+            "a {{x:}} b",
+            "<p>a {<span class='macro' macroName='x:'><![CDATA[} b]]></span></p>");
+        test(
+            "a {{x:}} }b",
+            "<p>a {<span class='macro' macroName='x:'><![CDATA[} }b]]></span></p>");
+
+        test(
+            "a {{x:}} {}b",
+            "<p>a {<span class='macro' macroName='x:'><![CDATA[} {}b]]></span></p>");
+        test(
+            "a {{x:}}, {{y:}} b",
+            "<p>a {<span class='macro' macroName='x:'><![CDATA[}, {{y:}} b]]></span></p>");
     }
 
     /**

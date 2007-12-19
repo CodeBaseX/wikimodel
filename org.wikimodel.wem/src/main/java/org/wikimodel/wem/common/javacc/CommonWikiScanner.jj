@@ -145,19 +145,15 @@ TOKEN_MGR_DECLS: {
     | <#VERBATIM_END: "}}}" > 
     | <#ESCAPED: ( "\\\\" | "\\" ~["\\"] ) >
     | <#VERBATIM_CONTENT: ( 
-          <ESCAPED> 
+          <ESCAPED>
         | ~["}", "{", "\\"] 
         | "}" ~["}"] | "}}" ~["}"]
         | "{" ~["{"] | "{{" ~["{"]
       )+ >
-    | <#MACRO_START: "{" (<CHAR>)+ (~["}"])* "}" >
-    | <#MACRO_END: "{/" (<CHAR>)+ "}" > 
-    | <#MACRO_CONTENT: ( 
-          <ESCAPED> 
-        | ~["{", "\\"] 
-        | "{" <SPACE> 
-        | "{" (~["}"])+ <NEW_LINE> 
-      )+ >
+    | <#MACRO_NAME: ( <URI> | (<CHAR>)+ ) >
+    | <#MACRO_START: "{" <MACRO_NAME> (~["}"])* "}" >
+    | <#MACRO_END: "{/" <MACRO_NAME> (<SPACE>)* "}" > 
+    | <#MACRO_CONTENT: ( <ESCAPED> | <CHAR> | <SPACE> |<NEW_LINE> | <SPECIAL_SYMBOL> ) >
     | <#INFO: "/" (<CHAR> | "!" | "?" | "*") "\\" >
     | <#EXTENSION: "$" (<CHAR>)+ ( (<SPACE>)* "(" ( <ESCAPED> | ~[")", "\\"] )* ")" )? >
     | <#PARAMS:   "{{" ( <ESCAPED> | ~["}", "{", "\\"] | "}" ~["}", "{"] )* "}}" >
@@ -733,9 +729,9 @@ void macro(Token t, boolean block):
     }
     (LOOKAHEAD(2)
         (
-              t = getINTERNAL_MACRO_CONTENT() { end = false; }
+              t = getINTERNAL_MACRO_START() { end = false; }
             | t = getINTERNAL_MACRO_END() { end = true; }
-            | t = getINTERNAL_MACRO_START() { end = false; }
+            | t = getINTERNAL_MACRO_CONTENT() { end = false; }
         )
         {
             if (prevEnd != null) {
