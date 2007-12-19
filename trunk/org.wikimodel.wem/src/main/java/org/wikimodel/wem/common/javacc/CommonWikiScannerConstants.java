@@ -32,116 +32,121 @@ public interface CommonWikiScannerConstants {
   int ESCAPED = 16;
   int VERBATIM_CONTENT = 17;
   int MACRO_NAME = 18;
-  int MACRO_START = 19;
-  int MACRO_END = 20;
-  int MACRO_CONTENT = 21;
-  int INFO = 22;
-  int EXTENSION = 23;
-  int PARAMS = 24;
-  int HEADER = 25;
-  int BR = 26;
-  int ESCAPE = 27;
-  int VERBATIM_INLINE = 28;
-  int REFERENCE = 29;
-  int HORLINE = 30;
-  int CELL = 31;
-  int QUOT_BLOCK = 32;
-  int QUOT_LINE = 33;
-  int FORMAT_SYMBOL = 34;
-  int SPECIAL_SYMBOLS = 35;
-  int NEW_LINE = 36;
-  int SPACE = 37;
-  int SPECIAL_SYMBOL = 38;
-  int CHAR = 39;
-  int URI = 40;
-  int ALPHA = 41;
-  int DIGIT = 42;
-  int HEXDIG = 43;
-  int URI_GEN_DELIMS = 44;
-  int URI_SUB_DELIMS = 45;
-  int URI_UNRESERVED = 46;
-  int URI_RESERVED = 47;
-  int URI_SCHEME = 48;
-  int URI_SCHEME_COMPOSITE = 49;
-  int URI_PCT_ENCODED = 50;
-  int URI_PCHAR_FIRST = 51;
-  int URI_PCHAR = 52;
-  int URI_QUERY = 53;
-  int URI_FRAGMENT = 54;
-  int URI_HIER_PART = 55;
-  int URI_AUTHORITY = 56;
-  int URI_USERINFO = 57;
-  int URI_PATH_ABEMPTY = 58;
-  int URI_PATH_ABSOLUTE = 59;
-  int URI_PATH_ROOTLESS = 60;
-  int URI_SEGMENT = 61;
-  int URI_SEGMENT_NZ = 62;
-  int URI_SEGMENT_NZ_NC = 63;
-  int URI_PORT = 64;
-  int URI_HOST = 65;
-  int URI_REG_NAME = 66;
-  int I_DOC_BEGIN = 67;
-  int I_DOC_END = 68;
-  int I_BR = 69;
-  int I_ESCAPE = 70;
-  int I_HORLINE = 71;
-  int I_TABLE_ROW = 72;
-  int I_TABLE_CELL = 73;
-  int I_LIST_ITEM = 74;
-  int I_VERBATIM_INLINE = 75;
-  int I_VERBATIM_START = 76;
-  int I_MACRO_BLOCK_START = 77;
-  int I_MACRO_INLINE_START = 78;
-  int I_QUOT_BLOCK = 79;
-  int I_QUOT_LINE = 80;
-  int I_INFO = 81;
-  int I_EXTENSION_BLOCK = 82;
-  int I_EXTENSION_INLINE = 83;
-  int I_PROPERTY = 84;
-  int I_PROPERTY_DOC = 85;
-  int I_PROPERTY_INLINE = 86;
-  int I_HEADER_BEGIN = 87;
-  int I_REFERENCE = 88;
-  int I_HEADER_END = 89;
-  int I_FORMAT_SYMBOL = 90;
-  int I_BLOCK_PARAMS = 91;
-  int I_SPECIAL_SYMBOLS = 92;
-  int I_URI = 93;
-  int I_NL = 94;
-  int I_SPACE = 95;
-  int I_WORD = 96;
-  int I_SPECIAL_SYMBOL = 97;
-  int D_DOC_BEGIN = 98;
-  int D_DOC_END = 99;
-  int D_BR = 100;
-  int D_ESCAPE = 101;
-  int D_HORLINE = 102;
-  int D_TABLE_ROW = 103;
-  int D_TABLE_CELL = 104;
-  int D_LIST_ITEM = 105;
-  int D_VERBATIM_INLINE = 106;
-  int D_VERBATIM_START = 107;
-  int D_MACRO_BLOCK_START = 108;
-  int D_MACRO_INLINE_START = 109;
-  int D_QUOT_BLOCK = 110;
-  int D_QUOT_LINE = 111;
-  int D_INFO = 112;
-  int D_EXTENSION_BLOCK = 113;
-  int D_EXTENSION_INLINE = 114;
-  int D_PROPERTY = 115;
-  int D_PROPERTY_DOC = 116;
-  int D_PROPERTY_INLINE = 117;
-  int D_HEADER_BEGIN = 118;
-  int D_REFERENCE = 119;
-  int D_HEADER_END = 120;
-  int D_FORMAT_SYMBOL = 121;
-  int D_BLOCK_PARAMS = 122;
-  int D_SPECIAL_SYMBOLS = 123;
-  int D_URI = 124;
-  int D_NL = 125;
-  int D_SPACE = 126;
-  int D_WORD = 127;
-  int D_SPECIAL_SYMBOL = 128;
+  int MACRO_EMPTY = 19;
+  int MACRO_START = 20;
+  int MACRO_END = 21;
+  int MACRO_CONTENT = 22;
+  int INFO = 23;
+  int EXTENSION = 24;
+  int PARAMS = 25;
+  int HEADER = 26;
+  int BR = 27;
+  int ESCAPE = 28;
+  int VERBATIM_INLINE = 29;
+  int REFERENCE = 30;
+  int HORLINE = 31;
+  int CELL = 32;
+  int QUOT_BLOCK = 33;
+  int QUOT_LINE = 34;
+  int FORMAT_SYMBOL = 35;
+  int SPECIAL_SYMBOLS = 36;
+  int NEW_LINE = 37;
+  int SPACE = 38;
+  int SPECIAL_SYMBOL = 39;
+  int CHAR = 40;
+  int URI = 41;
+  int ALPHA = 42;
+  int DIGIT = 43;
+  int HEXDIG = 44;
+  int URI_GEN_DELIMS = 45;
+  int URI_SUB_DELIMS = 46;
+  int URI_UNRESERVED = 47;
+  int URI_RESERVED = 48;
+  int URI_SCHEME = 49;
+  int URI_SCHEME_COMPOSITE = 50;
+  int URI_PCT_ENCODED = 51;
+  int URI_PCHAR_FIRST = 52;
+  int URI_PCHAR = 53;
+  int URI_QUERY = 54;
+  int URI_FRAGMENT = 55;
+  int URI_HIER_PART = 56;
+  int URI_AUTHORITY = 57;
+  int URI_USERINFO = 58;
+  int URI_PATH_ABEMPTY = 59;
+  int URI_PATH_ABSOLUTE = 60;
+  int URI_PATH_ROOTLESS = 61;
+  int URI_SEGMENT = 62;
+  int URI_SEGMENT_NZ = 63;
+  int URI_SEGMENT_NZ_NC = 64;
+  int URI_PORT = 65;
+  int URI_HOST = 66;
+  int URI_REG_NAME = 67;
+  int I_DOC_BEGIN = 68;
+  int I_DOC_END = 69;
+  int I_BR = 70;
+  int I_ESCAPE = 71;
+  int I_HORLINE = 72;
+  int I_TABLE_ROW = 73;
+  int I_TABLE_CELL = 74;
+  int I_LIST_ITEM = 75;
+  int I_VERBATIM_INLINE = 76;
+  int I_VERBATIM_START = 77;
+  int I_MACRO_EMPTY_BLOCK = 78;
+  int I_MACRO_BLOCK_START = 79;
+  int I_MACRO_EMPTY_INLINE = 80;
+  int I_MACRO_INLINE_START = 81;
+  int I_QUOT_BLOCK = 82;
+  int I_QUOT_LINE = 83;
+  int I_INFO = 84;
+  int I_EXTENSION_BLOCK = 85;
+  int I_EXTENSION_INLINE = 86;
+  int I_PROPERTY = 87;
+  int I_PROPERTY_DOC = 88;
+  int I_PROPERTY_INLINE = 89;
+  int I_HEADER_BEGIN = 90;
+  int I_REFERENCE = 91;
+  int I_HEADER_END = 92;
+  int I_FORMAT_SYMBOL = 93;
+  int I_BLOCK_PARAMS = 94;
+  int I_SPECIAL_SYMBOLS = 95;
+  int I_URI = 96;
+  int I_NL = 97;
+  int I_SPACE = 98;
+  int I_WORD = 99;
+  int I_SPECIAL_SYMBOL = 100;
+  int D_DOC_BEGIN = 101;
+  int D_DOC_END = 102;
+  int D_BR = 103;
+  int D_ESCAPE = 104;
+  int D_HORLINE = 105;
+  int D_TABLE_ROW = 106;
+  int D_TABLE_CELL = 107;
+  int D_LIST_ITEM = 108;
+  int D_VERBATIM_INLINE = 109;
+  int D_VERBATIM_START = 110;
+  int D_MACRO_EMPTY_BLOCK = 111;
+  int D_MACRO_BLOCK_START = 112;
+  int D_MACRO_EMPTY_INLINE = 113;
+  int D_MACRO_INLINE_START = 114;
+  int D_QUOT_BLOCK = 115;
+  int D_QUOT_LINE = 116;
+  int D_INFO = 117;
+  int D_EXTENSION_BLOCK = 118;
+  int D_EXTENSION_INLINE = 119;
+  int D_PROPERTY = 120;
+  int D_PROPERTY_DOC = 121;
+  int D_PROPERTY_INLINE = 122;
+  int D_HEADER_BEGIN = 123;
+  int D_REFERENCE = 124;
+  int D_HEADER_END = 125;
+  int D_FORMAT_SYMBOL = 126;
+  int D_BLOCK_PARAMS = 127;
+  int D_SPECIAL_SYMBOLS = 128;
+  int D_URI = 129;
+  int D_NL = 130;
+  int D_SPACE = 131;
+  int D_WORD = 132;
+  int D_SPECIAL_SYMBOL = 133;
 
   int VERBATIM_CONTEXT = 0;
   int MACRO_CONTEXT = 1;
@@ -168,6 +173,7 @@ public interface CommonWikiScannerConstants {
     "<ESCAPED>",
     "<VERBATIM_CONTENT>",
     "<MACRO_NAME>",
+    "<MACRO_EMPTY>",
     "<MACRO_START>",
     "<MACRO_END>",
     "<MACRO_CONTENT>",
@@ -226,7 +232,9 @@ public interface CommonWikiScannerConstants {
     "<I_LIST_ITEM>",
     "<I_VERBATIM_INLINE>",
     "<I_VERBATIM_START>",
+    "<I_MACRO_EMPTY_BLOCK>",
     "<I_MACRO_BLOCK_START>",
+    "<I_MACRO_EMPTY_INLINE>",
     "<I_MACRO_INLINE_START>",
     "<I_QUOT_BLOCK>",
     "<I_QUOT_LINE>",
@@ -257,7 +265,9 @@ public interface CommonWikiScannerConstants {
     "<D_LIST_ITEM>",
     "<D_VERBATIM_INLINE>",
     "<D_VERBATIM_START>",
+    "<D_MACRO_EMPTY_BLOCK>",
     "<D_MACRO_BLOCK_START>",
+    "<D_MACRO_EMPTY_INLINE>",
     "<D_MACRO_INLINE_START>",
     "<D_QUOT_BLOCK>",
     "<D_QUOT_LINE>",
