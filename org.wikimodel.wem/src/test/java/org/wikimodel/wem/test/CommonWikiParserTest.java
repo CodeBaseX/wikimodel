@@ -37,28 +37,6 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         return new CommonWikiParser();
     }
 
-    /**
-     * @throws WikiParserException
-     */
-    public void testInfo() throws WikiParserException {
-        test("/i\\ item {{{formatted block}}} {macro}123{/macro} after");
-        test("before\n"
-            + "/i\\Information block:\n"
-            + "{{{pre\n"
-            + "  formatted\n"
-            + " block}}} sdlkgj\n"
-            + "qsdg\n\n"
-            + "after");
-        test("/!\\");
-        test("/i\\info");
-        test("/i\\Information block:\n"
-            + "first line\n"
-            + "second line\n"
-            + "third  line");
-        test("{{a=b}}\n/!\\");
-        test("{{a=b}}\n/i\\info");
-    }
-
     public void test() throws WikiParserException {
         test("%rdf:type toto:Document\r\n"
             + "\r\n"
@@ -295,6 +273,28 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
     /**
      * @throws WikiParserException
      */
+    public void testInfo() throws WikiParserException {
+        test("/i\\ item {{{formatted block}}} {macro}123{/macro} after");
+        test("before\n"
+            + "/i\\Information block:\n"
+            + "{{{pre\n"
+            + "  formatted\n"
+            + " block}}} sdlkgj\n"
+            + "qsdg\n\n"
+            + "after");
+        test("/!\\");
+        test("/i\\info");
+        test("/i\\Information block:\n"
+            + "first line\n"
+            + "second line\n"
+            + "third  line");
+        test("{{a=b}}\n/!\\");
+        test("{{a=b}}\n/i\\info");
+    }
+
+    /**
+     * @throws WikiParserException
+     */
     public void testLineBreak() throws WikiParserException {
         test("abc\\\ndef");
         test("abc\\  \ndef");
@@ -361,43 +361,117 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
     }
 
     public void testMacro() throws WikiParserException {
-        test("{toto}a{toto}b{/toto}c{/toto}");
+        test(
+            "{toto}a{/toto}",
+            "<pre class='macro' macroName='toto'><![CDATA[a]]></pre>");
+        test(
+            "{toto}a{toto}b{/toto}c{/toto}",
+            "<pre class='macro' macroName='toto'><![CDATA[a{toto}b{/toto}c]]></pre>");
+        test("before\n{toto}a{/toto}\nafter", ""
+            + "<p>before</p>\n"
+            + "<pre class='macro' macroName='toto'><![CDATA[a]]></pre>\n"
+            + "<p>after</p>");
+        test("before\n{toto}a{/toto}after", ""
+            + "<p>before</p>\n"
+            + "<pre class='macro' macroName='toto'><![CDATA[a]]></pre>\n"
+            + "<p>after</p>");
 
-        test("{toto}");
-        test("{toto}a{/toto}");
-        test("before{toto}macro{/toto}after");
-        test("before{toto a=b c=d}toto macro tata {/toto}after");
-        test("before{toto a=b c=d}toto {x qsdk} macro {sd} tata {/toto}after");
+        // Bad-formed block macros (not-closed)
+        test("{toto}", "<pre class='macro' macroName='toto'><![CDATA[]]></pre>");
+        test(
+            "{toto}a{toto}",
+            "<pre class='macro' macroName='toto'><![CDATA[a{toto}]]></pre>");
 
-        test("{toto}a{toto}");
-        test("- before\n"
-            + "{code}this is a code{/code} \n"
-            + " this is afer the code...");
+        // 
+        test(
+            "{toto}a{/toto}",
+            "<pre class='macro' macroName='toto'><![CDATA[a]]></pre>");
+        test(
+            "before{toto}macro{/toto}after",
+            "<p>before<span class='macro' macroName='toto'><![CDATA[macro]]></span>after</p>");
 
-        // Not macros
-        test("{ toto a=b c=d}");
+        test("before{toto a=b c=d}toto macro tata {/toto}after", ""
+            + "<p>before<span class='macro' macroName='toto' a='b' c='d'>"
+            + "<![CDATA[toto macro tata ]]>"
+            + "</span>after</p>");
+
+        test(
+            "before{toto a=b c=d}toto {x qsdk} macro {sd} tata {/toto}after",
+            ""
+                + "<p>before<span class='macro' macroName='toto' a='b' c='d'>"
+                + "<![CDATA[toto {x qsdk} macro {sd} tata ]]>"
+                + "</span>after</p>");
+
+        // Macros in other block elements (tables and lists)
+        test("- before\n{code a=b c=d}this is a code{/code}after", ""
+            + "<ul>\n"
+            + "  <li>before<pre class='macro' macroName='code' a='b' c='d'>"
+            + "<![CDATA[this is a code]]></pre>\n"
+            + "after</li>\n"
+            + "</ul>");
+        test("- before{code a=b c=d}this is a code{/code}after", ""
+            + "<ul>\n"
+            + "  <li>before<span class='macro' macroName='code' a='b' c='d'>"
+            + "<![CDATA[this is a code]]></span>after</li>\n"
+            + "</ul>");
+
+        // Not a macro
+        test("{ toto a=b c=d}", "<p>{ toto a=b c=d}</p>");
 
         // Macro and its usage
-        test("This is a macro: {toto x:a=b x:c=d}\n"
-            + "<table>\n"
-            + "#foreach ($x in $table)\n"
-            + "  <tr>hello, $x</tr>\n"
-            + "#end\n"
-            + "</table>\n"
-            + "{/toto}\n\n"
-            + "And this is a usage of this macro: $toto(a=x b=y)");
+        test(
+            "This is a macro: {toto x:a=b x:c=d}\n"
+                + "<table>\n"
+                + "#foreach ($x in $table)\n"
+                + "  <tr>hello, $x</tr>\n"
+                + "#end\n"
+                + "</table>\n"
+                + "{/toto}\n\n"
+                + "And this is a usage of this macro: $toto(a=x b=y)",
+            "<p>This is a macro: <span class='macro' macroName='toto' x:a='b' x:c='d'><![CDATA[\n"
+                + "<table>\n"
+                + "#foreach ($x in $table)\n"
+                + "  <tr>hello, $x</tr>\n"
+                + "#end\n"
+                + "</table>\n"
+                + "]]></span></p>\n"
+                + "<p>And this is a usage of this macro: <span class='extension' extension='toto' a='x' b='y'/></p>");
 
-        test("!!Header:: Cell with a macro: \n"
-            + " {code}this is a code{/code} \n"
-            + " this is afer the code...");
-        test(""
-            + "* item one\n"
-            + "* item two\n"
-            + "  * subitem with a macro:\n"
-            + "  {code} this is a code{/code} \n"
-            + "  the same item (continuation)\n"
-            + "  * subitem two\n"
-            + "* item three");
+        test(
+            "!!Header:: Cell with a macro: \n"
+                + "{code}this is a code{/code} \n"
+                + " this is afer the code...",
+            ""
+                + "<table><tbody>\n"
+                + "  <tr><th>Header</th><td> Cell with a macro: "
+                + "<pre class='macro' macroName='code'><![CDATA[this is a code]]></pre>\n \n"
+                + " this is afer the code&hellip;</td></tr>\n"
+                + "</tbody></table>");
+        test(
+            ""
+                + "* item one\n"
+                + "* item two\n"
+                + "  * subitem with a macro:\n"
+                + "  {code} this is a code{/code} \n"
+                + "  the same item (continuation)\n"
+                + "  * subitem two\n"
+                + "* item three",
+            ""
+                + "<ul>\n"
+                + "  <li>item one</li>\n"
+                + "  <li>item two<ul>\n"
+                + "  <li>subitem with a macro:\n"
+                + "  <span class='macro' macroName='code'><![CDATA[ this is a code]]></span> \n"
+                + "  the same item (continuation)</li>\n"
+                + "  <li>subitem two</li>\n"
+                + "</ul>\n"
+                + "</li>\n"
+                + "  <li>item three</li>\n"
+                + "</ul>");
+    }
+
+    public void testMacro_Issue6() throws WikiParserException {
+        test("a {{x:}}, {{y:}} b");
     }
 
     /**
@@ -771,37 +845,4 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         test("before`after", "<p>before`after</p>");
         test("before`after\nnext line", "<p>before`after\nnext line</p>");
     }
-
-	String[] tokenManagerExceptionCauses = {
-			"The link can also be a direct URL starting with {{http:}}, {{ftp:}}, {{mailto:}}, {{https:}}, or {{news:}}, in which case the link points to an external entity. For example, to point at the java.sun.com home page, use {{[[http://java.sun.com]}}, which becomes [http://java.sun.com/] or {{[[Java home page|http://java.sun.com]}}, which becomes [Java home page|http://java.sun.com].",
-			"Das anlegen einer neuen Instanz erfolgt mit zope-eigenen Skript {{/export/zope/bin/mkzopeinstance.py}}",
-			"Deduktionstheorem: M |= F <=> M u {-F} widerspruchsvoll <=> (M u -F) unerfüllbar",
-			" title  = {{OWL} {W}eb {O}ntology {L}anguage {G}uide},",
-			"{\"{o}} = ö",
-			"<tr><td><code>Include-Resource</code></td><td><a href='#LIST'>LIST</a> of iclause</td><td>The Include-Resource instruction makes it possible to include arbitrary resources; it contains a list of resource paths. The resources will be copied into the target jar file. The iclause can have the following forms:<br />&nbsp;<br /><code>iclause    ::= inline | copy</code><br /><code>copy       ::= '{' process '}' | process</code><br /><code>process    ::= assignment | simple</code><br /><code>assignment ::= PATH '=' PATH</code><br /><code>simple     ::= PATH</code><br /><code>inline     ::= '@' PATH ( '!/' PATH? ('/**' | '/*')? )?</code><br />&nbsp;<br />In the case of <code>assignment</code> or <code>simple</code>, the PATH parameter can point to a file or directory. The <code>simple</code> form will place the resource in the target JAR with only the file name, therefore without any path components. That is, including src/a/b.c will result in a resource b.c in the root of the target JAR. If the PATH points to a directory, the directory name itself is not used in the target JAR path. If the resource must be placed in a subdirectory of the target jar, use the <code>assignment</code> form. The <code>inline</code> requires a ZIP or JAR file, which will be completely expanded in the target JAR, unless followed with a file specification. The file specification can be a specific file in the jar or a directory followed by ** or *. The ** indicates recursively and the * indicates one level. If just a directory name is given, it will mean **.<br />The <code>simple</code> and <code>assigment</code> forms can be encoded with curly braces, like <code>{foo.txt}</code>. This indicates that the file should be preprocessed (or filtered as it is sometimes called). Preprocessed files can use the same variables and macros as defined in the <a href='#macros'>macro section</a>.<br />&nbsp;<br /><code>Include-Resource: @osgi.jar, <br />&nbsp;{LICENSE.txt}, <br />&nbsp;acme/Merge.class=src/acme/Merge.class</code></td></tr>",
-			"note ={\\url{http://heikohaller.de/literatur/diplomarbeit/}},",
-			"The magical incantation in the {{jspwiki.properties}} file is:",
-			"Then set your variable to true or false by \\newcommand{\\condition}{true} or \\newcommand{\\condition}{false}.",
-			"* Inpired by the Java types, we also define a {{SortedSet}} as ol with {{class=\"noduplicates\"}}.",
-			";:''__Tip__: If you want to insert the page name without the spaces, use {{<wiki:Variable var=\"pagename\" />}}.''",
-			"\\hfill {\\it Max V\"{o}lkel} \\",
-			"     <td headers=\"matches\">Punctuation: One of <tt>!\"#$%&'()*+,-./:;<=>?@[[\\]^_`{|}~</tt></td></tr>",
-			"ein Label \"{{global{global} }}\" gibt",
-			"* unsafe: {space}, ?<>#%{}|\\^~[]`" };
-
-	public void testIssue6() throws IOException, WikiParserException {
-		for (String in : tokenManagerExceptionCauses) {
-			IWikiParser wikiParser = new CommonWikiParser();
-			IWemListener listener = new PrintListener(new NullPrinter());
-			wikiParser.parse(new StringReader(in), listener);
-		}
-	}
-
-	class NullPrinter implements IWikiPrinter {
-		public void print(String str) {
-		}
-
-		public void println(String str) {
-		}
-	}
 }
