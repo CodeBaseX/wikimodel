@@ -10,7 +10,13 @@
  *******************************************************************************/
 package org.wikimodel.wem.test;
 
+import java.io.IOException;
+import java.io.StringReader;
+
+import org.wikimodel.wem.IWemListener;
 import org.wikimodel.wem.IWikiParser;
+import org.wikimodel.wem.IWikiPrinter;
+import org.wikimodel.wem.PrintListener;
 import org.wikimodel.wem.WikiParserException;
 import org.wikimodel.wem.common.CommonWikiParser;
 
@@ -626,4 +632,24 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         test("before`after\nnext line", "<p>before`after\nnext line</p>");
     }
 
+    
+	public void testIssue6() throws IOException, WikiParserException {
+		// line 38 from the JSPWiki Syntax help
+		String in = "The link can also be a direct URL starting with {{http:}}, {{ftp:}}, {{mailto:}}, {{https:}}, or {{news:}}, in which case the link points to an external entity. For example, to point at the java.sun.com home page, use {{[[http://java.sun.com]}}, which becomes [http://java.sun.com/] or {{[[Java home page|http://java.sun.com]}}, which becomes [Java home page|http://java.sun.com].";
+		IWikiParser wikiParser = new CommonWikiParser();
+
+		IWemListener listener = new PrintListener(new NullPrinter());
+		wikiParser.parse(new StringReader(in), listener);
+	}
+
+	class NullPrinter implements IWikiPrinter {
+		public void print(String str) {
+		}
+
+		public void println(String str) {
+		}
+	}
+    
+    
+    
 }
