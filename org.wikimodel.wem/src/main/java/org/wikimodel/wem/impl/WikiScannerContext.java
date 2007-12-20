@@ -289,8 +289,8 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().onQuotLine(depth);
     }
 
-    public void onReference(String ref) {
-        getContext().onReference(ref);
+    public void onReference(String ref, boolean explicitLink) {
+        getContext().onReference(ref, explicitLink);
     }
 
     public void onSpace(String str) {

@@ -393,11 +393,11 @@ public class CompositeListener implements IWemListener {
 	}
 
 	/**
-	 * @see org.wikimodel.wem.IWemListener#onReference(java.lang.String)
+	 * @see org.wikimodel.wem.IWemListener#onReference(java.lang.String, boolean)
 	 */
-	public void onReference(String ref) {
+	public void onReference(String ref, boolean explicitLink) {
 		for (IWemListener listener : fListeners) {
-			listener.onReference(ref);
+			listener.onReference(ref, explicitLink);
 		}
 	}
 

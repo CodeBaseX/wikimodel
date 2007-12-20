@@ -315,10 +315,10 @@ public class PrintTextListener implements IWemListener {
 	}
 
 	/**
-	 * @see org.wikimodel.wem.IWemListener#onReference(java.lang.String)
+	 * @see org.wikimodel.wem.IWemListener#onReference(java.lang.String, boolean)
 	 */
 
-	public void onReference(String ref) {
+	public void onReference(String ref, boolean explicitLink) {
 		fRefHandler.handle(ref);
 	}
 

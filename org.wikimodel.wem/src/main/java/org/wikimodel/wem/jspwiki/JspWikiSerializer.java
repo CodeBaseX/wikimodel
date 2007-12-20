@@ -225,7 +225,7 @@ public class JspWikiSerializer implements IWemListener {
 
 	}
 
-	public void onReference(String ref) {
+	public void onReference(String ref, boolean explicitLink) {
 		if (ref.indexOf("Image") == 0 )
 			print("{image"+ref.substring(5)+"}");
 		else {

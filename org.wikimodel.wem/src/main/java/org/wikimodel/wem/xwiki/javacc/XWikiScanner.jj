@@ -429,6 +429,7 @@ void line():
 {
     Token t = null;
     String str = null;
+    boolean explicitLink = false;
 }
 {
     ( LOOKAHEAD(2)
@@ -484,14 +485,18 @@ void line():
                 fContext.onLineBreak();
             }
             |
-            ( t = getREFERENCE() | t = getURI() )
+            (
+                t = getREFERENCE() {explicitLink = true;} 
+                |
+                t = getURI() {explicitLink = false;}
+            )
             {
                 str = t.image.trim();
                 if (str.startsWith("[")) {
                     str = str.substring(1, str.length() - 1);
                     str = str.trim();
                 }
-                fContext.onReference(str);
+                fContext.onReference(str, explicitLink);
             }
             |
             t = getTABLE_CELL() 

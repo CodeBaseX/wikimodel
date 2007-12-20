@@ -354,8 +354,8 @@ public class XhtmlHandler extends DefaultHandler {
         private boolean requiresParentDocument(TagContext context) {
             if (context == null)
                 return true;
-            if (context.fHandler == null ||
-                !context.fHandler.requiresDocument())
+            if (context.fHandler == null
+                || !context.fHandler.requiresDocument())
                 return false;
             boolean inContainer = false;
             TagContext parent = context.fParent;
@@ -524,7 +524,8 @@ public class XhtmlHandler extends DefaultHandler {
                 if (ref != null) {
                     String content = context.getContent();
                     context.getScannerContext().onReference(
-                        ref.getValue() + " " + content);
+                        ref.getValue() + " " + content,
+                        true);
                 }
             }
         });

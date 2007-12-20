@@ -19,21 +19,21 @@ import java.util.List;
  * 
  * @author MikhailKotelnikov
  */
-public final class TreeBuilder {
+public final class TreeBuilder<X extends TreeBuilder.IPos<X>> {
 
     /**
      * This interface identifies position of elements in rows.
      * 
      * @author MikhailKotelnikov
      */
-    public interface IPos {
+    public interface IPos<X extends IPos<X>> {
 
         /**
          * @param pos
          * @return <code>true</code> if the underlying data in both positions
          *         are the same
          */
-        boolean equalsData(IPos pos);
+        boolean equalsData(X pos);
 
         /**
          * @return the position of the node
@@ -41,24 +41,24 @@ public final class TreeBuilder {
         int getPos();
     }
 
-    public interface ITreeListener {
+    public interface ITreeListener<X extends IPos<X>> {
 
-        void onBeginRow(IPos n);
+        void onBeginRow(X n);
 
-        void onBeginTree(IPos n);
+        void onBeginTree(X n);
 
-        void onEndRow(IPos n);
+        void onEndRow(X n);
 
-        void onEndTree(IPos n);
+        void onEndTree(X n);
     }
 
-    private static void addTail(
-        ITreeListener listener,
-        List<IPos> firstArray,
-        List<IPos> secondArray,
+    private static <X extends IPos<X>> void addTail(
+        ITreeListener<X> listener,
+        List<X> firstArray,
+        List<X> secondArray,
         int secondPos,
         boolean openTree) {
-        IPos n = getNode(secondArray, secondPos);
+        X n = getNode(secondArray, secondPos);
         if (n == null)
             return;
         if (openTree)
@@ -68,10 +68,10 @@ public final class TreeBuilder {
         addTail(listener, firstArray, secondArray, secondPos + 1, true);
     }
 
-    private static void doAlign(
-        ITreeListener listener,
-        List<IPos> firstArray,
-        List<IPos> secondArray,
+    private static <X extends IPos<X>> void doAlign(
+        ITreeListener<X> listener,
+        List<X> firstArray,
+        List<X> secondArray,
         boolean expand) {
         boolean newTree = true;
         int f;
@@ -79,8 +79,8 @@ public final class TreeBuilder {
         int firstLen = firstArray.size();
         int secondLen = secondArray.size();
         for (f = 0, s = 0; f < firstLen && s < secondLen; f++) {
-            IPos first = firstArray.get(f);
-            IPos second = secondArray.get(s);
+            X first = firstArray.get(f);
+            X second = secondArray.get(s);
             int firstPos = first.getPos();
             int secondPos = second.getPos();
             if (firstPos >= secondPos) {
@@ -99,16 +99,16 @@ public final class TreeBuilder {
         }
     }
 
-    private static IPos getNode(List<IPos> list, int pos) {
+    private static <X extends IPos<X>> X getNode(List<X> list, int pos) {
         return pos < 0 || pos >= list.size() ? null : list.get(pos);
     }
 
-    private static void removeTail(
-        ITreeListener listener,
-        List<IPos> array,
+    private static <X extends IPos<X>> void removeTail(
+        ITreeListener<X> listener,
+        List<X> array,
         int pos,
         boolean closeTree) {
-        IPos node = getNode(array, pos);
+        X node = getNode(array, pos);
         if (node == null)
             return;
         removeTail(listener, array, pos + 1, true);
@@ -121,41 +121,41 @@ public final class TreeBuilder {
     /**
      *
      */
-    public List<IPos> fList = new ArrayList<IPos>();
+    public List<X> fList = new ArrayList<X>();
 
-    private ITreeListener fListener;
+    private ITreeListener<X> fListener;
 
     /**
      * 
      */
-    public TreeBuilder(ITreeListener listener) {
+    public TreeBuilder(ITreeListener<X> listener) {
         super();
         fListener = listener;
     }
 
-    public void align(IPos pos) {
-        List<IPos> list = new ArrayList<IPos>();
+    public void align(X pos) {
+        List<X> list = new ArrayList<X>();
         if (pos != null)
             list.add(pos);
         align(list);
     }
 
-    public void align(List<IPos> row) {
+    public void align(List<X> row) {
         doAlign(fListener, fList, row, true);
     }
 
-    public IPos getPeek() {
+    public X getPeek() {
         return !fList.isEmpty() ? fList.get(fList.size() - 1) : null;
     }
 
-    public void trim(IPos pos) {
-        List<IPos> list = new ArrayList<IPos>();
+    public void trim(X pos) {
+        List<X> list = new ArrayList<X>();
         if (pos != null)
             list.add(pos);
         trim(list);
     }
 
-    public void trim(List<IPos> row) {
+    public void trim(List<X> row) {
         doAlign(fListener, fList, row, false);
     }
 

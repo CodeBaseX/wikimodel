@@ -397,14 +397,18 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         test(
             "{x:toto a=b c=d /}",
             "<pre class='macro' macroName='x:toto' a='b' c='d'><![CDATA[]]></pre>");
-        test("before\n{x:toto  a=b c=d/}\nafter", ""
-            + "<p>before</p>\n"
-            + "<pre class='macro' macroName='x:toto' a='b' c='d'><![CDATA[]]></pre>\n"
-            + "<p>after</p>");
-        test("before\n{x:toto  a='b' c='d'/}after", ""
-            + "<p>before</p>\n"
-            + "<pre class='macro' macroName='x:toto' a='b' c='d'><![CDATA[]]></pre>\n"
-            + "<p>after</p>");
+        test(
+            "before\n{x:toto  a=b c=d/}\nafter",
+            ""
+                + "<p>before</p>\n"
+                + "<pre class='macro' macroName='x:toto' a='b' c='d'><![CDATA[]]></pre>\n"
+                + "<p>after</p>");
+        test(
+            "before\n{x:toto  a='b' c='d'/}after",
+            ""
+                + "<p>before</p>\n"
+                + "<pre class='macro' macroName='x:toto' a='b' c='d'><![CDATA[]]></pre>\n"
+                + "<p>after</p>");
         test(
             "before{x:toto /}after",
             "<p>before<span class='macro' macroName='x:toto'><![CDATA[]]></span>after</p>");
@@ -594,42 +598,110 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
     /**
      * @throws WikiParserException
      */
-    public void testProperties() throws WikiParserException {
-        test("%toto hello  world\n123");
-        test("%prop1 value1\n%prop2 value2");
-        test("%prop1 (((embedded)))next paragraph\n%prop2 value2");
-        test("before\r\n"
-            + "\r\n"
-            + "%company (((\r\n"
-            + "    %name Cognium Systems\r\n"
-            + "    %addr (((\r\n"
-            + "        %country France\r\n"
-            + "        %city Paris\r\n"
-            + "        %street Cité Nollez\r\n"
-            + "        %building 10\r\n"
-            + "        This is just a description...\r\n"
-            + "    )))\r\n"
-            + ")))\r\n"
-            + "\r\n"
-            + "after");
-        test("before\r\n"
-            + "\r\n"
-            + "%company (((\r\n"
-            + "    %name Cognium Systems\r\n"
-            + "    %addr (((\r\n"
-            + "        %country France\r\n"
-            + "        %city Paris\r\n"
-            + "        %street Cité Nollez\r\n"
-            + "        %building 10\r\n"
-            + "        This is just a description...\r\n"
-            + "    \r\n"
-            + "\r\n"
-            + "\r\n"
-            + "after");
+    public void testPropertiesBlock() throws WikiParserException {
+        test(
+            "%toto hello  world\n123",
+            "<div class='property' url='toto'><p>hello  world</p>\n</div>\n<p>123</p>");
+        test("%prop1 value1\n%prop2 value2", ""
+            + "<div class='property' url='prop1'><p>value1</p>\n</div>\n"
+            + "<div class='property' url='prop2'><p>value2</p>\n</div>");
+        test("%prop1 value1\nparagraph\n%prop2 value2", ""
+            + "<div class='property' url='prop1'><p>value1</p>\n</div>\n"
+            + "<p>paragraph</p>\n"
+            + "<div class='property' url='prop2'><p>value2</p>\n</div>");
 
-        test("before %prop(value) after");
-        test("before %foo:bar:toto.com/titi/tata?query=x#ancor(value) after");
-        test("before %prop(before*bold*__italic__^^superscript^^~~subscript~~value) after");
+        test("%prop1 (((embedded)))next paragraph\n%prop2 value2", ""
+            + "<div class='property' url='prop1'>\n"
+            + "<p>embedded</p>\n"
+            + "</div>\n"
+            + "<p>next paragraph</p>\n"
+            + "<div class='property' url='prop2'><p>value2</p>\n"
+            + "</div>");
+        test(
+            "%prop1 (((=Header\n- item 1\n- item 2)))next paragraph\n%prop2 value2",
+            ""
+                + "<div class='property' url='prop1'>\n"
+                + "<h1>Header</h1>\n"
+                + "<ul>\n"
+                + "  <li>item 1</li>\n"
+                + "  <li>item 2</li>\n"
+                + "</ul>\n"
+                + "</div>\n"
+                + "<p>next paragraph</p>\n"
+                + "<div class='property' url='prop2'><p>value2</p>\n"
+                + "</div>");
+
+        test(
+            "before\r\n"
+                + "\r\n"
+                + "%company (((\r\n"
+                + "    %name Cognium Systems\r\n"
+                + "    %addr (((\r\n"
+                + "        %country [France]\r\n"
+                + "        %city [Paris]\r\n"
+                + "        %street Cité Nollez\r\n"
+                + "        This is just a description...\r\n"
+                + "    )))\r\n"
+                + ")))\r\n"
+                + "\r\n"
+                + "after",
+            ""
+                + "<p>before</p>\n"
+                + "<div class='property' url='company'>\n"
+                + "<div class='property' url='name'><p>Cognium Systems</p>\n"
+                + "</div>\n"
+                + "<div class='property' url='addr'>\n"
+                + "<div class='property' url='country'><p><a href='France'>France</a></p>\n"
+                + "</div>\n"
+                + "<div class='property' url='city'><p><a href='Paris'>Paris</a></p>\n"
+                + "</div>\n"
+                + "<div class='property' url='street'><p>Cité Nollez</p>\n"
+                + "</div>\n"
+                + "<p>        This is just a description&hellip;</p>\n"
+                + "</div>\n"
+                + "</div>\n"
+                + "<p>after</p>");
+        // Bad formed block properties
+
+        // No closing brackets
+        test(
+            "before\r\n"
+                + "\r\n"
+                + "%company (((\r\n"
+                + "    %name Cognium Systems\r\n"
+                + "    %addr (((\r\n"
+                + "        %country [France]\r\n"
+                + "        %city Paris\r\n"
+                + "        %street Cité Nollez\r\n"
+                + "        This is just a description...\r\n"
+                + "after",
+            "<p>before</p>\n"
+                + "<div class='property' url='company'>\n"
+                + "<div class='property' url='name'><p>Cognium Systems</p>\n"
+                + "</div>\n"
+                + "<div class='property' url='addr'>\n"
+                + "<div class='property' url='country'><p><a href='France'>France</a></p>\n"
+                + "</div>\n"
+                + "<div class='property' url='city'><p>Paris</p>\n"
+                + "</div>\n"
+                + "<div class='property' url='street'><p>Cité Nollez</p>\n"
+                + "</div>\n"
+                + "<p>        This is just a description&hellip;\n"
+                + "after</p>\n"
+                + "</div>\n"
+                + "</div>");
+    }
+
+    public void testPropertiesInline() throws WikiParserException {
+        test(
+            "before %prop(value) after",
+            "<p>before <span class='property' url='prop'>value</span> after</p>");
+        test(
+            "before %foo:bar:toto.com/titi/tata?query=x#ancor(value) after",
+            "<p>before <span class='property' url='foo:bar:toto.com/titi/tata?query=x#ancor'>value</span> after</p>");
+        test(
+            "before %prop(before*bold*__italic__^^superscript^^~~subscript~~value) after",
+            "<p>before <span class='property' url='prop'>before<strong>bold</strong><em>italic</em><sup>superscript</sup><sub>subscript</sub>value</span> after</p>");
     }
 
     /**

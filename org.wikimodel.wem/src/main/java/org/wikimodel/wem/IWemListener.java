@@ -101,7 +101,7 @@ public interface IWemListener {
 
     void onNewLine();
 
-    void onReference(String ref);
+    void onReference(String ref, boolean explicitLink);
 
     void onSpace(String str);
 
