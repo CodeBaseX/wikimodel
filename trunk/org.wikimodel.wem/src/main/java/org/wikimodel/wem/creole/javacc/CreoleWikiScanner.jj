@@ -427,6 +427,7 @@ void line():
 {
     Token t = null;
     String str = null;
+    boolean explicitLink = false;
 }
 {
     ( LOOKAHEAD(2)
@@ -479,9 +480,13 @@ void line():
                 fContext.onVerbatim(t.image, true);
             }
             |
-            ( t = getREFERENCE() | t = getURI() )
+            (
+                t = getREFERENCE() {explicitLink = true;} 
+                |
+                t = getURI() {explicitLink = false;}
+            )
             {
-                fContext.onReference(t.image);
+                fContext.onReference(t.image, explicitLink);
             }
             |
             t = getTABLE_CELL() 

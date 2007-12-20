@@ -409,6 +409,9 @@ class InternalWikiScannerContext implements IWikiScannerContext {
             case IBlockTypes.QUOT:
                 endQuot();
                 break;
+            case IBlockTypes.INFO:
+                endInfo();
+                break;
             default:
                 if ((fBlockType & IBlockTypes.TABLE) != 0) {
                     endTable();
@@ -476,7 +479,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     }
 
     public void endPropertyBlock() {
-        closeFormat();
+        closeBlock();
         fListener.endPropertyBlock(fProperty, fPropertyDoc);
         fProperty = null;
     }
@@ -689,9 +692,9 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         beginQuotLine(depth);
     }
 
-    public void onReference(String ref) {
+    public void onReference(String ref, boolean explicitLink) {
         checkStyleOpened();
-        fListener.onReference(ref);
+        fListener.onReference(ref, explicitLink);
     }
 
     public void onSpace(String str) {

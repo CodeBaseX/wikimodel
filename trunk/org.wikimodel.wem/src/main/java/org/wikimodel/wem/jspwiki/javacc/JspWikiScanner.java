@@ -685,6 +685,7 @@ public class JspWikiScanner implements JspWikiScannerConstants {
   final public void line() throws ParseException {
     Token t = null;
     String str = null;
+    boolean explicitLink = false;
     label_10:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -740,10 +741,12 @@ public class JspWikiScanner implements JspWikiScannerConstants {
         case I_REFERENCE:
         case D_REFERENCE:
           t = getREFERENCE();
+                                    explicitLink = true;
           break;
         case I_URI:
         case D_URI:
           t = getURI();
+                              explicitLink = false;
           break;
         default:
           jj_la1[21] = jj_gen;
@@ -755,7 +758,7 @@ public class JspWikiScanner implements JspWikiScannerConstants {
                         str = str.substring(1, str.length() - 1);
                         str = str.trim();
                 }
-                fContext.onReference(str);
+                fContext.onReference(str, explicitLink);
         break;
       case I_TABLE_CELL:
       case D_TABLE_CELL:
@@ -950,11 +953,6 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_32() {
-    if (jj_3R_45()) return true;
-    return false;
-  }
-
   final private boolean jj_3R_12() {
     Token xsp;
     if (jj_3_11()) return true;
@@ -962,6 +960,11 @@ public class JspWikiScanner implements JspWikiScannerConstants {
       xsp = jj_scanpos;
       if (jj_3_11()) { jj_scanpos = xsp; break; }
     }
+    return false;
+  }
+
+  final private boolean jj_3R_32() {
+    if (jj_3R_45()) return true;
     return false;
   }
 
@@ -1095,6 +1098,11 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3R_29() {
+    if (jj_3R_43()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_30() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1120,11 +1128,6 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_41() {
-    if (jj_3R_47()) return true;
-    return false;
-  }
-
   final private boolean jj_3R_33() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1138,11 +1141,6 @@ public class JspWikiScanner implements JspWikiScannerConstants {
   final private boolean jj_3_10() {
     if (jj_3R_16()) return true;
     if (jj_3R_12()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_29() {
-    if (jj_3R_43()) return true;
     return false;
   }
 
@@ -1171,6 +1169,11 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3R_28() {
+    if (jj_3R_42()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_15() {
     if (jj_3R_33()) return true;
     Token xsp;
@@ -1181,13 +1184,8 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_28() {
-    if (jj_3R_42()) return true;
-    return false;
-  }
-
-  final private boolean jj_3_5() {
-    if (jj_3R_15()) return true;
+  final private boolean jj_3R_41() {
+    if (jj_3R_47()) return true;
     return false;
   }
 
@@ -1196,8 +1194,23 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3_5() {
+    if (jj_3R_15()) return true;
+    return false;
+  }
+
   final private boolean jj_3_8() {
     if (jj_3R_18()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_27() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_40()) {
+    jj_scanpos = xsp;
+    if (jj_3R_41()) return true;
+    }
     return false;
   }
 
@@ -1212,16 +1225,6 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_27() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_40()) {
-    jj_scanpos = xsp;
-    if (jj_3R_41()) return true;
-    }
-    return false;
-  }
-
   final private boolean jj_3R_26() {
     if (jj_3R_39()) return true;
     return false;
@@ -1232,14 +1235,14 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3_7() {
-    if (jj_3R_16()) return true;
-    if (jj_3R_17()) return true;
+  final private boolean jj_3R_25() {
+    if (jj_3R_38()) return true;
     return false;
   }
 
-  final private boolean jj_3R_25() {
-    if (jj_3R_38()) return true;
+  final private boolean jj_3_7() {
+    if (jj_3R_16()) return true;
+    if (jj_3R_17()) return true;
     return false;
   }
 

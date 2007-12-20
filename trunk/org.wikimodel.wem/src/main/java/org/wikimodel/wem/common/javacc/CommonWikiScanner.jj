@@ -937,6 +937,7 @@ void line():
 {
     Token t = null;
     String str = null;
+    boolean explicitLink = false;
 }
 {
     ( LOOKAHEAD(2)
@@ -1030,7 +1031,11 @@ void line():
                 }
             }
             |
-            (t = getREFERENCE() | t = getURI())
+            (
+                t = getREFERENCE() {explicitLink = true;} 
+                |
+                t = getURI() {explicitLink = false;}
+            )
             {
             	str = t.image.trim();
             	if (str.startsWith("(=") && str.endsWith("=)")) {
@@ -1040,7 +1045,7 @@ void line():
             	}
             	str = str.trim();
         		str = WikiScannerUtil.unescape(str, '\\');
-                fContext.onReference(str);
+                fContext.onReference(str, explicitLink);
             }
             |
             t = getTABLE_CELL() 

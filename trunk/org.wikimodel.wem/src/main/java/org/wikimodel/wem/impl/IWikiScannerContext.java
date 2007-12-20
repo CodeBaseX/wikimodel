@@ -146,7 +146,7 @@ public interface IWikiScannerContext extends IWemConstants {
 
     void onQuotLine(int depth);
 
-    void onReference(String ref);
+    void onReference(String ref, boolean explicitLink);
 
     void onSpace(String str);
 
