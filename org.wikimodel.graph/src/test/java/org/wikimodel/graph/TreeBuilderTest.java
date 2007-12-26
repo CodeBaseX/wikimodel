@@ -21,7 +21,7 @@ public class TreeBuilderTest extends TestCase {
             int len = 0;
             for (int i = 0; i < line.length; i++) {
                 char ch = line[i];
-                if (Character.isSpaceChar(ch)) {
+                if (ch == '.') {
                     len++;
                 } else {
                     list.add(new NodeItem(len, ch));
@@ -87,17 +87,20 @@ public class TreeBuilderTest extends TestCase {
     }
 
     public void testOne() throws Exception {
+        testOne("..c\n.d\n....e", "<c></c><d><e></e></d>");
+        testOne("..c\n.d\n....e", "<c></c><d><e></e></d>");
+        testOne("..b\n....c\n...d\n....e", "<b><c></c><d><e></e></d></b>");
         testOne("", "");
         testOne("a", "<a></a>");
-        testOne("a\n b", "<a><b></b></a>");
-        testOne("a\nb\n c", "<a></a><b><c></c></b>");
-        testOne(" a\n b\n  c", "<a></a><b><c></c></b>");
-        testOne("  a\n     b", "<a><b></b></a>");
-        testOne("  a\n  b", "<a></a><b></b>");
-        testOne("     a\n  b", "<a></a><b></b>");
-        testOne("  b\n    c", "<b><c></c></b>");
-        testOne("  b\n    c\n   d", "<b><c></c><d></d></b>");
-        testOne("  b\n    c\n   d\n    c", "<b><c></c><d><c></c></d></b>");
+        testOne("a\n.b", "<a><b></b></a>");
+        testOne("a\nb\n.c", "<a></a><b><c></c></b>");
+        testOne(".a\n.b\n..c", "<a></a><b><c></c></b>");
+        testOne("..a\n......b", "<a><b></b></a>");
+        testOne("..a\n..b", "<a></a><b></b>");
+        testOne("......a\n..b", "<a></a><b></b>");
+        testOne("..b\n.....c", "<b><c></c></b>");
+        testOne("..b\n....c\n...d", "<b><c></c><d></d></b>");
+        testOne("..b\n...c\n...d\n....c", "<b><c></c><d><c></c></d></b>");
     }
 
     private void testOne(String str, String control) throws Exception {
@@ -107,12 +110,21 @@ public class TreeBuilderTest extends TestCase {
             buf);
         TreeBuilder<NodeItem, RuntimeException> builder = new TreeBuilder<NodeItem, RuntimeException>() {
 
-            protected boolean equal(NodeItem first, NodeItem second) {
+            @Override
+            protected boolean equal(
+                List<NodeItem> firstList,
+                int firstPos,
+                List<NodeItem> secondList,
+                int secondPos) {
+                NodeItem first = firstList.get(firstPos);
+                NodeItem second = secondList.get(secondPos);
                 return first.ch == second.ch;
             }
 
-            protected int getLength(NodeItem node) {
-                return ((NodeItem) node).len;
+            @Override
+            protected int getLength(List<NodeItem> list, int pos) {
+                NodeItem item = list.get(pos);
+                return item.len;
             }
         };
 
@@ -154,13 +166,7 @@ public class TreeBuilderTest extends TestCase {
         INodeWalkerListener<String, RuntimeException> listener = newListener(
             String.class,
             buf);
-        TreeBuilder<String, RuntimeException> builder = new TreeBuilder<String, RuntimeException>() {
-            protected boolean equal(String first, String second) {
-                if (" ".equals(first) || " ".equals(second))
-                    return true;
-                return super.equal(first, second);
-            }
-        };
+        TreeBuilder<String, RuntimeException> builder = new TreeBuilder<String, RuntimeException>();
         List<List<String>> paths = getPaths(str);
         for (List<String> path : paths) {
             builder.align(path, listener);

@@ -59,23 +59,21 @@ public class TreeBuilder<T, E extends Throwable> extends NodeWalker<T, E>
         fPath.addAll(path);
         int pathSize = fPath.size();
         int stackSize = fStack.size();
-        int stackShift = 0;
-        int pathShift = 0;
         fStackPos = 0;
         fPathPos = 0;
-        while (fStackPos < stackSize && fPathPos < pathSize) {
-            T stackSegment = fStack.get(fStackPos);
-            T pathSegment = fPath.get(fPathPos);
-            stackShift += getLength(stackSegment);
-            pathShift += getLength(pathSegment);
-            if (stackShift >= pathShift) {
-                if (!equal(stackSegment, pathSegment))
-                    break;
-                if (fPathPos >= pathSize - 1)
-                    break;
-                fPathPos++;
+        if (fStackPos < stackSize && fPathPos < pathSize) {
+            while (fStackPos < stackSize && fPathPos < pathSize) {
+                int stackShift = getLength(fStack, fStackPos);
+                int pathShift = getLength(fPath, fPathPos);
+                if (stackShift >= pathShift) {
+                    if (!equal(fStack, fStackPos, fPath, fPathPos))
+                        break;
+                    if (fPathPos >= pathSize - 1)
+                        break;
+                    fPathPos++;
+                }
+                fStackPos++;
             }
-            fStackPos++;
         }
         fNextNode = shift();
         while (!isFinished()) {
@@ -86,7 +84,13 @@ public class TreeBuilder<T, E extends Throwable> extends NodeWalker<T, E>
         }
     }
 
-    protected boolean equal(T first, T second) {
+    protected boolean equal(
+        List<T> firstList,
+        int firstPos,
+        List<T> secondList,
+        int secondPos) {
+        T first = firstList.get(firstPos);
+        T second = secondList.get(secondPos);
         return first == null || second == null ? first == second : first
             .equals(second);
     }
@@ -95,8 +99,8 @@ public class TreeBuilder<T, E extends Throwable> extends NodeWalker<T, E>
         return shift();
     }
 
-    protected int getLength(T node) {
-        return 1;
+    protected int getLength(List<T> list, int pos) {
+        return pos + 1;
     }
 
     public T getNextSubnode(T parent, T node) {
