@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: WEM Test Plug-in
-Bundle-SymbolicName: org.wikimodel.wem.test
-Bundle-Version: 1.0.0
-Require-Bundle: org.junit,
- org.wikimodel.wem
