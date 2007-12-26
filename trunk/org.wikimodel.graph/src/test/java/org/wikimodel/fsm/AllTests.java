@@ -5,6 +5,7 @@ import junit.framework.TestSuite;
 
 import org.wikimodel.fsm.grammar.GrammarTest;
 import org.wikimodel.graph.NodeWalkerTest;
+import org.wikimodel.graph.SectionBuilderTest;
 import org.wikimodel.graph.TreeBuilderTest;
 import org.wikimodel.iterator.MergeIteratorTest;
 
@@ -17,6 +18,7 @@ public class AllTests {
         suite.addTestSuite(GrammarTest.class);
         suite.addTestSuite(NodeWalkerTest.class);
         suite.addTestSuite(TreeBuilderTest.class);
+        suite.addTestSuite(SectionBuilderTest.class);
         suite.addTestSuite(MergeIteratorTest.class);
         // $JUnit-END$
         return suite;
