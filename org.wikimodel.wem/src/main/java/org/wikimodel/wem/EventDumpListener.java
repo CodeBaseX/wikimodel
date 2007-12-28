@@ -28,7 +28,7 @@ public class EventDumpListener extends PrintTextListener {
 
     @Override
     public void beginDefinitionList(WikiParameters params) {
-        println("beginDefinitionList(" + params + ")");
+        println("beginDefinitionList([" + params + "])");
         inc();
     }
 
@@ -52,19 +52,19 @@ public class EventDumpListener extends PrintTextListener {
 
     @Override
     public void beginHeader(int level, WikiParameters params) {
-        println("beginHeader(" + level + "," + params + ")");
+        println("beginHeader(" + level + ",[" + params + "])");
         inc();
     }
 
     @Override
     public void beginInfoBlock(char infoType, WikiParameters params) {
-        println("beginInfoBlock(" + infoType + "," + params + ")");
+        println("beginInfoBlock(" + infoType + ",[" + params + "])");
         inc();
     }
 
     @Override
     public void beginList(WikiParameters params, boolean ordered) {
-        println("beginList(" + params + ", ordered)");
+        println("beginList([" + params + "], ordered=" + ordered + ")");
         inc();
     }
 
@@ -76,7 +76,7 @@ public class EventDumpListener extends PrintTextListener {
 
     @Override
     public void beginParagraph(WikiParameters params) {
-        println("beginParagraph(" + params + ")");
+        println("beginParagraph([" + params + "])");
         inc();
     }
 
@@ -94,7 +94,7 @@ public class EventDumpListener extends PrintTextListener {
 
     @Override
     public void beginQuotation(WikiParameters params) {
-        println("beginQuotation(" + params + ")");
+        println("beginQuotation([" + params + "])");
         inc();
     }
 
@@ -106,19 +106,19 @@ public class EventDumpListener extends PrintTextListener {
 
     @Override
     public void beginTable(WikiParameters params) {
-        println("beginTable(" + params + ")");
+        println("beginTable([" + params + "])");
         inc();
     }
 
     @Override
     public void beginTableCell(boolean tableHead, WikiParameters params) {
-        println("beginTableCell(" + tableHead + ", " + params + ")");
+        println("beginTableCell(" + tableHead + ", [" + params + "])");
         inc();
     }
 
     @Override
     public void beginTableRow(WikiParameters params) {
-        println("beginTableRow(" + params + ")");
+        println("beginTableRow([" + params + "])");
         inc();
     }
 
@@ -141,7 +141,7 @@ public class EventDumpListener extends PrintTextListener {
     @Override
     public void endDefinitionList(WikiParameters params) {
         dec();
-        println("endDefinitionList(" + params + ")");
+        println("endDefinitionList([" + params + "])");
     }
 
     @Override
@@ -165,19 +165,19 @@ public class EventDumpListener extends PrintTextListener {
     @Override
     public void endHeader(int level, WikiParameters params) {
         dec();
-        println("endHeader(" + level + ", " + params + ")");
+        println("endHeader(" + level + ", [" + params + "])");
     }
 
     @Override
     public void endInfoBlock(char infoType, WikiParameters params) {
         dec();
-        println("endInfoBlock(" + infoType + ", " + params + ")");
+        println("endInfoBlock(" + infoType + ", [" + params + "])");
     }
 
     @Override
     public void endList(WikiParameters params, boolean ordered) {
         dec();
-        println("endList(" + params + ", " + ordered + ")");
+        println("endList([" + params + "], ordered=" + ordered + ")");
     }
 
     @Override
@@ -189,7 +189,7 @@ public class EventDumpListener extends PrintTextListener {
     @Override
     public void endParagraph(WikiParameters params) {
         dec();
-        println("endParagraph(" + params + ")");
+        println("endParagraph([" + params + "])");
     }
 
     @Override
@@ -207,7 +207,7 @@ public class EventDumpListener extends PrintTextListener {
     @Override
     public void endQuotation(WikiParameters params) {
         dec();
-        println("endQuotation(" + params + ")");
+        println("endQuotation([" + params + "])");
     }
 
     @Override
@@ -219,19 +219,19 @@ public class EventDumpListener extends PrintTextListener {
     @Override
     public void endTable(WikiParameters params) {
         dec();
-        println("endTable(" + params + ")");
+        println("endTable([" + params + "])");
     }
 
     @Override
     public void endTableCell(boolean tableHead, WikiParameters params) {
         dec();
-        println("endTableCell(" + tableHead + ", " + params + ")");
+        println("endTableCell(" + tableHead + ", [" + params + "])");
     }
 
     @Override
     public void endTableRow(WikiParameters params) {
         dec();
-        println("endTableRow(" + params + ")");
+        println("endTableRow([" + params + "])");
     }
 
     private void inc() {
@@ -250,12 +250,12 @@ public class EventDumpListener extends PrintTextListener {
 
     @Override
     public void onExtensionBlock(String extensionName, WikiParameters params) {
-        println("onExtensionBlock('" + extensionName + "', " + params + ")");
+        println("onExtensionBlock('" + extensionName + "', [" + params + "])");
     }
 
     @Override
     public void onExtensionInline(String extensionName, WikiParameters params) {
-        println("onExtensionInline('" + extensionName + "', " + params + ")");
+        println("onExtensionInline('" + extensionName + "', [" + params + "])");
     }
 
     @Override
