@@ -114,6 +114,20 @@ public class CreoleWikiParserTest extends AbstractWikiParserTest {
             + "</ol>\n"
             + "</li>\n"
             + "</ol>");
+        test(" ##item one", ""
+            + "<ol>\n"
+            + "  <li><ol>\n"
+            + "  <li>item one</li>\n"
+            + "</ol>\n"
+            + "</li>\n"
+            + "</ol>");
+        test(" ## item one", ""
+            + "<ol>\n"
+            + "  <li><ol>\n"
+            + "  <li>item one</li>\n"
+            + "</ol>\n"
+            + "</li>\n"
+            + "</ol>");
         test("** item one", ""
             + "<ul>\n"
             + "  <li><ul>\n"
@@ -129,6 +143,26 @@ public class CreoleWikiParserTest extends AbstractWikiParserTest {
             + "</ul>\n"
             + "</li>\n"
             + "</ul>\n"
+            + "</li>\n"
+            + "</ul>");
+        test("*## item one", ""
+            + "<ul>\n"
+            + "  <li><ol>\n"
+            + "  <li><ol>\n"
+            + "  <li>item one</li>\n"
+            + "</ol>\n"
+            + "</li>\n"
+            + "</ol>\n"
+            + "</li>\n"
+            + "</ul>");
+        test("*##item one", ""
+            + "<ul>\n"
+            + "  <li><ol>\n"
+            + "  <li><ol>\n"
+            + "  <li>item one</li>\n"
+            + "</ol>\n"
+            + "</li>\n"
+            + "</ol>\n"
             + "</li>\n"
             + "</ul>");
 
