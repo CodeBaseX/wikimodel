@@ -241,8 +241,42 @@ public class CreoleWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testReferences() throws WikiParserException {
-        test("before http://www.foo.bar/com after");
-        test("before [toto] after");
+        test(
+            "before http://www.foo.bar/com after",
+            "<p>before <a href='http://www.foo.bar/com'>http://www.foo.bar/com</a> after</p>");
+        test(
+            "before this+is+a+reference:to_here after",
+            "<p>before <a href='this+is+a+reference:to_here'>this+is+a+reference:to_here</a> after</p>");
+        test(
+            "before [[toto]] after",
+            "<p>before <a href='toto'>toto</a> after</p>");
+
+        // Tests from
+        // http://wikicreole.org/wiki/Creole1.0#section-Creole1.0-LinksInternalExternalAndInterwiki
+        test("[[link]]", "<p><a href='link'>link</a></p>");
+        test(
+            "[[MyBigPage|Go to my page]]",
+            "<p><a href='MyBigPage'>Go to my page</a></p>");
+        test(
+            "[[http://www.wikicreole.org/]]",
+            "<p><a href='http://www.wikicreole.org/'>http://www.wikicreole.org/</a></p>");
+        test(
+            "http://www.rawlink.org/, http://www.another.rawlink.org",
+            "<p><a href='http://www.rawlink.org/'>http://www.rawlink.org/</a>, <a href='http://www.another.rawlink.org'>http://www.another.rawlink.org</a></p>");
+        test(
+            "[[http://www.wikicreole.org/|Visit the WikiCreole website]]",
+            "<p><a href='http://www.wikicreole.org/'>Visit the WikiCreole website</a></p>");
+        // test(
+        // "[[Weird Stuff|**Weird** // Stuff//]]",
+        // "<p><a href='Weird Stuff'>**Weird** // Stuff//</a></p>");
+        test("[[Weird Stuff|**Weird** // Stuff//]]");
+        test(
+            "[[Ohana:WikiFamily]]",
+            "<p><a href='Ohana:WikiFamily'>Ohana:WikiFamily</a></p>");
+
+        // Not a reference
+        test("before [toto] after", "<p>before [toto] after</p>");
+
         test("before this+is+a+reference:to_here after");
         test("before this+is+not+a+reference: to_here after");
         test("before|foo:bar|after");

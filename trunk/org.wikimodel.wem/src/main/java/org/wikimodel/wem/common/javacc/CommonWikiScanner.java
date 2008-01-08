@@ -2099,11 +2099,6 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
     finally { jj_save(30, xla); }
   }
 
-  final private boolean jj_3_12() {
-    if (jj_3R_25()) return true;
-    return false;
-  }
-
   final private boolean jj_3_31() {
     Token xsp;
     xsp = jj_scanpos;
@@ -3183,6 +3178,11 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
 
   final private boolean jj_3R_39() {
     if (jj_3R_73()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_12() {
+    if (jj_3R_25()) return true;
     return false;
   }
 
