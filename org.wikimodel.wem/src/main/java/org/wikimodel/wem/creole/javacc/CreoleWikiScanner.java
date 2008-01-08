@@ -709,7 +709,7 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
         t = getVERBATIM_INLINE();
                 str = t.image.trim();
                 str = str.substring(3, str.length() - 3);
-                fContext.onVerbatim(t.image, true);
+                fContext.onVerbatim(str, true);
         break;
       case I_REFERENCE:
       case I_URI:

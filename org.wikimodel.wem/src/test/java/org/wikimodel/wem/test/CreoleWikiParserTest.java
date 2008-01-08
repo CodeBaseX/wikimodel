@@ -35,12 +35,21 @@ public class CreoleWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testFormats() throws WikiParserException {
-        test("**bold**");
-        test("//italic//");
-        test("normal**bold//bold-italic**italic//normal");
-        test("*nothing special/");
-        test("_nothing special_");
-        test("not/an/italic/at/all");
+        test("**bold**", "<p><strong>bold</strong></p>");
+        test("//italic//", "<p><em>italic</em></p>");
+        test("before{{{inside}}}after", "<p>before<code>inside</code>after</p>");
+
+        // Mixed styles
+        test(
+            "normal**bold//bold-italic**italic//normal",
+            "<p>normal<strong>bold</strong><strong><em>bold-italic</em></strong><em>italic</em>normal</p>");
+
+        // Not formatting
+        test("_nothing special_", "<p>_nothing special_</p>");
+        test(
+            "http://www.foo.bar",
+            "<p><a href='http://www.foo.bar'>http://www.foo.bar</a></p>");
+
     }
 
     /**
