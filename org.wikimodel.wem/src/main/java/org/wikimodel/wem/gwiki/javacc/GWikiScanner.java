@@ -932,23 +932,6 @@ public class GWikiScanner implements GWikiScannerConstants {
     finally { jj_save(13, xla); }
   }
 
-  final private boolean jj_3R_50() {
-    if (jj_3R_53()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_8()) { jj_scanpos = xsp; break; }
-    }
-    xsp = jj_scanpos;
-    if (jj_3_9()) jj_scanpos = xsp;
-    return false;
-  }
-
-  final private boolean jj_3_2() {
-    if (jj_3R_12()) return true;
-    return false;
-  }
-
   final private boolean jj_3R_20() {
     if (jj_3R_22()) return true;
     return false;
@@ -1370,6 +1353,23 @@ public class GWikiScanner implements GWikiScannerConstants {
 
   final private boolean jj_3R_34() {
     if (jj_3R_50()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_50() {
+    if (jj_3R_53()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_8()) { jj_scanpos = xsp; break; }
+    }
+    xsp = jj_scanpos;
+    if (jj_3_9()) jj_scanpos = xsp;
+    return false;
+  }
+
+  final private boolean jj_3_2() {
+    if (jj_3R_12()) return true;
     return false;
   }
 

@@ -58,7 +58,7 @@ PARSER_END(CreoleWikiScanner)
         >
     | <#HEADER: ("="){1, 6} >
     | <#VERBATIM: "{{{" ( "\\" ~[] | <NEW_LINE> " }}}" | ~["}"] | "}" ~["}"] | "}}" ~["}"] )* "}}}" >
-    | <#REFERENCE:  ( "[" ( "\\" ~[] | ~["]"] )* "]" ) >
+    | <#REFERENCE:  ( "[[" (  ~["]"] | "]" ~["]"] | "\\" ~[] )* "]]" ) >
     | <#HORLINE: "---" ("-")+ >
     | <#BR: "\\\\" >
     | <#CELL: "|" ("=") ? >
@@ -113,7 +113,10 @@ PARSER_END(CreoleWikiScanner)
     | <#DIGIT: ["0"-"9"]>
     | <#HEXDIG: ( <DIGIT> | ["A"-"F"] | ["a"-"f"] ) >
     | <#URI_GEN_DELIMS: [ ":", "/", "?", "#", "[", "]", "@" ]>
-    | <#URI_SUB_DELIMS: [ "!", "$", "&", "'", "(", ")", "*", "+", ",", ";", "=" ]>
+
+    // Some default can not be accepted in the text - like "," symbols 
+    //<#URI_SUB_DELIMS: [ "!", "$", "&", "'", "(", ")", "*", "+", ",", ";", "=" ]>
+    | <#URI_SUB_DELIMS: [ "!", "$", "&", "'", "(", ")", "*", "+", /*",",*/ ";", "=" ]>
     | <#URI_UNRESERVED: ( <ALPHA> | <DIGIT> | "-" | "." | "_" | "~" )>
     | <#URI_RESERVED: ( <URI_GEN_DELIMS> | <URI_SUB_DELIMS> ) >
     | <#URI_SCHEME: <ALPHA> ( <ALPHA> | <DIGIT> | "+" | "-" | "." )* >
@@ -499,7 +502,12 @@ void line():
                 t = getURI() {explicitLink = false;}
             )
             {
-                fContext.onReference(t.image, explicitLink);
+                str = t.image.trim();
+                if (explicitLink) {
+                    str = str.substring(2, str.length() - 2);
+                    str = str.replace('|', ' ');
+                }
+                fContext.onReference(str, explicitLink);
             }
             |
             t = getTABLE_CELL() 

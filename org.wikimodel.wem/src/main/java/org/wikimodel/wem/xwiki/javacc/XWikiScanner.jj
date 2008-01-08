@@ -103,7 +103,10 @@ PARSER_END(XWikiScanner)
     | <#DIGIT: ["0"-"9"]>
     | <#HEXDIG: ( <DIGIT> | ["A"-"F"] | ["a"-"f"] ) >
     | <#URI_GEN_DELIMS: [ ":", "/", "?", "#", "[", "]", "@" ]>
-    | <#URI_SUB_DELIMS: [ "!", "$", "&", "'", "(", ")", "*", "+", ",", ";", "=" ]>
+
+    // Some default can not be accepted in the text - like "," symbols 
+    //<#URI_SUB_DELIMS: [ "!", "$", "&", "'", "(", ")", "*", "+", ",", ";", "=" ]>
+    | <#URI_SUB_DELIMS: [ "!", "$", "&", "'", "(", ")", "*", "+", /*",",*/ ";", "=" ]>
     | <#URI_UNRESERVED: ( <ALPHA> | <DIGIT> | "-" | "." | "_" | "~" )>
     | <#URI_RESERVED: ( <URI_GEN_DELIMS> | <URI_SUB_DELIMS> ) >
     | <#URI_SCHEME: <ALPHA> ( <ALPHA> | <DIGIT> | "+" | "-" | "." )* >

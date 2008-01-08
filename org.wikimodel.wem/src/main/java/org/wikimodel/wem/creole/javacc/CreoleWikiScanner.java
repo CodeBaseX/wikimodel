@@ -731,7 +731,12 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
           jj_consume_token(-1);
           throw new ParseException();
         }
-                fContext.onReference(t.image, explicitLink);
+                str = t.image.trim();
+                if (explicitLink) {
+                    str = str.substring(2, str.length() - 2);
+                    str = str.replace('|', ' ');
+                }
+                fContext.onReference(str, explicitLink);
         break;
       case I_TABLE_CELL:
       case D_TABLE_CELL:
@@ -1085,6 +1090,11 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3R_27() {
+    if (jj_3R_40()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_41() {
     if (jj_3R_11()) return true;
     Token xsp;
@@ -1092,11 +1102,6 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
       xsp = jj_scanpos;
       if (jj_3_10()) { jj_scanpos = xsp; break; }
     }
-    return false;
-  }
-
-  final private boolean jj_3R_27() {
-    if (jj_3R_40()) return true;
     return false;
   }
 

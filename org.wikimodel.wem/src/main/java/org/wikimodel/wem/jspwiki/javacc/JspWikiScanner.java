@@ -869,11 +869,6 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     finally { jj_save(10, xla); }
   }
 
-  final private boolean jj_3R_11() {
-    if (jj_3R_17()) return true;
-    return false;
-  }
-
   final private boolean jj_3R_24() {
     if (jj_3R_37()) return true;
     return false;
@@ -1103,6 +1098,11 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3_6() {
+    if (jj_3R_14()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_30() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1110,11 +1110,6 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     jj_scanpos = xsp;
     if (jj_scan_token(63)) return true;
     }
-    return false;
-  }
-
-  final private boolean jj_3_6() {
-    if (jj_3R_14()) return true;
     return false;
   }
 
@@ -1253,6 +1248,11 @@ public class JspWikiScanner implements JspWikiScannerConstants {
       xsp = jj_scanpos;
       if (jj_3_4()) { jj_scanpos = xsp; break; }
     }
+    return false;
+  }
+
+  final private boolean jj_3R_11() {
+    if (jj_3R_17()) return true;
     return false;
   }
 
