@@ -42,7 +42,20 @@ PARSER_END(CreoleWikiScanner)
 
 <DEFAULT, INITIAL_CONTEXT> TOKEN:
 {
-      <#LI_SYMBOLS: [ "*", "#" ]>
+      <#LIO: "#"> | <#LIU: "*">  
+    | <#DT: ";"> | <#DD: ":" >
+    | <#LIST_ITEM_END:
+          (<LIU> | <LIO> | <DD>) (<LIU> | <LIO> | <DT> | <DD>) (<SPACE>)+
+        | (<LIO> | <DD>) (<LIU> | <LIO> | <DT> | <DD>) (<SPACE>)*
+        | <LIU> (<LIO> | <DT> | <DD>) (<SPACE>)*
+        >
+    | <#LIST_ITEM:
+          // Level one
+          (<SPACE>)+ (<LIO> | <LIU> | <DT> | <DD>) (<SPACE>)+
+        | (<LIO> | <LIU> | <DT> | <DD>) (<SPACE>)*
+          // Level two or more 
+        | (<SPACE>)* (<LIU> | <LIO> | <DD>)* <LIST_ITEM_END>
+        >
     | <#HEADER: ("="){1, 6} >
     | <#VERBATIM: "{{{" ( "\\" ~[] | <NEW_LINE> " }}}" | ~["}"] | "}" ~["}"] | "}}" ~["}"] )* "}}}" >
     | <#REFERENCE:  ( "[" ( "\\" ~[] | ~["]"] )* "]" ) >
@@ -132,7 +145,7 @@ PARSER_END(CreoleWikiScanner)
 <INITIAL_CONTEXT> TOKEN:
 {
 // <initial-context>
-      <I_LIST_ITEM: (<NEW_LINE>)? (<SPACE>)+ <LI_SYMBOLS> (<SPACE>)+ > : DEFAULT
+      <I_LIST_ITEM: (<NEW_LINE>)? <LIST_ITEM> > : DEFAULT
     | <I_TABLE_ROW: (<NEW_LINE>)? <CELL> > : DEFAULT
     | <I_HEADER_BEGIN: (<NEW_LINE>)? <HEADER> (<SPACE>)* > : DEFAULT
     | <I_VERBATIM_BLOCK: (<NEW_LINE>)? <VERBATIM> > : DEFAULT
@@ -156,7 +169,7 @@ PARSER_END(CreoleWikiScanner)
 <DEFAULT> TOKEN:
 {
 // <default-context>
-      <D_LIST_ITEM: <NEW_LINE> (<SPACE>)+ <LI_SYMBOLS> (<SPACE>)+ > : DEFAULT
+      <D_LIST_ITEM: <NEW_LINE> <LIST_ITEM> > : DEFAULT
     | <D_TABLE_ROW: <NEW_LINE> <CELL> > : DEFAULT
     | <D_HEADER_BEGIN: <NEW_LINE> <HEADER> (<SPACE>)* > : DEFAULT
     | <D_VERBATIM_BLOCK: <NEW_LINE> <VERBATIM> > : DEFAULT
@@ -309,7 +322,7 @@ void listItem():
     (
         t = getLIST_ITEM()
         {
-            fContext.beginListItem(t.image);
+            fContext.beginListItem(t.image.trim());
         }
         (LOOKAHEAD(2) line())?
         {
@@ -492,7 +505,8 @@ void line():
             t = getTABLE_CELL() 
             {
                 if (fContext.isInTable()) {
-                    fContext.onTableCell(t.image.length() > 1);
+                    str = t.image.trim();
+                    fContext.onTableCell(str.length() > 1);
                 } else {
                     fContext.onSpecialSymbol(t.image);
                 }

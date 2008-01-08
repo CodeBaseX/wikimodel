@@ -47,13 +47,13 @@ public class CreoleWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testHeaders() throws WikiParserException {
-        test("=Header1=");
-        test("==Header2==");
-        test("===Header3===");
-        test("====Header4====");
-        test("=====Header5====");
-        test("======Header6======");
-        test("=======Header6(?)=======");
+        test("=Header1=", "<h1>Header1</h1>");
+        test("==Header2==", "<h2>Header2</h2>");
+        test("===Header3===", "<h3>Header3</h3>");
+        test("====Header4====", "<h4>Header4</h4>");
+        test("=====Header5====", "<h5>Header5</h5>");
+        test("======Header6======", "<h6>Header6</h6>");
+        test("=======Header6=======", "<h6>Header6</h6>");
 
         test("\n===Header===\n * list item");
         test("before\n=== Header ===\nafter");
@@ -74,6 +74,91 @@ public class CreoleWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testLists() throws WikiParserException {
+        test(" * item one", "<ul>\n  <li>item one</li>\n</ul>");
+        test("* item one\n** item two", ""
+            + "<ul>\n"
+            + "  <li>item one<ul>\n"
+            + "  <li>item two</li>\n"
+            + "</ul>\n"
+            + "</li>\n"
+            + "</ul>");
+        test(" * item one\n ** item two", ""
+            + "<ul>\n"
+            + "  <li>item one<ul>\n"
+            + "  <li>item two</li>\n"
+            + "</ul>\n"
+            + "</li>\n"
+            + "</ul>");
+        test(" * item one\n ** item two\n ** item three", ""
+            + "<ul>\n"
+            + "  <li>item one<ul>\n"
+            + "  <li>item two</li>\n"
+            + "  <li>item three</li>\n"
+            + "</ul>\n"
+            + "</li>\n"
+            + "</ul>");
+        // Ordered list in an unordered list
+        test(" * item one\n *# item two\n *# item three", ""
+            + "<ul>\n"
+            + "  <li>item one<ol>\n"
+            + "  <li>item two</li>\n"
+            + "  <li>item three</li>\n"
+            + "</ol>\n"
+            + "</li>\n"
+            + "</ul>");
+
+        test("##item one", ""
+            + "<ol>\n"
+            + "  <li><ol>\n"
+            + "  <li>item one</li>\n"
+            + "</ol>\n"
+            + "</li>\n"
+            + "</ol>");
+        test("** item one", ""
+            + "<ul>\n"
+            + "  <li><ul>\n"
+            + "  <li>item one</li>\n"
+            + "</ul>\n"
+            + "</li>\n"
+            + "</ul>");
+        test("*** item one", ""
+            + "<ul>\n"
+            + "  <li><ul>\n"
+            + "  <li><ul>\n"
+            + "  <li>item one</li>\n"
+            + "</ul>\n"
+            + "</li>\n"
+            + "</ul>\n"
+            + "</li>\n"
+            + "</ul>");
+
+        // Two "**" symbols at the beginning of the line are interpreted as a
+        // bold!!!
+        test("**item one", "<p><strong>item one</strong></p>");
+        test(
+            " **item one",
+            "<blockquote>\n<strong>item one</strong>\n</blockquote>");
+        test("***item one", "<p><strong>*item one</strong></p>");
+
+        test("*#item one", ""
+            + "<ul>\n"
+            + "  <li><ol>\n"
+            + "  <li>item one</li>\n"
+            + "</ol>\n"
+            + "</li>\n"
+            + "</ul>");
+        test("*#;item one", ""
+            + "<ul>\n"
+            + "  <li><ol>\n"
+            + "  <li><dl>\n"
+            + "  <dt>item one</dt>\n"
+            + "</dl>\n"
+            + "</li>\n"
+            + "</ol>\n"
+            + "</li>\n"
+            + "</ul>");
+
+        // 
         test(" * item one\n"
             + " * item two\n"
             + "   # item three\n"
