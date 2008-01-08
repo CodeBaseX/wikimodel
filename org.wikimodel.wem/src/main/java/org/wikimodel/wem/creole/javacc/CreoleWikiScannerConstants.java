@@ -14,84 +14,94 @@ package org.wikimodel.wem.creole.javacc;
 public interface CreoleWikiScannerConstants {
 
   int EOF = 0;
-  int LI_SYMBOLS = 1;
-  int HEADER = 2;
-  int VERBATIM = 3;
-  int REFERENCE = 4;
-  int HORLINE = 5;
-  int BR = 6;
-  int CELL = 7;
-  int FORMAT_SYMBOL = 8;
-  int NEW_LINE = 9;
-  int SPACE = 10;
-  int SPECIAL_SYMBOL = 11;
-  int CHAR = 12;
-  int URI = 13;
-  int ALPHA = 14;
-  int DIGIT = 15;
-  int HEXDIG = 16;
-  int URI_GEN_DELIMS = 17;
-  int URI_SUB_DELIMS = 18;
-  int URI_UNRESERVED = 19;
-  int URI_RESERVED = 20;
-  int URI_SCHEME = 21;
-  int URI_SCHEME_COMPOSITE = 22;
-  int URI_PCT_ENCODED = 23;
-  int URI_PCHAR_FIRST = 24;
-  int URI_PCHAR = 25;
-  int URI_QUERY = 26;
-  int URI_FRAGMENT = 27;
-  int URI_HIER_PART = 28;
-  int URI_AUTHORITY = 29;
-  int URI_USERINFO = 30;
-  int URI_PATH_ABEMPTY = 31;
-  int URI_PATH_ABSOLUTE = 32;
-  int URI_PATH_ROOTLESS = 33;
-  int URI_SEGMENT = 34;
-  int URI_SEGMENT_NZ = 35;
-  int URI_SEGMENT_NZ_NC = 36;
-  int URI_PORT = 37;
-  int URI_HOST = 38;
-  int URI_REG_NAME = 39;
-  int I_LIST_ITEM = 40;
-  int I_TABLE_ROW = 41;
-  int I_HEADER_BEGIN = 42;
-  int I_VERBATIM_BLOCK = 43;
-  int I_HORLINE = 44;
-  int I_VERBATIM_INLINE = 45;
-  int I_REFERENCE = 46;
-  int I_HEADER_END = 47;
-  int I_TABLE_CELL = 48;
-  int I_BR = 49;
-  int I_FORMAT_SYMBOL = 50;
-  int I_URI = 51;
-  int I_NL = 52;
-  int I_SPACE = 53;
-  int I_WORD = 54;
-  int I_SPECIAL_SYMBOL = 55;
-  int D_LIST_ITEM = 56;
-  int D_TABLE_ROW = 57;
-  int D_HEADER_BEGIN = 58;
-  int D_VERBATIM_BLOCK = 59;
-  int D_HORLINE = 60;
-  int D_VERBATIM_INLINE = 61;
-  int D_REFERENCE = 62;
-  int D_HEADER_END = 63;
-  int D_TABLE_CELL = 64;
-  int D_BR = 65;
-  int D_FORMAT_SYMBOL = 66;
-  int D_URI = 67;
-  int D_NL = 68;
-  int D_SPACE = 69;
-  int D_WORD = 70;
-  int D_SPECIAL_SYMBOL = 71;
+  int LIO = 1;
+  int LIU = 2;
+  int DT = 3;
+  int DD = 4;
+  int LIST_ITEM_END = 5;
+  int LIST_ITEM = 6;
+  int HEADER = 7;
+  int VERBATIM = 8;
+  int REFERENCE = 9;
+  int HORLINE = 10;
+  int BR = 11;
+  int CELL = 12;
+  int FORMAT_SYMBOL = 13;
+  int NEW_LINE = 14;
+  int SPACE = 15;
+  int SPECIAL_SYMBOL = 16;
+  int CHAR = 17;
+  int URI = 18;
+  int ALPHA = 19;
+  int DIGIT = 20;
+  int HEXDIG = 21;
+  int URI_GEN_DELIMS = 22;
+  int URI_SUB_DELIMS = 23;
+  int URI_UNRESERVED = 24;
+  int URI_RESERVED = 25;
+  int URI_SCHEME = 26;
+  int URI_SCHEME_COMPOSITE = 27;
+  int URI_PCT_ENCODED = 28;
+  int URI_PCHAR_FIRST = 29;
+  int URI_PCHAR = 30;
+  int URI_QUERY = 31;
+  int URI_FRAGMENT = 32;
+  int URI_HIER_PART = 33;
+  int URI_AUTHORITY = 34;
+  int URI_USERINFO = 35;
+  int URI_PATH_ABEMPTY = 36;
+  int URI_PATH_ABSOLUTE = 37;
+  int URI_PATH_ROOTLESS = 38;
+  int URI_SEGMENT = 39;
+  int URI_SEGMENT_NZ = 40;
+  int URI_SEGMENT_NZ_NC = 41;
+  int URI_PORT = 42;
+  int URI_HOST = 43;
+  int URI_REG_NAME = 44;
+  int I_LIST_ITEM = 45;
+  int I_TABLE_ROW = 46;
+  int I_HEADER_BEGIN = 47;
+  int I_VERBATIM_BLOCK = 48;
+  int I_HORLINE = 49;
+  int I_VERBATIM_INLINE = 50;
+  int I_REFERENCE = 51;
+  int I_HEADER_END = 52;
+  int I_TABLE_CELL = 53;
+  int I_BR = 54;
+  int I_FORMAT_SYMBOL = 55;
+  int I_URI = 56;
+  int I_NL = 57;
+  int I_SPACE = 58;
+  int I_WORD = 59;
+  int I_SPECIAL_SYMBOL = 60;
+  int D_LIST_ITEM = 61;
+  int D_TABLE_ROW = 62;
+  int D_HEADER_BEGIN = 63;
+  int D_VERBATIM_BLOCK = 64;
+  int D_HORLINE = 65;
+  int D_VERBATIM_INLINE = 66;
+  int D_REFERENCE = 67;
+  int D_HEADER_END = 68;
+  int D_TABLE_CELL = 69;
+  int D_BR = 70;
+  int D_FORMAT_SYMBOL = 71;
+  int D_URI = 72;
+  int D_NL = 73;
+  int D_SPACE = 74;
+  int D_WORD = 75;
+  int D_SPECIAL_SYMBOL = 76;
 
   int DEFAULT = 0;
   int INITIAL_CONTEXT = 1;
 
   String[] tokenImage = {
     "<EOF>",
-    "<LI_SYMBOLS>",
+    "\"#\"",
+    "\"*\"",
+    "\";\"",
+    "\":\"",
+    "<LIST_ITEM_END>",
+    "<LIST_ITEM>",
     "<HEADER>",
     "<VERBATIM>",
     "<REFERENCE>",

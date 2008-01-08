@@ -522,7 +522,7 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
   final public void listItem() throws ParseException {
     Token t = null;
     t = getLIST_ITEM();
-            fContext.beginListItem(t.image);
+            fContext.beginListItem(t.image.trim());
     if (jj_2_6(2)) {
       line();
     } else {
@@ -737,7 +737,8 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
       case D_TABLE_CELL:
         t = getTABLE_CELL();
                 if (fContext.isInTable()) {
-                    fContext.onTableCell(t.image.length() > 1);
+                    str = t.image.trim();
+                    fContext.onTableCell(str.length() > 1);
                 } else {
                     fContext.onSpecialSymbol(t.image);
                 }
@@ -832,36 +833,6 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
     finally { jj_save(10, xla); }
   }
 
-  final private boolean jj_3R_12() {
-    if (jj_3R_28()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_4()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_10() {
-    if (jj_3R_16()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_23() {
-    if (jj_3R_35()) return true;
-    return false;
-  }
-
-  final private boolean jj_3_3() {
-    if (jj_3R_12()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_22() {
-    if (jj_3R_34()) return true;
-    return false;
-  }
-
   final private boolean jj_3R_21() {
     if (jj_3R_17()) return true;
     return false;
@@ -926,9 +897,9 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
   final private boolean jj_3R_34() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(55)) {
+    if (jj_scan_token(60)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(71)) return true;
+    if (jj_scan_token(76)) return true;
     }
     return false;
   }
@@ -946,9 +917,9 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
   final private boolean jj_3R_35() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(50)) {
+    if (jj_scan_token(55)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(66)) return true;
+    if (jj_scan_token(71)) return true;
     }
     return false;
   }
@@ -966,9 +937,9 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
   final private boolean jj_3R_37() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(45)) {
+    if (jj_scan_token(50)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(61)) return true;
+    if (jj_scan_token(66)) return true;
     }
     return false;
   }
@@ -976,9 +947,9 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
   final private boolean jj_3R_17() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(53)) {
+    if (jj_scan_token(58)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(69)) return true;
+    if (jj_scan_token(74)) return true;
     }
     return false;
   }
@@ -986,9 +957,9 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
   final private boolean jj_3R_33() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(54)) {
+    if (jj_scan_token(59)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(70)) return true;
+    if (jj_scan_token(75)) return true;
     }
     return false;
   }
@@ -1011,9 +982,9 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
   final private boolean jj_3R_40() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(48)) {
+    if (jj_scan_token(53)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(64)) return true;
+    if (jj_scan_token(69)) return true;
     }
     return false;
   }
@@ -1021,34 +992,14 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
   final private boolean jj_3R_45() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(43)) {
+    if (jj_scan_token(48)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(59)) return true;
+    if (jj_scan_token(64)) return true;
     }
     return false;
   }
 
   final private boolean jj_3R_36() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(47)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(63)) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_44() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(51)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(67)) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_18() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(52)) {
@@ -1058,12 +1009,32 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3R_44() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(56)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(72)) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_18() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(57)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(73)) return true;
+    }
+    return false;
+  }
+
   final private boolean jj_3R_43() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(46)) {
+    if (jj_scan_token(51)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(62)) return true;
+    if (jj_scan_token(67)) return true;
     }
     return false;
   }
@@ -1076,9 +1047,9 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
   final private boolean jj_3R_32() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(49)) {
+    if (jj_scan_token(54)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(65)) return true;
+    if (jj_scan_token(70)) return true;
     }
     return false;
   }
@@ -1092,9 +1063,9 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
   final private boolean jj_3R_28() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(41)) {
+    if (jj_scan_token(46)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(57)) return true;
+    if (jj_scan_token(62)) return true;
     }
     return false;
   }
@@ -1102,9 +1073,9 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
   final private boolean jj_3R_31() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(40)) {
+    if (jj_scan_token(45)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(56)) return true;
+    if (jj_scan_token(61)) return true;
     }
     return false;
   }
@@ -1199,6 +1170,36 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3R_12() {
+    if (jj_3R_28()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_4()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_10() {
+    if (jj_3R_16()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_23() {
+    if (jj_3R_35()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_3() {
+    if (jj_3R_12()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_22() {
+    if (jj_3R_34()) return true;
+    return false;
+  }
+
   public CreoleWikiScannerTokenManager token_source;
   SimpleCharStream jj_input_stream;
   public Token token, jj_nt;
@@ -1221,10 +1222,10 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
       jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_1() {
-      jj_la1_1 = new int[] {0x1000100,0x2000200,0x4000400,0x8000800,0x10001000,0x20002000,0x40004000,0x80008000,0x10000,0x20000,0x40000,0x80000,0x100000,0x200000,0x400000,0x800000,0xffffff00,0xe0efe000,0xffffff00,0xe8efe800,0x40084000,0xe0efe000,};
+      jj_la1_1 = new int[] {0x20002000,0x40004000,0x80008000,0x10000,0x20000,0x40000,0x80000,0x100000,0x200000,0x400000,0x800000,0x1000000,0x2000000,0x4000000,0x8000000,0x10000000,0xffffe000,0x1dfc0000,0xffffe000,0x1dfd0000,0x1080000,0x1dfc0000,};
    }
    private static void jj_la1_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x2,0x4,0x8,0x10,0x20,0x40,0x80,0xff,0xef,0xff,0xef,0x8,0xef,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x1,0x2,0x4,0x8,0x10,0x20,0x40,0x80,0x100,0x200,0x400,0x800,0x1000,0x1fff,0x1dfc,0x1fff,0x1dfd,0x108,0x1dfc,};
    }
   final private JJCalls[] jj_2_rtns = new JJCalls[11];
   private boolean jj_rescan = false;
@@ -1401,8 +1402,8 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
 
   public ParseException generateParseException() {
     jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[72];
-    for (int i = 0; i < 72; i++) {
+    boolean[] la1tokens = new boolean[77];
+    for (int i = 0; i < 77; i++) {
       la1tokens[i] = false;
     }
     if (jj_kind >= 0) {
@@ -1424,7 +1425,7 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
         }
       }
     }
-    for (int i = 0; i < 72; i++) {
+    for (int i = 0; i < 77; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
