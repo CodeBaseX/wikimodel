@@ -18,11 +18,27 @@ import java.util.Map;
  */
 public class WikiEntityUtil {
 
-    private static Map fHtmlToWiki = new HashMap();
+    private static class Entity {
 
-    private static String[] fIdToWiki = new String[65535];
+        public final int fHtmlCode;
 
-    private static Map fWikiToHtml = new HashMap();
+        public final String fHtmlSymbol;
+
+        public final String fWikiSymbol;
+
+        public Entity(String wikiSymbol, String htmlSymbol, int htmlCode) {
+            fWikiSymbol = wikiSymbol;
+            fHtmlSymbol = htmlSymbol;
+            fHtmlCode = htmlCode;
+        }
+
+    }
+
+    private static Map<String, Entity> fHtmlToWiki = new HashMap<String, Entity>();
+
+    private static Entity[] fIdToWiki = new Entity[65535];
+
+    private static Map<String, Entity> fWikiToHtml = new HashMap<String, Entity>();
 
     static {
         add("<", "lt", 8249);
@@ -71,15 +87,15 @@ public class WikiEntityUtil {
         add("->", "rarr", 8594);
         add("-->", "rarr", 8594);
         add("--->", "rarr", 8594);
-        
+
         add("<-", "larr", 8592);
         add("<--", "larr", 8592);
         add("<---", "larr", 8592);
-        
+
         add("<->", "harr", 8596);
         add("<-->", "harr", 8596);
         add("<--->", "harr", 8596);
-        
+
         add("=>", "rArr", 8658);
         add("==>", "rArr", 8658);
         add("===>", "rArr", 8658);
@@ -99,9 +115,34 @@ public class WikiEntityUtil {
     }
 
     private static void add(String wikiEnity, String htmlEntity, int id) {
-        fWikiToHtml.put(wikiEnity, htmlEntity);
-        fHtmlToWiki.put(htmlEntity, wikiEnity);
-        fIdToWiki[id] = wikiEnity;
+        Entity entity = new Entity(wikiEnity, htmlEntity, id);
+        fWikiToHtml.put(wikiEnity, entity);
+        fHtmlToWiki.put(htmlEntity, entity);
+        fIdToWiki[id] = entity;
+    }
+
+    /**
+     * Returns an HTML code corresponding to the specified HTML entity.
+     * 
+     * @param htmlEntity the HTML entity to transform to the corresponding HTML
+     *        code
+     * @return an HTML code corresponding to the specified HTML entity
+     */
+    public static int getHtmlCodeByHtmlEntity(String htmlEntity) {
+        Entity entity = fHtmlToWiki.get(htmlEntity);
+        return entity != null ? entity.fHtmlCode : 0;
+    }
+
+    /**
+     * Returns an HTML code corresponding to the specified wiki entity.
+     * 
+     * @param wikiEntity the wiki entity to transform to the corresponding HTML
+     *        entity
+     * @return an HTML code corresponding to the specified wiki entity
+     */
+    public static int getHtmlCodeByWikiSymbol(String wikiEntity) {
+        Entity entity = fWikiToHtml.get(wikiEntity);
+        return entity != null ? entity.fHtmlCode : 0;
     }
 
     /**
@@ -110,10 +151,8 @@ public class WikiEntityUtil {
      * @return an html entity corresponding to the given character
      */
     public static String getHtmlSymbol(char ch) {
-        String wikiSymbol = fIdToWiki[ch];
-        return (String) ((wikiSymbol != null)
-            ? fWikiToHtml.get(wikiSymbol)
-            : null);
+        Entity entity = fIdToWiki[ch];
+        return entity != null ? entity.fWikiSymbol : null;
     }
 
     /**
@@ -122,7 +161,8 @@ public class WikiEntityUtil {
      * @return an html entity corresponding to the given wiki symbol
      */
     public static String getHtmlSymbol(String wikiEntity) {
-        return (String) fWikiToHtml.get(wikiEntity);
+        Entity entity = fWikiToHtml.get(wikiEntity);
+        return entity != null ? entity.fHtmlSymbol : null;
     }
 
     /**
@@ -131,7 +171,8 @@ public class WikiEntityUtil {
      * @return an wiki entity corresponding to the given character
      */
     public static String getWikiSymbol(char ch) {
-        return fIdToWiki[ch];
+        Entity entity = fIdToWiki[ch];
+        return entity != null ? entity.fWikiSymbol : null;
     }
 
     /**
@@ -140,6 +181,7 @@ public class WikiEntityUtil {
      * @return an wiki entity corresponding to the given html symbol
      */
     public static String getWikiSymbol(String htmlEntity) {
-        return (String) fHtmlToWiki.get(htmlEntity);
+        Entity entity = fHtmlToWiki.get(htmlEntity);
+        return entity != null ? entity.fHtmlSymbol : null;
     }
 }
