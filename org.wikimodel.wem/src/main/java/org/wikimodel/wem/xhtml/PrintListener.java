@@ -8,7 +8,11 @@
  * Contributors:
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
-package org.wikimodel.wem;
+package org.wikimodel.wem.xhtml;
+
+import org.wikimodel.wem.IWikiPrinter;
+import org.wikimodel.wem.WikiPageUtil;
+import org.wikimodel.wem.WikiParameters;
 
 /**
  * @author MikhailKotelnikov
@@ -162,7 +166,7 @@ public class PrintListener extends PrintInlineListener {
     }
 
     /**
-     * @see org.wikimodel.wem.PrintInlineListener#onExtensionBlock(java.lang.String,
+     * @see org.wikimodel.wem.xhtml.PrintInlineListener#onExtensionBlock(java.lang.String,
      *      org.wikimodel.wem.WikiParameters)
      */
     public void onExtensionBlock(String extensionName, WikiParameters params) {

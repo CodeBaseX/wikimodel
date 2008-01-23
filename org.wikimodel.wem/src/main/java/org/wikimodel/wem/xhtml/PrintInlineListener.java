@@ -1,5 +1,11 @@
-package org.wikimodel.wem;
+package org.wikimodel.wem.xhtml;
 
+import org.wikimodel.wem.IWikiPrinter;
+import org.wikimodel.wem.PrintTextListener;
+import org.wikimodel.wem.ReferenceHandler;
+import org.wikimodel.wem.WikiFormat;
+import org.wikimodel.wem.WikiPageUtil;
+import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.util.WikiEntityUtil;
 
 /**
@@ -42,6 +48,51 @@ public class PrintInlineListener extends PrintTextListener {
      */
     public void endPropertyInline(String inlineProperty) {
         print("</span>");
+    }
+
+    /**
+     * Returns an HTML/XML entity corresponding to the specified special symbol.
+     * Depending on implementation it can be real entities (like &amp;amp;
+     * &amp;lt; &amp;gt; or the corresponding digital codes (like &amp;#38;,
+     * &amp;#&amp;#38; or &amp;#8250;). Digital entity representation is better
+     * for generation of XML files.
+     * 
+     * @param str the special string to convert to an HTML/XML entity
+     * @return an HTML/XML entity corresponding to the specified special symbol.
+     */
+    protected String getSymbolEntity(String str) {
+        String entity = null;
+        if (isHtmlEntities()) {
+            entity = WikiEntityUtil.getHtmlSymbol(str);
+        } else {
+            int code = WikiEntityUtil.getHtmlCodeByWikiSymbol(str);
+            if (code > 0) {
+                entity = "#" + Integer.toString(code);
+            }
+        }
+        if (entity != null) {
+            entity = "&" + entity + ";";
+            if (str.startsWith(" --")) {
+                entity = "&nbsp;" + entity + " ";
+            }
+        }
+        return entity;
+    }
+
+    /**
+     * Returns <code>true</code> if special Wiki entities should be
+     * represented as the corresponding HTML entities or they should be
+     * visualized using the corresponding XHTML codes (like &amp;amp; and so
+     * on). This method can be overloaded in subclasses to re-define the
+     * visualization style.
+     * 
+     * @return <code>true</code> if special Wiki entities should be
+     *         represented as the corresponding HTML entities or they should be
+     *         visualized using the corresponding XHTML codes (like &amp;amp;
+     *         and so on).
+     */
+    protected boolean isHtmlEntities() {
+        return true;
     }
 
     @Override
@@ -98,13 +149,8 @@ public class PrintInlineListener extends PrintTextListener {
      * @see org.wikimodel.wem.IWemListener#onSpecialSymbol(java.lang.String)
      */
     public void onSpecialSymbol(String str) {
-        String entity = WikiEntityUtil.getHtmlSymbol(str);
-        if (entity != null) {
-            entity = "&" + entity + ";";
-            if (str.startsWith(" --")) {
-                entity = "&nbsp;" + entity + " ";
-            }
-        } else {
+        String entity = getSymbolEntity(str);
+        if (entity == null) {
             entity = WikiPageUtil.escapeXmlString(str);
         }
         print(entity);
