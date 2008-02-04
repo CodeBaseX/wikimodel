@@ -42,19 +42,14 @@ PARSER_END(CreoleWikiScanner)
 
 <DEFAULT, INITIAL_CONTEXT> TOKEN:
 {
-      <#LIO: "#"> | <#LIU: "*">  
-    | <#DT: ";"> | <#DD: ":" >
-    | <#LIST_ITEM_END:
-          (<LIU> | <LIO> | <DD>) (<LIU> | <LIO> | <DT> | <DD>) (<SPACE>)+
-        | (<LIO> | <DD>) (<LIU> | <LIO> | <DT> | <DD>) (<SPACE>)*
-        | <LIU> (<LIO> | <DT> | <DD>) (<SPACE>)*
-        >
+      <#LI: [ "#", "*" ]>
+    | <#DL: [";", ":"]>
     | <#LIST_ITEM:
-          // Level one
-          (<SPACE>)+ (<LIO> | <LIU> | <DT> | <DD>) (<SPACE>)+
-        | (<LIO> | <LIU> | <DT> | <DD>) (<SPACE>)*
-          // Level two or more 
-        | (<SPACE>)* (<LIU> | <LIO> | <DD>)* <LIST_ITEM_END>
+          (<SPACE>)* (<LI> | <DL>) (<SPACE>)+ 
+        | <LI> (<LI> | <DL>) (<SPACE>)+ 
+        | <LI> (<LI> | <DL>){2,} (<SPACE>)* 
+        | <DL> <LI> (<SPACE>)+ 
+        | <DL> <LI> (<LI> | <DL>)+ (<SPACE>)*
         >
     | <#HEADER: ("="){1, 6} >
     | <#VERBATIM: "{{{" ( "\\" ~[] | <NEW_LINE> " }}}" | ~["}"] | "}" ~["}"] | "}}" ~["}"] )* "}}}" >
