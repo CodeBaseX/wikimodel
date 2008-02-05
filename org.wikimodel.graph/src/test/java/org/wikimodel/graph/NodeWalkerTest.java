@@ -81,6 +81,10 @@ public class NodeWalkerTest extends TestCase {
 
                     int pos = 0;
 
+                    private boolean isFiltered(File file) {
+                        return ".svn".equals(file.getName());
+                    }
+
                     protected File shiftItem() {
                         File result = null;
                         while (result == null && pos < array.length) {
@@ -89,10 +93,6 @@ public class NodeWalkerTest extends TestCase {
                                 result = file;
                         }
                         return result;
-                    }
-
-                    private boolean isFiltered(File file) {
-                        return ".svn".equals(file.getName());
                     }
                 };
             }

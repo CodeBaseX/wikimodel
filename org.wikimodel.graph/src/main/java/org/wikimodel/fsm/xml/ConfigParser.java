@@ -32,9 +32,6 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class ConfigParser {
 
-    protected final static Logger log = Logger.getLogger(ConfigParser.class
-        .getName());
-
     /**
      * 
      */
@@ -207,6 +204,9 @@ public class ConfigParser {
             fHandlerStack.push(handler);
         }
     }
+
+    protected final static Logger log = Logger.getLogger(ConfigParser.class
+        .getName());
 
     Map<String, NodeHandler> fHandlerMap = new LinkedHashMap<String, NodeHandler>();
 

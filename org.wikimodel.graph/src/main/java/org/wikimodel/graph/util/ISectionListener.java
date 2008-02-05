@@ -6,8 +6,8 @@ package org.wikimodel.graph.util;
 public interface ISectionListener {
 
     /**
-     * This method is called to notify about a block of sections with the
-     * same depth.
+     * This method is called to notify about a block of sections with the same
+     * depth.
      * 
      * @param depth
      */

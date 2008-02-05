@@ -12,6 +12,7 @@ import org.wikimodel.fsm.FsmProcess;
 import org.wikimodel.fsm.FsmProcessListener;
 import org.wikimodel.fsm.FsmState;
 import org.wikimodel.fsm.FsmStateDescriptorConfigurator;
+import org.wikimodel.fsm.IFsmEvent;
 import org.wikimodel.fsm.IFsmProcessListener;
 import org.wikimodel.fsm.config.DescriptionReader;
 import org.wikimodel.graph.AbstractNodeWalker;
@@ -35,19 +36,19 @@ public class GrammarTest extends TestCase {
             }
         }
 
-        private void println(String string) {
-            for (int i = 0; i < fDepth; i++) {
-                System.out.print("    ");
-            }
-            System.out.println(string);
-        }
-
         public void endState(FsmState node) throws Exception {
             String name = node.getKey();
             if (!name.startsWith("#")) {
                 fDepth--;
                 println("</" + name + ">");
             }
+        }
+
+        private void println(String string) {
+            for (int i = 0; i < fDepth; i++) {
+                System.out.print("    ");
+            }
+            System.out.println(string);
         }
     };
 
@@ -56,6 +57,24 @@ public class GrammarTest extends TestCase {
      */
     public GrammarTest(String name) {
         super(name);
+    }
+
+    private FsmStateDescriptorConfigurator readConfig(String str)
+        throws Exception {
+        Class<?> cls = getClass();
+        String path = "/"
+            + cls.getPackage().getName().replace(".", "/")
+            + "/"
+            + str;
+        InputStream input = cls.getResourceAsStream(path);
+        try {
+            FsmStateDescriptorConfigurator config = new FsmStateDescriptorConfigurator();
+            DescriptionReader descriptorReader = new DescriptionReader(config);
+            descriptorReader.parse(input);
+            return config;
+        } finally {
+            input.close();
+        }
     }
 
     public void test() throws Exception {
@@ -90,23 +109,16 @@ public class GrammarTest extends TestCase {
         test(process, "doc.end", null);
     }
 
-    private FsmStateDescriptorConfigurator readConfig(String str)
+    private void test(FsmProcess process, String event, String control)
         throws Exception {
-        Class<?> cls = getClass();
-        String path = "/"
-            + cls.getPackage().getName().replace(".", "/")
-            + "/"
-            + str;
-        InputStream input = cls.getResourceAsStream(path);
-        try {
-            FsmStateDescriptorConfigurator config = new FsmStateDescriptorConfigurator();
-            DescriptionReader descriptorReader = new DescriptionReader(
-                config);
-            descriptorReader.parse(input);
-            return config;
-        } finally {
-            input.close();
-        }
+        IFsmEvent e = FsmEvent.newEvent(event);
+        process.setEvent(e);
+        AbstractNodeWalker.Mode mode = AbstractNodeWalker.Mode.LEAF;
+        boolean ok = process.nextStep(mode);
+        assertEquals(control != null, ok);
+        FsmState state = process.getCurrentState();
+        String path = state != null ? state.getPath() : null;
+        assertEquals(control, path);
     }
 
     public void testX() throws Exception {
@@ -155,17 +167,6 @@ public class GrammarTest extends TestCase {
         test(process, "table.tr", "DOC/BLOCK/TABLE/TR/TD");
         test(process, "ul.li", "DOC/BLOCK/UL/LI");
         test(process, "exit", null);
-    }
-
-    private void test(FsmProcess process, String event, String control)
-        throws Exception {
-        process.setEvent(new FsmEvent(event));
-        AbstractNodeWalker.Mode mode = AbstractNodeWalker.Mode.LEAF;
-        boolean ok = process.nextStep(mode);
-        assertEquals(control != null, ok);
-        FsmState state = process.getCurrentState();
-        String path = state != null ? state.getPath() : null;
-        assertEquals(control, path);
     }
 
 }
