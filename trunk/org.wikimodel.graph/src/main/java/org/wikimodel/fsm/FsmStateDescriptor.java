@@ -80,10 +80,11 @@ public class FsmStateDescriptor
         if (parent == null)
             return null;
         String key = state != null ? state.getKey() : STATE_INITIAL;
-        String eventKey = event != null ? event.getKey() : "";
-        String to = getTransitionTargetKey(parent, key, eventKey);
+        if (event == null)
+            event = IFsmEvent.NULL;
+        String to = getTransitionTargetKey(parent, key, event);
         if (STATE_INITIAL.equals(to)) {
-            to = getTransitionTargetKey(parent, STATE_INITIAL, eventKey);
+            to = getTransitionTargetKey(parent, STATE_INITIAL, event);
         }
         if (to == null || STATE_FINAL.equals(to))
             return null;
@@ -181,23 +182,18 @@ public class FsmStateDescriptor
     protected String getTransitionTargetKey(
         FsmState parent,
         String substateKey,
-        String eventKey) {
-        if (eventKey == null)
-            eventKey = "";
+        IFsmEvent event) {
         FsmStateDescriptor parentDescriptor = getStateDescriptor(parent);
         String result = null;
-        while (true) {
+        while (event != null) {
+            String eventKey = event.getKey();
             result = parentDescriptor.getNextSubstate(substateKey, eventKey);
-            if (result != null || "".equals(eventKey))
+            if (result != null)
                 break;
             result = parentDescriptor.getNextSubstate(STATE_ANY, eventKey);
             if (result != null)
                 break;
-            int idx = eventKey.lastIndexOf(".");
-            if (idx < 0)
-                eventKey = "";
-            else
-                eventKey = eventKey.substring(0, idx);
+            event = event.getParentEvent();
         }
         return result;
     }

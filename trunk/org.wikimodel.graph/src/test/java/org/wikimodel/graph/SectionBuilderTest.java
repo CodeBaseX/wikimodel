@@ -3,10 +3,10 @@
  */
 package org.wikimodel.graph;
 
+import junit.framework.TestCase;
+
 import org.wikimodel.graph.util.ISectionListener;
 import org.wikimodel.graph.util.SectionBuilder;
-
-import junit.framework.TestCase;
 
 /**
  * @author kotelnikov

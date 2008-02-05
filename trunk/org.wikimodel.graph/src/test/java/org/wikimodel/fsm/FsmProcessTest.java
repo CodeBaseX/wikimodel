@@ -3,9 +3,9 @@
  */
 package org.wikimodel.fsm;
 
-import org.wikimodel.graph.AbstractNodeWalker;
-
 import junit.framework.TestCase;
+
+import org.wikimodel.graph.AbstractNodeWalker;
 
 /**
  * @author kotelnikov
@@ -26,7 +26,7 @@ public class FsmProcessTest extends TestCase {
 
     private void test(FsmProcess process, String event, String control)
         throws Exception {
-        FsmEvent e = new FsmEvent(event);
+        IFsmEvent e = FsmEvent.newEvent(event);
         process.setEvent(e);
         AbstractNodeWalker.Mode mode = AbstractNodeWalker.Mode.LEAF;
         boolean ok = process.nextStep(mode);

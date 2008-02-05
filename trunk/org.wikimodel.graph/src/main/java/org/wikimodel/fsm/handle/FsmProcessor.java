@@ -9,13 +9,6 @@ import org.wikimodel.fsm.IFsmStateDescriptor;
  */
 public class FsmProcessor implements IFsmProcessListener {
 
-    /**
-     * 
-     */
-    public FsmProcessor() {
-        super();
-    }
-
     static class InternalFsmState extends FsmState {
 
         public InternalFsmState(
@@ -30,6 +23,13 @@ public class FsmProcessor implements IFsmProcessListener {
             return null;
         }
 
+    }
+
+    /**
+     * 
+     */
+    public FsmProcessor() {
+        super();
     }
 
     public void beginState(FsmState node) throws Exception {

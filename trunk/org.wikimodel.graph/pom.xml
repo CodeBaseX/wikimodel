@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.wikimodel</groupId>
-	<artifactId>graph</artifactId>
+	<artifactId>org.wikimodel.graph</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0.9-SNAPSHOT</version>
 	<name>org.wikimodel.graph</name>
