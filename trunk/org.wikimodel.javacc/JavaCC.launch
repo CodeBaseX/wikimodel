@@ -13,10 +13,10 @@
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.ant.ui.AntClasspathProvider"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.ant.ui.AntClasspathProvider"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="-Dinput.file=&quot;${container_loc}/${resource_name}&quot; -Doutput.dir=&quot;${container_loc}&quot;"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.semanticdesktop.wikimodel.javacc"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.wikimodel.javacc"/>
 <stringAttribute key="org.eclipse.debug.core.ATTR_REFRESH_SCOPE" value="${project}"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/org.semanticdesktop.wikimodel.javacc/build.xml"/>
+<listEntry value="/org.wikimodel.javacc/build.xml"/>
 </listAttribute>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:/org.semanticdesktop.wikimodel.javacc/build.xml}"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="${workspace_loc:/org.wikimodel.javacc/build.xml}"/>
 </launchConfiguration>
