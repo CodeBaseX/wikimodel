@@ -118,6 +118,6 @@ Con:
 
 == Example Base ==
 
-The following editors can be considered as a base (or as examples examples) for pure native implementation of WYSIWYG in GWT:
+The following editors can be considered as a base/examples for a pure native implementation of WYSIWYG in GWT:
 
  * http://code.google.com/p/gwt-html-editor/ - don't work in Debug mode
