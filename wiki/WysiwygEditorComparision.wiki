@@ -6,6 +6,7 @@
  * Much more important to have access to *structural* blocks and not just to formatting (headers and styles instead of specific fonts and colors)
  * Possibility to have access to individual DOM elements in the edited document 
  * Possibility to intercept editing of some parts (styled elements) in the document. It is very useful for creation specific editors for elements marked by some specific style classes. For example entering of the cursor in a <div class="map">...</div> block can activate a pop-up window giving access to interactive maps. Or it can be useful for creation of "macro" editors in wiki pages.
+ * Possibility to define CSS for edited documents
 
 = Best candidates =
 
@@ -20,6 +21,10 @@ Con:
  * Don't have the notion of headers and styles (logical structure), but gives access to explicit font and color mantipulation (pure decoration) 
  * Don't give access to individual elements
  * Very difficult to extend. To really have access to individual DOM elements there are two possibilities: 1) Create our own "native" javascript code working in parallel with Google's GWT implementaiton and accessing the same DOM nodes already manipulated by GWT-controlled code 2) Change the Google's code working with document in the editing mode to add required behaviour. The first approach is bad because it is complicated and collisions with GWT are possible (for example: event listening/canceling). The second approach requires modifications of the C/JNI platform-specific implementations for embedded browsers (only for Debug mode) and modifications of the Javascript generator for production mode.  
+ * Impossible to define CSS for edited documents
+
+Conclusion: It seems that it is difficult to extend it property 
+Personally I (MikhailKotelnikov) did not find a way to get access to (and manipulate with)  DOM elements in the edited document, to the current cursor position, selections and CSS styles
 
 == Axed ==
 
@@ -30,17 +35,16 @@ This editor *does not* change the browser mode. It manipulates with DOM elements
 Pro:
  * Native GWT, no external stuff
  * The biggest plus: everything is explicitly controlled in the code which is the same for all browsers.
- * It seems that it is very easy to extend it to create specialized editors for 
-specific styled blocks (macro editors, map editors, table editors and so on)
- * Does not change the mode of the browser, so this editor can have widgets "embedded" directly in the edited document and they will behave in the same manner as in the final Web page. Edited document can contain GoogleMaps, Calendars, (at least - in theory). 
+ * It seems that it is very easy to extend it to create specialized editors for specific styled blocks (macro editors, map editors, table editors and so on)
+ * Does not change the mode of the browser, so this editor can have widgets "embedded" directly in the edited document and they will behave in the same manner as in the final Web page. Edited document can contain interactive GoogleMaps, Calendars, photo galeries (at least - in theory). This is a unique feature which is impossible to have in other editors changing the browser mode to "editMode".
+ * Apache license
 
 Con: 
  * v1.0 is very slow for big text blocks (~10-30kb)
- * Does not work property in Opera (linux)
+ * Does not work property in Opera (linux); May not work in other browsers (like Safary, WebKit)
  * May have 'strange' behaviour for simple operations like copy-paste from external sources and so on.
 
-Conclusion: A *very* interesting candidate as an editor for small documents with rich content. It can be a basis not for a WYSIWY*G* Editor (What You See Is What You *Get*)  but for WYSIWY*M* Editor (What You See Is What You *Mean*)
-
+Conclusion: A *very* interesting candidate as an editor for small documents with rich content. It can be a basis not for a WYSIWY*G* Editor (What You See Is What You *Get*)  but for WYSIWY*M* Editor (What You See Is What You *Mean*) oriented to editing of the structure. 
 
 == Yahoo! Editor ==
 
@@ -49,16 +53,33 @@ A very good editor. Apparently it gives access to all individual elements in the
 Pro:
  * Clean object desing and implementation
  * Big company behind
- * Good license (BSD)
+ * BSD license
  * Fast. Quite short loading time.
  * Gives access for all individual elements in the document
 
 Con: 
  * Requires loading of external javascript files
 
-Conclusion: The best candidate for real WYSIWYG editor 
+Conclusion: The best candidate for real WYSIWYG editor in GWT
 
 == FCKeditor == 
+
+http://www.fckeditor.net/
+
+Pro:
+ * One of the most active project in SourceForge
+ * Works well with almost all browsers
+ * Stable
+ * Extensible
+ * It seems that it possible to have access to the internal structure of edited documents
+ * A lot of plugins
+ * Browser-specific code is explicitly externalized in separate files (don't load the code if it is not used) 
+ * I18N 
+
+Con:
+ * LGPL
+ * Requires loading of external javascript files
+ * Heavyweight 
 
 = Rejected candites =
 
@@ -68,9 +89,27 @@ URL: http://www.tinymce.org
 
 Pro:
  * Easy to embed in GWT
+ * Widly used
 
 Con: 
  * Very low code quality (impossible to extend/modify/debug, platform-specific code is in the same file with "if"s)
  * Slow
+ * LGPL
 
-== 
+== DOJO WYSIWYG ==
+
+http://www.dojotoolkit.org/
+
+Pro:
+ * Good design and implementation
+ * Apache licence
+
+Con:
+ * Havyweight and slow
+ * Requires loading of external javascript files
+
+== Example Base ==
+
+The following editors can be considered as a base (or as examples examples) for pure native implementation of WYSIWYG in GWT:
+
+ * http://code.google.com/p/gwt-html-editor/ - don't work in Debug mode
