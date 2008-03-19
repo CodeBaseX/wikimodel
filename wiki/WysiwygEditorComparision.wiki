@@ -1,4 +1,4 @@
-#summary Comparision of freely available WYSIWYG browser-based HTML editors
+#summary Comparision of freely available WYSIWYG browser-based HTML editors and possibilities to use them with GWT
 
 = Requirements =
 
@@ -7,10 +7,70 @@
  * Possibility to have access to individual DOM elements in the edited document 
  * Possibility to intercept editing of some parts (styled elements) in the document. It is very useful for creation specific editors for elements marked by some specific style classes. For example entering of the cursor in a <div class="map">...</div> block can activate a pop-up window giving access to interactive maps. Or it can be useful for creation of "macro" editors in wiki pages.
 
+= Best candidates =
 
-= Details =
+== GWT Native WYSIWYG ==
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+Pro:
+ * Native solution
+ * Very fast
+
+Con:
+ * Very limited
+ * Don't have the notion of headers and styles (logical structure), but gives access to explicit font and color mantipulation (pure decoration) 
+ * Don't give access to individual elements
+ * Very difficult to extend. To really have access to individual DOM elements there are two possibilities: 1) Create our own "native" javascript code working in parallel with Google's GWT implementaiton and accessing the same DOM nodes already manipulated by GWT-controlled code 2) Change the Google's code working with document in the editing mode to add required behaviour. The first approach is bad because it is complicated and collisions with GWT are possible (for example: event listening/canceling). The second approach requires modifications of the C/JNI platform-specific implementations for embedded browsers (only for Debug mode) and modifications of the Javascript generator for production mode.  
+
+== Axed ==
+
+URL: http://code.google.com/p/axed/
+
+This editor *does not* change the browser mode. It manipulates with DOM elements in memory and explicitly emulates editor-specific behaviour like cursor, selections and so on. Completly written in GWT. It seems that it does not contain "native" javascript; only one source tree for all browser platform; contains no browser-specific code.
+
+Pro:
+ * Native GWT, no external stuff
+ * The biggest plus: everything is explicitly controlled in the code which is the same for all browsers.
+ * It seems that it is very easy to extend it to create specialized editors for 
+specific styled blocks (macro editors, map editors, table editors and so on)
+ * Does not change the mode of the browser, so this editor can have widgets "embedded" directly in the edited document and they will behave in the same manner as in the final Web page. Edited document can contain GoogleMaps, Calendars, (at least - in theory). 
+
+Con: 
+ * v1.0 is very slow for big text blocks (~10-30kb)
+ * Does not work property in Opera (linux)
+ * May have 'strange' behaviour for simple operations like copy-paste from external sources and so on.
+
+Conclusion: A *very* interesting candidate as an editor for small documents with rich content. It can be a basis not for a WYSIWY*G* Editor (What You See Is What You *Get*)  but for WYSIWY*M* Editor (What You See Is What You *Mean*)
+
+
+== Yahoo! Editor ==
+
+A very good editor. Apparently it gives access to all individual elements in the edited text. It seems that it works well with common browsers (IE, Gecko-based, Opera, Safary...) 
+
+Pro:
+ * Clean object desing and implementation
+ * Big company behind
+ * Good license (BSD)
+ * Fast. Quite short loading time.
+ * Gives access for all individual elements in the document
+
+Con: 
+ * Requires loading of external javascript files
+
+Conclusion: The best candidate for real WYSIWYG editor 
+
+== FCKeditor == 
+
+= Rejected candites =
+
+== TinyMCE ==
+
+URL: http://www.tinymce.org
+
+Pro:
+ * Easy to embed in GWT
+
+Con: 
+ * Very low code quality (impossible to extend/modify/debug, platform-specific code is in the same file with "if"s)
+ * Slow
+
+== 
