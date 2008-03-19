@@ -1,0 +1,16 @@
+#summary Comparision of freely available WYSIWYG browser-based HTML editors
+
+= Requirements =
+
+- Possibility to edit (X)HTML
+- Much more important to have access to *structural* blocks and not just to formatting (headers and styles instead of specific fonts and colors)
+- Possibility to have access to individual DOM elements in the edited document 
+- Possibility to intercept editing of some parts (styled elements) in the document. It is very useful for creation specific editors for elements marked by some specific style classes. For example entering of the cursor in a <div class="map">...</div> block can activate a pop-up window giving access to interactive maps. Or it can be useful for creation of "macro" editors in wiki pages.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
