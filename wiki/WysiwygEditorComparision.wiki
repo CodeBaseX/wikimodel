@@ -48,6 +48,8 @@ Conclusion: A *very* interesting candidate as an editor for small documents with
 
 == Yahoo! Editor ==
 
+http://developer.yahoo.com/yui/editor/
+
 A very good editor. Apparently it gives access to all individual elements in the edited text. It seems that it works well with common browsers (IE, Gecko-based, Opera, Safary...) 
 
 Pro:
@@ -56,6 +58,8 @@ Pro:
  * BSD license
  * Fast. Quite short loading time.
  * Gives access for all individual elements in the document
+ * CSS can be re-defined 
+ * Extendable editors are possible (editor area grows with the content length)
 
 Con: 
  * Requires loading of external javascript files
@@ -80,6 +84,8 @@ Con:
  * LGPL
  * Requires loading of external javascript files
  * Heavyweight 
+
+Conclusion: Could be a good candidate if other variants does not work 
 
 = Rejected candites =
 
