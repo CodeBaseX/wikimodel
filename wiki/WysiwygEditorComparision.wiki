@@ -46,7 +46,7 @@ Con:
    * Does not work in Opera (linux); May not work in other browsers (like Safary, WebKit)
    * May have 'strange' behaviour for simple operations like copy-paste from external sources and so on.
 
-Conclusion: It is a *very* interesting candidate as an editor for small documents with rich interactive content. It can be a basis not for a WYSIWY*G* Editor (What You See Is What You *Get*)  but for WYSIWY*M* Editor (What You See Is What You *Mean*) oriented on editing of  document structure. 
+Conclusion: It is a *very* interesting candidate as an editor for small documents with rich interactive content. It can be a basis not for a WYSIWYG Editor (What You See Is What You *Get*)  but for WYSIWYM Editor (What You See Is What You *Mean*) oriented on editing of  document structure. 
 
 == Yahoo! Editor ==
 
