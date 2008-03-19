@@ -41,10 +41,10 @@ Pro:
 
 Con: 
  * v1.0 is very slow for big text blocks (~10-30kb)
- * Does not work property in Opera (linux); May not work in other browsers (like Safary, WebKit)
+ * Does not work in Opera (linux); May not work in other browsers (like Safary, WebKit)
  * May have 'strange' behaviour for simple operations like copy-paste from external sources and so on.
 
-Conclusion: A *very* interesting candidate as an editor for small documents with rich content. It can be a basis not for a WYSIWY*G* Editor (What You See Is What You *Get*)  but for WYSIWY*M* Editor (What You See Is What You *Mean*) oriented to editing of the structure. 
+Conclusion: A *very* interesting candidate as an editor for small documents with rich interactive content. It can be a basis not for a WYSIWY*G* Editor (What You See Is What You *Get*)  but for WYSIWY*M* Editor (What You See Is What You *Mean*) oriented on editing of  document structure. 
 
 == Yahoo! Editor ==
 
