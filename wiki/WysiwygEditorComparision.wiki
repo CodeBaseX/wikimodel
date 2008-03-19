@@ -23,7 +23,7 @@ Con:
  * Very difficult to extend. To really have access to individual DOM elements there are two possibilities: 1) Create our own "native" javascript code working in parallel with Google's GWT implementaiton and accessing the same DOM nodes already manipulated by GWT-controlled code 2) Change the Google's code working with document in the editing mode to add required behaviour. The first approach is bad because it is complicated and collisions with GWT are possible (for example: event listening/canceling). The second approach requires modifications of the C/JNI platform-specific implementations for embedded browsers (only for Debug mode) and modifications of the Javascript generator for production mode.  
  * Impossible to define CSS for edited documents
 
-Conclusion: It seems that it is difficult to extend it property 
+Conclusion: It seems that it is difficult to extend it properly! 
 Personally I (MikhailKotelnikov) did not find a way to get access to (and manipulate with)  DOM elements in the edited document, to the current cursor position, selections and CSS styles
 
 == Axed ==
