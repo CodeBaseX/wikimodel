@@ -30,21 +30,23 @@ Personally I (MikhailKotelnikov) did not find a way to get access to (and manipu
 
 URL: http://code.google.com/p/axed/
 
-This editor *does not* change the browser mode. It manipulates with DOM elements in memory and explicitly emulates editor-specific behaviour like cursor, selections and so on. Completly written in GWT. It seems that it does not contain "native" javascript; only one source tree for all browser platform; contains no browser-specific code.
+This editor *does not* change the browser mode. It manipulates with DOM elements in memory and explicitly emulates editor-specific behaviour like cursor, selections and so on. Completly written in GWT. It seems that it does not contain "native" javascript; one source tree for all browser platform; contains no browser-specific code.
 
 Pro:
  * Native GWT, no external stuff
  * The biggest plus: everything is explicitly controlled in the code which is the same for all browsers.
  * It seems that it is very easy to extend it to create specialized editors for specific styled blocks (macro editors, map editors, table editors and so on)
- * Does not change the mode of the browser, so this editor can have widgets "embedded" directly in the edited document and they will behave in the same manner as in the final Web page. Edited document can contain interactive GoogleMaps, Calendars, photo galeries (at least - in theory). This is a unique feature which is impossible to have in other editors changing the browser mode to "editMode".
+ * Does not change the mode of the browser, so this editor can have *interactive* widgets "embedded" directly in the edited document! These widgets will have the same behaviour as in the final Web page. It can be interactive GoogleMaps, Calendars, photo galeries (at least - in theory). This is a unique feature which is impossible to have in other editors changing the browser mode to "editMode".
  * Apache license
 
 Con: 
- * v1.0 is very slow for big text blocks (~10-30kb)
- * Does not work in Opera (linux); May not work in other browsers (like Safary, WebKit)
- * May have 'strange' behaviour for simple operations like copy-paste from external sources and so on.
+ * v1.0 is very slow for big text blocks (~10-30kb). It can change in the future. 
+ * It is not real WYSIWYG, but it is perfect for *structural* editing.
+ * Bags and not implemented features
+   * Does not work in Opera (linux); May not work in other browsers (like Safary, WebKit)
+   * May have 'strange' behaviour for simple operations like copy-paste from external sources and so on.
 
-Conclusion: A *very* interesting candidate as an editor for small documents with rich interactive content. It can be a basis not for a WYSIWY*G* Editor (What You See Is What You *Get*)  but for WYSIWY*M* Editor (What You See Is What You *Mean*) oriented on editing of  document structure. 
+Conclusion: It is a *very* interesting candidate as an editor for small documents with rich interactive content. It can be a basis not for a WYSIWY*G* Editor (What You See Is What You *Get*)  but for WYSIWY*M* Editor (What You See Is What You *Mean*) oriented on editing of  document structure. 
 
 == Yahoo! Editor ==
 
