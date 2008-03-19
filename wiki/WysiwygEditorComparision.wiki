@@ -8,6 +8,8 @@
  * Possibility to intercept editing of some parts (styled elements) in the document. It is required for creation specific editors for elements marked by some specific style classes. For example entering of the cursor in a <div class="map">...</div> block can activate a pop-up window giving access to interactive maps. Or it can be useful for creation of "macro" editors in wiki pages.
  * Possibility to define CSS for edited documents
 
+----
+
 = Best candidates =
 
 == GWT Native WYSIWYG ==
@@ -89,6 +91,8 @@ Con:
 
 Conclusion: Could be a good candidate if other variants does not work 
 
+----
+
 = Rejected candites =
 
 == TinyMCE ==
@@ -116,7 +120,9 @@ Con:
  * Havyweight and slow
  * Requires loading of external javascript files
 
-== Example Base ==
+----
+
+= Example Base =
 
 The following editors can be considered as a base/examples for a pure native implementation of WYSIWYG in GWT:
 
