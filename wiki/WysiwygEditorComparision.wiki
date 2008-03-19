@@ -121,3 +121,4 @@ Con:
 The following editors can be considered as a base/examples for a pure native implementation of WYSIWYG in GWT:
 
  * http://code.google.com/p/gwt-html-editor/ - don't work in Debug mode
+ * http://www.wymeditor.org/en/ - WYSIWYM - It would be nice to merge this approach with Axed
