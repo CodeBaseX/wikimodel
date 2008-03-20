@@ -38,6 +38,9 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test(
             "{toto}a{toto}b{/toto}c{/toto}",
             "<pre class='macro' macroName='toto'><![CDATA[a{toto}b{/toto}c]]></pre>");
+        test(
+            "{toto}a{tata}b{/tata}c{/toto}",
+            "<pre class='macro' macroName='toto'><![CDATA[a{tata}b{/tata}c]]></pre>");
         test("before\n{toto}a{/toto}\nafter", ""
             + "<p>before</p>\n"
             + "<pre class='macro' macroName='toto'><![CDATA[a]]></pre>\n"
@@ -54,6 +57,9 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test(
             "{x:toto}a{x:toto}b{/x:toto}c{/x:toto}",
             "<pre class='macro' macroName='x:toto'><![CDATA[a{x:toto}b{/x:toto}c]]></pre>");
+        test(
+            "{x:toto}a{tata}b{/tata}c{/x:toto}",
+            "<pre class='macro' macroName='x:toto'><![CDATA[a{tata}b{/tata}c]]></pre>");
         test("before\n{x:toto}a{/x:toto}\nafter", ""
             + "<p>before</p>\n"
             + "<pre class='macro' macroName='x:toto'><![CDATA[a]]></pre>\n"
@@ -91,6 +97,14 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test(
             "{toto}a{toto}",
             "<pre class='macro' macroName='toto'><![CDATA[a{toto}]]></pre>");
+        test("{/x}", "<p>{/x}</p>");
+        test("before{a}x{b}y{c}z\n" + "new line in the same  macro", ""
+            + "<p>before<span class='macro' macroName='a'><![CDATA[x{b}y{c}z\n"
+            + "new line in the same  macro]]></span></p>");
+        test(
+            "before{a}x{b}y{c}z{/a}after",
+            ""
+                + "<p>before<span class='macro' macroName='a'><![CDATA[x{b}y{c}z]]></span>after</p>");
 
         // 
         test(
