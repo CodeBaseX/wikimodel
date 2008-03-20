@@ -31,6 +31,163 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         return new XWikiParser();
     }
 
+    public void testMacro() throws WikiParserException {
+        test(
+            "{toto}a{/toto}",
+            "<pre class='macro' macroName='toto'><![CDATA[a]]></pre>");
+        test(
+            "{toto}a{toto}b{/toto}c{/toto}",
+            "<pre class='macro' macroName='toto'><![CDATA[a{toto}b{/toto}c]]></pre>");
+        test("before\n{toto}a{/toto}\nafter", ""
+            + "<p>before</p>\n"
+            + "<pre class='macro' macroName='toto'><![CDATA[a]]></pre>\n"
+            + "<p>after</p>");
+        test("before\n{toto}a{/toto}after", ""
+            + "<p>before</p>\n"
+            + "<pre class='macro' macroName='toto'><![CDATA[a]]></pre>\n"
+            + "<p>after</p>");
+
+        // URIs as macro names
+        test(
+            "{x:toto}a{/x:toto}",
+            "<pre class='macro' macroName='x:toto'><![CDATA[a]]></pre>");
+        test(
+            "{x:toto}a{x:toto}b{/x:toto}c{/x:toto}",
+            "<pre class='macro' macroName='x:toto'><![CDATA[a{x:toto}b{/x:toto}c]]></pre>");
+        test("before\n{x:toto}a{/x:toto}\nafter", ""
+            + "<p>before</p>\n"
+            + "<pre class='macro' macroName='x:toto'><![CDATA[a]]></pre>\n"
+            + "<p>after</p>");
+        test("before\n{x:toto}a{/x:toto}after", ""
+            + "<p>before</p>\n"
+            + "<pre class='macro' macroName='x:toto'><![CDATA[a]]></pre>\n"
+            + "<p>after</p>");
+
+        // Empty macros
+        test(
+            "{x:toto /}",
+            "<pre class='macro' macroName='x:toto'><![CDATA[]]></pre>");
+        test(
+            "{x:toto a=b c=d /}",
+            "<pre class='macro' macroName='x:toto' a='b' c='d'><![CDATA[]]></pre>");
+        test(
+            "before\n{x:toto  a=b c=d/}\nafter",
+            ""
+                + "<p>before</p>\n"
+                + "<pre class='macro' macroName='x:toto' a='b' c='d'><![CDATA[]]></pre>\n"
+                + "<p>after</p>");
+        test(
+            "before\n{x:toto  a='b' c='d'/}after",
+            ""
+                + "<p>before</p>\n"
+                + "<pre class='macro' macroName='x:toto' a='b' c='d'><![CDATA[]]></pre>\n"
+                + "<p>after</p>");
+        test(
+            "before{x:toto /}after",
+            "<p>before<span class='macro' macroName='x:toto'><![CDATA[]]></span>after</p>");
+
+        // Bad-formed block macros (not-closed)
+        test("{toto}", "<pre class='macro' macroName='toto'><![CDATA[]]></pre>");
+        test(
+            "{toto}a{toto}",
+            "<pre class='macro' macroName='toto'><![CDATA[a{toto}]]></pre>");
+
+        // 
+        test(
+            "{toto}a{/toto}",
+            "<pre class='macro' macroName='toto'><![CDATA[a]]></pre>");
+        test(
+            "before{toto}macro{/toto}after",
+            "<p>before<span class='macro' macroName='toto'><![CDATA[macro]]></span>after</p>");
+
+        test("before{toto a=b c=d}toto macro tata {/toto}after", ""
+            + "<p>before<span class='macro' macroName='toto' a='b' c='d'>"
+            + "<![CDATA[toto macro tata ]]>"
+            + "</span>after</p>");
+
+        test(
+            "before{toto a=b c=d}toto {x qsdk} macro {sd} tata {/toto}after",
+            ""
+                + "<p>before<span class='macro' macroName='toto' a='b' c='d'>"
+                + "<![CDATA[toto {x qsdk} macro {sd} tata ]]>"
+                + "</span>after</p>");
+
+        // Not a macro
+        test("{ toto a=b c=d}", "<p>{ toto a=b c=d}</p>");
+
+        test(
+            "This is a macro: {toto x:a=b x:c=d}\n"
+                + "<table>\n"
+                + "#foreach ($x in $table)\n"
+                + "  <tr>hello, $x</tr>\n"
+                + "#end\n"
+                + "</table>\n"
+                + "{/toto}",
+            "<p>This is a macro: <span class='macro' macroName='toto' x:a='b' x:c='d'><![CDATA[\n"
+                + "<table>\n"
+                + "#foreach ($x in $table)\n"
+                + "  <tr>hello, $x</tr>\n"
+                + "#end\n"
+                + "</table>\n"
+                + "]]></span></p>");
+        test(
+            ""
+                + "* item one\n"
+                + "* item two\n"
+                + "  {code} this is a code{/code} \n"
+                + "  the same item (continuation)\n"
+                + "* item three",
+            ""
+                + "<ul>\n"
+                + "  <li>item one</li>\n"
+                + "  <li>item two\n"
+                + "  <span class='macro' macroName='code'><![CDATA[ this is a code]]></span> \n"
+                + "  the same item (continuation)</li>\n"
+                + "  <li>item three</li>\n"
+                + "</ul>");
+
+        // Macros with URIs as names
+        test(
+            "{x:y a=b c=d}",
+            "<pre class='macro' macroName='x:y' a='b' c='d'><![CDATA[]]></pre>");
+        test(
+            "before{x:y a=b c=d}macro content",
+            "<p>before<span class='macro' macroName='x:y' a='b' c='d'><![CDATA[macro content]]></span></p>");
+        test(
+            "before\n{x:y a=b c=d}macro content",
+            ""
+                + "<p>before</p>\n"
+                + "<pre class='macro' macroName='x:y' a='b' c='d'><![CDATA[macro content]]></pre>");
+        test(
+            "before\n{x:y a=b c=d/}\nafter",
+            ""
+                + "<p>before</p>\n"
+                + "<pre class='macro' macroName='x:y' a='b' c='d'><![CDATA[]]></pre>\n"
+                + "<p>after</p>");
+
+        // Not closed and bad-formed macros
+        test(
+            "a{a}{b}",
+            "<p>a<span class='macro' macroName='a'><![CDATA[{b}]]></span></p>");
+        test(
+            "a{a}{b}{",
+            "<p>a<span class='macro' macroName='a'><![CDATA[{b}{]]></span></p>");
+        test(
+            "a {{x:}} b",
+            "<p>a {<span class='macro' macroName='x:'><![CDATA[} b]]></span></p>");
+        test(
+            "a {{x:}} }b",
+            "<p>a {<span class='macro' macroName='x:'><![CDATA[} }b]]></span></p>");
+
+        test(
+            "a {{x:}} {}b",
+            "<p>a {<span class='macro' macroName='x:'><![CDATA[} {}b]]></span></p>");
+        test(
+            "a {{x:}}, {{y:}} b",
+            "<p>a {<span class='macro' macroName='x:'><![CDATA[}, {{y:}} b]]></span></p>");
+
+    }
+
     /**
      * @throws WikiParserException
      */
@@ -175,48 +332,4 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test("{table}First line\nSecond line\nThird line");
     }
 
-    /**
-     * @throws WikiParserException
-     */
-    public void testVerbatimeInline() throws WikiParserException {
-        test(
-            "before{code}code{code}after",
-            "<p>before<code>code</code>after</p>");
-    }
-
-    /**
-     * @throws WikiParserException
-     */
-    public void testVerbatimeBlocks() throws WikiParserException {
-        test("before\n" + "{code}code{code}" + "after", ""
-            + "<p>before</p>\n"
-            + "<pre>code</pre>\n"
-            + "<p>after</p>");
-
-        test("before\n"
-            + "{code}\n"
-            + "1 Not a header\n\n"
-            + "* Not a list\n"
-            + "{code}"
-            + "after\n"
-            + "{code}code again{code}", ""
-            + "<p>before</p>\n"
-            + "<pre>\n"
-            + "1 Not a header\n\n"
-            + "* Not a list\n"
-            + "</pre>\n"
-            + "<p>after</p>\n"
-            + "<pre>code again</pre>");
-
-        test("abc \n{code}123\nCDE\n345{code}efg", ""
-            + "<p>abc </p>\n"
-            + "<pre>123\n"
-            + "CDE\n"
-            + "345"
-            + "</pre>\n"
-            + "<p>efg</p>");
-        test("abc\n{{{\n {{{ 123 \n}\\}} \n}}} efg");
-        test("inline{{verbatime}}block");
-        test("{{just like this...");
-    }
 }
