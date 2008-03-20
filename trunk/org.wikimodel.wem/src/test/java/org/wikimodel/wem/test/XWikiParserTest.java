@@ -31,10 +31,113 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         return new XWikiParser();
     }
 
+    /**
+     * @throws WikiParserException
+     */
+    public void testDefinitionLists() throws WikiParserException {
+        test(";term: definition");
+        test(";:just definition");
+        test(";just term");
+        test(";:");
+
+        test(";this:is_not_a_term : it is an uri");
+
+        test(";term one: definition one\n"
+            + ";term two: definition two\n"
+            + ";term three: definition three");
+
+        test(";One,\ntwo,\nbucle my shoes...:\n"
+            + "...Three\nfour,\nClose the door\n"
+            + ";Five,\nSix:Pick up\n sticks\n\ntam-tam, pam-pam...");
+
+        test(";__term__:''definition''");
+
+        test("this is not a definition --\n"
+            + " ;__not__ a term: ''not'' a definition\n"
+            + "----toto");
+    }
+
+    /**
+     * @throws WikiParserException
+     */
+    public void testEscape() throws WikiParserException {
+        test("[a reference]");
+        test("[[not a reference]");
+
+        test("~First letter is escaped");
+        test("~[not a reference]");
+        test("~~escaped tilda");
+        test("~ just a tilda because there is an espace after this tilda...");
+
+        test("!Heading\n~!Not a heading\n!Heading again!");
+    }
+
+    /**
+     * @throws WikiParserException
+     */
+    public void testFormats() throws WikiParserException {
+        test("*bold*");
+        test("__bold__");
+        test("~~italic~~");
+        test("--strike--");
+    }
+
+    /**
+     * @throws WikiParserException
+     */
+    public void testHeaders() throws WikiParserException {
+        test("1 Heading  1");
+        test("1.1 Heading 2");
+        test("1.1.1 Heading 3");
+        test("1.1.1.1 Heading 4");
+        test("1.1.1.1.1.1 Heading 5");
+        test("1.1.1.1.1.1 Heading 6");
+    }
+
+    /**
+     * @throws WikiParserException
+     */
+    public void testHorLine() throws WikiParserException {
+        test("----");
+        test("-------");
+        test("-----------");
+        test(" -----------");
+        test("----abc");
+    }
+
+    /**
+     * @throws WikiParserException
+     */
+    public void testLineBreak() throws WikiParserException {
+        test("abc\\\\def");
+    }
+
+    /**
+     * @throws WikiParserException
+     */
+    public void testLists() throws WikiParserException {
+        test("* first");
+        test("** second");
+        test("* first\n** second");
+        test("*1. second");
+        test("*item one\n"
+            + "* item two\n"
+            + "*1. item three\n"
+            + "*1. item four\n"
+            + "* item five - first line\n"
+            + "   item five - second line\n"
+            + "* item six\n"
+            + "  is on multiple\n"
+            + " lines");
+    }
+
     public void testMacro() throws WikiParserException {
         test(
             "{toto}a{/toto}",
             "<pre class='macro' macroName='toto'><![CDATA[a]]></pre>");
+        test(
+            "{x:toto y:param=value1 z:param2='value two'}a{/x:toto}",
+            "<pre class='macro' macroName='x:toto' y:param='value1' z:param2='value two'><![CDATA[a]]></pre>");
         test(
             "{toto}a{toto}b{/toto}c{/toto}",
             "<pre class='macro' macroName='toto'><![CDATA[a{toto}b{/toto}c]]></pre>");
@@ -200,106 +303,6 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             "a {{x:}}, {{y:}} b",
             "<p>a {<span class='macro' macroName='x:'><![CDATA[}, {{y:}} b]]></span></p>");
 
-    }
-
-    /**
-     * @throws WikiParserException
-     */
-    public void testDefinitionLists() throws WikiParserException {
-        test(";term: definition");
-        test(";:just definition");
-        test(";just term");
-        test(";:");
-
-        test(";this:is_not_a_term : it is an uri");
-
-        test(";term one: definition one\n"
-            + ";term two: definition two\n"
-            + ";term three: definition three");
-
-        test(";One,\ntwo,\nbucle my shoes...:\n"
-            + "...Three\nfour,\nClose the door\n"
-            + ";Five,\nSix:Pick up\n sticks\n\ntam-tam, pam-pam...");
-
-        test(";__term__:''definition''");
-
-        test("this is not a definition --\n"
-            + " ;__not__ a term: ''not'' a definition\n"
-            + "----toto");
-    }
-
-    /**
-     * @throws WikiParserException
-     */
-    public void testEscape() throws WikiParserException {
-        test("[a reference]");
-        test("[[not a reference]");
-
-        test("~First letter is escaped");
-        test("~[not a reference]");
-        test("~~escaped tilda");
-        test("~ just a tilda because there is an espace after this tilda...");
-
-        test("!Heading\n~!Not a heading\n!Heading again!");
-    }
-
-    /**
-     * @throws WikiParserException
-     */
-    public void testFormats() throws WikiParserException {
-        test("*bold*");
-        test("__bold__");
-        test("~~italic~~");
-        test("--strike--");
-    }
-
-    /**
-     * @throws WikiParserException
-     */
-    public void testHeaders() throws WikiParserException {
-        test("1 Heading  1");
-        test("1.1 Heading 2");
-        test("1.1.1 Heading 3");
-        test("1.1.1.1 Heading 4");
-        test("1.1.1.1.1.1 Heading 5");
-        test("1.1.1.1.1.1 Heading 6");
-    }
-
-    /**
-     * @throws WikiParserException
-     */
-    public void testHorLine() throws WikiParserException {
-        test("----");
-        test("-------");
-        test("-----------");
-        test(" -----------");
-        test("----abc");
-    }
-
-    /**
-     * @throws WikiParserException
-     */
-    public void testLineBreak() throws WikiParserException {
-        test("abc\\\\def");
-    }
-
-    /**
-     * @throws WikiParserException
-     */
-    public void testLists() throws WikiParserException {
-        test("* first");
-        test("** second");
-        test("* first\n** second");
-        test("*1. second");
-        test("*item one\n"
-            + "* item two\n"
-            + "*1. item three\n"
-            + "*1. item four\n"
-            + "* item five - first line\n"
-            + "   item five - second line\n"
-            + "* item six\n"
-            + "  is on multiple\n"
-            + " lines");
     }
 
     /**
