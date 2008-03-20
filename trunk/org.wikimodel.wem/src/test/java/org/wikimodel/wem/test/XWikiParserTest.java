@@ -322,14 +322,38 @@ public class XWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testTables() throws WikiParserException {
-        test("{table}First line\nSecond line\nThird line");
-
-        test("|This is not a table");
-        test("{table}This | is a | table");
-        test("{table}This | is a | table\n{table}");
-        test("before\n{table}This is \na table\n{table}after");
-        test("{table}This is a table");
-        test("{table}First line\nSecond line\nThird line");
+        test("{table}First line\nSecond line\nThird line", ""
+            + "<table><tbody>\n"
+            + "  <tr><th>First line</th></tr>\n"
+            + "  <tr><td>Second line</td></tr>\n"
+            + "  <tr><td>Third line</td></tr>\n"
+            + "</tbody></table>");
+        test("|This is not a table", "<p>|This is not a table</p>");
+        test("{table}This | is a | table", ""
+            + "<table><tbody>\n"
+            + "  <tr><th>This </th><th> is a </th><th> table</th></tr>\n"
+            + "</tbody></table>");
+        test("{table}This | is a | table\n{table}", ""
+            + "<table><tbody>\n"
+            + "  <tr><th>This </th><th> is a </th><th> table</th></tr>\n"
+            + "</tbody></table>");
+        test("before\n{table}This is \na table\n{table}after", ""
+            + "<p>before</p>\n"
+            + "<table><tbody>\n"
+            + "  <tr><th>This is </th></tr>\n"
+            + "  <tr><td>a table</td></tr>\n"
+            + "</tbody></table>\n"
+            + "<p>after</p>");
+        test("{table}This is a table", ""
+            + "<table><tbody>\n"
+            + "  <tr><th>This is a table</th></tr>\n"
+            + "</tbody></table>");
+        test("{table}First line\nSecond line\nThird line", ""
+            + "<table><tbody>\n"
+            + "  <tr><th>First line</th></tr>\n"
+            + "  <tr><td>Second line</td></tr>\n"
+            + "  <tr><td>Third line</td></tr>\n"
+            + "</tbody></table>");
     }
 
 }

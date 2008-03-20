@@ -93,7 +93,6 @@ TOKEN_MGR_DECLS: {
     | <#HEADER: ( "1" ("." "1" ) {0, 5} ) (<SPACE>)* >
     | <#ESCAPE: ( "\\" ~["\\", " ", "\t", "\n", "\r"] ) >
     | <#BR: "\\\\" >
-    | <#NOT_CODE: ( ~["{"] | "{" ~["c"] | "{c" ~["o"] | "{co" ~["d"] | "{cod" ~["e"] | "{code" ~["}"] ) >
     | <#MACRO_NAME: ( <URI> | (<CHAR>)+ ) >
     | <#MACRO_EMPTY: "{" <MACRO_NAME> (~["}"])* "/}" >
     | <#MACRO_START: "{" <MACRO_NAME> (~["}"])* "}" >
@@ -102,7 +101,6 @@ TOKEN_MGR_DECLS: {
     | <#REFERENCE:  ( "[" ( "\\" ~[] | ~["[", "]"] )* "]" ) >
     | <#HORLINE: "---" ("-")+ >
 
-    | <#IMAGE: "{image:" (~["}", " ", "\t", "\n", "\r"])+  "}" >
     | <#TABLE: ( "{table" (" " (~["}", "\n", "\r"])*)?  "}" ( (<SPACE>)* <NEW_LINE> )? ) >
     | <#CELL: ( "||" | "|" ) >
 
