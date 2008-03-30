@@ -120,6 +120,17 @@ Con:
  * Havyweight and slow
  * Requires loading of external javascript files
 
+== openWYSIWYG ==
+
+http://www.openwebware.com/
+
+Pro:
+ * Simple
+Con:
+ * Badly written
+ * Requires loading of external javascript files
+ * LGPL
+
 ----
 
 = Example Base =
