@@ -1,0 +1,28 @@
+#summary designing an Eclipse RCP editor for WikiModel
+#labels Phase-Requirements
+
+= Introduction =
+
+The objective is to create a rich editor for WikiModel, supporting text completion, document refactoring, document inline querying, property value completion etc. i.e. a semantic text editor.
+
+
+= Tracks =
+
+  * install XWiki
+  * install XWiki-Eclipse
+  * look into XWiki-Eclipse code
+  * connect to Fabio Mancinelli, author of XWiki-Eclipse, and currently in post doc at INRIA on distributed systems and dynamic protocols. XWiki employee, part time. fabio.mancinelli at xwiki.com http://www.fabiomancinelli.org
+  * look into WikiModel code
+  * look into Vex editor architecture
+  * [http://www.eclipse.org/articles/article.php?file=Article-JavaCodeManipulation_AST/index.html Java AST manipulation in Eclipse]
+  * have a meeting with Mikhail week 26 May.
+
+= Features =
+
+  * syntax highlighting
+  * real editor for XWiki-Eclipse (check with Fabio)
+  * completion
+  * internal refactoring (move a block from one place to another via a menu)
+  * cross page refactoring...
+  * intelligent completion: means take into account the properties for completion of property names, and for property values editing
+  * to be completed...
