@@ -1,4 +1,4 @@
-#summary designing an Eclipse RCP editor for WikiModel
+#summary Designing an Eclipse RCP editor for WikiModel
 #labels Phase-Requirements
 
 = Introduction =
