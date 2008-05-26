@@ -1,13 +1,15 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-<!-- 
-	<parent>
+	<!-- 
+		<parent>
 		<groupId>org.semanticdesktop</groupId>
 		<artifactId>swecr.parent</artifactId>
 		<version>0.0.14</version>
-	</parent>
- -->
+		</parent>
+	-->
 
 	<groupId>org.wikimodel</groupId>
 	<artifactId>wem</artifactId>
@@ -22,10 +24,14 @@
 		event model.
 	</description>
 
-  <scm>
-    <connection>scm:svn:http://wikimodel.googlecode.com/svn/trunk/org.wikimodel.wem</connection>
-    <developerConnection>scm:svn:https://wikimodel.googlecode.com/svn/trunk/org.wikimodel.wem</developerConnection>
-  </scm>
+	<scm>
+		<connection>
+			scm:svn:http://wikimodel.googlecode.com/svn/trunk/org.wikimodel.wem
+		</connection>
+		<developerConnection>
+			scm:svn:https://wikimodel.googlecode.com/svn/trunk/org.wikimodel.wem
+		</developerConnection>
+	</scm>
 
 	<dependencies>
 
@@ -50,34 +56,28 @@
 		make sure the porper rights for the given ids are set in 
 		the user's settings.xml -->
 	<distributionManagement>
-		<!-- normal versions -->
+		
+	<!-- normal versions -->
 		<repository>
 			<id>semweb4j-repo</id>
-			<name>Semweb4j.org maven repo</name>
-			<url>
-				scp://theoretiker.org/home/max/public_html/semweb4j.org/repo
-			</url>
+			<name>semweb4j.org maven repository server</name>
+			<url>scp://${semweb4j.repo}</url>
 			<uniqueVersion>false</uniqueVersion>
 		</repository>
 		<!-- snapshots -->
 		<snapshotRepository>
 			<id>semweb4j-snapshots</id>
-			<name>Semweb4j.org maven SNAPSHOT repo</name>
-			<url>
-				scp://theoretiker.org/home/max/public_html/semweb4j.org/snapshots
-			</url>
+			<name>semweb4j.org maven SNAPSHOT repository server</name>
+			<url>scp://${semweb4j.snapshots}</url>
 			<uniqueVersion>true</uniqueVersion>
-		</snapshotRepository>
-		<!--  Note: site url is not inherited, but effective locally -->
+		</snapshotRepository>		
+
+		<!-- to define where to put the site for this maven project -->
 		<site>
 			<id>semweb4j-site</id>
-			<name>WEM site</name>
-			<!--  mvn creates new dirs if necessary -->
-			<url>
-				scp://theoretiker.org/home/max/public_html/semweb4j.org/site/wem
-			</url>
+			<name>semweb4j.org site server</name>
+			<url>scp://${semweb4j.site}/${artifactId}</url>
 		</site>
-
 	</distributionManagement>
 
 	<!-- to find the parent -->
@@ -96,6 +96,7 @@
 			</snapshots>
 		</repository>
 	</repositories>
+
 
 
 	<!-- plugin configuration -->
