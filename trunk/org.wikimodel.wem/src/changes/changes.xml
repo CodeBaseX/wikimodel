@@ -7,7 +7,7 @@
 	</properties>
 	<body>
 
-		<release version="2.0.3" date="2008-05-26"
+		<release version="2.0.4" date="2008-05-26"
 			description="Bug fixes">
 			<action dev="mikhail.kotelnikov" type="update">
 				XHTML serializers was moved to the
