@@ -34,34 +34,6 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
     /**
      * @throws WikiParserException
      */
-    public void testTables() throws WikiParserException {
-        test("<html><table><tr><td>first cell</td><td>second cell</td></tr></table></html>");
-        test("<html><table><tr><td>first cell</td></tr></table></html>");
-        test("<html><table>"
-            + "<tr><th>first header</th><th>second header</th></tr>"
-            + "<tr><td>first cell</td><td>second cell</td></tr>"
-            + "</table></html>");
-        test("<html><table>"
-            + "<tr><th>first row</th><td>first cell</td></tr>"
-            + "<tr><th>second row</th><td>before <table><tr><td>first cell</td></tr></table> after</td></tr>"
-            + "<tr><th>third row</th><td>third cell</td></tr>"
-            + "</table></html>");
-
-        // "Bad-formed" tables...
-
-        // The content is completely ignored.
-        test("<html><table>first cell</table></html>");
-
-        // A "td" element directly in the table
-        test("<html><table><td>first cell</td></table></html>");
-
-        // Not a table at all
-        test("<html><td>first cell</td></html>");
-    }
-
-    /**
-     * @throws WikiParserException
-     */
     public void testDefinitionLists() throws WikiParserException {
         test("<html><dl><dt>term</dt><dd>definition</dd></dl></html>");
     }
@@ -96,13 +68,17 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testHorLine() throws WikiParserException {
-        test("<html>before<hr />after</html>");
+        test("<html>before<hr />after</html>", ""
+            + "<p>before</p>\n"
+            + "<hr />\n"
+            + "<p>after</p>");
     }
 
     /**
      * @throws WikiParserException
      */
     public void testLineBreak() throws WikiParserException {
+        test("<html>before<br />after</html>", "<p>before<br />after</p>");
     }
 
     /**
@@ -141,6 +117,34 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testReferences() throws WikiParserException {
+    }
+
+    /**
+     * @throws WikiParserException
+     */
+    public void testTables() throws WikiParserException {
+        test("<html><table><tr><td>first cell</td><td>second cell</td></tr></table></html>");
+        test("<html><table><tr><td>first cell</td></tr></table></html>");
+        test("<html><table>"
+            + "<tr><th>first header</th><th>second header</th></tr>"
+            + "<tr><td>first cell</td><td>second cell</td></tr>"
+            + "</table></html>");
+        test("<html><table>"
+            + "<tr><th>first row</th><td>first cell</td></tr>"
+            + "<tr><th>second row</th><td>before <table><tr><td>first cell</td></tr></table> after</td></tr>"
+            + "<tr><th>third row</th><td>third cell</td></tr>"
+            + "</table></html>");
+
+        // "Bad-formed" tables...
+
+        // The content is completely ignored.
+        test("<html><table>first cell</table></html>");
+
+        // A "td" element directly in the table
+        test("<html><table><td>first cell</td></table></html>");
+
+        // Not a table at all
+        test("<html><td>first cell</td></html>");
     }
 
     /**

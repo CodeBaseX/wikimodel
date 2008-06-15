@@ -584,6 +584,14 @@ public class XhtmlHandler extends DefaultHandler {
         };
         TagStack.add("em", handler);
         TagStack.add("i", handler);
+
+        TagStack.add("br", new TagHandler(false, false, false) {
+            @Override
+            public void begin(TagContext context) {
+                context.getScannerContext().onLineBreak();
+            }
+
+        });
     }
 
     protected String fDocumentSectionUri;
