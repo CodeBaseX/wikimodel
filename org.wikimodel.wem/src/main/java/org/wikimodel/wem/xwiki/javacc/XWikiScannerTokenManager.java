@@ -10,10 +10,13 @@
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
 package org.wikimodel.wem.xwiki.javacc;
+import org.wikimodel.wem.IWikiReferenceParser;
 import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.WikiStyle;
 import org.wikimodel.wem.impl.IWikiScannerContext;
+import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.impl.WikiScannerUtil;
+import org.wikimodel.wem.xwiki.XWikiReferenceParser;
 
 public class XWikiScannerTokenManager implements XWikiScannerConstants
 {

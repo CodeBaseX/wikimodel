@@ -18,8 +18,11 @@ PARSER_BEGIN(JspWikiScanner)
  *******************************************************************************/
 package org.wikimodel.wem.jspwiki.javacc;
 
+import org.wikimodel.wem.IWikiReferenceParser;
+import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.WikiStyle;
 import org.wikimodel.wem.impl.IWikiScannerContext;
+import org.wikimodel.wem.jspwiki.JspWikiReferenceParser;
 
 /**
  * This is the internal wiki page parser generated from the grammar file.
@@ -28,8 +31,9 @@ import org.wikimodel.wem.impl.IWikiScannerContext;
  */
 public class JspWikiScanner {
 
-
     private IWikiScannerContext fContext;
+    
+    private IWikiReferenceParser fReferenceParser = new JspWikiReferenceParser();
 
     public void parse(IWikiScannerContext context) throws ParseException {
         fContext = context;
@@ -431,7 +435,6 @@ void line():
 {
     Token t = null;
     String str = null;
-    boolean explicitLink = false;
 }
 {
     ( LOOKAHEAD(2)
@@ -480,18 +483,17 @@ void line():
                 fContext.onLineBreak();
             }
             |
-            (
-                t = getREFERENCE() {explicitLink = true;} 
-                |
-                t = getURI() {explicitLink = false;}
-            )
+            t = getURI()
+            {
+                fContext.onReference(t.image.trim());
+            }
+            |
+            t = getREFERENCE() 
             {
             	str = t.image.trim();
-            	if (str.startsWith("[")) {
-            		str = str.substring(1, str.length() - 1);
-            		str = str.trim();
-            	}
-                fContext.onReference(str, explicitLink);
+        		str = str.substring(1, str.length() - 1);
+        		WikiReference ref = fReferenceParser.parse(str);
+                fContext.onReference(ref);
             }
             |
             t = getTABLE_CELL() 

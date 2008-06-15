@@ -337,11 +337,14 @@ public class EmptyWemListener implements IWemListener {
     }
 
     /**
-     * @see org.wikimodel.wem.IWemListener#onReference(java.lang.String,
-     *      boolean)
+     * @see org.wikimodel.wem.IWemListener#onReference(java.lang.String)
      */
-    public void onReference(String ref, boolean explicitLink) {
+    public void onReference(String ref) {
         //
+    }
+
+    public void onReference(WikiReference ref) {
+        // 
     }
 
     /**

@@ -83,7 +83,7 @@ public class XWikiSerializer extends PrintTextListener {
         println();
     }
 
-    public void onReference(String ref, boolean explicitLink) {
+    public void onReference(String ref) {
         if (ref.indexOf("Image") == 0)
             print("{image" + ref.substring(5) + "}");
         else {

@@ -10,8 +10,11 @@
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
 package org.wikimodel.wem.jspwiki.javacc;
+import org.wikimodel.wem.IWikiReferenceParser;
+import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.WikiStyle;
 import org.wikimodel.wem.impl.IWikiScannerContext;
+import org.wikimodel.wem.jspwiki.JspWikiReferenceParser;
 
 public class JspWikiScannerTokenManager implements JspWikiScannerConstants
 {

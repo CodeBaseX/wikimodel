@@ -302,7 +302,7 @@ public class EventDumpListener extends PrintTextListener {
     }
 
     @Override
-    public void onReference(String ref, boolean explicitLink) {
+    public void onReference(String ref) {
         println("onReference('" + ref + "')");
     }
 

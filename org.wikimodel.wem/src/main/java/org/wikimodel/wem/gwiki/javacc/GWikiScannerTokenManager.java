@@ -10,7 +10,11 @@
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
 package org.wikimodel.wem.gwiki.javacc;
+import org.wikimodel.wem.IWemConstants;
+import org.wikimodel.wem.IWikiReferenceParser;
 import org.wikimodel.wem.WikiStyle;
+import org.wikimodel.wem.WikiReference;
+import org.wikimodel.wem.gwiki.GWikiWikiReferenceParser;
 import org.wikimodel.wem.impl.IWikiScannerContext;
 
 public class GWikiScannerTokenManager implements GWikiScannerConstants
