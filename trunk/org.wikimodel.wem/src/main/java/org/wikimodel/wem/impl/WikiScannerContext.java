@@ -14,13 +14,14 @@ import java.util.Stack;
 
 import org.wikimodel.wem.IWemListener;
 import org.wikimodel.wem.WikiParameters;
+import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.WikiStyle;
 
 public class WikiScannerContext implements IWikiScannerContext {
 
-    private IWemListener fListener;
+    private final IWemListener fListener;
 
-    private Stack<IWikiScannerContext> fStack = new Stack<IWikiScannerContext>();
+    private final Stack<IWikiScannerContext> fStack = new Stack<IWikiScannerContext>();
 
     public WikiScannerContext(IWemListener listener) {
         fListener = listener;
@@ -289,8 +290,12 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().onQuotLine(depth);
     }
 
-    public void onReference(String ref, boolean explicitLink) {
-        getContext().onReference(ref, explicitLink);
+    public void onReference(String ref) {
+        getContext().onReference(ref);
+    }
+
+    public void onReference(WikiReference ref) {
+        getContext().onReference(ref);
     }
 
     public void onSpace(String str) {

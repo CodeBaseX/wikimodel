@@ -3,6 +3,7 @@ package org.wikimodel.wem.impl;
 import org.wikimodel.wem.IWemListener;
 import org.wikimodel.wem.WikiFormat;
 import org.wikimodel.wem.WikiParameters;
+import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.WikiStyle;
 import org.wikimodel.wem.util.IListListener;
 import org.wikimodel.wem.util.ListBuilder;
@@ -57,7 +58,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
 
     private ListBuilder fListBuilder;
 
-    private IWemListener fListener;
+    private final IWemListener fListener;
 
     private WikiParameters fListParams;
 
@@ -192,6 +193,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
             };
             fListBuilder = new ListBuilder(listener) {
 
+                @Override
                 protected char getTreeType(char rowType) {
                     if (rowType == ';' || rowType == ':')
                         return 'd';
@@ -692,9 +694,14 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         beginQuotLine(depth);
     }
 
-    public void onReference(String ref, boolean explicitLink) {
+    public void onReference(String ref) {
         checkStyleOpened();
-        fListener.onReference(ref, explicitLink);
+        fListener.onReference(ref);
+    }
+
+    public void onReference(WikiReference ref) {
+        checkStyleOpened();
+        fListener.onReference(ref);
     }
 
     public void onSpace(String str) {

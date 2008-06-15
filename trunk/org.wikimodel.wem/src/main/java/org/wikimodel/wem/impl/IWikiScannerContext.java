@@ -2,6 +2,7 @@ package org.wikimodel.wem.impl;
 
 import org.wikimodel.wem.IWemConstants;
 import org.wikimodel.wem.WikiParameters;
+import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.WikiStyle;
 
 /**
@@ -146,7 +147,9 @@ public interface IWikiScannerContext extends IWemConstants {
 
     void onQuotLine(int depth);
 
-    void onReference(String ref, boolean explicitLink);
+    void onReference(String ref);
+
+    void onReference(WikiReference ref);
 
     void onSpace(String str);
 

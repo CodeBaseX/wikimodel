@@ -17,10 +17,13 @@ PARSER_BEGIN(XWikiScanner)
  *******************************************************************************/
 package org.wikimodel.wem.xwiki.javacc;
 
+import org.wikimodel.wem.IWikiReferenceParser;
 import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.WikiStyle;
 import org.wikimodel.wem.impl.IWikiScannerContext;
+import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.impl.WikiScannerUtil;
+import org.wikimodel.wem.xwiki.XWikiReferenceParser;
 
 /**
  * This is the internal wiki page parser generated from the grammar file.
@@ -29,8 +32,9 @@ import org.wikimodel.wem.impl.WikiScannerUtil;
  */
 public class XWikiScanner {
 
-
     private IWikiScannerContext fContext;
+
+    private IWikiReferenceParser fReferenceParser = new XWikiReferenceParser();
 
     public void parse(IWikiScannerContext context) throws ParseException {
         fContext = context;
@@ -618,18 +622,20 @@ void line():
                 fContext.onLineBreak();
             }
             |
-            (
-                t = getREFERENCE() {explicitLink = true;} 
-                |
-                t = getURI() {explicitLink = false;}
-            )
+            t = getURI()
+            {
+                fContext.onReference(t.image.trim());
+            }
+            |
+            t = getREFERENCE() 
             {
                 str = t.image.trim();
                 if (str.startsWith("[")) {
                     str = str.substring(1, str.length() - 1);
                     str = str.trim();
                 }
-                fContext.onReference(str, explicitLink);
+                WikiReference ref = fReferenceParser.parse(str);
+                fContext.onReference(ref);
             }
             |
             t = getTABLE_CELL() 

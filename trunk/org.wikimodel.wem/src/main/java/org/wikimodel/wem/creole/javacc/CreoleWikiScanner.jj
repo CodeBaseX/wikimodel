@@ -17,9 +17,12 @@ PARSER_BEGIN(CreoleWikiScanner)
  *******************************************************************************/
 package org.wikimodel.wem.creole.javacc;
 
-import org.wikimodel.wem.WikiStyle;
+import org.wikimodel.wem.IWikiReferenceParser;
 import org.wikimodel.wem.impl.IWikiScannerContext;
 import org.wikimodel.wem.IWemConstants;
+import org.wikimodel.wem.WikiReference;
+import org.wikimodel.wem.WikiStyle;
+import org.wikimodel.wem.creole.CreoleWikiReferenceParser;
 
 /**
  * This is the internal wiki page parser generated from the grammar file.
@@ -28,8 +31,9 @@ import org.wikimodel.wem.IWemConstants;
  */
 public class CreoleWikiScanner {
 
-
     private IWikiScannerContext fContext;
+
+    private IWikiReferenceParser fReferenceParser = new CreoleWikiReferenceParser();
 
     public void parse(IWikiScannerContext context) throws ParseException {
         fContext = context;
@@ -438,7 +442,6 @@ void line():
 {
     Token t = null;
     String str = null;
-    boolean explicitLink = false;
 }
 {
     ( LOOKAHEAD(2)
@@ -491,18 +494,17 @@ void line():
                 fContext.onVerbatim(str, true);
             }
             |
-            (
-                t = getREFERENCE() {explicitLink = true;} 
-                |
-                t = getURI() {explicitLink = false;}
-            )
+            t = getURI()
+            {
+                fContext.onReference(t.image.trim());
+            }
+            |
+            t = getREFERENCE() 
             {
                 str = t.image.trim();
-                if (explicitLink) {
-                    str = str.substring(2, str.length() - 2);
-                    str = str.replace('|', ' ');
-                }
-                fContext.onReference(str, explicitLink);
+                str = str.substring(2, str.length() - 2);
+                WikiReference ref = fReferenceParser.parse(str);
+                fContext.onReference(ref);
             }
             |
             t = getTABLE_CELL() 

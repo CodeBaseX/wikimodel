@@ -11,9 +11,12 @@
 package org.wikimodel.wem;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.wikimodel.wem.impl.WikiScannerUtil;
 
 /**
  * This is a default implementation of the {@link IWikiParams} interface.
@@ -32,91 +35,16 @@ public class WikiParameters {
      */
     private static final long serialVersionUID = 1253393289284318413L;
 
-    /**
-     * @param array from this array of bytes the next token will be returned
-     * @param pos the current position in the array of bytes
-     * @param buf to this buffer the extracted token value will be appended
-     * @return the new position in the array after extracting of a new token
-     */
-    protected static int getNextToken(char[] array, int pos, StringBuffer buf) {
-        buf.delete(0, buf.length());
-        boolean escaped = false;
-        if (pos < array.length && (array[pos] == '\'' || array[pos] == '"')) {
-            char endChar = array[pos];
-            pos++;
-            for (; pos < array.length && (escaped || array[pos] != endChar); pos++) {
-                escaped = array[pos] == '\\';
-                if (!escaped)
-                    buf.append(array[pos]);
-            }
-            if (pos < array.length)
-                pos++;
-        } else {
-            for (; pos < array.length; pos++) {
-                if (array[pos] == '=' || Character.isSpaceChar(array[pos]))
-                    break;
-                if (!escaped && (array[pos] == '\'' || array[pos] == '"'))
-                    break;
-                escaped = array[pos] == '\\';
-                if (!escaped)
-                    buf.append(array[pos]);
-            }
-        }
-        return pos;
-    }
-
-    /**
-     * Moves forward the current position in the array until the first not empty
-     * character is found.
-     * 
-     * @param array the array of characters where the spaces are searched
-     * @param pos the current position in the array; starting from this position
-     *        the spaces will be searched
-     * @param buf to this buffer all not empty characters will be added
-     * @return the new position int the array of characters
-     */
-    protected static int removeSpaces(char[] array, int pos, StringBuffer buf) {
-        buf.delete(0, buf.length());
-        for (; pos < array.length
-            && (array[pos] == '=' || Character.isSpaceChar(array[pos])); pos++) {
-            if (array[pos] == '=')
-                buf.append(array[pos]);
-        }
-        return pos;
-    }
-
-    /**
-     * Splits the given string into a set of key-value pairs; all extracted
-     * values will be added to the given list
-     * 
-     * @param str the string to split
-     * @param list to this list all extracted values will be added
-     */
-    protected static void splitToPairs(String str, List<WikiParameter> list) {
+    public static WikiParameters newWikiParameters(String str) {
         if (str == null)
-            return;
-        char[] array = str.toCharArray();
-        StringBuffer buf = new StringBuffer();
-        for (int i = 0; i < array.length;) {
-            String key = null;
-            String value = null;
-            i = removeSpaces(array, i, buf);
-            if (i >= array.length)
-                break;
-            i = getNextToken(array, i, buf);
-            key = buf.toString();
-
-            i = removeSpaces(array, i, buf);
-            if (buf.indexOf("=") >= 0) {
-                i = getNextToken(array, i, buf);
-                value = buf.toString();
-            }
-            WikiParameter entry = new WikiParameter(key, value);
-            list.add(entry);
-        }
+            return EMPTY;
+        str = str.trim();
+        if ("".equals(str))
+            return EMPTY;
+        return new WikiParameters(str);
     }
 
-    private List<WikiParameter> fList = new ArrayList<WikiParameter>();
+    private final List<WikiParameter> fList = new ArrayList<WikiParameter>();
 
     private Map<String, WikiParameter[]> fMap;
 
@@ -131,7 +59,7 @@ public class WikiParameters {
     /**
      * @param list
      */
-    public WikiParameters(List<WikiParameter> list) {
+    public WikiParameters(Collection<WikiParameter> list) {
         super();
         fList.addAll(list);
     }
@@ -141,7 +69,7 @@ public class WikiParameters {
      */
     public WikiParameters(String str) {
         super();
-        splitToPairs(str, fList);
+        WikiScannerUtil.splitToPairs(str, fList);
     }
 
     /**
@@ -251,7 +179,7 @@ public class WikiParameters {
         }
         WikiParameters result = this;
         if (pos < fList.size()) {
-            result = new WikiParameters(this.fList);
+            result = new WikiParameters(fList);
             result.fList.remove(pos);
         }
         return result;
@@ -271,6 +199,7 @@ public class WikiParameters {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
         if (fStr == null) {
             StringBuffer buf = new StringBuffer();

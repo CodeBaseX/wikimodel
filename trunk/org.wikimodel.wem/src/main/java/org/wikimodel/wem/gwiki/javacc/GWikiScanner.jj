@@ -17,7 +17,11 @@ PARSER_BEGIN(GWikiScanner)
  *******************************************************************************/
 package org.wikimodel.wem.gwiki.javacc;
 
+import org.wikimodel.wem.IWemConstants;
+import org.wikimodel.wem.IWikiReferenceParser;
 import org.wikimodel.wem.WikiStyle;
+import org.wikimodel.wem.WikiReference;
+import org.wikimodel.wem.gwiki.GWikiWikiReferenceParser;
 import org.wikimodel.wem.impl.IWikiScannerContext;
 
 /**
@@ -27,8 +31,9 @@ import org.wikimodel.wem.impl.IWikiScannerContext;
  */
 public class GWikiScanner {
 
-
     private IWikiScannerContext fContext;
+
+    private final IWikiReferenceParser fReferenceParser = new GWikiWikiReferenceParser();
 
     public void parse(IWikiScannerContext context) throws ParseException {
         fContext = context;
@@ -534,17 +539,19 @@ void line():
                 fContext.onVerbatim(str, true);
             }
             |
-            (
-                t = getREFERENCE() {explicitLink = true;} 
-                |
-                t = getURI() {explicitLink = false;}
-            )
+            t = getURI()
             {
-            	str = t.image.trim();
-            	if (str.startsWith("[")){
-            		str = str.substring(1, str.length() - 1);
-            	}
-                fContext.onReference(str, explicitLink);
+                fContext.onReference(t.image.trim());
+            }
+            |
+            t = getREFERENCE() 
+            {
+                str = t.image.trim();
+                if (str.startsWith("[")){
+                    str = str.substring(1, str.length() - 1);
+                }
+                WikiReference ref = fReferenceParser.parse(str);
+                fContext.onReference(ref);
             }
             |
             t = getTABLE_CELL() 

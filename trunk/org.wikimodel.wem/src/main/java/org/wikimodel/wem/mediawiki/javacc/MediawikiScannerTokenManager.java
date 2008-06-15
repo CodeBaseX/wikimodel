@@ -10,9 +10,12 @@
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
 package org.wikimodel.wem.mediawiki.javacc;
+import org.wikimodel.wem.IWikiReferenceParser;
 import org.wikimodel.wem.WikiStyle;
 import org.wikimodel.wem.WikiParameters;
+import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.impl.IWikiScannerContext;
+import org.wikimodel.wem.mediawiki.MediaWikiReferenceParser;
 
 public class MediawikiScannerTokenManager implements MediawikiScannerConstants
 {

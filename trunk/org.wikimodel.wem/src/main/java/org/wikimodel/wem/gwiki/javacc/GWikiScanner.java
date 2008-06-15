@@ -11,7 +11,11 @@
  *******************************************************************************/
 package org.wikimodel.wem.gwiki.javacc;
 
+import org.wikimodel.wem.IWemConstants;
+import org.wikimodel.wem.IWikiReferenceParser;
 import org.wikimodel.wem.WikiStyle;
+import org.wikimodel.wem.WikiReference;
+import org.wikimodel.wem.gwiki.GWikiWikiReferenceParser;
 import org.wikimodel.wem.impl.IWikiScannerContext;
 
 /**
@@ -21,8 +25,9 @@ import org.wikimodel.wem.impl.IWikiScannerContext;
  */
 public class GWikiScanner implements GWikiScannerConstants {
 
-
     private IWikiScannerContext fContext;
+
+    private final IWikiReferenceParser fReferenceParser = new GWikiWikiReferenceParser();
 
     public void parse(IWikiScannerContext context) throws ParseException {
         fContext = context;
@@ -786,31 +791,20 @@ public class GWikiScanner implements GWikiScannerConstants {
                 }
                 fContext.onVerbatim(str, true);
         break;
-      case I_REFERENCE:
       case I_URI:
-      case D_REFERENCE:
       case D_URI:
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case I_REFERENCE:
-        case D_REFERENCE:
-          t = getREFERENCE();
-                                    explicitLink = true;
-          break;
-        case I_URI:
-        case D_URI:
-          t = getURI();
-                              explicitLink = false;
-          break;
-        default:
-          jj_la1[22] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
+        t = getURI();
+                fContext.onReference(t.image.trim());
+        break;
+      case I_REFERENCE:
+      case D_REFERENCE:
+        t = getREFERENCE();
                 str = t.image.trim();
                 if (str.startsWith("[")){
-                        str = str.substring(1, str.length() - 1);
+                    str = str.substring(1, str.length() - 1);
                 }
-                fContext.onReference(str, explicitLink);
+                WikiReference ref = fReferenceParser.parse(str);
+                fContext.onReference(ref);
         break;
       case I_TABLE_CELL:
       case D_TABLE_CELL:
@@ -822,7 +816,7 @@ public class GWikiScanner implements GWikiScannerConstants {
                 }
         break;
       default:
-        jj_la1[23] = jj_gen;
+        jj_la1[22] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -932,32 +926,22 @@ public class GWikiScanner implements GWikiScannerConstants {
     finally { jj_save(13, xla); }
   }
 
-  final private boolean jj_3R_20() {
-    if (jj_3R_22()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_33() {
-    if (jj_3R_49()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_31() {
-    if (jj_3R_48()) return true;
+  final private boolean jj_3R_34() {
+    if (jj_3R_50()) return true;
     return false;
   }
 
   final private boolean jj_3R_14() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_33()) {
+    if (jj_3R_34()) {
     jj_scanpos = xsp;
-    if (jj_3R_34()) return true;
+    if (jj_3R_35()) return true;
     }
     return false;
   }
 
-  final private boolean jj_3R_42() {
+  final private boolean jj_3R_43() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(58)) {
@@ -973,11 +957,6 @@ public class GWikiScanner implements GWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_47() {
-    if (jj_3R_52()) return true;
-    return false;
-  }
-
   final private boolean jj_3_7() {
     if (jj_3R_14()) return true;
     return false;
@@ -988,7 +967,7 @@ public class GWikiScanner implements GWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_49() {
+  final private boolean jj_3R_50() {
     if (jj_3R_12()) return true;
     Token xsp;
     while (true) {
@@ -998,12 +977,12 @@ public class GWikiScanner implements GWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_46() {
-    if (jj_3R_51()) return true;
+  final private boolean jj_3R_31() {
+    if (jj_3R_48()) return true;
     return false;
   }
 
-  final private boolean jj_3R_45() {
+  final private boolean jj_3R_46() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(52)) {
@@ -1013,7 +992,7 @@ public class GWikiScanner implements GWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_43() {
+  final private boolean jj_3R_44() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(53)) {
@@ -1023,22 +1002,17 @@ public class GWikiScanner implements GWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_36() {
+  final private boolean jj_3R_37() {
     if (jj_scan_token(INTERNAL_VERBATIM_CONTENT)) return true;
     return false;
   }
 
   final private boolean jj_3R_30() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_46()) {
-    jj_scanpos = xsp;
     if (jj_3R_47()) return true;
-    }
     return false;
   }
 
-  final private boolean jj_3R_41() {
+  final private boolean jj_3R_42() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(57)) {
@@ -1048,7 +1022,7 @@ public class GWikiScanner implements GWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_39() {
+  final private boolean jj_3R_40() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(56)) {
@@ -1063,12 +1037,12 @@ public class GWikiScanner implements GWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_38() {
+  final private boolean jj_3R_39() {
     if (jj_scan_token(INTERNAL_VERBATIM_START)) return true;
     return false;
   }
 
-  final private boolean jj_3R_48() {
+  final private boolean jj_3R_49() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(51)) {
@@ -1078,12 +1052,12 @@ public class GWikiScanner implements GWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_37() {
+  final private boolean jj_3R_38() {
     if (jj_scan_token(INTERNAL_VERBATIM_END)) return true;
     return false;
   }
 
-  final private boolean jj_3R_44() {
+  final private boolean jj_3R_45() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(50)) {
@@ -1093,7 +1067,7 @@ public class GWikiScanner implements GWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_52() {
+  final private boolean jj_3R_47() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(54)) {
@@ -1114,7 +1088,7 @@ public class GWikiScanner implements GWikiScannerConstants {
   }
 
   final private boolean jj_3R_15() {
-    if (jj_3R_35()) return true;
+    if (jj_3R_36()) return true;
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
@@ -1123,7 +1097,7 @@ public class GWikiScanner implements GWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_51() {
+  final private boolean jj_3R_48() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(49)) {
@@ -1133,7 +1107,7 @@ public class GWikiScanner implements GWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_53() {
+  final private boolean jj_3R_52() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(43)) {
@@ -1143,7 +1117,7 @@ public class GWikiScanner implements GWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_32() {
+  final private boolean jj_3R_33() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(46)) {
@@ -1158,7 +1132,7 @@ public class GWikiScanner implements GWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_35() {
+  final private boolean jj_3R_36() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(45)) {
@@ -1169,19 +1143,19 @@ public class GWikiScanner implements GWikiScannerConstants {
   }
 
   final private boolean jj_3R_29() {
-    if (jj_3R_45()) return true;
+    if (jj_3R_46()) return true;
     return false;
   }
 
   final private boolean jj_3R_21() {
-    if (jj_3R_39()) return true;
+    if (jj_3R_40()) return true;
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_11()) jj_scanpos = xsp;
     return false;
   }
 
-  final private boolean jj_3R_40() {
+  final private boolean jj_3R_41() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(44)) {
@@ -1197,7 +1171,7 @@ public class GWikiScanner implements GWikiScannerConstants {
   }
 
   final private boolean jj_3R_28() {
-    if (jj_3R_44()) return true;
+    if (jj_3R_45()) return true;
     return false;
   }
 
@@ -1223,7 +1197,7 @@ public class GWikiScanner implements GWikiScannerConstants {
   }
 
   final private boolean jj_3R_13() {
-    if (jj_3R_32()) return true;
+    if (jj_3R_33()) return true;
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
@@ -1233,12 +1207,12 @@ public class GWikiScanner implements GWikiScannerConstants {
   }
 
   final private boolean jj_3R_27() {
-    if (jj_3R_43()) return true;
+    if (jj_3R_44()) return true;
     return false;
   }
 
   final private boolean jj_3R_26() {
-    if (jj_3R_42()) return true;
+    if (jj_3R_43()) return true;
     return false;
   }
 
@@ -1248,32 +1222,32 @@ public class GWikiScanner implements GWikiScannerConstants {
   }
 
   final private boolean jj_3R_19() {
-    if (jj_3R_37()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_25() {
-    if (jj_3R_39()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_24() {
-    if (jj_3R_41()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_23() {
-    if (jj_3R_40()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_18() {
     if (jj_3R_38()) return true;
     return false;
   }
 
+  final private boolean jj_3R_25() {
+    if (jj_3R_40()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_24() {
+    if (jj_3R_42()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_23() {
+    if (jj_3R_41()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_18() {
+    if (jj_3R_39()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_17() {
-    if (jj_3R_37()) return true;
+    if (jj_3R_38()) return true;
     return false;
   }
 
@@ -1283,7 +1257,7 @@ public class GWikiScanner implements GWikiScannerConstants {
   }
 
   final private boolean jj_3R_16() {
-    if (jj_3R_36()) return true;
+    if (jj_3R_37()) return true;
     return false;
   }
 
@@ -1316,7 +1290,10 @@ public class GWikiScanner implements GWikiScannerConstants {
     jj_scanpos = xsp;
     if (jj_3R_30()) {
     jj_scanpos = xsp;
-    if (jj_3R_31()) return true;
+    if (jj_3R_31()) {
+    jj_scanpos = xsp;
+    if (jj_3R_32()) return true;
+    }
     }
     }
     }
@@ -1351,13 +1328,13 @@ public class GWikiScanner implements GWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_34() {
-    if (jj_3R_50()) return true;
+  final private boolean jj_3R_35() {
+    if (jj_3R_51()) return true;
     return false;
   }
 
-  final private boolean jj_3R_50() {
-    if (jj_3R_53()) return true;
+  final private boolean jj_3R_51() {
+    if (jj_3R_52()) return true;
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
@@ -1373,6 +1350,16 @@ public class GWikiScanner implements GWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3R_20() {
+    if (jj_3R_22()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_32() {
+    if (jj_3R_49()) return true;
+    return false;
+  }
+
   public GWikiScannerTokenManager token_source;
   SimpleCharStream jj_input_stream;
   public Token token, jj_nt;
@@ -1382,7 +1369,7 @@ public class GWikiScanner implements GWikiScannerConstants {
   public boolean lookingAhead = false;
   private boolean jj_semLA;
   private int jj_gen;
-  final private int[] jj_la1 = new int[24];
+  final private int[] jj_la1 = new int[23];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -1392,13 +1379,13 @@ public class GWikiScanner implements GWikiScannerConstants {
       jj_la1_2();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xe,0x5,0x0,0x0,};
+      jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xe,0x5,0x0,};
    }
    private static void jj_la1_1() {
-      jj_la1_1 = new int[] {0x8000800,0x10001000,0x20002000,0x40004000,0x80008000,0x10000,0x20000,0x40000,0x80000,0x100000,0x200000,0x400000,0x800000,0x1000000,0x2000000,0x4000000,0xfffff800,0x177e1000,0xfffff800,0x1f7e1800,0x0,0x0,0x420000,0x177e1000,};
+      jj_la1_1 = new int[] {0x8000800,0x10001000,0x20002000,0x40004000,0x80008000,0x10000,0x20000,0x40000,0x80000,0x100000,0x200000,0x400000,0x800000,0x1000000,0x2000000,0x4000000,0xfffff800,0x177e1000,0xfffff800,0x1f7e1800,0x0,0x0,0x177e1000,};
    }
    private static void jj_la1_2() {
-      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x1,0x2,0x4,0x8,0x10,0x20,0x40,0x80,0x100,0x200,0x400,0x7ff,0x77e,0x7ff,0x77e,0x0,0x0,0x42,0x77e,};
+      jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x1,0x2,0x4,0x8,0x10,0x20,0x40,0x80,0x100,0x200,0x400,0x7ff,0x77e,0x7ff,0x77e,0x0,0x0,0x77e,};
    }
   final private JJCalls[] jj_2_rtns = new JJCalls[14];
   private boolean jj_rescan = false;
@@ -1413,7 +1400,7 @@ public class GWikiScanner implements GWikiScannerConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1426,7 +1413,7 @@ public class GWikiScanner implements GWikiScannerConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1436,7 +1423,7 @@ public class GWikiScanner implements GWikiScannerConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1446,7 +1433,7 @@ public class GWikiScanner implements GWikiScannerConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1455,7 +1442,7 @@ public class GWikiScanner implements GWikiScannerConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1464,7 +1451,7 @@ public class GWikiScanner implements GWikiScannerConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 24; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1583,7 +1570,7 @@ public class GWikiScanner implements GWikiScannerConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 24; i++) {
+    for (int i = 0; i < 23; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

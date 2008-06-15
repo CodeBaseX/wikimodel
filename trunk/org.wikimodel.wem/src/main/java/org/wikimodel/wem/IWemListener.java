@@ -101,7 +101,21 @@ public interface IWemListener {
 
     void onNewLine();
 
-    void onReference(String ref, boolean explicitLink);
+    /**
+     * This method is called to notify that an URI (an implicit reference) was
+     * found in the parsed wiki document.
+     * 
+     * @param ref the URI
+     */
+    void onReference(String ref);
+
+    /**
+     * This method is called to notify that a structured reference was found in
+     * the text
+     * 
+     * @param ref the reference the reference
+     */
+    void onReference(WikiReference ref);
 
     void onSpace(String str);
 
