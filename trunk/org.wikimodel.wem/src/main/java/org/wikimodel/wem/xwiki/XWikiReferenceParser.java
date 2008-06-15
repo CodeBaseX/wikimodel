@@ -17,4 +17,17 @@ import org.wikimodel.wem.WikiReferenceParser;
  */
 public class XWikiReferenceParser extends WikiReferenceParser {
 
+    @Override
+    protected String getLabel(String[] chunks) {
+        if (chunks.length > 1)
+            return chunks[0];
+        return null;
+    }
+
+    @Override
+    protected String getLink(String[] chunks) {
+        if (chunks.length > 1)
+            return chunks[1];
+        return chunks[0];
+    }
 }
