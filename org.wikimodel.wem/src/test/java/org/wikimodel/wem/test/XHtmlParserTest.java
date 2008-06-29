@@ -31,11 +31,45 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
         return new XhtmlParser();
     }
 
+    public void test() throws WikiParserException {
+        test("<ul><li>a<ul><li>b</li></ul>b</li></ul>", ""
+            + "<ul>\n"
+            + "  <li>a<ul>\n"
+            + "  <li>b</li>\n"
+            + "</ul>\n"
+            + "b</li>\n"
+            + "</ul>");
+    }
+
     /**
      * @throws WikiParserException
      */
     public void testDefinitionLists() throws WikiParserException {
-        test("<html><dl><dt>term</dt><dd>definition</dd></dl></html>");
+        test("<html><dl><dt>term</dt><dd>definition</dd></dl></html>", ""
+            + "<dl>\n"
+            + "  <dt>term</dt>\n"
+            + "  <dd>definition</dd>\n"
+            + "</dl>");
+        test(
+            "<html><dl><dt>term1</dt><dt>term2</dt><dd>definition</dd></dl></html>",
+            ""
+                + "<dl>\n"
+                + "  <dt>term1</dt>\n"
+                + "  <dt>term2</dt>\n"
+                + "  <dd>definition</dd>\n"
+                + "</dl>");
+        // FIXME: this test generates an invalid structure (should be an
+        // embedded document with an internal definition list);
+        test("<html>"
+            + "<dl>"
+            + "<dt>term</dt>"
+            + "<dd>definition"
+            + "<dl>"
+            + "<dt>term</dt>"
+            + "<dd>definition</dd>"
+            + "</dl>"
+            + "</dd>"
+            + "</dl></html>");
     }
 
     /**
@@ -98,13 +132,24 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
             + " </ul>"
             + "after</li>"
             + "</ul></html>");
+
+        test("<html><ol><li>Item 1<ol><li>Item 2<ul class=\"star\"><li>Item\r\n"
+            + "3</li></ul></li><li>Item 4</li></ol></li><li>Item 5</li></ol><ul\r\n"
+            + "class=\"star\"><li>Item 1<ul class=\"star\"><li>Item 2<ul class=\"star\"><li>Item\r\n"
+            + "3</li></ul></li><li>Item 4</li></ul></li><li>Item 5</li><li>Item\r\n"
+            + "6</li></ul></html>\r\n"
+            + "");
     }
 
     /**
      * @throws WikiParserException
      */
     public void testParagraphs() throws WikiParserException {
-        test("<html><p>paragraph</p></html>");
+        test("<html><p>paragraph</p></html>", "<p>paragraph</p>");
+        test(
+            "<p>hello <em class=\"italic\">beautiful</em> <strong>world</strong></p>",
+            "<p>hello <em>beautiful</em> <strong>world</strong></p>");
+
     }
 
     /**

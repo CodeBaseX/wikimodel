@@ -34,6 +34,29 @@ public class XhtmlHandler extends DefaultHandler {
     // TODO: add management of embedded block elements.
     public static class TagHandler {
 
+        /**
+         * @param context
+         * @return <code>true</code> if the current tag represented by the
+         *         given context requires a parent document
+         */
+        private static boolean requiresParentDocument(TagContext context) {
+            if (context == null)
+                return true;
+            if (context.fHandler == null
+                || !context.fHandler.requiresDocument())
+                return false;
+            boolean inContainer = false;
+            TagContext parent = context.fParent;
+            while (parent != null) {
+                if (parent.fHandler != null) {
+                    inContainer = parent.fHandler.isDocumentContainer();
+                    break;
+                }
+                parent = parent.fParent;
+            }
+            return inContainer;
+        }
+
         public boolean fAccumulateContent;
 
         /**
@@ -68,10 +91,24 @@ public class XhtmlHandler extends DefaultHandler {
             fContentContainer = contentContainer;
         }
 
-        public void begin(TagContext context) {
+        protected void begin(TagContext context) {
         }
 
-        public void end(TagContext context) {
+        public void beginElement(TagContext context) {
+            if (requiresParentDocument(context)) {
+                context.getScannerContext().endDocument();
+            }
+            begin(context);
+        }
+
+        protected void end(TagContext context) {
+        }
+
+        public final void endElement(TagContext context) {
+            if (requiresParentDocument(context)) {
+                context.getScannerContext().endDocument();
+            }
+            end(context);
         }
 
         public boolean isContentContainer() {
@@ -127,6 +164,25 @@ public class XhtmlHandler extends DefaultHandler {
                 }
                 fContent.append(array, start, length);
                 return true;
+            }
+
+            public void beginElement(TagHandler handler) {
+                if (fParent == null) {
+                    fScannerContext.beginDocument();
+                }
+                fHandler = handler;
+                if (fHandler != null) {
+                    fHandler.beginElement(this);
+                }
+            }
+
+            public void endElement() {
+                if (fHandler != null) {
+                    fHandler.endElement(this);
+                }
+                if (fParent == null) {
+                    fScannerContext.endDocument();
+                }
             }
 
             public String getContent() {
@@ -226,23 +282,11 @@ public class XhtmlHandler extends DefaultHandler {
             fPeek = new TagContext(fPeek, uri, localName, qName, attributes);
             localName = fPeek.getName();
             TagHandler handler = fMap.get(localName);
-            if (handler != null) {
-                fPeek.fHandler = handler;
-                if (requiresParentDocument(fPeek)) {
-                    fScannerContext.beginDocument();
-                }
-                handler.begin(fPeek);
-            }
+            fPeek.beginElement(handler);
         }
 
         public void endElement() {
-            TagHandler handler = fPeek.fHandler;
-            if (handler != null) {
-                handler.end(fPeek);
-            }
-            if (requiresParentDocument(fPeek)) {
-                fScannerContext.endDocument();
-            }
+            fPeek.endElement();
             fPeek = fPeek.fParent;
         }
 
@@ -346,52 +390,30 @@ public class XhtmlHandler extends DefaultHandler {
             }
         }
 
-        /**
-         * @param context
-         * @return <code>true</code> if the current tag represented by the
-         *         given context requires a parent document
-         */
-        private boolean requiresParentDocument(TagContext context) {
-            if (context == null)
-                return true;
-            if (context.fHandler == null
-                || !context.fHandler.requiresDocument())
-                return false;
-            boolean inContainer = false;
-            TagContext parent = context.fParent;
-            while (parent != null) {
-                if (parent.fHandler != null) {
-                    inContainer = parent.fHandler.isDocumentContainer();
-                    break;
-                }
-                parent = parent.fParent;
-            }
-            return inContainer;
-        }
     }
 
     static {
-        TagStack.add("html", new TagHandler(false, false, true) {
-            @Override
-            public void begin(TagContext context) {
-                context.getScannerContext().beginDocument();
-            }
-
-            @Override
-            public void end(TagContext context) {
-                context.getScannerContext().endDocument();
-            }
-        });
+        // TagStack.add("html", new TagHandler(false, false, true) {
+        // @Override
+        // public void begin(TagContext context) {
+        // context.getScannerContext().beginDocument();
+        // }
+        //
+        // @Override
+        // public void end(TagContext context) {
+        // context.getScannerContext().endDocument();
+        // }
+        // });
 
         // Simple block elements (p, pre, quotation...)
         TagStack.add("p", new TagHandler(false, true, true) {
             @Override
-            public void begin(TagContext context) {
+            protected void begin(TagContext context) {
                 context.getScannerContext().beginParagraph(context.getParams());
             }
 
             @Override
-            public void end(TagContext context) {
+            protected void end(TagContext context) {
                 context.getScannerContext().endParagraph();
             }
         });
@@ -399,34 +421,34 @@ public class XhtmlHandler extends DefaultHandler {
         // Tables
         TagStack.add("table", new TagHandler(false, true, false) {
             @Override
-            public void begin(TagContext context) {
+            protected void begin(TagContext context) {
                 context.getScannerContext().beginTable(context.getParams());
             }
 
             @Override
-            public void end(TagContext context) {
+            protected void end(TagContext context) {
                 context.getScannerContext().endTable();
             }
         });
         TagStack.add("tr", new TagHandler(false, false, false) {
             @Override
-            public void begin(TagContext context) {
+            protected void begin(TagContext context) {
                 context.getScannerContext().beginTableRow(false);
             }
 
             @Override
-            public void end(TagContext context) {
+            protected void end(TagContext context) {
                 context.getScannerContext().endTableRow();
             }
         });
         TagHandler handler = new TagHandler(true, false, true) {
             @Override
-            public void begin(TagContext context) {
+            protected void begin(TagContext context) {
                 context.getScannerContext().beginTableCell(context.isTag("th"));
             }
 
             @Override
-            public void end(TagContext context) {
+            protected void end(TagContext context) {
                 context.getScannerContext().endTableCell();
             }
         };
@@ -436,12 +458,12 @@ public class XhtmlHandler extends DefaultHandler {
         // Lists
         handler = new TagHandler(false, true, false) {
             @Override
-            public void begin(TagContext context) {
+            protected void begin(TagContext context) {
                 context.getScannerContext().beginList();
             }
 
             @Override
-            public void end(TagContext context) {
+            protected void end(TagContext context) {
                 context.getScannerContext().endList();
             }
         };
@@ -450,45 +472,48 @@ public class XhtmlHandler extends DefaultHandler {
         TagStack.add("li", new TagHandler(true, false, true) {
             @Override
             public void begin(TagContext context) {
-                context.getScannerContext().beginListItem("*");
+                String markup = context.getParent().getName().equals("ol")
+                    ? "#"
+                    : "*";
+                context.getScannerContext().beginListItem(markup);
             }
 
             @Override
-            public void end(TagContext context) {
+            protected void end(TagContext context) {
                 context.getScannerContext().endListItem();
             }
         });
 
         TagStack.add("dl", new TagHandler(false, true, false) {
             @Override
-            public void begin(TagContext context) {
+            protected void begin(TagContext context) {
                 context.getScannerContext().beginList();
             }
 
             @Override
-            public void end(TagContext context) {
+            protected void end(TagContext context) {
                 context.getScannerContext().endList();
             }
         });
         TagStack.add("dt", new TagHandler(false, false, true) {
             @Override
-            public void begin(TagContext context) {
+            protected void begin(TagContext context) {
                 context.getScannerContext().beginListItem(";");
             }
 
             @Override
-            public void end(TagContext context) {
+            protected void end(TagContext context) {
                 context.getScannerContext().endListItem();
             }
         });
         TagStack.add("dd", new TagHandler(true, false, true) {
             @Override
-            public void begin(TagContext context) {
+            protected void begin(TagContext context) {
                 context.getScannerContext().beginListItem(":");
             }
 
             @Override
-            public void end(TagContext context) {
+            protected void end(TagContext context) {
                 context.getScannerContext().endListItem();
             }
         });
@@ -496,14 +521,14 @@ public class XhtmlHandler extends DefaultHandler {
         // Headers
         handler = new TagHandler(false, true, true) {
             @Override
-            public void begin(TagContext context) {
+            protected void begin(TagContext context) {
                 String tag = context.getName();
                 int level = Integer.parseInt(tag.substring(1, 2));
                 context.getScannerContext().beginHeader(level);
             }
 
             @Override
-            public void end(TagContext context) {
+            protected void end(TagContext context) {
                 context.getScannerContext().endHeader();
             }
         };
@@ -517,7 +542,7 @@ public class XhtmlHandler extends DefaultHandler {
         // Unique block elements
         TagStack.add("hr", new TagHandler(false, true, false) {
             @Override
-            public void begin(TagContext context) {
+            protected void begin(TagContext context) {
                 context.getScannerContext().onHorizontalLine();
             }
         });
@@ -527,7 +552,7 @@ public class XhtmlHandler extends DefaultHandler {
             }
 
             @Override
-            public void end(TagContext context) {
+            protected void end(TagContext context) {
                 String str = context.getContent();
                 context.getScannerContext().onVerbatim(str, false);
             }
@@ -540,11 +565,11 @@ public class XhtmlHandler extends DefaultHandler {
             }
 
             @Override
-            public void begin(TagContext context) {
+            protected void begin(TagContext context) {
             }
 
             @Override
-            public void end(TagContext context) {
+            protected void end(TagContext context) {
                 // TODO: it should be replaced by a normal parameters
                 WikiParameter ref = context.getParams().getParameter("href");
                 if (ref != null) {
@@ -559,12 +584,12 @@ public class XhtmlHandler extends DefaultHandler {
 
         handler = new TagHandler(false, false, true) {
             @Override
-            public void begin(TagContext context) {
+            protected void begin(TagContext context) {
                 context.getScannerContext().onFormat(IWemConstants.STRONG);
             }
 
             @Override
-            public void end(TagContext context) {
+            protected void end(TagContext context) {
                 context.getScannerContext().onFormat(IWemConstants.STRONG);
             }
         };
@@ -573,12 +598,12 @@ public class XhtmlHandler extends DefaultHandler {
 
         handler = new TagHandler(false, false, true) {
             @Override
-            public void begin(TagContext context) {
+            protected void begin(TagContext context) {
                 context.getScannerContext().onFormat(IWemConstants.EM);
             }
 
             @Override
-            public void end(TagContext context) {
+            protected void end(TagContext context) {
                 context.getScannerContext().onFormat(IWemConstants.EM);
             }
         };
@@ -587,7 +612,7 @@ public class XhtmlHandler extends DefaultHandler {
 
         TagStack.add("br", new TagHandler(false, false, false) {
             @Override
-            public void begin(TagContext context) {
+            protected void begin(TagContext context) {
                 context.getScannerContext().onLineBreak();
             }
 
