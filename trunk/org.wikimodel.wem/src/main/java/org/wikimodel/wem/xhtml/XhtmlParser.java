@@ -21,6 +21,7 @@ import org.wikimodel.wem.WikiParserException;
 import org.wikimodel.wem.impl.WikiScannerContext;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler;
 import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
@@ -57,9 +58,13 @@ public class XhtmlParser implements IWikiParser {
         try {
             SAXParserFactory parserFactory = SAXParserFactory.newInstance();
             SAXParser parser = parserFactory.newSAXParser();
-            InputSource source = new InputSource(reader);
+            XMLReader xmlReader = parser.getXMLReader();
+            xmlReader
+                .setFeature("http://xml.org/sax/features/namespaces", true);
             DefaultHandler handler = getHandler(listener);
-            parser.parse(source, handler);
+            xmlReader.setContentHandler(handler);
+            InputSource source = new InputSource(reader);
+            xmlReader.parse(source);
         } catch (Exception e) {
             throw new WikiParserException(e);
         }
