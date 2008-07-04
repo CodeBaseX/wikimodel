@@ -8,22 +8,36 @@ The objective is to create a rich editor for [http://code.google.com/p/wikimodel
 
 = Features =
 
-  * syntax highlighting
-  * real editor for XWiki-Eclipse (check with Fabio)
+  * ~~syntax highlighting,coloring, content proposal ~~
+  * ~~real editor for XWiki-Eclipse (check with Fabio)~~
+  * ~~integration~~
+  * ~~rpc based content proposal~~
+  * ~~content outline~~
+  * ~~synax conversion using wikimodel~~
   * completion
   * internal refactoring (move a block from one place to another via a menu)
-  * cross page refactoring...
-  * intelligent completion: means take into account the properties for completion of property names, and for property values editing
+  * cross page refactoring...(use Drag, Drop Handler)
+  * intelligent completion: means take into account the properties for completion of property names, and for property values editing (possibly, recognize the current object/context, and use separate completion proposal,partitioner in eclipse text editor)
   * to be completed...
 
+= Further =
+  # get to know RDF principles and existing syntaxes: first for inspiration, second for using the existing RDF reasoners like Sesame Reasoner(?) for validating wiki documents on the fly
+
+  # ~~automatically, convert all base XWiki classes into WikiModel common syntax documents~~
+
+  # parse a class definition expressed using WikiModel common syntax and convert it into an XWiki class (calling xwiki.createClass(Map))
+
+  # look into generic type systems, i.e. systems that know how to deal with types, deduce facts from type properties and relations: typically RDF frameworks, but also Groovy type engine.
+
+  # study existing reasoners and choose one for i) constrained contextual completion (with rules, ranges, domains etc.) ii) document validation
 
 = Tracks =
 
-  * look into [http://code.google.com/p/wikimodel WikiModel] code
+  * look into [http://code.google.com/p/wikimodel WikiModel] code (partially done)
   * look into Vex editor architecture
   * [http://www.eclipse.org/articles/article.php?file=Article-JavaCodeManipulation_AST/index.html Java AST manipulation in Eclipse]
   * have a meeting with Mikhail week 26 May.
-  * install XWiki
-  * install XWiki-Eclipse
-  * look into XWiki-Eclipse code
-  * connect to Fabio Mancinelli, author of XWiki-Eclipse, and currently in post doc at INRIA on distributed systems and dynamic protocols. XWiki employee, part time. fabio.mancinelli at xwiki.com http://www.fabiomancinelli.org
+  * ~~install XWiki~~
+  * ~~install XWiki-Eclipse~~
+  * ~~look into XWiki-Eclipse code~~
+  * ~~connect to Fabio Mancinelli, author of XWiki-Eclipse, and currently in post doc at INRIA on distributed systems and dynamic protocols. XWiki employee, part time. fabio.mancinelli at xwiki.com http://www.fabiomancinelli.org~~
