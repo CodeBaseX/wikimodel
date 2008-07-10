@@ -21,11 +21,11 @@ The objective is to create a rich editor for [http://code.google.com/p/wikimodel
   * to be completed...
 
 = Further =
-  * get to know RDF principles and existing syntaxes: first for inspiration, second for using the existing RDF reasoners like Sesame Reasoner(?) for validating wiki documents on the fly
+  * ~~get to know RDF principles and existing syntaxes: first for inspiration,~~ second for using the existing RDF reasoners like Sesame Reasoner(?) for validating wiki documents on the fly
 
   * ~~automatically, convert all base XWiki classes into WikiModel common syntax documents~~
 
-  * parse a class definition expressed using WikiModel common syntax and convert it into an XWiki class (calling xwiki.createClass(Map))
+  * parse a class definition expressed using WikiModel common syntax and convert it into an XWiki class (calling xwiki.createClass(Map)), status: ui part, and parsing done, waiting for new xmlrpc api function for createClass(Map<String property,String datatype>,String documentSheet-template), will be intergrated to next xwiki release.
 
   * look into generic type systems, i.e. systems that know how to deal with types, deduce facts from type properties and relations: typically RDF frameworks, but also Groovy type engine.
 
