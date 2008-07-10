@@ -50,14 +50,14 @@ public class TexSerializer extends PrintTextListener {
 
     @Override
     public void beginDocument() {
-        if (fContext == null) {
-            println("\\documentclass{article}");
-            println("\\usepackage{graphics} % for pdf, bitmapped graphics files");
-            println("\\usepackage{graphicx} % for pdf, bitmapped graphics files");
-            println("\\usepackage{epsfig} % for postscript graphics files");
-            println("\\begin{document}");
-            println();
-        }
+//        if (fContext == null) {
+//            println("\\documentclass{article}");
+//            println("\\usepackage{graphics} % for pdf, bitmapped graphics files");
+//            println("\\usepackage{graphicx} % for pdf, bitmapped graphics files");
+//            println("\\usepackage{epsfig} % for postscript graphics files");
+//            println("\\begin{document}");
+//            println();
+//        }
         fContext = new DocumentContext();
         fContextStack.push(fContext);
     }
@@ -65,9 +65,16 @@ public class TexSerializer extends PrintTextListener {
     public void beginHeader(int level, WikiParameters params) {
         println();
         print("\\");
-        for (int i = 0; i < level - 1; i++)
+        if (level == 1) {
+        	print("chapter{");
+        }
+        else if (level< 4) {
+        for (int i = 1; i < level - 1; i++)
             print("sub");
         print("section{");
+        } else {
+         print("paragraph{");
+        }
     }
 
     public void beginList(WikiParameters parameters, boolean ordered) {
@@ -110,13 +117,14 @@ public class TexSerializer extends PrintTextListener {
     public void endDocument() {
         fContextStack.pop();
         fContext = !fContextStack.empty() ? fContextStack.peek() : null;
-        if (fContext == null) {
-            println("\\end{document}");
-        }
+//        if (fContext == null) {
+//            println("\\end{document}");
+//        }
     }
 
     public void endHeader(int level, WikiParameters params) {
         println("}");
+        
     }
 
     public void endList(WikiParameters parameters, boolean ordered) {
@@ -217,6 +225,16 @@ public class TexSerializer extends PrintTextListener {
             @Override
             protected void handleImage(String ref, String label) {
                 int[] size;
+                println();
+                println("\\begin{figure}");
+                println("\\centering");
+                //println("\\includegraphics[width=0.9\\textwidth]{images/"+ref+"}");
+                println("\\includegraphics{images/"+ref+"}");
+                println("\\caption{"+label+"}");
+                println("\\label{fig:rav}");
+                println("\\end{figure}");
+                println();
+                
                 if (fImageSizes.containsKey(ref))
                     size = fImageSizes.get(ref);
                 else {
@@ -243,10 +261,22 @@ public class TexSerializer extends PrintTextListener {
 
             @Override
             protected void handleReference(String ref, String label) {
-                print(label);
-                print(" (");
-                print(ref);
-                print(")");
+                String s = ref+" "+label;
+                int idx1 = s.indexOf('>');
+                String tlabel = s;
+                String tref = s;
+                if (idx1>0) {
+                	tlabel = s.substring(0, idx1);
+                	tref = s.substring(idx1+1);
+                }
+                
+                tref = tref.substring(tref.indexOf('.')+1);
+            	print(texClean(tlabel)+"~(\\ref{"+tref+"})");
+            	//print(texClean(ref)+ texClean(label));
+//                print(" (");
+//                print(texClean(ref));
+//                print(")");
+                //print("~\ref{"+ref+"}");
             }
 
         };
@@ -270,17 +300,43 @@ public class TexSerializer extends PrintTextListener {
     }
 
     public void onSpecialSymbol(String str) {
-        if (!str.equals("}") && !str.equals("{")) {
+        
+    	if (str.equals("#")) {
+    		print("\\_\\_");
+    		return;
+    	}
+    	
+    	if (str.equals("&")) {
+    		print("\\&");
+    		return;
+    	}
+    	
+    	if (!str.equals("}") && !str.equals("{")) {
             print(str);
         }
+        
+    	
     }
 
     public void onWord(String str) {
-        if (fContext.fTableHeadCell) {
+    	str = texClean(str);
+    	if (fContext.fTableHeadCell) {
             print("{\\bf ");
             fContext.fTableHeadCell = false;
         }
         print(str);
     }
+    
+    public String texClean(String str) {
+    	str = str.replace("_", "\\_");
+    	str = str.replace("#", "\\#");
+    
+    	return str;
+    }
+    
+    
+
 
 }
+
+
