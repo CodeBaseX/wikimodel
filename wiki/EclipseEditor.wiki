@@ -25,7 +25,7 @@ The objective is to create a rich editor for [http://code.google.com/p/wikimodel
 
   * ~~automatically, convert all base XWiki classes into WikiModel common syntax documents~~
 
-  * parse a class definition expressed using WikiModel common syntax and convert it into an XWiki class (calling xwiki.createClass(Map)), status: ui part, and parsing done, waiting for new xmlrpc api function for createClass(Map<String property,String datatype>,String documentSheet-template), will be intergrated to next xwiki release.
+  * parse a class definition expressed using WikiModel common syntax and convert it into an XWiki class (calling xwiki.createClass(Map)), Status: UI/client side complete, waiting for new xmlrpc api function for createClass(Map<String property,String datatype>,String documentSheet-template), to be incorporated to next XWiki release
 
   * look into generic type systems, i.e. systems that know how to deal with types, deduce facts from type properties and relations: typically RDF frameworks, but also Groovy type engine.
 
