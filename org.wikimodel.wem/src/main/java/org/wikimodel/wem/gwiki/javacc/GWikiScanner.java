@@ -678,7 +678,7 @@ public class GWikiScanner implements GWikiScannerConstants {
       } else {
         break label_7;
       }
-      newLine();
+      getNL();
       quotLine();
     }
         fContext.endQuot();
@@ -952,7 +952,7 @@ public class GWikiScanner implements GWikiScannerConstants {
   }
 
   final private boolean jj_3_13() {
-    if (jj_3R_20()) return true;
+    if (jj_3R_22()) return true;
     if (jj_3R_12()) return true;
     return false;
   }
@@ -963,7 +963,7 @@ public class GWikiScanner implements GWikiScannerConstants {
   }
 
   final private boolean jj_3_12() {
-    if (jj_3R_22()) return true;
+    if (jj_3R_20()) return true;
     return false;
   }
 
@@ -1077,7 +1077,7 @@ public class GWikiScanner implements GWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_22() {
+  final private boolean jj_3R_20() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(55)) {
@@ -1350,8 +1350,8 @@ public class GWikiScanner implements GWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_20() {
-    if (jj_3R_22()) return true;
+  final private boolean jj_3R_22() {
+    if (jj_3R_20()) return true;
     return false;
   }
 

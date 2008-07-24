@@ -604,7 +604,7 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
       } else {
         break label_5;
       }
-      newLine();
+      getNL();
       quotLine();
     }
         fContext.endQuot();
@@ -971,8 +971,8 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_15() {
-    if (jj_3R_18()) return true;
+  final private boolean jj_3R_18() {
+    if (jj_3R_15()) return true;
     return false;
   }
 
@@ -1016,7 +1016,7 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_18() {
+  final private boolean jj_3R_15() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(54)) {
@@ -1052,7 +1052,7 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
   }
 
   final private boolean jj_3_10() {
-    if (jj_3R_15()) return true;
+    if (jj_3R_18()) return true;
     if (jj_3R_11()) return true;
     return false;
   }
@@ -1078,7 +1078,7 @@ public class CreoleWikiScanner implements CreoleWikiScannerConstants {
   }
 
   final private boolean jj_3_9() {
-    if (jj_3R_18()) return true;
+    if (jj_3R_15()) return true;
     return false;
   }
 

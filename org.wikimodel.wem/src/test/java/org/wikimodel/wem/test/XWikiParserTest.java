@@ -10,8 +10,13 @@
  *******************************************************************************/
 package org.wikimodel.wem.test;
 
+import java.io.StringReader;
+
+import org.wikimodel.wem.IWemListener;
 import org.wikimodel.wem.IWikiParser;
+import org.wikimodel.wem.IWikiPrinter;
 import org.wikimodel.wem.WikiParserException;
+import org.wikimodel.wem.xhtml.PrintListener;
 import org.wikimodel.wem.xwiki.XWikiParser;
 
 /**
@@ -26,9 +31,55 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         super(name);
     }
 
+    /**
+     * @param string
+     * @param control
+     * @throws WikiParserException
+     */
+    private void doTest(String string, String control)
+        throws WikiParserException {
+        println("==================================================");
+        StringReader reader = new StringReader(string);
+        IWikiParser parser = new XWikiParser();
+        final StringBuffer buf = new StringBuffer();
+
+        IWikiPrinter printer = newPrinter(buf);
+        IWemListener listener = new PrintListener(printer) {
+            @Override
+            public void onSpace(String str) {
+                print("[" + str + "]");
+            }
+
+            @Override
+            public void onWord(String str) {
+                print("{" + str + "}");
+            }
+        };
+        parser.parse(reader, listener);
+        String test = buf.toString();
+        println(test);
+        checkResults(control, test);
+    }
+
     @Override
     protected IWikiParser newWikiParser() {
         return new XWikiParser();
+    }
+
+    public void test() throws Exception {
+        test(
+            "before **bold** after",
+            "<p>before <strong>bold</strong> after</p>");
+
+        doTest(
+            "before **bold** after",
+            "<p>{before}[ ]<strong>{bold}</strong>[ ]{after}</p>");
+        doTest("before \n* bold after", "<p>{before}[ ]</p>\n"
+            + "<ul>\n"
+            + "  <li>{bold}[ ]{after}</li>\n"
+            + "</ul>"
+            + "");
+
     }
 
     /**
@@ -319,20 +370,43 @@ public class XWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testQuot() throws WikiParserException {
-        test("This is a paragraph\n\n and this is a quotations\n the second line");
+        test("This is a paragraph"
+            + "\n"
+            + "\n"
+            + " and this is a quotations\n"
+            + " the second line", "<p>This is a paragraph</p>\n"
+            + "<blockquote>\n"
+            + "and this is a quotations\n"
+            + "the second line\n"
+            + "</blockquote>");
     }
 
     /**
      * @throws WikiParserException
      */
     public void testReferences() throws WikiParserException {
-        test("before http://www.foo.bar/com after");
-        test("before [toto] after");
-        test("before wiki:Hello after");
-        test("before wiki~:Hello after");
-        test("before [#local ancor] after");
+        test(
+            "before http://www.foo.bar/com after",
+            "<p>before <a href='http://www.foo.bar/com'>http://www.foo.bar/com</a> after</p>");
+        test(
+            "before [[toto]] after",
+            "<p>before <a href='toto'>toto</a> after</p>");
+        test(
+            "before [[ [toto] [tata] ]] after",
+            "<p>before <a href='[toto] [tata]'>[toto] [tata]</a> after</p>");
+        test(
+            "before wiki:Hello after",
+            "<p>before <a href='wiki:Hello'>wiki:Hello</a> after</p>");
+        test(
+            "before wiki:\\Hello after",
+            "<p>before wiki:<span class='escaped'>H</span>ello after</p>");
 
-        test("not [[a reference] at all!");
+        // Not a reference
+        test("before [toto] after", "<p>before [toto] after</p>");
+        test("not [[a reference] at all!", "<p>not [[a reference] at all!</p>");
+        test(
+            "before [#local ancor] after",
+            "<p>before [#local ancor] after</p>");
     }
 
     /**
