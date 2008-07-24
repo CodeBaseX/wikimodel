@@ -36,8 +36,8 @@ public class XhtmlHandler extends DefaultHandler {
 
         /**
          * @param context
-         * @return <code>true</code> if the current tag represented by the
-         *         given context requires a parent document
+         * @return <code>true</code> if the current tag represented by the given
+         *         context requires a parent document
          */
         private static boolean requiresParentDocument(TagContext context) {
             if (context == null)
@@ -382,7 +382,7 @@ public class XhtmlHandler extends DefaultHandler {
                     int oldType = type;
                     type = getCharacterType(ch);
                     if (type != oldType) {
-                        flushBuffer(buf, type);
+                        flushBuffer(buf, oldType);
                     }
                     buf.append(ch);
                 }
