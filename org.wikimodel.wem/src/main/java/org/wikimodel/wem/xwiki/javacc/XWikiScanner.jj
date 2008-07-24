@@ -93,7 +93,7 @@ TOKEN_MGR_DECLS: {
 
 <DEFAULT, INITIAL_CONTEXT> TOKEN:
 {
-      <#LI: ( ("*")+ | ( "1" | "*" )+ "." ) (<SPACE>)* >
+      <#LI: (<SPACE>)* ( ("*")+ | ( "1" | "*" )+ "." ) (<SPACE>)* >
     | <#HEADER: ( "1" ("." "1" ) {0, 5} ) (<SPACE>)* >
     | <#ESCAPE: ( "\\" ~["\\", " ", "\t", "\n", "\r"] ) >
     | <#BR: "\\\\" >

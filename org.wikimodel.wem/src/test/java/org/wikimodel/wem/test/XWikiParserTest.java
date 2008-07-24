@@ -167,10 +167,38 @@ public class XWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testLists() throws WikiParserException {
-        test("* first");
-        test("** second");
-        test("* first\n** second");
-        test("*1. second");
+        test("* first", "<ul>\n" + "  <li>first</li>\n" + "</ul>");
+        test("** second", "<ul>\n"
+            + "  <li><ul>\n"
+            + "  <li>second</li>\n"
+            + "</ul>\n"
+            + "</li>\n"
+            + "</ul>");
+        test("  ** second", "<ul>\n"
+            + "  <li><ul>\n"
+            + "  <li>second</li>\n"
+            + "</ul>\n"
+            + "</li>\n"
+            + "</ul>");
+        test("* first\n** second", "<ul>\n"
+            + "  <li>first<ul>\n"
+            + "  <li>second</li>\n"
+            + "</ul>\n"
+            + "</li>\n"
+            + "</ul>");
+        test("*1. second", "<ul>\n"
+            + "  <li><ol>\n"
+            + "  <li>second</li>\n"
+            + "</ol>\n"
+            + "</li>\n"
+            + "</ul>");
+        test("  11. second", "<ol>\n"
+            + "  <li><ol>\n"
+            + "  <li>second</li>\n"
+            + "</ol>\n"
+            + "</li>\n"
+            + "</ol>");
+
         test("*item one\n"
             + "* item two\n"
             + "*1. item three\n"
@@ -179,7 +207,19 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             + "   item five - second line\n"
             + "* item six\n"
             + "  is on multiple\n"
-            + " lines");
+            + " lines", "<ul>\n"
+            + "  <li>item one</li>\n"
+            + "  <li>item two<ol>\n"
+            + "  <li>item three</li>\n"
+            + "  <li>item four</li>\n"
+            + "</ol>\n"
+            + "</li>\n"
+            + "  <li>item five - first line\n"
+            + "   item five - second line</li>\n"
+            + "  <li>item six\n"
+            + "  is on multiple\n"
+            + " lines</li>\n"
+            + "</ul>");
     }
 
     public void testMacro() throws WikiParserException {
