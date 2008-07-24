@@ -791,7 +791,7 @@ public class MediawikiScanner implements MediawikiScannerConstants {
       } else {
         break label_6;
       }
-      newLine();
+      getNL();
       quotLine();
     }
         fContext.endQuot();
@@ -1300,8 +1300,8 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_16() {
-    if (jj_3R_19()) return true;
+  final private boolean jj_3R_19() {
+    if (jj_3R_16()) return true;
     return false;
   }
 
@@ -1339,13 +1339,13 @@ public class MediawikiScanner implements MediawikiScannerConstants {
   }
 
   final private boolean jj_3_10() {
-    if (jj_3R_16()) return true;
+    if (jj_3R_19()) return true;
     if (jj_3R_12()) return true;
     return false;
   }
 
   final private boolean jj_3_9() {
-    if (jj_3R_19()) return true;
+    if (jj_3R_16()) return true;
     return false;
   }
 
@@ -1459,7 +1459,7 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_19() {
+  final private boolean jj_3R_16() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(68)) {

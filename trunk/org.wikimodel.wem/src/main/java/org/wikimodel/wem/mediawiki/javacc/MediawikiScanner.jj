@@ -457,7 +457,7 @@ void quot():
     }
     quotLine()
     ( LOOKAHEAD(2)
-        newLine()
+        getNL()
         quotLine()
     )*
     {

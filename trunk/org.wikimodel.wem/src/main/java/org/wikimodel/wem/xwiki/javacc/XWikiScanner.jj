@@ -102,13 +102,13 @@ TOKEN_MGR_DECLS: {
     | <#MACRO_START: "{" <MACRO_NAME> (~["}"])* "}" >
     | <#MACRO_END: "{/" <MACRO_NAME> (<SPACE>)* "}" > 
     | <#MACRO_CONTENT: ( <CHAR> | <SPACE> |<NEW_LINE> | <SPECIAL_SYMBOL> ) >
-    | <#REFERENCE:  ( "[" ( "\\" ~[] | ~["[", "]"] )* "]" ) >
+    | <#REFERENCE:  ( "[[" ( "\\" ~[] | ~["]"] | "]" ~["]"] )* "]]" ) >
     | <#HORLINE: "---" ("-")+ >
 
     | <#TABLE: ( "{table" (" " (~["}", "\n", "\r"])*)?  "}" ( (<SPACE>)* <NEW_LINE> )? ) >
     | <#CELL: ( "||" | "|" ) >
 
-    | <#FORMAT_SYMBOL : ("~~" | "*" | "__" | "--" ) >
+    | <#FORMAT_SYMBOL : ("~~" | "**" | "__" | "--" ) >
 
 // <common-tokens>
     // =========================================================================
@@ -520,7 +520,7 @@ void quot():
     }
     quotLine()
     ( LOOKAHEAD(2)
-        newLine()
+        getNL()
         quotLine()
     )*
     {
@@ -607,7 +607,7 @@ void line():
             {
                 str = t.image.trim();
                 WikiStyle style = null;
-                if ("__".equals(str) || "*".equals(str)) {
+                if ("__".equals(str) || "**".equals(str)) {
                     style  = IWikiScannerContext.STRONG;
                 } else if ("~~".equals(str)) {
                     style  = IWikiScannerContext.EM;
@@ -630,8 +630,8 @@ void line():
             t = getREFERENCE() 
             {
                 str = t.image.trim();
-                if (str.startsWith("[")) {
-                    str = str.substring(1, str.length() - 1);
+                if (str.startsWith("[[")) {
+                    str = str.substring(2, str.length() - 2);
                     str = str.trim();
                 }
                 WikiReference ref = fReferenceParser.parse(str);

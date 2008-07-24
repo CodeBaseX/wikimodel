@@ -774,7 +774,7 @@ public class XWikiScanner implements XWikiScannerConstants {
       } else {
         break label_6;
       }
-      newLine();
+      getNL();
       quotLine();
     }
         fContext.endQuot();
@@ -868,7 +868,7 @@ public class XWikiScanner implements XWikiScannerConstants {
         t = getFORMAT_SYMBOL();
                 str = t.image.trim();
                 WikiStyle style = null;
-                if ("__".equals(str) || "*".equals(str)) {
+                if ("__".equals(str) || "**".equals(str)) {
                     style  = IWikiScannerContext.STRONG;
                 } else if ("~~".equals(str)) {
                     style  = IWikiScannerContext.EM;
@@ -891,8 +891,8 @@ public class XWikiScanner implements XWikiScannerConstants {
       case D_REFERENCE:
         t = getREFERENCE();
                 str = t.image.trim();
-                if (str.startsWith("[")) {
-                    str = str.substring(1, str.length() - 1);
+                if (str.startsWith("[[")) {
+                    str = str.substring(2, str.length() - 2);
                     str = str.trim();
                 }
                 WikiReference ref = fReferenceParser.parse(str);
@@ -1027,7 +1027,7 @@ public class XWikiScanner implements XWikiScannerConstants {
   }
 
   final private boolean jj_3_11() {
-    if (jj_3R_19()) return true;
+    if (jj_3R_22()) return true;
     if (jj_3R_12()) return true;
     return false;
   }
@@ -1043,7 +1043,7 @@ public class XWikiScanner implements XWikiScannerConstants {
   }
 
   final private boolean jj_3_10() {
-    if (jj_3R_22()) return true;
+    if (jj_3R_19()) return true;
     return false;
   }
 
@@ -1334,7 +1334,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_22() {
+  final private boolean jj_3R_19() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(63)) {
@@ -1444,8 +1444,8 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_19() {
-    if (jj_3R_22()) return true;
+  final private boolean jj_3R_22() {
+    if (jj_3R_19()) return true;
     return false;
   }
 

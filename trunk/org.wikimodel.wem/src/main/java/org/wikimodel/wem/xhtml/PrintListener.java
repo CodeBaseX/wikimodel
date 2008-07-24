@@ -26,30 +26,37 @@ public class PrintListener extends PrintInlineListener {
         super(printer);
     }
 
+    @Override
     public void beginDefinitionDescription() {
         print("  <dd>");
     }
 
+    @Override
     public void beginDefinitionList(WikiParameters parameters) {
         println("<dl>");
     }
 
+    @Override
     public void beginDefinitionTerm() {
         print("  <dt>");
     }
 
+    @Override
     public void beginDocument() {
         println("<div class='doc'>");
     }
 
+    @Override
     public void beginHeader(int level, WikiParameters params) {
         print("<h" + level + params + ">");
     }
 
+    @Override
     public void beginInfoBlock(char infoType, WikiParameters params) {
         print("<table" + params + "><tr><th>" + infoType + "</th><td>");
     }
 
+    @Override
     public void beginList(WikiParameters parameters, boolean ordered) {
         if (ordered)
             println("<ol" + parameters + ">");
@@ -57,14 +64,17 @@ public class PrintListener extends PrintInlineListener {
             println("<ul" + parameters + ">");
     }
 
+    @Override
     public void beginListItem() {
         print("  <li>");
     }
 
+    @Override
     public void beginParagraph(WikiParameters params) {
         print("<p" + params + ">");
     }
 
+    @Override
     public void beginPropertyBlock(String propertyUri, boolean doc) {
         print("<div class='property' url='"
             + WikiPageUtil.escapeXmlAttribute(propertyUri)
@@ -73,51 +83,63 @@ public class PrintListener extends PrintInlineListener {
             println("");
     }
 
+    @Override
     public void beginQuotation(WikiParameters params) {
-        print("<blockquote" + params + ">");
+        println("<blockquote" + params + ">");
     }
 
+    @Override
     public void beginQuotationLine() {
-        println("");
+        // print("<p>");
     }
 
+    @Override
     public void beginTable(WikiParameters params) {
         println("<table" + params + "><tbody>");
     }
 
+    @Override
     public void beginTableCell(boolean tableHead, WikiParameters params) {
         String str = tableHead ? "<th" : "<td";
         print(str + params + ">");
     }
 
+    @Override
     public void beginTableRow(WikiParameters params) {
         print("  <tr" + params + ">");
     }
 
+    @Override
     public void endDefinitionDescription() {
         println("</dd>");
     }
 
+    @Override
     public void endDefinitionList(WikiParameters parameters) {
         println("</dl>");
     }
 
+    @Override
     public void endDefinitionTerm() {
         println("</dt>");
     }
 
+    @Override
     public void endDocument() {
         println("</div>");
     }
 
+    @Override
     public void endHeader(int level, WikiParameters params) {
         println("</h" + level + ">");
     }
 
+    @Override
     public void endInfoBlock(char infoType, WikiParameters params) {
         println("</td></tr></table>");
     }
 
+    @Override
     public void endList(WikiParameters parameters, boolean ordered) {
         if (ordered)
             println("</ol>");
@@ -125,40 +147,48 @@ public class PrintListener extends PrintInlineListener {
             println("</ul>");
     }
 
+    @Override
     public void endListItem() {
         println("</li>");
     }
 
+    @Override
     public void endParagraph(WikiParameters params) {
         println("</p>");
     }
 
+    @Override
     public void endPropertyBlock(String propertyUri, boolean doc) {
         println("</div>");
     }
-    
+
+    @Override
     public void endQuotation(WikiParameters params) {
         println("</blockquote>");
     }
 
-
+    @Override
     public void endQuotationLine() {
         println("");
     }
 
+    @Override
     public void endTable(WikiParameters params) {
         println("</tbody></table>");
     }
 
+    @Override
     public void endTableCell(boolean tableHead, WikiParameters params) {
         String str = tableHead ? "</th>" : "</td>";
         print(str);
     }
 
+    @Override
     public void endTableRow(WikiParameters params) {
         println("</tr>");
     }
 
+    @Override
     public void onEmptyLines(int count) {
         if (count > 1) {
             println("<div style='height:" + count + "em;'></div>");
@@ -169,6 +199,7 @@ public class PrintListener extends PrintInlineListener {
      * @see org.wikimodel.wem.xhtml.PrintInlineListener#onExtensionBlock(java.lang.String,
      *      org.wikimodel.wem.WikiParameters)
      */
+    @Override
     public void onExtensionBlock(String extensionName, WikiParameters params) {
         println("<div class='extension' extension='"
             + extensionName
@@ -177,10 +208,12 @@ public class PrintListener extends PrintInlineListener {
             + "/>");
     }
 
+    @Override
     public void onHorizontalLine() {
         println("<hr />");
     }
 
+    @Override
     public void onMacroBlock(
         String macroName,
         WikiParameters params,
@@ -194,6 +227,7 @@ public class PrintListener extends PrintInlineListener {
             + "]]></pre>");
     }
 
+    @Override
     public void onMacroInline(
         String macroName,
         WikiParameters params,
@@ -207,9 +241,11 @@ public class PrintListener extends PrintInlineListener {
             + "]]></span>");
     }
 
+    @Override
     public void onTableCaption(String str) {
     }
 
+    @Override
     public void onVerbatimBlock(String str) {
         println("<pre>" + WikiPageUtil.escapeXmlString(str) + "</pre>");
     }

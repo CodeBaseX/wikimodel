@@ -708,15 +708,29 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testQuot() throws WikiParserException {
-        test("Q: Quotation");
+        test("Q: Quotation", "<blockquote>\n Quotation\n</blockquote>");
 
         test(">This is a message\n"
             + ">>and this is a response to the message \n"
-            + "> This is a continuation of the same message");
+            + "> This is a continuation of the same message", ""
+            + ""
+            + "<blockquote>\n"
+            + "This is a message"
+            + "<blockquote>\n"
+            + "and this is a response to the message \n"
+            + "</blockquote>\n" // The new line of the blockquote element
+            + "\n" // The new line from the end of the previous quoteline
+            + " This is a continuation of the same message\n"
+            + "</blockquote>");
 
         test("This is a paragraph\n"
             + ">and this is a quotations\n"
-            + "> the second line");
+            + "> the second line", "<p>This is a paragraph</p>\n"
+            + "<blockquote>\n"
+            + "and this is a quotations\n"
+            + " the second line\n"
+            + "</blockquote>");
+
         test("        This is just a description...\r\n"
             + "    \r\n"
             + "\r\n"

@@ -259,7 +259,8 @@ public class CreoleWikiParserTest extends AbstractWikiParserTest {
             "<p>before <a href='toto'>toto</a> after</p>");
 
         // Tests from
-        // http://wikicreole.org/wiki/Creole1.0#section-Creole1.0-LinksInternalExternalAndInterwiki
+        // http://wikicreole.org/wiki/Creole1.0#section-Creole1.0-
+        // LinksInternalExternalAndInterwiki
         test("[[link]]", "<p><a href='link'>link</a></p>");
         test(
             "[[MyBigPage|Go to my page]]",
