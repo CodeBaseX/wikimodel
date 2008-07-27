@@ -18,7 +18,7 @@ public class CompositeListener implements IWemListener {
      * @param listeners an array of listeners to which all method calls will be
      *        delegated
      */
-    public CompositeListener(IWemListener[] listeners) {
+    public CompositeListener(IWemListener... listeners) {
         fListeners = listeners;
     }
 
