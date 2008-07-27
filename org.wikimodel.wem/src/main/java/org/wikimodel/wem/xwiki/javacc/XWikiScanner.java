@@ -735,8 +735,7 @@ public class XWikiScanner implements XWikiScannerConstants {
                 prevEnd = t.image;
             } else {
                 prevEnd = null;
-                str = WikiScannerUtil.unescape(t.image, '\\');
-                buf.append(str);
+                buf.append(t.image);
             }
     }
         str = buf.toString();
@@ -1021,12 +1020,6 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3_11() {
-    if (jj_3R_22()) return true;
-    if (jj_3R_12()) return true;
-    return false;
-  }
-
   final private boolean jj_3R_15() {
     if (jj_3R_36()) return true;
     Token xsp;
@@ -1034,6 +1027,12 @@ public class XWikiScanner implements XWikiScannerConstants {
       xsp = jj_scanpos;
       if (jj_3_6()) { jj_scanpos = xsp; break; }
     }
+    return false;
+  }
+
+  final private boolean jj_3_11() {
+    if (jj_3R_22()) return true;
+    if (jj_3R_12()) return true;
     return false;
   }
 
@@ -1101,13 +1100,13 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_28() {
-    if (jj_3R_44()) return true;
+  final private boolean jj_3_4() {
+    if (jj_3R_14()) return true;
     return false;
   }
 
-  final private boolean jj_3_4() {
-    if (jj_3R_14()) return true;
+  final private boolean jj_3R_28() {
+    if (jj_3R_44()) return true;
     return false;
   }
 
@@ -1232,6 +1231,26 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3R_41() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(66)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(84)) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_21() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(65)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(83)) return true;
+    }
+    return false;
+  }
+
   final private boolean jj_3_12() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1269,26 +1288,6 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_41() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(66)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(84)) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_21() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(65)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(83)) return true;
-    }
-    return false;
-  }
-
   final private boolean jj_3R_52() {
     if (jj_3R_54()) return true;
     return false;
@@ -1304,6 +1303,11 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3R_39() {
+    if (jj_scan_token(INTERNAL_MACRO_CONTENT)) return true;
+    return false;
+  }
+
   final private boolean jj_3R_12() {
     Token xsp;
     if (jj_3_12()) return true;
@@ -1311,11 +1315,6 @@ public class XWikiScanner implements XWikiScannerConstants {
       xsp = jj_scanpos;
       if (jj_3_12()) { jj_scanpos = xsp; break; }
     }
-    return false;
-  }
-
-  final private boolean jj_3R_39() {
-    if (jj_scan_token(INTERNAL_MACRO_CONTENT)) return true;
     return false;
   }
 
@@ -1419,11 +1418,6 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_33() {
-    if (jj_3R_49()) return true;
-    return false;
-  }
-
   final private boolean jj_3R_40() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1434,8 +1428,18 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3R_33() {
+    if (jj_3R_49()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_18() {
     if (jj_3R_39()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_17() {
+    if (jj_3R_38()) return true;
     return false;
   }
 
@@ -1446,11 +1450,6 @@ public class XWikiScanner implements XWikiScannerConstants {
 
   final private boolean jj_3R_32() {
     if (jj_3R_48()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_17() {
-    if (jj_3R_38()) return true;
     return false;
   }
 

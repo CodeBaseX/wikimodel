@@ -468,8 +468,7 @@ void macro(Token t, boolean block):
                 prevEnd = t.image;
             } else {
                 prevEnd = null;
-                str = WikiScannerUtil.unescape(t.image, '\\');
-                buf.append(str);        
+                buf.append(t.image);
             }
         }
     )*
