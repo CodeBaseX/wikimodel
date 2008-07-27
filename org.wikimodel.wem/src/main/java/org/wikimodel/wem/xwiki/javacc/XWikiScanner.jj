@@ -56,7 +56,7 @@ TOKEN_MGR_DECLS: {
     String getMacroName(StringBuffer buf) {
         String str = buf.toString();
         str = str.trim();
-        str = str.substring(1, str.length() - 1);
+        str = str.substring(2, str.length() - 2);
         int idx = str.indexOf(" ");
         if (idx > 0) {
             str = str.substring(0, idx);
@@ -98,9 +98,10 @@ TOKEN_MGR_DECLS: {
     | <#ESCAPE: ( "\\" ~["\\", " ", "\t", "\n", "\r"] ) >
     | <#BR: "\\\\" >
     | <#MACRO_NAME: ( <URI> | (<CHAR>)+ ) >
-    | <#MACRO_EMPTY: "{" <MACRO_NAME> (~["}"])* "/}" >
-    | <#MACRO_START: "{" <MACRO_NAME> (~["}"])* "}" >
-    | <#MACRO_END: "{/" <MACRO_NAME> (<SPACE>)* "}" > 
+    | <#MACRO_DEF: ( "\\" ~[] | ~["}"] | "}" ~["}"] )* >
+    | <#MACRO_EMPTY: "{{" <MACRO_NAME> <MACRO_DEF> "/}}" >
+    | <#MACRO_START: "{{" <MACRO_NAME> <MACRO_DEF> "}}" >
+    | <#MACRO_END: "{{/" <MACRO_NAME> (<SPACE>)* "}}" > 
     | <#MACRO_CONTENT: ( <CHAR> | <SPACE> |<NEW_LINE> | <SPECIAL_SYMBOL> ) >
     | <#REFERENCE:  ( "[[" ( "\\" ~[] | ~["]"] | "]" ~["]"] )* "]]" ) >
     | <#HORLINE: "---" ("-")+ >
@@ -408,7 +409,7 @@ void emptyMacro(Token t, boolean block):
 {
     {
         String str = t.image.trim();
-        str = str.substring(1, str.length() - 2);
+        str = str.substring(2, str.length() - 3);
         String paramStr = "";
         int paramStrPos = str.indexOf(" ");
         String name = "";
@@ -443,7 +444,7 @@ void macro(Token t, boolean block):
 {
     {
         str = t.image.trim();
-        str = str.substring(1, str.length() - 1);
+        str = str.substring(2, str.length() - 2);
         paramStrPos = str.indexOf(" ");
         if (paramStrPos > 0) {
             paramStr = str.substring(paramStrPos);
