@@ -21,7 +21,7 @@ The objective is to create a rich editor for [http://code.google.com/p/wikimodel
   * to be completed...
 
 = Further =
-  * ~~get to know RDF principles and existing syntaxes: first for inspiration,~~ second for using the existing RDF reasoners like Sesame Reasoner(?) for validating wiki documents on the fly
+  * ~~get to know RDF principles and existing syntaxes: first for inspiration, second for using the existing RDF reasoners like Sesame Reasoner(?) for validating wiki documents on the fly~~
 
   * ~~automatically, convert all base XWiki classes into WikiModel common syntax documents~~
 
