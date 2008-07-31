@@ -27,13 +27,21 @@ The objective is to create a rich editor for [http://code.google.com/p/wikimodel
 
   * parse a class definition expressed using WikiModel common syntax and convert it into an XWiki class (calling xwiki.createClass(Map)), Status: UI/client side complete, waiting for new xmlrpc api function for createClass(Map<String property,String datatype>,String documentSheet-template), to be incorporated to next XWiki release
 
-  * look into generic type systems, i.e. systems that know how to deal with types, deduce facts from type properties and relations: typically RDF frameworks, but also Groovy type engine.
+  * ~~look into generic type systems, i.e. systems that know how to deal with types, deduce facts from type properties and relations: typically RDF frameworks,~~ but also Groovy type engine.
 
-  * study existing reasoners and choose one for i) constrained contextual completion (with rules, ranges, domains etc.) ii) document validation
+  * ~~study existing reasoners and choose one for~~ i) constrained contextual completion (with rules, ranges, domains etc.) ii) document validation, Status: Chose RDF2GO, RDFS Reasoner
+
+= Semantic Objectives =
+  * ~~get all statements contained in the page~~
+  * ~~detect property blocks~~
+  * ~~identify property and property values~~
+  * ~~create statements in the reasoner model~~
+  * check consistencty, Status: Looking for implementation similar to ValidityReport in Jena for RDF2GO
+  * provide visual feedback and error description if any
 
 = Tracks =
 
-  * look into [http://code.google.com/p/wikimodel WikiModel] code (partially done)
+  * ~~look into [http://code.google.com/p/wikimodel WikiModel] code~~
   * look into Vex editor architecture
   * [http://www.eclipse.org/articles/article.php?file=Article-JavaCodeManipulation_AST/index.html Java AST manipulation in Eclipse]
   * have a meeting with Mikhail week 26 May.
