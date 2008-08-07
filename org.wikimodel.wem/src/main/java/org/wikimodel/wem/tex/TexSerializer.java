@@ -10,11 +10,19 @@
  *******************************************************************************/
 package org.wikimodel.wem.tex;
 
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -22,8 +30,6 @@ import java.util.Stack;
 import org.wikimodel.wem.IWikiPrinter;
 import org.wikimodel.wem.PrintTextListener;
 import org.wikimodel.wem.ReferenceHandler;
-import org.wikimodel.wem.WGet;
-import org.wikimodel.wem.WikiPageUtil;
 import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.images.ImageUtil;
 
@@ -209,7 +215,8 @@ public class TexSerializer extends PrintTextListener {
             String url = wikiFileDownloadBaseUrl + documentName + "/" + ref;
             System.out.println("Downloading image " + url + " to " + f.getAbsolutePath() + "...");
             try {
-                WGet.fetchURL(url, fos);
+                WGet wget = new WGet();
+                wget.fetchURL(url, fos);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -417,4 +424,99 @@ public class TexSerializer extends PrintTextListener {
 
     }
 
+    class WGet {
+
+         final PrintStream out = System.out;
+        final String commandName = WGet.class.getName();
+        int count;
+        boolean verb;
+        boolean output = true;
+        // https://my.mandriva.com/rest/export/club.php?auth=a68184fa4d3acec7ac63542a70fa09d8-fee6f44d0dced0229543d9201b074377
+
+        
+        public final void readURL(URLConnection url) throws IOException {
+            DataInputStream in = new DataInputStream(url.getInputStream());
+            printHeader(url);
+
+            try {
+                while (true) {
+                    System.out.println((char) in.readUnsignedByte());
+                }
+            } catch (EOFException e) {
+               e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        public final void fetchURL(String url, OutputStream output) throws IOException {
+            URL url1 = new URL(url);
+            URLConnection urlConnection = url1.openConnection();        
+            BufferedOutputStream bos = new BufferedOutputStream(output);
+            if (urlConnection instanceof HttpURLConnection) {
+                readHttpURL((HttpURLConnection) urlConnection, bos);
+            } else {
+                readURL(urlConnection);
+            }
+        }
+
+        public final void readHttpURL(HttpURLConnection url, OutputStream output) throws IOException {
+
+            long before, after;
+
+            url.setAllowUserInteraction(true);
+            url.connect();
+            before = System.currentTimeMillis();
+            DataInputStream in = new DataInputStream(url.getInputStream());
+            after = System.currentTimeMillis();
+
+            before = System.currentTimeMillis();
+
+            try {
+                if (url.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    out.println(commandName + ": " + url.getResponseMessage());
+                } else {
+                    printHeader(url);
+                    while (true) {
+                        // writeChar((char) in.readUnsignedByte());
+                        output.write(in.readByte());
+                    }
+                }
+            } catch (EOFException e) {
+                after = System.currentTimeMillis();
+                int milliSeconds = (int) (after - before);
+                verbose(commandName + ": Read " + count + " bytes from " + url.getURL());
+                verbose(commandName + ": HTTP/1.0 " + url.getResponseCode() + " " + url.getResponseMessage());
+                url.disconnect();
+
+                if (url.usingProxy()) {
+                    verbose(commandName + ": This URL uses a proxy");
+                }
+            } catch (IOException e) {
+                out.println(e + ": " + e.getMessage());
+                verbose(commandName + ": I/O Error : Read " + count + " bytes from " + url.getURL());
+                out.println(commandName + ": I/O Error " + url.getResponseMessage());
+            }
+            output.flush();
+            output.close();
+           
+           
+        }
+
+        public final void printHeader(URLConnection url) {
+            verbose(WGet.class.getName() + ": Content-Length   : " + url.getContentLength());
+            verbose(WGet.class.getName() + ": Content-Type     : " + url.getContentType());
+            if (url.getContentEncoding() != null)
+                verbose(WGet.class.getName() + ": Content-Encoding : " + url.getContentEncoding());
+
+        }
+
+        public final void verbose(String s) {
+            if (verb)
+                out.println(s);
+        }
+
+    }
+
+    
 }
