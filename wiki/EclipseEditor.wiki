@@ -1,4 +1,4 @@
-#summary Designing an Eclipse RCP editor for WikiModel
+#summary Designing a semantic wiki editor based on Eclipse RCP, WikiModel, RDF
 #labels Phase-Requirements
 
 = Introduction =
