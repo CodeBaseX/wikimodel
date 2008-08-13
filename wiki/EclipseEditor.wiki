@@ -3,7 +3,7 @@
 
 = Introduction =
 
-The objective is to create a semantic wiki editor for [http://code.google.com/p/wikimodel WikiModel], supporting text completion, document refactoring, document inline querying, property value completion etc. i.e. a semantic text editor. This semantic editor will be based on the following components: Eclipse RCP text framework, [WikiModel http://code.google.com/p/wikimodel], an RDF database, a content storage system (local or remote). It will have the features listed below.
+The objective is to create a semantic wiki editor for [http://code.google.com/p/wikimodel WikiModel], supporting text completion, document refactoring, document inline querying, property value completion etc. i.e. a semantic text editor. This semantic editor will be based on the following components: Eclipse RCP text framework, [http://code.google.com/p/wikimodel WikiModel], an RDF database, a content storage system (local or remote). It will have the features listed below.
 
 = Features = 
 
