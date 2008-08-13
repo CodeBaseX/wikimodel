@@ -3,7 +3,75 @@
 
 = Introduction =
 
-The objective is to create a rich editor for [http://code.google.com/p/wikimodel WikiModel], supporting text completion, document refactoring, document inline querying, property value completion etc. i.e. a semantic text editor.
+The objective is to create a semantic wiki editor for [http://code.google.com/p/wikimodel WikiModel], supporting text completion, document refactoring, document inline querying, property value completion etc. i.e. a semantic text editor.
+
+The semantic editor is based on the following components: Eclipse RCP text framework, WikiModel, an RDF database, a content storage system (local or remote). It will have the features listed below.
+
+= Features = 
+
+== Loading of ontologies into an RDF database ==
+
+The user should be able to load ontologies to be used by the editor by entering the URL of the target ontologies.
+
+Example: Load http://xmlns.com/foaf/spec/20071002.rdf and http://www.semanticdesktop.org/ontologies/2007/11/01/pimo/pimo_data.rdfs
+
+The ontologies are then stored as a set of statements in the RDF database.
+
+== Conversion of a wiki page written in CommonSyntax into a set of statements ==
+
+Example: let's consider the wiki page below "wiki.NEPOMUK_meeting_20081112"
+
+{{{
+1 NEPOMUK meeting - November 12 2008
+
+%rdf:type pimo:Meeting
+
+%pimo:Attendee wiki.John_Doe
+
+%pimo:Attendee wiki.James_Dunt
+
+%pimo:hasLocation wiki.KaisersLautern
+}}}
+
+The application converts the page above into the following statements:
+
+  * wiki:NEPOMUK_meeting_20081112 rdf:type pimo:Meeting
+  * wiki:NEPOMUK_meeting_20081112 pimo:Attendee wiki:John_Doe
+  * wiki:NEPOMUK_meeting_20081112 pimo:hasLocation wiki:KaisersLautern
+
+== Storage of page contents ==
+
+The editor should provide storage capability. Storage can be local or remote. In a first step, page contents will be stored in the filesystem. In a second step, storage calls will be delegated to an external module, executing the operation either locally or remotely. Stored pages can be loaded from the editor.
+
+== Statement check ==
+
+The application checks the validity of the statements extracted from a page. The validity is checked against the loaded ontologies and existing resources. 
+
+Example: in the wiki page above, it checks that "pimo:Attendee" and "pimo:hasLocation" have a range compatible with "pimo:Meeting". It also checks that "wiki:John_Doe", if existing, has an rdf:type compatible with the domain of "pimo:Attendee", and that "wiki:KaisersLautern", if existing, has an rdf:type compatible with the domain of "pimo:hasLocation". If "wiki:John_Doe" doesn't exist in the database yet, it is created as a resource having the type "pimo:Person" (same for "wiki:KaisersLautern": created with "rdf:type pimo:Location"). In case inconsistencies are detected, the statements are not stored, and a visual feedback get displayed. If no inconsistency is detected, all the statements are stored (overriding all the previous ones related to the current resource).
+
+ 
+== Property completion ==
+
+The editor provides support for completing a property name, based on the page type if specified, and on the selected ontologies.
+
+Example: if the current page has an rdf:type whose value is "pimo:Person", then when the user starts a line with "%", the editor suggests the property names whose range is compatible with "pimo:Person".
+
+
+==  Property value completion ==
+
+The editor provides support for completing a property value based on the domain of the related property.
+
+Example: if the user is editing the value of the property "pimo:attendee", the editor will suggest resource names compatible with the type "pimo:Person".
+
+
+== Visual representation of a page properties ==
+
+When a given page is edited, its statements should be presented visually in a dedicated box.
+
+== Inline query ==
+
+The editor lets the user enter SPARQL queries inline and execute them against the database, displaying the results as text in the editor itself.
+
 
 
 = Features =
