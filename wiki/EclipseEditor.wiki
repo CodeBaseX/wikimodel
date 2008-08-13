@@ -3,9 +3,7 @@
 
 = Introduction =
 
-The objective is to create a semantic wiki editor for [http://code.google.com/p/wikimodel WikiModel], supporting text completion, document refactoring, document inline querying, property value completion etc. i.e. a semantic text editor.
-
-The semantic editor is based on the following components: Eclipse RCP text framework, WikiModel, an RDF database, a content storage system (local or remote). It will have the features listed below.
+The objective is to create a semantic wiki editor for [http://code.google.com/p/wikimodel WikiModel], supporting text completion, document refactoring, document inline querying, property value completion etc. i.e. a semantic text editor. This semantic editor will be based on the following components: Eclipse RCP text framework, [WikiModel http://code.google.com/p/wikimodel], an RDF database, a content storage system (local or remote). It will have the features listed below.
 
 = Features = 
 
@@ -41,7 +39,7 @@ The application converts the page above into the following statements:
 
 == Storage of page contents ==
 
-The editor should provide storage capability. Storage can be local or remote. In a first step, page contents will be stored in the filesystem. In a second step, storage calls will be delegated to an external module, executing the operation either locally or remotely. Stored pages can be loaded from the editor.
+The editor should provide storage capability. Storage can be local or remote. In a first step, page contents will be stored in the filesystem. In a second step, storage calls will be delegated to an external module, executing the operation either locally or remotely. Stored pages can be loaded from the editor. (Note: we should consider reusing here the XWiki-Eclipse storage mechanism: file system XML storage when offline, remote XWiki storage over XML-RPC when online).
 
 == Statement check ==
 
