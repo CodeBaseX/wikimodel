@@ -492,11 +492,8 @@ private final int jjMoveNfa_1(int startState, int curPos)
                      jjCheckNAddStates(77, 79);
                   break;
                case 92:
-                  if (curChar != 42)
-                     break;
-                  if (kind > 69)
-                     kind = 69;
-                  jjCheckNAddTwoStates(92, 93);
+                  if (curChar == 42)
+                     jjCheckNAddTwoStates(92, 93);
                   break;
                case 93:
                   if ((0x100000200L & l) == 0L)
@@ -510,11 +507,8 @@ private final int jjMoveNfa_1(int startState, int curPos)
                      jjCheckNAddTwoStates(94, 95);
                   break;
                case 95:
-                  if (curChar != 46)
-                     break;
-                  if (kind > 69)
-                     kind = 69;
-                  jjCheckNAdd(93);
+                  if (curChar == 46)
+                     jjCheckNAdd(93);
                   break;
                case 96:
                   if (curChar == 10)
@@ -3621,22 +3615,15 @@ private final int jjMoveNfa_2(int startState, int curPos)
                      jjCheckNAddTwoStates(7, 8);
                   }
                   if (curChar == 42)
-                  {
-                     if (kind > 51)
-                        kind = 51;
                      jjCheckNAddTwoStates(2, 3);
-                  }
                   break;
                case 1:
                   if ((0xfffffffeffffd9ffL & l) != 0L && kind > 50)
                      kind = 50;
                   break;
                case 2:
-                  if (curChar != 42)
-                     break;
-                  if (kind > 51)
-                     kind = 51;
-                  jjCheckNAddTwoStates(2, 3);
+                  if (curChar == 42)
+                     jjCheckNAddTwoStates(2, 3);
                   break;
                case 3:
                   if ((0x100000200L & l) == 0L)
@@ -3650,11 +3637,8 @@ private final int jjMoveNfa_2(int startState, int curPos)
                      jjCheckNAddTwoStates(4, 5);
                   break;
                case 5:
-                  if (curChar != 46)
-                     break;
-                  if (kind > 51)
-                     kind = 51;
-                  jjCheckNAdd(3);
+                  if (curChar == 46)
+                     jjCheckNAdd(3);
                   break;
                case 6:
                   if (curChar != 49)

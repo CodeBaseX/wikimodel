@@ -215,7 +215,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             + "</li>\n"
             + "</ol>");
 
-        test("*item one\n"
+        test("* item one\n"
             + "* item two\n"
             + "*1. item three\n"
             + "*1. item four\n"
@@ -236,6 +236,10 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             + "  is on multiple\n"
             + " lines</li>\n"
             + "</ul>");
+
+        test("* item one", "<ul>\n  <li>item one</li>\n</ul>");
+        test("*item one", "<p>*item one</p>");
+
     }
 
     public void testMacro() throws WikiParserException {
