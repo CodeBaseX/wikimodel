@@ -79,7 +79,6 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             + "  <li>{bold}[ ]{after}</li>\n"
             + "</ul>"
             + "");
-
     }
 
     /**
@@ -121,6 +120,23 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test("~ just a tilda because there is an espace after this tilda...");
 
         test("!Heading\n~!Not a heading\n!Heading again!");
+    }
+
+    public void testFormat() throws Exception {
+        // test("**bold**", "<p><strong>bold</strong></p>");
+        test(
+            "before **bold** after",
+            "<p>before <strong>bold</strong> after</p>");
+        test("before ~~italic~~ after", "<p>before <em>italic</em> after</p>");
+        test(
+            "before --strike-- after",
+            "<p>before <strike>strike</strike> after</p>");
+        test(
+            "before __underline__ after",
+            "<p>before <ins>underline</ins> after</p>");
+        test("before ^^sup^^ after", "<p>before <sup>sup</sup> after</p>");
+        test("before ,,sub,, after", "<p>before <sub>sub</sub> after</p>");
+        test("before ##mono## after", "<p>before <mono>mono</mono> after</p>");
     }
 
     /**
