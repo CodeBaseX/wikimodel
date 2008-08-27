@@ -109,8 +109,7 @@ TOKEN_MGR_DECLS: {
     | <#TABLE: ( "{table" (" " (~["}", "\n", "\r"])*)?  "}" ( (<SPACE>)* <NEW_LINE> )? ) >
     | <#CELL: ( "||" | "|" ) >
 
-    | <#FORMAT_SYMBOL : ("~~" | "**" | "__" | "--" ) >
-
+	| <#FORMAT_SYMBOL : ("~~" | "**" | "__" | "--" | "^^" | ",," | "##") >
 // <common-tokens>
     // =========================================================================
     // New lines, spaces, special symbols and characters definitions
@@ -541,11 +540,16 @@ void quotLine():
 
 void emptyParagraph():
 {
+    int count = 0;
 }
 {
-    getNL() (LOOKAHEAD(2) getNL() )*
+    getNL()  (LOOKAHEAD(2) getNL() { count++; } )*
+    {
+        if (count > 0) {
+            fContext.onEmptyLines(count);
+        }
+    }
 } 
-
 
 void lines():
 {
@@ -607,13 +611,21 @@ void line():
             {
                 str = t.image.trim();
                 WikiStyle style = null;
-                if ("__".equals(str) || "**".equals(str)) {
-                    style  = IWikiScannerContext.STRONG;
+                if ("**".equals(str)) {
+                	style  = IWikiScannerContext.STRONG;
                 } else if ("~~".equals(str)) {
-                    style  = IWikiScannerContext.EM;
+                  	style  = IWikiScannerContext.EM;
                 } else if ("--".equals(str)) {
-                    style  = IWikiScannerContext.STRIKE;
-                }
+                  	style  = IWikiScannerContext.STRIKE;
+                } else if ("__".equals(str)) {
+                    style  = IWikiScannerContext.INS;
+                } else if ("^^".equals(str)) {
+                    style  = IWikiScannerContext.SUP;
+                } else if (",,".equals(str)) {
+                	style  = IWikiScannerContext.SUB;
+              	} else if ("##".equals(str)) {
+                	style  = IWikiScannerContext.MONO;
+				}
                 fContext.onFormat(style);
             }
             |
