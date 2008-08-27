@@ -628,6 +628,14 @@ public class XhtmlHandler extends DefaultHandler {
     TagStack fStack;
 
     /**
+     * SAX parsers are allowed to call the characters() method several times in a row.
+     * Some parsers have a buffer of 8K (Crimson), others of 16K (Xerces) and others can
+     * even call onCharacters() for every single characters! Thus we need to accumulate
+     * the characters in a buffer before we process them.
+     */
+    private StringBuffer accumulationBuffer;
+
+    /**
      * @param context
      */
     public XhtmlHandler(WikiScannerContext context) {
@@ -640,7 +648,9 @@ public class XhtmlHandler extends DefaultHandler {
     @Override
     public void characters(char[] array, int start, int length)
         throws SAXException {
-        fStack.onCharacters(array, start, length);
+        if (accumulationBuffer != null) {
+            accumulationBuffer.append(array, start, length);
+        }
     }
 
     /**
@@ -658,6 +668,10 @@ public class XhtmlHandler extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String qName)
         throws SAXException {
+        if (accumulationBuffer != null && accumulationBuffer.length() > 0) {
+            fStack.onCharacters(accumulationBuffer.toString().toCharArray(), 0, accumulationBuffer.length());
+            accumulationBuffer.setLength(0);
+        }
         fStack.endElement();
     }
 
@@ -690,6 +704,10 @@ public class XhtmlHandler extends DefaultHandler {
         String localName,
         String qName,
         Attributes attributes) throws SAXException {
+        if (accumulationBuffer != null && accumulationBuffer.length() > 0) {
+            fStack.onCharacters(accumulationBuffer.toString().toCharArray(), 0, accumulationBuffer.length());
+        }
+        accumulationBuffer = new StringBuffer();
         fStack.beginElement(uri, localName, qName, attributes);
     }
 
