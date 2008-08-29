@@ -595,7 +595,36 @@ public class XhtmlHandler extends DefaultHandler {
         };
         TagStack.add("strong", handler);
         TagStack.add("b", handler);
+        
+        handler = new TagHandler(false, false, true) {
+            @Override
+            protected void begin(TagContext context) {
+                context.getScannerContext().onFormat(IWemConstants.INS);
+            }
 
+            @Override
+            protected void end(TagContext context) {
+                context.getScannerContext().onFormat(IWemConstants.INS);
+            }
+        };
+        TagStack.add("u", handler);
+        TagStack.add("ins", handler);
+
+        handler = new TagHandler(false, false, true) {
+            @Override
+            protected void begin(TagContext context) {
+                context.getScannerContext().onFormat(IWemConstants.STRIKE);
+            }
+
+            @Override
+            protected void end(TagContext context) {
+                context.getScannerContext().onFormat(IWemConstants.STRIKE);
+            }
+        };
+        TagStack.add("del", handler);
+        TagStack.add("s", handler);
+        TagStack.add("strike", handler);
+        
         handler = new TagHandler(false, false, true) {
             @Override
             protected void begin(TagContext context) {
@@ -609,6 +638,45 @@ public class XhtmlHandler extends DefaultHandler {
         };
         TagStack.add("em", handler);
         TagStack.add("i", handler);
+        
+        handler = new TagHandler(false, false, true) {
+            @Override
+            protected void begin(TagContext context) {
+                context.getScannerContext().onFormat(IWemConstants.SUP);
+            }
+
+            @Override
+            protected void end(TagContext context) {
+                context.getScannerContext().onFormat(IWemConstants.SUP);
+            }
+        };
+        TagStack.add("sup", handler);
+        
+        handler = new TagHandler(false, false, true) {
+            @Override
+            protected void begin(TagContext context) {
+                context.getScannerContext().onFormat(IWemConstants.SUB);
+            }
+
+            @Override
+            protected void end(TagContext context) {
+                context.getScannerContext().onFormat(IWemConstants.SUB);
+            }
+        };
+        TagStack.add("sub", handler);
+        
+        handler = new TagHandler(false, false, true) {
+            @Override
+            protected void begin(TagContext context) {
+                context.getScannerContext().onFormat(IWemConstants.MONO);
+            }
+
+            @Override
+            protected void end(TagContext context) {
+                context.getScannerContext().onFormat(IWemConstants.MONO);
+            }
+        };
+        TagStack.add("tt", handler);
 
         TagStack.add("br", new TagHandler(false, false, false) {
             @Override
