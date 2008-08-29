@@ -1,3 +1,8 @@
+/*******************************************************************************
+ * Copyright (c) 2003-2008 XWiki, under the LGPL 2.1 license. All Rights
+ * were granted by the XWiki committers to the WikiModel project to reuse this
+ * class.
+ *******************************************************************************/
 package org.wikimodel.wem.xhtml.impl;
 
 import java.io.File;
