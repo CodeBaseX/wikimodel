@@ -36,6 +36,16 @@ public class XWikiScanner {
 
     private IWikiReferenceParser fReferenceParser = new XWikiReferenceParser();
 
+    /**
+     * Count number of empty lines to send when we emit the onEmptyLines event.
+     * We need to count them since the number we send depend on the next block
+     * element. For all block elements other than paragraph we send one more
+     * empty lines since these blocks are recognized by the lexer as NewLine
+     * token followed by the token for the element and thus that "eats" one
+     * NewLine which is why we need to add it again.
+     */
+    private int emptyLinesCount = 0;
+
     public void parse(IWikiScannerContext context) throws ParseException {
         fContext = context;
         doParse();
@@ -189,6 +199,11 @@ TOKEN_MGR_DECLS: {
 
 }
 
+// We're using 2 contexts: INITIAL_CONTEXT and CONTEXT. The need is to differentiate between block elements and
+// inline elements. A block element is normally an element that has a NEW_LINE before itself. However there is a
+// case when it's possible to have a block element without a NEW_LINE before and that when the block element is
+// located at the start of the document.
+
 <INITIAL_CONTEXT> TOKEN:
 {
 // <initial-context>
@@ -314,6 +329,7 @@ void header():
 {
     t = getHEADER()
     {
+        sendOnEmptyLinesEvent(true);
         int level = (t.image.trim().length() + 1) / 2;
         fContext.beginHeader(level);
     }
@@ -332,6 +348,7 @@ void table():
 {
     t = getTABLE_DELIMITER()
     {
+        sendOnEmptyLinesEvent(true);
     	t = null;
         fContext.beginTable();
         fContext.beginTableRow(true);
@@ -350,6 +367,7 @@ void list():
 }
 {
     {
+        sendOnEmptyLinesEvent(true);
         fContext.beginList();
     }
     ( LOOKAHEAD(2) listItem() )+
@@ -393,12 +411,32 @@ void macroBlock():
 {
     t = getMACRO_EMPTY_BLOCK()
     {
+        sendOnEmptyLinesEvent(true);
         emptyMacro(t, true);
     }
     |
     t = getMACRO_BLOCK_START()
     {
+        sendOnEmptyLinesEvent(true);
         macro(t, true);
+    }
+}
+
+/**
+ * If shouldIncrement is true send one more empty lines. All block
+ * elements other than paragraph should call shouldIncremet with
+ * true since we need to emit one more new line for them (since the
+ * lexer "eats" a NewLine token to recognize these block elements.
+ */
+void sendOnEmptyLinesEvent(boolean shouldIncrement):
+{
+}
+{
+    {
+        if (emptyLinesCount > 0) {
+            fContext.onEmptyLines(shouldIncrement ? emptyLinesCount + 1 : emptyLinesCount);
+        }
+        emptyLinesCount = 0;
     }
 }
 
@@ -489,6 +527,7 @@ void horline():
 {
     t = getHORLINE()
     {
+        sendOnEmptyLinesEvent(true);
         fContext.onHorizontalLine();
     }
 }
@@ -500,6 +539,7 @@ void paragraph():
 }
 {
     {
+        sendOnEmptyLinesEvent(false);
         fContext.beginParagraph();
     }
     lines()
@@ -515,6 +555,7 @@ void quot():
 }
 {
     {
+        sendOnEmptyLinesEvent(true);
         fContext.beginQuot();
     }
     quotLine()
@@ -540,16 +581,12 @@ void quotLine():
 
 void emptyParagraph():
 {
-    int count = 0;
 }
 {
-    getNL()  (LOOKAHEAD(2) getNL() { count++; } )*
+    getNL()  (LOOKAHEAD(2) getNL() { emptyLinesCount++; } )*
     {
-        if (count > 0) {
-            fContext.onEmptyLines(count);
-        }
     }
-} 
+}
 
 void lines():
 {
