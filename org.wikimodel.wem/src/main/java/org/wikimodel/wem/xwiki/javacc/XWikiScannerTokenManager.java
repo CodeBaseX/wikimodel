@@ -573,11 +573,8 @@ private final int jjMoveNfa_2(int startState, int curPos)
                      jjCheckNAdd(112);
                   break;
                case 112:
-                  if (curChar != 49)
-                     break;
-                  if (kind > 81)
-                     kind = 81;
-                  jjCheckNAddTwoStates(113, 114);
+                  if (curChar == 49)
+                     jjCheckNAddTwoStates(113, 114);
                   break;
                case 113:
                   if ((0x100000200L & l) == 0L)
@@ -591,55 +588,40 @@ private final int jjMoveNfa_2(int startState, int curPos)
                      jjCheckNAddStates(93, 97);
                   break;
                case 115:
-                  if (curChar != 49)
-                     break;
-                  if (kind > 81)
-                     kind = 81;
-                  jjCheckNAddTwoStates(113, 116);
+                  if (curChar == 49)
+                     jjCheckNAddTwoStates(113, 116);
                   break;
                case 116:
                   if (curChar == 46)
                      jjCheckNAddStates(98, 101);
                   break;
                case 117:
-                  if (curChar != 49)
-                     break;
-                  if (kind > 81)
-                     kind = 81;
-                  jjCheckNAddTwoStates(113, 118);
+                  if (curChar == 49)
+                     jjCheckNAddTwoStates(113, 118);
                   break;
                case 118:
                   if (curChar == 46)
                      jjCheckNAddStates(102, 104);
                   break;
                case 119:
-                  if (curChar != 49)
-                     break;
-                  if (kind > 81)
-                     kind = 81;
-                  jjCheckNAddTwoStates(113, 120);
+                  if (curChar == 49)
+                     jjCheckNAddTwoStates(113, 120);
                   break;
                case 120:
                   if (curChar == 46)
                      jjCheckNAddTwoStates(121, 123);
                   break;
                case 121:
-                  if (curChar != 49)
-                     break;
-                  if (kind > 81)
-                     kind = 81;
-                  jjCheckNAddTwoStates(122, 113);
+                  if (curChar == 49)
+                     jjCheckNAddTwoStates(122, 113);
                   break;
                case 122:
                   if (curChar == 46)
                      jjCheckNAdd(123);
                   break;
                case 123:
-                  if (curChar != 49)
-                     break;
-                  if (kind > 81)
-                     kind = 81;
-                  jjCheckNAdd(113);
+                  if (curChar == 49)
+                     jjCheckNAdd(113);
                   break;
                case 124:
                   if (curChar == 10)
@@ -3876,11 +3858,7 @@ private final int jjMoveNfa_3(int startState, int curPos)
                   if (curChar == 42)
                      jjstateSet[jjnewStateCnt++] = 28;
                   else if (curChar == 49)
-                  {
-                     if (kind > 60)
-                        kind = 60;
                      jjCheckNAddTwoStates(7, 8);
-                  }
                   if (curChar == 42)
                      jjCheckNAddTwoStates(2, 3);
                   break;
@@ -3908,11 +3886,8 @@ private final int jjMoveNfa_3(int startState, int curPos)
                      jjCheckNAdd(3);
                   break;
                case 6:
-                  if (curChar != 49)
-                     break;
-                  if (kind > 60)
-                     kind = 60;
-                  jjCheckNAddTwoStates(7, 8);
+                  if (curChar == 49)
+                     jjCheckNAddTwoStates(7, 8);
                   break;
                case 7:
                   if ((0x100000200L & l) == 0L)
@@ -3926,55 +3901,40 @@ private final int jjMoveNfa_3(int startState, int curPos)
                      jjCheckNAddStates(811, 815);
                   break;
                case 9:
-                  if (curChar != 49)
-                     break;
-                  if (kind > 60)
-                     kind = 60;
-                  jjCheckNAddTwoStates(7, 10);
+                  if (curChar == 49)
+                     jjCheckNAddTwoStates(7, 10);
                   break;
                case 10:
                   if (curChar == 46)
                      jjCheckNAddStates(816, 819);
                   break;
                case 11:
-                  if (curChar != 49)
-                     break;
-                  if (kind > 60)
-                     kind = 60;
-                  jjCheckNAddTwoStates(7, 12);
+                  if (curChar == 49)
+                     jjCheckNAddTwoStates(7, 12);
                   break;
                case 12:
                   if (curChar == 46)
                      jjCheckNAddStates(820, 822);
                   break;
                case 13:
-                  if (curChar != 49)
-                     break;
-                  if (kind > 60)
-                     kind = 60;
-                  jjCheckNAddTwoStates(7, 14);
+                  if (curChar == 49)
+                     jjCheckNAddTwoStates(7, 14);
                   break;
                case 14:
                   if (curChar == 46)
                      jjCheckNAddTwoStates(15, 17);
                   break;
                case 15:
-                  if (curChar != 49)
-                     break;
-                  if (kind > 60)
-                     kind = 60;
-                  jjCheckNAddTwoStates(16, 7);
+                  if (curChar == 49)
+                     jjCheckNAddTwoStates(16, 7);
                   break;
                case 16:
                   if (curChar == 46)
                      jjCheckNAdd(17);
                   break;
                case 17:
-                  if (curChar != 49)
-                     break;
-                  if (kind > 60)
-                     kind = 60;
-                  jjCheckNAdd(7);
+                  if (curChar == 49)
+                     jjCheckNAdd(7);
                   break;
                case 20:
                case 21:
