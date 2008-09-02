@@ -91,62 +91,64 @@ public interface CommonWikiScannerConstants {
   int I_LIST_ITEM = 75;
   int I_VERBATIM_INLINE = 76;
   int I_VERBATIM_START = 77;
-  int I_MACRO_EMPTY_BLOCK = 78;
-  int I_MACRO_BLOCK_START = 79;
-  int I_MACRO_EMPTY_INLINE = 80;
-  int I_MACRO_INLINE_START = 81;
-  int I_QUOT_BLOCK = 82;
-  int I_QUOT_LINE = 83;
-  int I_INFO = 84;
-  int I_EXTENSION_BLOCK = 85;
-  int I_EXTENSION_INLINE = 86;
-  int I_PROPERTY = 87;
-  int I_PROPERTY_DOC = 88;
-  int I_PROPERTY_INLINE = 89;
-  int I_HEADER_BEGIN = 90;
-  int I_REFERENCE = 91;
-  int I_HEADER_END = 92;
-  int I_FORMAT_SYMBOL = 93;
-  int I_BLOCK_PARAMS = 94;
-  int I_SPECIAL_SYMBOLS = 95;
-  int I_URI = 96;
-  int I_NL = 97;
-  int I_SPACE = 98;
-  int I_WORD = 99;
-  int I_SPECIAL_SYMBOL = 100;
-  int D_DOC_BEGIN = 101;
-  int D_DOC_END = 102;
-  int D_BR = 103;
-  int D_ESCAPE = 104;
-  int D_HORLINE = 105;
-  int D_TABLE_ROW = 106;
-  int D_TABLE_CELL = 107;
-  int D_LIST_ITEM = 108;
-  int D_VERBATIM_INLINE = 109;
-  int D_VERBATIM_START = 110;
-  int D_MACRO_EMPTY_BLOCK = 111;
-  int D_MACRO_BLOCK_START = 112;
-  int D_MACRO_EMPTY_INLINE = 113;
-  int D_MACRO_INLINE_START = 114;
-  int D_QUOT_BLOCK = 115;
-  int D_QUOT_LINE = 116;
-  int D_INFO = 117;
-  int D_EXTENSION_BLOCK = 118;
-  int D_EXTENSION_INLINE = 119;
-  int D_PROPERTY = 120;
-  int D_PROPERTY_DOC = 121;
-  int D_PROPERTY_INLINE = 122;
-  int D_HEADER_BEGIN = 123;
-  int D_REFERENCE = 124;
-  int D_HEADER_END = 125;
-  int D_FORMAT_SYMBOL = 126;
-  int D_BLOCK_PARAMS = 127;
-  int D_SPECIAL_SYMBOLS = 128;
-  int D_URI = 129;
-  int D_NL = 130;
-  int D_SPACE = 131;
-  int D_WORD = 132;
-  int D_SPECIAL_SYMBOL = 133;
+  int I_VERBATIM_INLINE_START = 78;
+  int I_MACRO_EMPTY_BLOCK = 79;
+  int I_MACRO_BLOCK_START = 80;
+  int I_MACRO_EMPTY_INLINE = 81;
+  int I_MACRO_INLINE_START = 82;
+  int I_QUOT_BLOCK = 83;
+  int I_QUOT_LINE = 84;
+  int I_INFO = 85;
+  int I_EXTENSION_BLOCK = 86;
+  int I_EXTENSION_INLINE = 87;
+  int I_PROPERTY = 88;
+  int I_PROPERTY_DOC = 89;
+  int I_PROPERTY_INLINE = 90;
+  int I_HEADER_BEGIN = 91;
+  int I_REFERENCE = 92;
+  int I_HEADER_END = 93;
+  int I_FORMAT_SYMBOL = 94;
+  int I_BLOCK_PARAMS = 95;
+  int I_SPECIAL_SYMBOLS = 96;
+  int I_URI = 97;
+  int I_NL = 98;
+  int I_SPACE = 99;
+  int I_WORD = 100;
+  int I_SPECIAL_SYMBOL = 101;
+  int D_DOC_BEGIN = 102;
+  int D_DOC_END = 103;
+  int D_BR = 104;
+  int D_ESCAPE = 105;
+  int D_HORLINE = 106;
+  int D_TABLE_ROW = 107;
+  int D_TABLE_CELL = 108;
+  int D_LIST_ITEM = 109;
+  int D_VERBATIM_INLINE = 110;
+  int D_VERBATIM_START = 111;
+  int D_VERBATIM_INLINE_START = 112;
+  int D_MACRO_EMPTY_BLOCK = 113;
+  int D_MACRO_BLOCK_START = 114;
+  int D_MACRO_EMPTY_INLINE = 115;
+  int D_MACRO_INLINE_START = 116;
+  int D_QUOT_BLOCK = 117;
+  int D_QUOT_LINE = 118;
+  int D_INFO = 119;
+  int D_EXTENSION_BLOCK = 120;
+  int D_EXTENSION_INLINE = 121;
+  int D_PROPERTY = 122;
+  int D_PROPERTY_DOC = 123;
+  int D_PROPERTY_INLINE = 124;
+  int D_HEADER_BEGIN = 125;
+  int D_REFERENCE = 126;
+  int D_HEADER_END = 127;
+  int D_FORMAT_SYMBOL = 128;
+  int D_BLOCK_PARAMS = 129;
+  int D_SPECIAL_SYMBOLS = 130;
+  int D_URI = 131;
+  int D_NL = 132;
+  int D_SPACE = 133;
+  int D_WORD = 134;
+  int D_SPECIAL_SYMBOL = 135;
 
   int VERBATIM_CONTEXT = 0;
   int MACRO_CONTEXT = 1;
@@ -232,6 +234,7 @@ public interface CommonWikiScannerConstants {
     "<I_LIST_ITEM>",
     "<I_VERBATIM_INLINE>",
     "<I_VERBATIM_START>",
+    "<I_VERBATIM_INLINE_START>",
     "<I_MACRO_EMPTY_BLOCK>",
     "<I_MACRO_BLOCK_START>",
     "<I_MACRO_EMPTY_INLINE>",
@@ -265,6 +268,7 @@ public interface CommonWikiScannerConstants {
     "<D_LIST_ITEM>",
     "<D_VERBATIM_INLINE>",
     "<D_VERBATIM_START>",
+    "<D_VERBATIM_INLINE_START>",
     "<D_MACRO_EMPTY_BLOCK>",
     "<D_MACRO_BLOCK_START>",
     "<D_MACRO_EMPTY_INLINE>",
