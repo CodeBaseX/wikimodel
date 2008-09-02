@@ -50,12 +50,18 @@ public class XWikiScanner {
         fContext = context;
         doParse();
     }
+
+    protected WikiParameters newWikiParameters(String str) {
+        str = WikiScannerUtil.extractSubstring(str, "(%", "%)", '\\');
+        return new WikiParameters(str);
+    }
     
 }
 
 PARSER_END(XWikiScanner)
 
 TOKEN_MGR_DECLS: {
+    int verbatimBlockDepth = 0;
     int tableDepth = 0; 
     String macroName = "";
     int macroDepth = 0;
@@ -73,6 +79,20 @@ TOKEN_MGR_DECLS: {
         }
         return str;
     }
+}
+
+<VERBATIM_CONTEXT> TOKEN:
+{
+      <INTERNAL_VERBATIM_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
+    | <INTERNAL_VERBATIM_END: <VERBATIM_END> > {
+            verbatimBlockDepth--;
+            if (verbatimBlockDepth == 0)  {
+                SwitchTo(DEFAULT);
+            } else {
+                SwitchTo(VERBATIM_CONTEXT);
+            }
+        }
+    | <INTERNAL_VERBATIM_CONTENT: <VERBATIM_CONTENT> > : VERBATIM_CONTEXT
 }
 
 <MACRO_CONTEXT> TOKEN:
@@ -107,6 +127,15 @@ TOKEN_MGR_DECLS: {
     | <#HEADER: ( "1" ("." "1" ) {0, 5} ) (<SPACE>)* >
     | <#ESCAPE: ( "\\" ~["\\", " ", "\t", "\n", "\r"] ) >
     | <#BR: "\\\\" >
+    | <#VERBATIM_START: "{{{" >
+    | <#VERBATIM_END: "}}}" > 
+    | <#ESCAPED: ( "\\\\" | "\\" ~["\\"] ) >
+    | <#VERBATIM_CONTENT: ( 
+          <ESCAPED>
+        | ~["}", "{", "\\"] 
+        | "}" ~["}"] | "}}" ~["}"]
+        | "{" ~["{"] | "{{" ~["{"]
+      )+ >
     | <#MACRO_NAME: ( <URI> | (<CHAR>)+ ) >
     | <#MACRO_DEF: ( "\\" ~[] | ~["}"] | "}" ~["}"] )* >
     | <#MACRO_EMPTY: "{{" <MACRO_NAME> <MACRO_DEF> "/}}" >
@@ -115,9 +144,10 @@ TOKEN_MGR_DECLS: {
     | <#MACRO_CONTENT: ( <CHAR> | <SPACE> |<NEW_LINE> | <SPECIAL_SYMBOL> ) >
     | <#REFERENCE:  ( "[[" ( "\\" ~[] | ~["]"] | "]" ~["]"] )* "]]" ) >
     | <#HORLINE: "---" ("-")+ >
+    | <#PARAMS:   "(%" ( <ESCAPED> | ~["%"] | ["%"] ~[")"] )* "%)" >
+    | <#CELL: ( "||" | "|" | "::" | "!!" ) (<PARAMS>)? >
 
     | <#TABLE: ( "{table" (" " (~["}", "\n", "\r"])*)?  "}" ( (<SPACE>)* <NEW_LINE> )? ) >
-    | <#CELL: ( "||" | "|" ) >
 
 	| <#FORMAT_SYMBOL : ("~~" | "**" | "__" | "--" | "^^" | ",," | "##") >
 // <common-tokens>
@@ -209,17 +239,20 @@ TOKEN_MGR_DECLS: {
 // <initial-context>
       <I_ESCAPE: <ESCAPE> > : DEFAULT
     | <I_LIST_ITEM: (<NEW_LINE>)? <LI> > : DEFAULT
-    | <I_TABLE_DELIMITER: (<NEW_LINE>)? <TABLE> > : DEFAULT
     | <I_HEADER: (<NEW_LINE>)? <HEADER> > : DEFAULT
     | <I_HORLINE: (<NEW_LINE>)? <HORLINE> > : DEFAULT
-    | <I_REFERENCE : <REFERENCE> > : DEFAULT
+    | <I_TABLE_ROW: (<NEW_LINE>)? ( <PARAMS> )? <CELL> > : DEFAULT
     | <I_TABLE_CELL : <CELL> > : DEFAULT 
+    | <I_REFERENCE : <REFERENCE> > : DEFAULT
+    | <I_VERBATIM_START: (<NEW_LINE>)? <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
+    | <I_VERBATIM_INLINE_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
     | <I_MACRO_EMPTY_BLOCK: (<NEW_LINE>)? <MACRO_EMPTY> > : DEFAULT
     | <I_MACRO_BLOCK_START: (<NEW_LINE>)? <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
     | <I_MACRO_EMPTY_INLINE: <MACRO_EMPTY> > : DEFAULT
     | <I_MACRO_INLINE_START: <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
     | <I_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
     | <I_BR : <BR> > : DEFAULT
+    | <I_BLOCK_PARAMS: (<NEW_LINE>)? <PARAMS> > : DEFAULT
  
     // "Standard" tokens. They are the same for all wikis.
     | <I_URI : <URI> > : DEFAULT
@@ -235,17 +268,20 @@ TOKEN_MGR_DECLS: {
 // <default-context>
       <D_ESCAPE: <ESCAPE> > : DEFAULT
     | <D_LIST_ITEM: <NEW_LINE> <LI> > : DEFAULT
-    | <D_TABLE_DELIMITER: <NEW_LINE> <TABLE> > : DEFAULT
     | <D_HEADER: <NEW_LINE> <HEADER> > : DEFAULT
     | <D_HORLINE: <NEW_LINE> <HORLINE> > : DEFAULT
-    | <D_REFERENCE : <REFERENCE> > : DEFAULT
+    | <D_TABLE_ROW: <NEW_LINE> ( <PARAMS> )? <CELL> > : DEFAULT
     | <D_TABLE_CELL : <CELL> > : DEFAULT 
+    | <D_REFERENCE : <REFERENCE> > : DEFAULT
+    | <D_VERBATIM_START: <NEW_LINE> <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
+    | <D_VERBATIM_INLINE_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
     | <D_MACRO_EMPTY_BLOCK: <NEW_LINE> <MACRO_EMPTY> > : DEFAULT
     | <D_MACRO_BLOCK_START: <NEW_LINE> <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
     | <D_MACRO_EMPTY_INLINE: <MACRO_EMPTY> > : DEFAULT
     | <D_MACRO_INLINE_START: <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
     | <D_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
     | <D_BR : <BR> > : DEFAULT
+    | <D_BLOCK_PARAMS: <NEW_LINE> <PARAMS> > : DEFAULT
  
     // "Standard" tokens. They are the same for all wikis.
     | <D_URI : <URI> > : DEFAULT
@@ -256,23 +292,29 @@ TOKEN_MGR_DECLS: {
 // </default-context>
 }
 
+    Token getINTERNAL_VERBATIM_START(): {Token t=null;} {(t=<INTERNAL_VERBATIM_START>){return t;}}
+    Token getINTERNAL_VERBATIM_END(): {Token t=null;} {(t=<INTERNAL_VERBATIM_END>){return t;}}
+    Token getINTERNAL_VERBATIM_CONTENT(): {Token t=null;} {(t=<INTERNAL_VERBATIM_CONTENT>){return t;}}
     Token getINTERNAL_MACRO_START(): {Token t=null;} {(t=<INTERNAL_MACRO_START>){return t;}}
     Token getINTERNAL_MACRO_END(): {Token t=null;} {(t=<INTERNAL_MACRO_END>){return t;}}
     Token getINTERNAL_MACRO_CONTENT(): {Token t=null;} {(t=<INTERNAL_MACRO_CONTENT>){return t;}}
 // <getters>
     Token getESCAPE(): {Token t=null;} {(t=<I_ESCAPE>|t=<D_ESCAPE>){return t;}}
     Token getLIST_ITEM(): {Token t=null;} {(t=<I_LIST_ITEM>|t=<D_LIST_ITEM>){return t;}}
-    Token getTABLE_DELIMITER(): {Token t=null;} {(t=<I_TABLE_DELIMITER>|t=<D_TABLE_DELIMITER>){return t;}}
     Token getHEADER(): {Token t=null;} {(t=<I_HEADER>|t=<D_HEADER>){return t;}}
     Token getHORLINE(): {Token t=null;} {(t=<I_HORLINE>|t=<D_HORLINE>){return t;}}
-    Token getREFERENCE(): {Token t=null;} {(t=<I_REFERENCE>|t=<D_REFERENCE>){return t;}}
+    Token getTABLE_ROW(): {Token t=null;} {(t=<I_TABLE_ROW>|t=<D_TABLE_ROW>){return t;}}
     Token getTABLE_CELL(): {Token t=null;} {(t=<I_TABLE_CELL>|t=<D_TABLE_CELL>){return t;}}
+    Token getREFERENCE(): {Token t=null;} {(t=<I_REFERENCE>|t=<D_REFERENCE>){return t;}}
+    Token getVERBATIM_START(): {Token t=null;} {(t=<I_VERBATIM_START>|t=<D_VERBATIM_START>){return t;}}
+    Token getVERBATIM_INLINE_START(): {Token t=null;} {(t=<I_VERBATIM_INLINE_START>|t=<D_VERBATIM_INLINE_START>){return t;}}
     Token getMACRO_EMPTY_BLOCK(): {Token t=null;} {(t=<I_MACRO_EMPTY_BLOCK>|t=<D_MACRO_EMPTY_BLOCK>){return t;}}
     Token getMACRO_BLOCK_START(): {Token t=null;} {(t=<I_MACRO_BLOCK_START>|t=<D_MACRO_BLOCK_START>){return t;}}
     Token getMACRO_EMPTY_INLINE(): {Token t=null;} {(t=<I_MACRO_EMPTY_INLINE>|t=<D_MACRO_EMPTY_INLINE>){return t;}}
     Token getMACRO_INLINE_START(): {Token t=null;} {(t=<I_MACRO_INLINE_START>|t=<D_MACRO_INLINE_START>){return t;}}
     Token getFORMAT_SYMBOL(): {Token t=null;} {(t=<I_FORMAT_SYMBOL>|t=<D_FORMAT_SYMBOL>){return t;}}
     Token getBR(): {Token t=null;} {(t=<I_BR>|t=<D_BR>){return t;}}
+    Token getBLOCK_PARAMS(): {Token t=null;} {(t=<I_BLOCK_PARAMS>|t=<D_BLOCK_PARAMS>){return t;}}
  
     // "Standard" tokens. They are the same for all wikis.
     Token getURI(): {Token t=null;} {(t=<I_URI>|t=<D_URI>){return t;}}
@@ -310,7 +352,8 @@ void docElements():
     |
     macroBlock()
     |
-    horline()
+    // Non-interpreted content or empty content
+    ( verbatimBlock() | horline() )
     |
     (
     LOOKAHEAD(2) 
@@ -343,22 +386,53 @@ void header():
 void table():
 {
    Token t = null;
-   boolean header = true;
+   String str = "";
 }
 {
-    t = getTABLE_DELIMITER()
+    ( LOOKAHEAD(2) t = getBLOCK_PARAMS() { str = t.image.trim(); } )?
     {
         sendOnEmptyLinesEvent(true);
-    	t = null;
-        fContext.beginTable();
-        fContext.beginTableRow(true);
+        WikiParameters params = newWikiParameters(str);
+        fContext.beginTable(params);
+    }
+    ( LOOKAHEAD(2) tableRow() )+
+    {
+        fContext.endTable();
+    }
+}
+
+void tableRow():
+{
+    Token t = null;
+    WikiParameters rowParams = WikiParameters.EMPTY;
+    WikiParameters cellParams = WikiParameters.EMPTY;
+    boolean head = false; 
+}
+{
+    t = getTABLE_ROW()
+    {
+        String str = t.image.trim();
+        if (str.startsWith("{{"))  {
+            int idx = str.indexOf("}}");
+            String p  = str.substring(2, idx); 
+            str = str.substring(idx + 2);
+            head = (str.startsWith("!!") || str.startsWith("||"));
+            rowParams = new WikiParameters(p);
+            cellParams = newWikiParameters(str);
+        } else {
+            head = (str.startsWith("!!") || str.startsWith("||"));
+            if (head || str.startsWith("::")) {
+                str = str.substring(2);
+            } else {
+                str = str.substring(1);
+            }
+            cellParams = newWikiParameters(str);
+        }
+        fContext.beginTableRow(head, rowParams, cellParams);
     }
     ( LOOKAHEAD(2) block() )*
-    ( LOOKAHEAD(2) getTABLE_DELIMITER() )?
     {
-        t = null;
         fContext.endTableRow();
-        fContext.endTable();
     }
 }
 
@@ -401,7 +475,44 @@ void block():
 {
 }
 {
-    ( lines() | macroBlock() )
+    ( lines() | verbatimBlock() | macroBlock() )
+}
+
+void verbatimBlock():
+{
+}
+{
+    getVERBATIM_START()
+    {
+    }
+	verbatimBody(false)
+}
+
+void verbatimBody(boolean inline):
+{
+    Token t = null;
+    StringBuffer buf = new StringBuffer();
+    String str = null;
+}
+{
+    (LOOKAHEAD(2)
+        (
+              t = getINTERNAL_VERBATIM_CONTENT()
+            | t = getINTERNAL_VERBATIM_END()
+            | t = getINTERNAL_VERBATIM_START()
+        )
+        {
+            str = WikiScannerUtil.unescape(t.image, '\\');
+            buf.append(str);        
+        }
+    )*
+    (LOOKAHEAD(2) ( t = getINTERNAL_VERBATIM_END() | <EOF>) )? 
+    {
+        str = buf.toString();
+        if (str.endsWith("}}}"))
+            str = str.substring(0, str.length() - "}}}".length());
+        fContext.onVerbatim(str, inline);
+    }
 }
 
 void macroBlock():
@@ -605,13 +716,7 @@ void newLine():
 {
     getNL()
     {
-    	if (fContext.isInTable()) {
-            fContext.endTableRow();
-            boolean head = fContext.getTableRowCounter() == 0;
-            fContext.beginTableRow(head);
-    	} else {
-           fContext.onNewLine();
-        }
+       fContext.onNewLine();
     }
 }
 
@@ -666,6 +771,13 @@ void line():
                 fContext.onFormat(style);
             }
             |
+            (
+			    t = getVERBATIM_INLINE_START()
+			    {
+			    }
+				verbatimBody(true)
+			)
+            |
             t = getBR()
             {
                 fContext.onLineBreak();
@@ -691,8 +803,9 @@ void line():
             {
                 if (fContext.isInTable()) {
                     str = t.image.trim();
-                    boolean head = str.length() > 1 || fContext.getTableRowCounter() == 0;
-                    fContext.onTableCell(head);
+                    WikiParameters cellParams = newWikiParameters(str);
+                    boolean head  = str.startsWith("||") || str.startsWith("!!");
+                    fContext.onTableCell(head, cellParams);
                 } else {
                     fContext.onSpecialSymbol(t.image);
                 }

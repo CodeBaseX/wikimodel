@@ -143,10 +143,12 @@ public class XWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testFormats() throws WikiParserException {
-        test("*bold*");
-        test("__bold__");
-        test("~~italic~~");
-        test("--strike--");
+        test("**bold**", "<p><strong>bold</strong></p>");
+        test("~~italic~~", "<p><em>italic</em></p>");
+        test("--strike--", "<p><strike>strike</strike></p>");
+        test("^^sup^^", "<p><sup>sup</sup></p>");
+        test(",,sub,,", "<p><sub>sub</sub></p>");
+        test("##mono##", "<p><mono>mono</mono></p>");
     }
 
     /**
@@ -404,20 +406,6 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test(
             "a{{a}}{{b}}{",
             "<p>a<span class='macro' macroName='a'><![CDATA[{{b}}{]]></span></p>");
-        test(
-            "a {{{x:}}} b",
-            "<p>a {<span class='macro' macroName='x:'><![CDATA[} b]]></span></p>");
-        test(
-            "a {{{x:}}} }b",
-            "<p>a {<span class='macro' macroName='x:'><![CDATA[} }b]]></span></p>");
-
-        test(
-            "a {{{x:}}} {}b",
-            "<p>a {<span class='macro' macroName='x:'><![CDATA[} {}b]]></span></p>");
-        test(
-            "a {{{x:}}}, {{{y:}}} b",
-            "<p>a {<span class='macro' macroName='x:'><![CDATA[}, {{{y:}}} b]]></span></p>");
-
     }
 
     /**
@@ -439,6 +427,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             + "\n"
             + " and this is a quotations\n"
             + " the second line", "<p>This is a paragraph</p>\n"
+            + "<div style='height:2em;'></div>\n"
             + "<blockquote>\n"
             + "and this is a quotations\n"
             + "the second line\n"
@@ -477,38 +466,118 @@ public class XWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testTables() throws WikiParserException {
-        test("{table}First line\nSecond line\nThird line", ""
+        // "!!" and "::" markup
+        test("!! Header :: Cell ", ""
             + "<table><tbody>\n"
-            + "  <tr><th>First line</th></tr>\n"
-            + "  <tr><td>Second line</td></tr>\n"
-            + "  <tr><td>Third line</td></tr>\n"
+            + "  <tr><th> Header </th><td> Cell </td></tr>\n"
             + "</tbody></table>");
-        test("|This is not a table", "<p>|This is not a table</p>");
-        test("{table}This | is a | table", ""
+        test("!!   Header    ::    Cell    ", ""
             + "<table><tbody>\n"
-            + "  <tr><th>This </th><th> is a </th><th> table</th></tr>\n"
+            + "  <tr><th>   Header    </th><td>    Cell    </td></tr>\n"
             + "</tbody></table>");
-        test("{table}This | is a | table\n{table}", ""
-            + "<table><tbody>\n"
-            + "  <tr><th>This </th><th> is a </th><th> table</th></tr>\n"
+
+        test("::Cell 1 :: Cell 2", "<table><tbody>\n"
+            + "  <tr><td>Cell 1 </td><td> Cell 2</td></tr>\n"
             + "</tbody></table>");
-        test("before\n{table}This is \na table\n{table}after", ""
-            + "<p>before</p>\n"
+        test("Not a Header :: Not a Cell", "<p>Not a Header :: Not a Cell</p>");
+        test("Not a Header::Not a Cell", "<p>Not a Header::Not a Cell</p>");
+
+        // "||" and "|" markup
+        test("|| Header | Cell ", ""
             + "<table><tbody>\n"
-            + "  <tr><th>This is </th></tr>\n"
-            + "  <tr><td>a table</td></tr>\n"
+            + "  <tr><th> Header </th><td> Cell </td></tr>\n"
+            + "</tbody></table>");
+        test("||   Header    |    Cell    ", ""
+            + "<table><tbody>\n"
+            + "  <tr><th>   Header    </th><td>    Cell    </td></tr>\n"
+            + "</tbody></table>");
+
+        test("|Cell 1 | Cell 2", "<table><tbody>\n"
+            + "  <tr><td>Cell 1 </td><td> Cell 2</td></tr>\n"
+            + "</tbody></table>");
+        test("Not a Header | Not a Cell", "<p>Not a Header | Not a Cell</p>");
+        test("Not a Header|Not a Cell", "<p>Not a Header|Not a Cell</p>");
+
+        test("|| cell 1.1 || cell 1.2\n" + "|| cell 2.1|| cell 2.2", ""
+            + "<table><tbody>\n"
+            + "  <tr><th> cell 1.1 </th><th> cell 1.2</th></tr>\n"
+            + "  <tr><th> cell 2.1</th><th> cell 2.2</th></tr>\n"
+            + "</tbody></table>");
+        test("|| Head 1.1 || Head 1.2\n" + "| cell 2.1| cell 2.2", ""
+            + "<table><tbody>\n"
+            + "  <tr><th> Head 1.1 </th><th> Head 1.2</th></tr>\n"
+            + "  <tr><td> cell 2.1</td><td> cell 2.2</td></tr>\n"
+            + "</tbody></table>");
+        test("|| Multi \nline  \nheader \n"
+            + "| Multi\nline\ncell\n"
+            + "\n"
+            + "One,two,three", ""
+            + "<table><tbody>\n"
+            + "  <tr><th> Multi \nline  \nheader </th></tr>\n"
+            + "  <tr><td> Multi\nline\ncell</td></tr>\n"
             + "</tbody></table>\n"
-            + "<p>after</p>");
-        test("{table}This is a table", ""
-            + "<table><tbody>\n"
-            + "  <tr><th>This is a table</th></tr>\n"
+            + "<p>One,two,three</p>");
+        test("this is not || a table", "<p>this is not || a table</p>");
+        test("this is not | a table", "<p>this is not | a table</p>");
+
+        test(
+            "|| ~~Italic header~~ || **Bold header**\n"
+                + "| ~~Italic cell~~ | **Bold cell**\n",
+            ""
+                + "<table><tbody>\n"
+                + "  <tr><th> <em>Italic header</em> </th><th> <strong>Bold header</strong></th></tr>\n"
+                + "  <tr><td> <em>Italic cell</em> </td><td> <strong>Bold cell</strong></td></tr>\n"
+                + "</tbody></table>");
+        test(
+            "|| ~~Italic header || **Bold header \n"
+                + "| ~~Italic cell | **Bold cell \n",
+            ""
+                + "<table><tbody>\n"
+                + "  <tr><th> <em>Italic header </em></th><th> <strong>Bold header </strong></th></tr>\n"
+                + "  <tr><td> <em>Italic cell </em></td><td> <strong>Bold cell </strong></td></tr>\n"
+                + "</tbody></table>");
+
+        // Table parameters
+        test("(%a=b%)\n|| Header ", ""
+            + "<table a='b'><tbody>\n"
+            + "  <tr><th> Header </th></tr>\n"
             + "</tbody></table>");
-        test("{table}First line\nSecond line\nThird line", ""
-            + "<table><tbody>\n"
-            + "  <tr><th>First line</th></tr>\n"
-            + "  <tr><td>Second line</td></tr>\n"
-            + "  <tr><td>Third line</td></tr>\n"
+        test("(%a=b%)\n!! Header ", ""
+            + "<table a='b'><tbody>\n"
+            + "  <tr><th> Header </th></tr>\n"
             + "</tbody></table>");
+        test("(%a=b%)\n| cell ", ""
+            + "<table a='b'><tbody>\n"
+            + "  <tr><td> cell </td></tr>\n"
+            + "</tbody></table>");
+        test("(%a=b%)\n:: cell ", ""
+            + "<table a='b'><tbody>\n"
+            + "  <tr><td> cell </td></tr>\n"
+            + "</tbody></table>");
+
+        // Row parameters
+        test("(%a=b%)||cell");
+        test("(%a=b%)::cell1\n(%c=d%)::cell2");
+
+        test("(%a=b%)\n(%c=d%)||(%e=f%) cell");
+        test("(%a=b%)\n(%c=d%)::(%e=f%) cell ::(%g=h%)");
+
+    }
+
+    public void testVerbatim() throws WikiParserException {
+        test("{{{abc}}}", "<pre>abc</pre>");
+        test(
+            "before\n{{{abc}}}after",
+            "<p>before</p>\n<pre>abc</pre>\n<p>after</p>");
+        test("{{{{{{abc}}}}}}", "<pre>{{{abc}}}</pre>");
+
+        // Inline verbatim
+        // test(" {{{abc}}}", "<p> <code>abc</code></p>");
+        test("before{{{abc}}}after", "<p>before<code>abc</code>after</p>");
+        test(
+            "before{{{{{{abc}}}}}}after",
+            "<p>before<code>{{{abc}}}</code>after</p>");
+
     }
 
 }

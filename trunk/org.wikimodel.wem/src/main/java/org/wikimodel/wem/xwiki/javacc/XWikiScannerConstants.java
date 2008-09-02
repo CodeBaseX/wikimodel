@@ -14,98 +14,116 @@ package org.wikimodel.wem.xwiki.javacc;
 public interface XWikiScannerConstants {
 
   int EOF = 0;
-  int INTERNAL_MACRO_START = 1;
-  int INTERNAL_MACRO_END = 2;
-  int INTERNAL_MACRO_CONTENT = 3;
-  int LI = 4;
-  int HEADER = 5;
-  int ESCAPE = 6;
-  int BR = 7;
-  int MACRO_NAME = 8;
-  int MACRO_DEF = 9;
-  int MACRO_EMPTY = 10;
-  int MACRO_START = 11;
-  int MACRO_END = 12;
-  int MACRO_CONTENT = 13;
-  int REFERENCE = 14;
-  int HORLINE = 15;
-  int TABLE = 16;
-  int CELL = 17;
-  int FORMAT_SYMBOL = 18;
-  int NEW_LINE = 19;
-  int SPACE = 20;
-  int SPECIAL_SYMBOL = 21;
-  int CHAR = 22;
-  int URI = 23;
-  int ALPHA = 24;
-  int DIGIT = 25;
-  int HEXDIG = 26;
-  int URI_GEN_DELIMS = 27;
-  int URI_SUB_DELIMS = 28;
-  int URI_UNRESERVED = 29;
-  int URI_RESERVED = 30;
-  int URI_SCHEME = 31;
-  int URI_SCHEME_COMPOSITE = 32;
-  int URI_PCT_ENCODED = 33;
-  int URI_PCHAR_FIRST = 34;
-  int URI_PCHAR = 35;
-  int URI_QUERY = 36;
-  int URI_FRAGMENT = 37;
-  int URI_HIER_PART = 38;
-  int URI_AUTHORITY = 39;
-  int URI_USERINFO = 40;
-  int URI_PATH_ABEMPTY = 41;
-  int URI_PATH_ABSOLUTE = 42;
-  int URI_PATH_ROOTLESS = 43;
-  int URI_SEGMENT = 44;
-  int URI_SEGMENT_NZ = 45;
-  int URI_SEGMENT_NZ_NC = 46;
-  int URI_PORT = 47;
-  int URI_HOST = 48;
-  int URI_REG_NAME = 49;
-  int I_ESCAPE = 50;
-  int I_LIST_ITEM = 51;
-  int I_TABLE_DELIMITER = 52;
-  int I_HEADER = 53;
-  int I_HORLINE = 54;
-  int I_REFERENCE = 55;
-  int I_TABLE_CELL = 56;
-  int I_MACRO_EMPTY_BLOCK = 57;
-  int I_MACRO_BLOCK_START = 58;
-  int I_MACRO_EMPTY_INLINE = 59;
-  int I_MACRO_INLINE_START = 60;
-  int I_FORMAT_SYMBOL = 61;
-  int I_BR = 62;
-  int I_URI = 63;
-  int I_NL = 64;
-  int I_SPACE = 65;
-  int I_WORD = 66;
-  int I_SPECIAL_SYMBOL = 67;
-  int D_ESCAPE = 68;
-  int D_LIST_ITEM = 69;
-  int D_TABLE_DELIMITER = 70;
-  int D_HEADER = 71;
-  int D_HORLINE = 72;
-  int D_REFERENCE = 73;
-  int D_TABLE_CELL = 74;
-  int D_MACRO_EMPTY_BLOCK = 75;
-  int D_MACRO_BLOCK_START = 76;
-  int D_MACRO_EMPTY_INLINE = 77;
-  int D_MACRO_INLINE_START = 78;
-  int D_FORMAT_SYMBOL = 79;
-  int D_BR = 80;
-  int D_URI = 81;
-  int D_NL = 82;
-  int D_SPACE = 83;
-  int D_WORD = 84;
-  int D_SPECIAL_SYMBOL = 85;
+  int INTERNAL_VERBATIM_START = 1;
+  int INTERNAL_VERBATIM_END = 2;
+  int INTERNAL_VERBATIM_CONTENT = 3;
+  int INTERNAL_MACRO_START = 4;
+  int INTERNAL_MACRO_END = 5;
+  int INTERNAL_MACRO_CONTENT = 6;
+  int LI = 7;
+  int HEADER = 8;
+  int ESCAPE = 9;
+  int BR = 10;
+  int VERBATIM_START = 11;
+  int VERBATIM_END = 12;
+  int ESCAPED = 13;
+  int VERBATIM_CONTENT = 14;
+  int MACRO_NAME = 15;
+  int MACRO_DEF = 16;
+  int MACRO_EMPTY = 17;
+  int MACRO_START = 18;
+  int MACRO_END = 19;
+  int MACRO_CONTENT = 20;
+  int REFERENCE = 21;
+  int HORLINE = 22;
+  int PARAMS = 23;
+  int CELL = 24;
+  int TABLE = 25;
+  int FORMAT_SYMBOL = 26;
+  int NEW_LINE = 27;
+  int SPACE = 28;
+  int SPECIAL_SYMBOL = 29;
+  int CHAR = 30;
+  int URI = 31;
+  int ALPHA = 32;
+  int DIGIT = 33;
+  int HEXDIG = 34;
+  int URI_GEN_DELIMS = 35;
+  int URI_SUB_DELIMS = 36;
+  int URI_UNRESERVED = 37;
+  int URI_RESERVED = 38;
+  int URI_SCHEME = 39;
+  int URI_SCHEME_COMPOSITE = 40;
+  int URI_PCT_ENCODED = 41;
+  int URI_PCHAR_FIRST = 42;
+  int URI_PCHAR = 43;
+  int URI_QUERY = 44;
+  int URI_FRAGMENT = 45;
+  int URI_HIER_PART = 46;
+  int URI_AUTHORITY = 47;
+  int URI_USERINFO = 48;
+  int URI_PATH_ABEMPTY = 49;
+  int URI_PATH_ABSOLUTE = 50;
+  int URI_PATH_ROOTLESS = 51;
+  int URI_SEGMENT = 52;
+  int URI_SEGMENT_NZ = 53;
+  int URI_SEGMENT_NZ_NC = 54;
+  int URI_PORT = 55;
+  int URI_HOST = 56;
+  int URI_REG_NAME = 57;
+  int I_ESCAPE = 58;
+  int I_LIST_ITEM = 59;
+  int I_HEADER = 60;
+  int I_HORLINE = 61;
+  int I_TABLE_ROW = 62;
+  int I_TABLE_CELL = 63;
+  int I_REFERENCE = 64;
+  int I_VERBATIM_START = 65;
+  int I_VERBATIM_INLINE_START = 66;
+  int I_MACRO_EMPTY_BLOCK = 67;
+  int I_MACRO_BLOCK_START = 68;
+  int I_MACRO_EMPTY_INLINE = 69;
+  int I_MACRO_INLINE_START = 70;
+  int I_FORMAT_SYMBOL = 71;
+  int I_BR = 72;
+  int I_BLOCK_PARAMS = 73;
+  int I_URI = 74;
+  int I_NL = 75;
+  int I_SPACE = 76;
+  int I_WORD = 77;
+  int I_SPECIAL_SYMBOL = 78;
+  int D_ESCAPE = 79;
+  int D_LIST_ITEM = 80;
+  int D_HEADER = 81;
+  int D_HORLINE = 82;
+  int D_TABLE_ROW = 83;
+  int D_TABLE_CELL = 84;
+  int D_REFERENCE = 85;
+  int D_VERBATIM_START = 86;
+  int D_VERBATIM_INLINE_START = 87;
+  int D_MACRO_EMPTY_BLOCK = 88;
+  int D_MACRO_BLOCK_START = 89;
+  int D_MACRO_EMPTY_INLINE = 90;
+  int D_MACRO_INLINE_START = 91;
+  int D_FORMAT_SYMBOL = 92;
+  int D_BR = 93;
+  int D_BLOCK_PARAMS = 94;
+  int D_URI = 95;
+  int D_NL = 96;
+  int D_SPACE = 97;
+  int D_WORD = 98;
+  int D_SPECIAL_SYMBOL = 99;
 
-  int MACRO_CONTEXT = 0;
-  int DEFAULT = 1;
-  int INITIAL_CONTEXT = 2;
+  int VERBATIM_CONTEXT = 0;
+  int MACRO_CONTEXT = 1;
+  int DEFAULT = 2;
+  int INITIAL_CONTEXT = 3;
 
   String[] tokenImage = {
     "<EOF>",
+    "<INTERNAL_VERBATIM_START>",
+    "<INTERNAL_VERBATIM_END>",
+    "<INTERNAL_VERBATIM_CONTENT>",
     "<INTERNAL_MACRO_START>",
     "<INTERNAL_MACRO_END>",
     "<INTERNAL_MACRO_CONTENT>",
@@ -113,6 +131,10 @@ public interface XWikiScannerConstants {
     "<HEADER>",
     "<ESCAPE>",
     "\"\\\\\\\\\"",
+    "\"{{{\"",
+    "\"}}}\"",
+    "<ESCAPED>",
+    "<VERBATIM_CONTENT>",
     "<MACRO_NAME>",
     "<MACRO_DEF>",
     "<MACRO_EMPTY>",
@@ -121,8 +143,9 @@ public interface XWikiScannerConstants {
     "<MACRO_CONTENT>",
     "<REFERENCE>",
     "<HORLINE>",
-    "<TABLE>",
+    "<PARAMS>",
     "<CELL>",
+    "<TABLE>",
     "<FORMAT_SYMBOL>",
     "<NEW_LINE>",
     "<SPACE>",
@@ -157,17 +180,20 @@ public interface XWikiScannerConstants {
     "<URI_REG_NAME>",
     "<I_ESCAPE>",
     "<I_LIST_ITEM>",
-    "<I_TABLE_DELIMITER>",
     "<I_HEADER>",
     "<I_HORLINE>",
-    "<I_REFERENCE>",
+    "<I_TABLE_ROW>",
     "<I_TABLE_CELL>",
+    "<I_REFERENCE>",
+    "<I_VERBATIM_START>",
+    "<I_VERBATIM_INLINE_START>",
     "<I_MACRO_EMPTY_BLOCK>",
     "<I_MACRO_BLOCK_START>",
     "<I_MACRO_EMPTY_INLINE>",
     "<I_MACRO_INLINE_START>",
     "<I_FORMAT_SYMBOL>",
     "<I_BR>",
+    "<I_BLOCK_PARAMS>",
     "<I_URI>",
     "<I_NL>",
     "<I_SPACE>",
@@ -175,17 +201,20 @@ public interface XWikiScannerConstants {
     "<I_SPECIAL_SYMBOL>",
     "<D_ESCAPE>",
     "<D_LIST_ITEM>",
-    "<D_TABLE_DELIMITER>",
     "<D_HEADER>",
     "<D_HORLINE>",
-    "<D_REFERENCE>",
+    "<D_TABLE_ROW>",
     "<D_TABLE_CELL>",
+    "<D_REFERENCE>",
+    "<D_VERBATIM_START>",
+    "<D_VERBATIM_INLINE_START>",
     "<D_MACRO_EMPTY_BLOCK>",
     "<D_MACRO_BLOCK_START>",
     "<D_MACRO_EMPTY_INLINE>",
     "<D_MACRO_INLINE_START>",
     "<D_FORMAT_SYMBOL>",
     "<D_BR>",
+    "<D_BLOCK_PARAMS>",
     "<D_URI>",
     "<D_NL>",
     "<D_SPACE>",
