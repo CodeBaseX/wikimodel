@@ -124,7 +124,7 @@ TOKEN_MGR_DECLS: {
 <DEFAULT, INITIAL_CONTEXT> TOKEN:
 {
       <#LI: (<SPACE>)* ( ("*")+ | ( "1" | "*" )+ "." ) (<SPACE>)+ >
-    | <#HEADER: ( "1" ("." "1" ) {0, 5} ) (<SPACE>)* >
+    | <#HEADER: ( "1" ("." "1" ) {0, 5} ) (<SPACE>)+ >
     | <#ESCAPE: ( "\\" ~["\\", " ", "\t", "\n", "\r"] ) >
     | <#BR: "\\\\" >
     | <#VERBATIM_START: "{{{" >
