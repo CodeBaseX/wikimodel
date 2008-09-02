@@ -99,6 +99,10 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     }
 
     public void beginHeader(int level, WikiParameters params) {
+        if (level < 1)
+            level = 1;
+        else if (level > 6)
+            level = 6;
         if (fBlockType != IBlockTypes.HEADER) {
             closeBlock();
             fBlockType = IBlockTypes.HEADER;
@@ -779,8 +783,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     private String trimLineBreaks(String item) {
         StringBuffer buf = new StringBuffer();
         char[] array = item.toCharArray();
-        for (int i = 0; i < array.length; i++) {
-            char ch = array[i];
+        for (char ch : array) {
             if (ch == '\n' || ch == '\r')
                 continue;
             buf.append(ch);
