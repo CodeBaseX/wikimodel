@@ -302,7 +302,8 @@ TOKEN_MGR_DECLS: {
     | <I_TABLE_CELL : <CELL> > : DEFAULT 
     | <I_LIST_ITEM: (<NEW_LINE>)? <LIST_ITEM> > : DEFAULT
     | <I_VERBATIM_INLINE : <VERBATIM_INLINE> > : DEFAULT
-    | <I_VERBATIM_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
+    | <I_VERBATIM_START: (<NEW_LINE>)? <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
+    | <I_VERBATIM_INLINE_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
     | <I_MACRO_EMPTY_BLOCK: (<NEW_LINE>)? <MACRO_EMPTY> > : DEFAULT
     | <I_MACRO_BLOCK_START: (<NEW_LINE>)? <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
     | <I_MACRO_EMPTY_INLINE: <MACRO_EMPTY> > : DEFAULT
@@ -343,7 +344,8 @@ TOKEN_MGR_DECLS: {
     | <D_TABLE_CELL : <CELL> > : DEFAULT 
     | <D_LIST_ITEM: <NEW_LINE> <LIST_ITEM> > : DEFAULT
     | <D_VERBATIM_INLINE : <VERBATIM_INLINE> > : DEFAULT
-    | <D_VERBATIM_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
+    | <D_VERBATIM_START: <NEW_LINE> <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
+    | <D_VERBATIM_INLINE_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
     | <D_MACRO_EMPTY_BLOCK: <NEW_LINE> <MACRO_EMPTY> > : DEFAULT
     | <D_MACRO_BLOCK_START: <NEW_LINE> <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
     | <D_MACRO_EMPTY_INLINE: <MACRO_EMPTY> > : DEFAULT
@@ -389,6 +391,7 @@ TOKEN_MGR_DECLS: {
     Token getLIST_ITEM(): {Token t=null;} {(t=<I_LIST_ITEM>|t=<D_LIST_ITEM>){return t;}}
     Token getVERBATIM_INLINE(): {Token t=null;} {(t=<I_VERBATIM_INLINE>|t=<D_VERBATIM_INLINE>){return t;}}
     Token getVERBATIM_START(): {Token t=null;} {(t=<I_VERBATIM_START>|t=<D_VERBATIM_START>){return t;}}
+    Token getVERBATIM_INLINE_START(): {Token t=null;} {(t=<I_VERBATIM_INLINE_START>|t=<D_VERBATIM_INLINE_START>){return t;}}
     Token getMACRO_EMPTY_BLOCK(): {Token t=null;} {(t=<I_MACRO_EMPTY_BLOCK>|t=<D_MACRO_EMPTY_BLOCK>){return t;}}
     Token getMACRO_BLOCK_START(): {Token t=null;} {(t=<I_MACRO_BLOCK_START>|t=<D_MACRO_BLOCK_START>){return t;}}
     Token getMACRO_EMPTY_INLINE(): {Token t=null;} {(t=<I_MACRO_EMPTY_INLINE>|t=<D_MACRO_EMPTY_INLINE>){return t;}}
@@ -676,17 +679,23 @@ void block():
     ( embeddedDocument() | verbatimBlock() | macroBlock() | extensionBlock() | lines() )
 }
 
-
 void verbatimBlock():
+{
+}
+{
+    getVERBATIM_START()
+    {
+    }
+	verbatimBody(false)
+}
+
+void verbatimBody(boolean inline):
 {
     Token t = null;
     StringBuffer buf = new StringBuffer();
     String str = null;
 }
 {
-    getVERBATIM_START()
-    {
-    }
     (LOOKAHEAD(2)
         (
               t = getINTERNAL_VERBATIM_CONTENT()
@@ -703,7 +712,7 @@ void verbatimBlock():
         str = buf.toString();
         if (str.endsWith("}}}"))
             str = str.substring(0, str.length() - "}}}".length());
-        fContext.onVerbatim(str, false);
+        fContext.onVerbatim(str, inline);
     }
 }
 
@@ -1017,6 +1026,13 @@ void line():
                 }
                 fContext.onFormat(style);
             }
+            |
+            (
+			    t = getVERBATIM_INLINE_START()
+			    {
+			    }
+				verbatimBody(true)
+			)
             |
             t = getVERBATIM_INLINE()
             {
