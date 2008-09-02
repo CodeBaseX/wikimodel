@@ -45,6 +45,32 @@ public class XWikiScanner implements XWikiScannerConstants {
         doParse();
     }
 
+    protected WikiParameters newWikiParameters(String str) {
+        str = WikiScannerUtil.extractSubstring(str, "(%", "%)", '\\');
+        return new WikiParameters(str);
+    }
+
+  final public Token getINTERNAL_VERBATIM_START() throws ParseException {
+                                         Token t=null;
+    t = jj_consume_token(INTERNAL_VERBATIM_START);
+                                                                                       {if (true) return t;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Token getINTERNAL_VERBATIM_END() throws ParseException {
+                                       Token t=null;
+    t = jj_consume_token(INTERNAL_VERBATIM_END);
+                                                                                   {if (true) return t;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Token getINTERNAL_VERBATIM_CONTENT() throws ParseException {
+                                           Token t=null;
+    t = jj_consume_token(INTERNAL_VERBATIM_CONTENT);
+                                                                                           {if (true) return t;}
+    throw new Error("Missing return statement in function");
+  }
+
   final public Token getINTERNAL_MACRO_START() throws ParseException {
                                       Token t=null;
     t = jj_consume_token(INTERNAL_MACRO_START);
@@ -103,24 +129,6 @@ public class XWikiScanner implements XWikiScannerConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Token getTABLE_DELIMITER() throws ParseException {
-                                 Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_TABLE_DELIMITER:
-      t = jj_consume_token(I_TABLE_DELIMITER);
-      break;
-    case D_TABLE_DELIMITER:
-      t = jj_consume_token(D_TABLE_DELIMITER);
-      break;
-    default:
-      jj_la1[2] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-                                                                                               {if (true) return t;}
-    throw new Error("Missing return statement in function");
-  }
-
   final public Token getHEADER() throws ParseException {
                         Token t=null;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -131,7 +139,7 @@ public class XWikiScanner implements XWikiScannerConstants {
       t = jj_consume_token(D_HEADER);
       break;
     default:
-      jj_la1[3] = jj_gen;
+      jj_la1[2] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -149,7 +157,7 @@ public class XWikiScanner implements XWikiScannerConstants {
       t = jj_consume_token(D_HORLINE);
       break;
     default:
-      jj_la1[4] = jj_gen;
+      jj_la1[3] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -157,17 +165,17 @@ public class XWikiScanner implements XWikiScannerConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Token getREFERENCE() throws ParseException {
+  final public Token getTABLE_ROW() throws ParseException {
                            Token t=null;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_REFERENCE:
-      t = jj_consume_token(I_REFERENCE);
+    case I_TABLE_ROW:
+      t = jj_consume_token(I_TABLE_ROW);
       break;
-    case D_REFERENCE:
-      t = jj_consume_token(D_REFERENCE);
+    case D_TABLE_ROW:
+      t = jj_consume_token(D_TABLE_ROW);
       break;
     default:
-      jj_la1[5] = jj_gen;
+      jj_la1[4] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -185,11 +193,65 @@ public class XWikiScanner implements XWikiScannerConstants {
       t = jj_consume_token(D_TABLE_CELL);
       break;
     default:
-      jj_la1[6] = jj_gen;
+      jj_la1[5] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
                                                                                 {if (true) return t;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Token getREFERENCE() throws ParseException {
+                           Token t=null;
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case I_REFERENCE:
+      t = jj_consume_token(I_REFERENCE);
+      break;
+    case D_REFERENCE:
+      t = jj_consume_token(D_REFERENCE);
+      break;
+    default:
+      jj_la1[6] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+                                                                             {if (true) return t;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Token getVERBATIM_START() throws ParseException {
+                                Token t=null;
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case I_VERBATIM_START:
+      t = jj_consume_token(I_VERBATIM_START);
+      break;
+    case D_VERBATIM_START:
+      t = jj_consume_token(D_VERBATIM_START);
+      break;
+    default:
+      jj_la1[7] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+                                                                                            {if (true) return t;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Token getVERBATIM_INLINE_START() throws ParseException {
+                                       Token t=null;
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case I_VERBATIM_INLINE_START:
+      t = jj_consume_token(I_VERBATIM_INLINE_START);
+      break;
+    case D_VERBATIM_INLINE_START:
+      t = jj_consume_token(D_VERBATIM_INLINE_START);
+      break;
+    default:
+      jj_la1[8] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+                                                                                                                 {if (true) return t;}
     throw new Error("Missing return statement in function");
   }
 
@@ -203,7 +265,7 @@ public class XWikiScanner implements XWikiScannerConstants {
       t = jj_consume_token(D_MACRO_EMPTY_BLOCK);
       break;
     default:
-      jj_la1[7] = jj_gen;
+      jj_la1[9] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -221,7 +283,7 @@ public class XWikiScanner implements XWikiScannerConstants {
       t = jj_consume_token(D_MACRO_BLOCK_START);
       break;
     default:
-      jj_la1[8] = jj_gen;
+      jj_la1[10] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -239,7 +301,7 @@ public class XWikiScanner implements XWikiScannerConstants {
       t = jj_consume_token(D_MACRO_EMPTY_INLINE);
       break;
     default:
-      jj_la1[9] = jj_gen;
+      jj_la1[11] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -257,7 +319,7 @@ public class XWikiScanner implements XWikiScannerConstants {
       t = jj_consume_token(D_MACRO_INLINE_START);
       break;
     default:
-      jj_la1[10] = jj_gen;
+      jj_la1[12] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -275,7 +337,7 @@ public class XWikiScanner implements XWikiScannerConstants {
       t = jj_consume_token(D_FORMAT_SYMBOL);
       break;
     default:
-      jj_la1[11] = jj_gen;
+      jj_la1[13] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -293,11 +355,29 @@ public class XWikiScanner implements XWikiScannerConstants {
       t = jj_consume_token(D_BR);
       break;
     default:
-      jj_la1[12] = jj_gen;
+      jj_la1[14] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
                                                         {if (true) return t;}
+    throw new Error("Missing return statement in function");
+  }
+
+  final public Token getBLOCK_PARAMS() throws ParseException {
+                              Token t=null;
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case I_BLOCK_PARAMS:
+      t = jj_consume_token(I_BLOCK_PARAMS);
+      break;
+    case D_BLOCK_PARAMS:
+      t = jj_consume_token(D_BLOCK_PARAMS);
+      break;
+    default:
+      jj_la1[15] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+                                                                                      {if (true) return t;}
     throw new Error("Missing return statement in function");
   }
 
@@ -312,7 +392,7 @@ public class XWikiScanner implements XWikiScannerConstants {
       t = jj_consume_token(D_URI);
       break;
     default:
-      jj_la1[13] = jj_gen;
+      jj_la1[16] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -330,7 +410,7 @@ public class XWikiScanner implements XWikiScannerConstants {
       t = jj_consume_token(D_NL);
       break;
     default:
-      jj_la1[14] = jj_gen;
+      jj_la1[17] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -348,7 +428,7 @@ public class XWikiScanner implements XWikiScannerConstants {
       t = jj_consume_token(D_SPACE);
       break;
     default:
-      jj_la1[15] = jj_gen;
+      jj_la1[18] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -366,7 +446,7 @@ public class XWikiScanner implements XWikiScannerConstants {
       t = jj_consume_token(D_WORD);
       break;
     default:
-      jj_la1[16] = jj_gen;
+      jj_la1[19] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -384,7 +464,7 @@ public class XWikiScanner implements XWikiScannerConstants {
       t = jj_consume_token(D_SPECIAL_SYMBOL);
       break;
     default:
-      jj_la1[17] = jj_gen;
+      jj_la1[20] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -401,17 +481,20 @@ public class XWikiScanner implements XWikiScannerConstants {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case I_ESCAPE:
       case I_LIST_ITEM:
-      case I_TABLE_DELIMITER:
       case I_HEADER:
       case I_HORLINE:
-      case I_REFERENCE:
+      case I_TABLE_ROW:
       case I_TABLE_CELL:
+      case I_REFERENCE:
+      case I_VERBATIM_START:
+      case I_VERBATIM_INLINE_START:
       case I_MACRO_EMPTY_BLOCK:
       case I_MACRO_BLOCK_START:
       case I_MACRO_EMPTY_INLINE:
       case I_MACRO_INLINE_START:
       case I_FORMAT_SYMBOL:
       case I_BR:
+      case I_BLOCK_PARAMS:
       case I_URI:
       case I_NL:
       case I_SPACE:
@@ -419,17 +502,20 @@ public class XWikiScanner implements XWikiScannerConstants {
       case I_SPECIAL_SYMBOL:
       case D_ESCAPE:
       case D_LIST_ITEM:
-      case D_TABLE_DELIMITER:
       case D_HEADER:
       case D_HORLINE:
-      case D_REFERENCE:
+      case D_TABLE_ROW:
       case D_TABLE_CELL:
+      case D_REFERENCE:
+      case D_VERBATIM_START:
+      case D_VERBATIM_INLINE_START:
       case D_MACRO_EMPTY_BLOCK:
       case D_MACRO_BLOCK_START:
       case D_MACRO_EMPTY_INLINE:
       case D_MACRO_INLINE_START:
       case D_FORMAT_SYMBOL:
       case D_BR:
+      case D_BLOCK_PARAMS:
       case D_URI:
       case D_NL:
       case D_SPACE:
@@ -438,7 +524,7 @@ public class XWikiScanner implements XWikiScannerConstants {
         ;
         break;
       default:
-        jj_la1[18] = jj_gen;
+        jj_la1[21] = jj_gen;
         break label_1;
       }
       docElements();
@@ -453,8 +539,10 @@ public class XWikiScanner implements XWikiScannerConstants {
     case D_HEADER:
       header();
       break;
-    case I_TABLE_DELIMITER:
-    case D_TABLE_DELIMITER:
+    case I_TABLE_ROW:
+    case I_BLOCK_PARAMS:
+    case D_TABLE_ROW:
+    case D_BLOCK_PARAMS:
       table();
       break;
     case I_LIST_ITEM:
@@ -468,12 +556,28 @@ public class XWikiScanner implements XWikiScannerConstants {
       macroBlock();
       break;
     case I_HORLINE:
+    case I_VERBATIM_START:
     case D_HORLINE:
-      horline();
+    case D_VERBATIM_START:
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_VERBATIM_START:
+      case D_VERBATIM_START:
+        verbatimBlock();
+        break;
+      case I_HORLINE:
+      case D_HORLINE:
+        horline();
+        break;
+      default:
+        jj_la1[22] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
       break;
     case I_ESCAPE:
-    case I_REFERENCE:
     case I_TABLE_CELL:
+    case I_REFERENCE:
+    case I_VERBATIM_INLINE_START:
     case I_MACRO_EMPTY_INLINE:
     case I_MACRO_INLINE_START:
     case I_FORMAT_SYMBOL:
@@ -483,8 +587,9 @@ public class XWikiScanner implements XWikiScannerConstants {
     case I_WORD:
     case I_SPECIAL_SYMBOL:
     case D_ESCAPE:
-    case D_REFERENCE:
     case D_TABLE_CELL:
+    case D_REFERENCE:
+    case D_VERBATIM_INLINE_START:
     case D_MACRO_EMPTY_INLINE:
     case D_MACRO_INLINE_START:
     case D_FORMAT_SYMBOL:
@@ -498,8 +603,9 @@ public class XWikiScanner implements XWikiScannerConstants {
       } else {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case I_ESCAPE:
-        case I_REFERENCE:
         case I_TABLE_CELL:
+        case I_REFERENCE:
+        case I_VERBATIM_INLINE_START:
         case I_MACRO_EMPTY_INLINE:
         case I_MACRO_INLINE_START:
         case I_FORMAT_SYMBOL:
@@ -509,8 +615,9 @@ public class XWikiScanner implements XWikiScannerConstants {
         case I_WORD:
         case I_SPECIAL_SYMBOL:
         case D_ESCAPE:
-        case D_REFERENCE:
         case D_TABLE_CELL:
+        case D_REFERENCE:
+        case D_VERBATIM_INLINE_START:
         case D_MACRO_EMPTY_INLINE:
         case D_MACRO_INLINE_START:
         case D_FORMAT_SYMBOL:
@@ -522,7 +629,7 @@ public class XWikiScanner implements XWikiScannerConstants {
           paragraph();
           break;
         default:
-          jj_la1[19] = jj_gen;
+          jj_la1[23] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -533,7 +640,7 @@ public class XWikiScanner implements XWikiScannerConstants {
       emptyParagraph();
       break;
     default:
-      jj_la1[20] = jj_gen;
+      jj_la1[24] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -555,41 +662,74 @@ public class XWikiScanner implements XWikiScannerConstants {
 
   final public void table() throws ParseException {
    Token t = null;
-   boolean header = true;
-    t = getTABLE_DELIMITER();
+   String str = "";
+    if (jj_2_3(2)) {
+      t = getBLOCK_PARAMS();
+                                           str = t.image.trim();
+    } else {
+      ;
+    }
         sendOnEmptyLinesEvent(true);
-        t = null;
-        fContext.beginTable();
-        fContext.beginTableRow(true);
+        WikiParameters params = newWikiParameters(str);
+        fContext.beginTable(params);
     label_2:
     while (true) {
-      if (jj_2_3(2)) {
+      tableRow();
+      if (jj_2_4(2)) {
         ;
       } else {
         break label_2;
       }
+    }
+        fContext.endTable();
+  }
+
+  final public void tableRow() throws ParseException {
+    Token t = null;
+    WikiParameters rowParams = WikiParameters.EMPTY;
+    WikiParameters cellParams = WikiParameters.EMPTY;
+    boolean head = false;
+    t = getTABLE_ROW();
+        String str = t.image.trim();
+        if (str.startsWith("{{"))  {
+            int idx = str.indexOf("}}");
+            String p  = str.substring(2, idx);
+            str = str.substring(idx + 2);
+            head = (str.startsWith("!!") || str.startsWith("||"));
+            rowParams = new WikiParameters(p);
+            cellParams = newWikiParameters(str);
+        } else {
+            head = (str.startsWith("!!") || str.startsWith("||"));
+            if (head || str.startsWith("::")) {
+                str = str.substring(2);
+            } else {
+                str = str.substring(1);
+            }
+            cellParams = newWikiParameters(str);
+        }
+        fContext.beginTableRow(head, rowParams, cellParams);
+    label_3:
+    while (true) {
+      if (jj_2_5(2)) {
+        ;
+      } else {
+        break label_3;
+      }
       block();
     }
-    if (jj_2_4(2)) {
-      getTABLE_DELIMITER();
-    } else {
-      ;
-    }
-        t = null;
         fContext.endTableRow();
-        fContext.endTable();
   }
 
   final public void list() throws ParseException {
         sendOnEmptyLinesEvent(true);
         fContext.beginList();
-    label_3:
+    label_4:
     while (true) {
       listItem();
-      if (jj_2_5(2)) {
+      if (jj_2_6(2)) {
         ;
       } else {
-        break label_3;
+        break label_4;
       }
     }
         fContext.endList();
@@ -603,12 +743,12 @@ public class XWikiScanner implements XWikiScannerConstants {
                     str = str.substring(0, str.length() - 1);
                 str = str.replace('1', '#');
                 fContext.beginListItem(str);
-    label_4:
+    label_5:
     while (true) {
-      if (jj_2_6(2)) {
+      if (jj_2_7(2)) {
         ;
       } else {
-        break label_4;
+        break label_5;
       }
       block();
     }
@@ -618,8 +758,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final public void block() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case I_ESCAPE:
-    case I_REFERENCE:
     case I_TABLE_CELL:
+    case I_REFERENCE:
+    case I_VERBATIM_INLINE_START:
     case I_MACRO_EMPTY_INLINE:
     case I_MACRO_INLINE_START:
     case I_FORMAT_SYMBOL:
@@ -629,8 +770,9 @@ public class XWikiScanner implements XWikiScannerConstants {
     case I_WORD:
     case I_SPECIAL_SYMBOL:
     case D_ESCAPE:
-    case D_REFERENCE:
     case D_TABLE_CELL:
+    case D_REFERENCE:
+    case D_VERBATIM_INLINE_START:
     case D_MACRO_EMPTY_INLINE:
     case D_MACRO_INLINE_START:
     case D_FORMAT_SYMBOL:
@@ -641,6 +783,10 @@ public class XWikiScanner implements XWikiScannerConstants {
     case D_SPECIAL_SYMBOL:
       lines();
       break;
+    case I_VERBATIM_START:
+    case D_VERBATIM_START:
+      verbatimBlock();
+      break;
     case I_MACRO_EMPTY_BLOCK:
     case I_MACRO_BLOCK_START:
     case D_MACRO_EMPTY_BLOCK:
@@ -648,10 +794,67 @@ public class XWikiScanner implements XWikiScannerConstants {
       macroBlock();
       break;
     default:
-      jj_la1[21] = jj_gen;
+      jj_la1[25] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
+  }
+
+  final public void verbatimBlock() throws ParseException {
+    getVERBATIM_START();
+
+    verbatimBody(false);
+  }
+
+  final public void verbatimBody(boolean inline) throws ParseException {
+    Token t = null;
+    StringBuffer buf = new StringBuffer();
+    String str = null;
+    label_6:
+    while (true) {
+      if (jj_2_8(2)) {
+        ;
+      } else {
+        break label_6;
+      }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case INTERNAL_VERBATIM_CONTENT:
+        t = getINTERNAL_VERBATIM_CONTENT();
+        break;
+      case INTERNAL_VERBATIM_END:
+        t = getINTERNAL_VERBATIM_END();
+        break;
+      case INTERNAL_VERBATIM_START:
+        t = getINTERNAL_VERBATIM_START();
+        break;
+      default:
+        jj_la1[26] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+            str = WikiScannerUtil.unescape(t.image, '\\');
+            buf.append(str);
+    }
+    if (jj_2_9(2)) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case INTERNAL_VERBATIM_END:
+        t = getINTERNAL_VERBATIM_END();
+        break;
+      case 0:
+        jj_consume_token(0);
+        break;
+      default:
+        jj_la1[27] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    } else {
+      ;
+    }
+        str = buf.toString();
+        if (str.endsWith("}}}"))
+            str = str.substring(0, str.length() - "}}}".length());
+        fContext.onVerbatim(str, inline);
   }
 
   final public void macroBlock() throws ParseException {
@@ -670,7 +873,7 @@ public class XWikiScanner implements XWikiScannerConstants {
         macro(t, true);
       break;
     default:
-      jj_la1[22] = jj_gen;
+      jj_la1[28] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -731,12 +934,12 @@ public class XWikiScanner implements XWikiScannerConstants {
             name = str;
         }
         name = name.trim();
-    label_5:
+    label_7:
     while (true) {
-      if (jj_2_7(2)) {
+      if (jj_2_10(2)) {
         ;
       } else {
-        break label_5;
+        break label_7;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case INTERNAL_MACRO_START:
@@ -752,7 +955,7 @@ public class XWikiScanner implements XWikiScannerConstants {
                                                 end = false;
         break;
       default:
-        jj_la1[23] = jj_gen;
+        jj_la1[29] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -797,12 +1000,12 @@ public class XWikiScanner implements XWikiScannerConstants {
         sendOnEmptyLinesEvent(true);
         fContext.beginQuot();
     quotLine();
-    label_6:
+    label_8:
     while (true) {
-      if (jj_2_8(2)) {
+      if (jj_2_11(2)) {
         ;
       } else {
-        break label_6;
+        break label_8;
       }
       getNL();
       quotLine();
@@ -813,14 +1016,14 @@ public class XWikiScanner implements XWikiScannerConstants {
   final public void quotLine() throws ParseException {
     Token t = null;
     int depthCounter = 0;
-    label_7:
+    label_9:
     while (true) {
       t = getSPACE();
                                     depthCounter++;
-      if (jj_2_9(2)) {
+      if (jj_2_12(2)) {
         ;
       } else {
-        break label_7;
+        break label_9;
       }
     }
       fContext.beginQuotLine(depthCounter);
@@ -830,12 +1033,12 @@ public class XWikiScanner implements XWikiScannerConstants {
 
   final public void emptyParagraph() throws ParseException {
     getNL();
-    label_8:
+    label_10:
     while (true) {
-      if (jj_2_10(2)) {
+      if (jj_2_13(2)) {
         ;
       } else {
-        break label_8;
+        break label_10;
       }
       getNL();
                                      emptyLinesCount++;
@@ -845,12 +1048,12 @@ public class XWikiScanner implements XWikiScannerConstants {
 
   final public void lines() throws ParseException {
     line();
-    label_9:
+    label_11:
     while (true) {
-      if (jj_2_11(2)) {
+      if (jj_2_14(2)) {
         ;
       } else {
-        break label_9;
+        break label_11;
       }
       newLine();
       line();
@@ -859,20 +1062,14 @@ public class XWikiScanner implements XWikiScannerConstants {
 
   final public void newLine() throws ParseException {
     getNL();
-        if (fContext.isInTable()) {
-            fContext.endTableRow();
-            boolean head = fContext.getTableRowCounter() == 0;
-            fContext.beginTableRow(head);
-        } else {
-           fContext.onNewLine();
-        }
+       fContext.onNewLine();
   }
 
   final public void line() throws ParseException {
     Token t = null;
     String str = null;
     boolean explicitLink = false;
-    label_10:
+    label_12:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case I_ESCAPE:
@@ -917,6 +1114,12 @@ public class XWikiScanner implements XWikiScannerConstants {
                                 }
                 fContext.onFormat(style);
         break;
+      case I_VERBATIM_INLINE_START:
+      case D_VERBATIM_INLINE_START:
+        t = getVERBATIM_INLINE_START();
+
+        verbatimBody(true);
+        break;
       case I_BR:
       case D_BR:
         t = getBR();
@@ -943,8 +1146,9 @@ public class XWikiScanner implements XWikiScannerConstants {
         t = getTABLE_CELL();
                 if (fContext.isInTable()) {
                     str = t.image.trim();
-                    boolean head = str.length() > 1 || fContext.getTableRowCounter() == 0;
-                    fContext.onTableCell(head);
+                    WikiParameters cellParams = newWikiParameters(str);
+                    boolean head  = str.startsWith("||") || str.startsWith("!!");
+                    fContext.onTableCell(head, cellParams);
                 } else {
                     fContext.onSpecialSymbol(t.image);
                 }
@@ -960,14 +1164,14 @@ public class XWikiScanner implements XWikiScannerConstants {
                 macro(t, false);
         break;
       default:
-        jj_la1[24] = jj_gen;
+        jj_la1[30] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
-      if (jj_2_12(2)) {
+      if (jj_2_15(2)) {
         ;
       } else {
-        break label_10;
+        break label_12;
       }
     }
   }
@@ -1056,441 +1260,599 @@ public class XWikiScanner implements XWikiScannerConstants {
     finally { jj_save(11, xla); }
   }
 
-  final private boolean jj_3_8() {
-    if (jj_3R_19()) return true;
-    if (jj_3R_20()) return true;
-    return false;
+  final private boolean jj_2_13(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_13(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(12, xla); }
   }
 
-  final private boolean jj_3R_27() {
-    if (jj_3R_43()) return true;
-    return false;
+  final private boolean jj_2_14(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_14(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(13, xla); }
   }
 
-  final private boolean jj_3R_11() {
-    if (jj_3R_20()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_26() {
-    if (jj_3R_42()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_25() {
-    if (jj_3R_21()) return true;
-    return false;
-  }
-
-  final private boolean jj_3_4() {
-    if (jj_3R_14()) return true;
-    return false;
-  }
-
-  final private boolean jj_3_3() {
-    if (jj_3R_13()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_24() {
-    if (jj_3R_41()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_23() {
-    if (jj_3R_40()) return true;
-    return false;
-  }
-
-  final private boolean jj_3_12() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_23()) {
-    jj_scanpos = xsp;
-    if (jj_3R_24()) {
-    jj_scanpos = xsp;
-    if (jj_3R_25()) {
-    jj_scanpos = xsp;
-    if (jj_3R_26()) {
-    jj_scanpos = xsp;
-    if (jj_3R_27()) {
-    jj_scanpos = xsp;
-    if (jj_3R_28()) {
-    jj_scanpos = xsp;
-    if (jj_3R_29()) {
-    jj_scanpos = xsp;
-    if (jj_3R_30()) {
-    jj_scanpos = xsp;
-    if (jj_3R_31()) {
-    jj_scanpos = xsp;
-    if (jj_3R_32()) {
-    jj_scanpos = xsp;
-    if (jj_3R_33()) return true;
-    }
-    }
-    }
-    }
-    }
-    }
-    }
-    }
-    }
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_12() {
-    Token xsp;
-    if (jj_3_12()) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_12()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  final private boolean jj_3_2() {
-    if (jj_3R_12()) return true;
-    return false;
+  final private boolean jj_2_15(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_15(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(14, xla); }
   }
 
   final private boolean jj_3R_33() {
-    if (jj_3R_49()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_32() {
-    if (jj_3R_48()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_42() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(67)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(85)) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_53() {
     if (jj_3R_55()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_49() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(60)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(78)) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_35() {
-    if (jj_3R_51()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_22() {
-    if (jj_3R_19()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_48() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(59)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(77)) return true;
-    }
     return false;
   }
 
   final private boolean jj_3R_55() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(58)) {
+    if (jj_scan_token(78)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(76)) return true;
+    if (jj_scan_token(99)) return true;
     }
     return false;
   }
 
-  final private boolean jj_3R_18() {
-    if (jj_3R_39()) return true;
+  final private boolean jj_3R_32() {
+    if (jj_3R_28()) return true;
     return false;
   }
 
   final private boolean jj_3R_31() {
-    if (jj_3R_47()) return true;
+    if (jj_3R_54()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_64() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(70)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(91)) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_57() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(66)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(87)) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_63() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(69)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(90)) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_72() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(68)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(89)) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_15() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(73)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(94)) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3_1() {
+    if (jj_3R_13()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_71() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(67)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(88)) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_56() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(71)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(92)) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_30() {
+    if (jj_3R_53()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_28() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(76)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(97)) return true;
+    }
     return false;
   }
 
   final private boolean jj_3R_54() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(57)) {
+    if (jj_scan_token(77)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(75)) return true;
+    if (jj_scan_token(98)) return true;
     }
     return false;
   }
 
-  final private boolean jj_3R_52() {
-    if (jj_3R_54()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_51() {
+  final private boolean jj_3R_26() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_52()) {
+    if (jj_scan_token(75)) {
     jj_scanpos = xsp;
-    if (jj_3R_53()) return true;
+    if (jj_scan_token(96)) return true;
     }
     return false;
   }
 
-  final private boolean jj_3R_43() {
+  final private boolean jj_3R_60() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(61)) {
+    if (jj_scan_token(74)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(79)) return true;
+    if (jj_scan_token(95)) return true;
     }
     return false;
   }
 
-  final private boolean jj_3R_17() {
-    if (jj_3R_38()) return true;
-    return false;
-  }
-
-  final private boolean jj_3_1() {
-    if (jj_3R_11()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_16() {
-    if (jj_3R_37()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_41() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(66)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(84)) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_21() {
+  final private boolean jj_3R_68() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(65)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(83)) return true;
+    if (jj_scan_token(86)) return true;
     }
     return false;
   }
 
-  final private boolean jj_3R_39() {
+  final private boolean jj_3R_47() {
+    if (jj_scan_token(INTERNAL_VERBATIM_CONTENT)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_52() {
     if (jj_scan_token(INTERNAL_MACRO_CONTENT)) return true;
     return false;
   }
 
-  final private boolean jj_3_11() {
-    if (jj_3R_22()) return true;
-    if (jj_3R_12()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_45() {
+  final private boolean jj_3_15() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(63)) {
+    if (jj_3R_30()) {
     jj_scanpos = xsp;
-    if (jj_scan_token(81)) return true;
+    if (jj_3R_31()) {
+    jj_scanpos = xsp;
+    if (jj_3R_32()) {
+    jj_scanpos = xsp;
+    if (jj_3R_33()) {
+    jj_scanpos = xsp;
+    if (jj_3R_34()) {
+    jj_scanpos = xsp;
+    if (jj_3R_35()) {
+    jj_scanpos = xsp;
+    if (jj_3R_36()) {
+    jj_scanpos = xsp;
+    if (jj_3R_37()) {
+    jj_scanpos = xsp;
+    if (jj_3R_38()) {
+    jj_scanpos = xsp;
+    if (jj_3R_39()) {
+    jj_scanpos = xsp;
+    if (jj_3R_40()) {
+    jj_scanpos = xsp;
+    if (jj_3R_41()) return true;
+    }
+    }
+    }
+    }
+    }
+    }
+    }
+    }
+    }
+    }
     }
     return false;
   }
 
-  final private boolean jj_3R_34() {
-    if (jj_3R_50()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_19() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(64)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(82)) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3_10() {
-    if (jj_3R_19()) return true;
+  final private boolean jj_3R_49() {
+    if (jj_scan_token(INTERNAL_VERBATIM_START)) return true;
     return false;
   }
 
   final private boolean jj_3R_50() {
-    if (jj_3R_12()) return true;
+    if (jj_scan_token(INTERNAL_MACRO_START)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_59() {
     Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_11()) { jj_scanpos = xsp; break; }
+    xsp = jj_scanpos;
+    if (jj_scan_token(72)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(93)) return true;
     }
     return false;
   }
 
   final private boolean jj_3R_14() {
     Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(52)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(70)) return true;
+    if (jj_3_15()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_15()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
 
-  final private boolean jj_3R_47() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(56)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(74)) return true;
-    }
+  final private boolean jj_3R_48() {
+    if (jj_scan_token(INTERNAL_VERBATIM_END)) return true;
     return false;
   }
 
-  final private boolean jj_3R_37() {
-    if (jj_scan_token(INTERNAL_MACRO_START)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_13() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_34()) {
-    jj_scanpos = xsp;
-    if (jj_3R_35()) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_38() {
+  final private boolean jj_3R_51() {
     if (jj_scan_token(INTERNAL_MACRO_END)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_61() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(64)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(85)) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_62() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(63)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(84)) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_42() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(62)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(83)) return true;
+    }
     return false;
   }
 
   final private boolean jj_3R_46() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(55)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(73)) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_44() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(62)) {
+    if (jj_scan_token(59)) {
     jj_scanpos = xsp;
     if (jj_scan_token(80)) return true;
     }
     return false;
   }
 
-  final private boolean jj_3R_30() {
-    if (jj_3R_46()) return true;
+  final private boolean jj_3R_70() {
+    if (jj_3R_72()) return true;
     return false;
   }
 
-  final private boolean jj_3_7() {
+  final private boolean jj_3R_53() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_16()) {
+    if (jj_scan_token(58)) {
     jj_scanpos = xsp;
-    if (jj_3R_17()) {
-    jj_scanpos = xsp;
-    if (jj_3R_18()) return true;
-    }
-    }
-    return false;
-  }
-
-  final private boolean jj_3_6() {
-    if (jj_3R_13()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_36() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(51)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(69)) return true;
+    if (jj_scan_token(79)) return true;
     }
     return false;
   }
 
   final private boolean jj_3R_29() {
-    if (jj_3R_45()) return true;
+    if (jj_3R_26()) return true;
     return false;
   }
 
-  final private boolean jj_3R_40() {
+  final private boolean jj_3R_22() {
+    if (jj_3R_48()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_69() {
+    if (jj_3R_71()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_67() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(50)) {
+    if (jj_3R_69()) {
     jj_scanpos = xsp;
-    if (jj_scan_token(68)) return true;
+    if (jj_3R_70()) return true;
     }
     return false;
   }
 
-  final private boolean jj_3R_28() {
-    if (jj_3R_44()) return true;
+  final private boolean jj_3_14() {
+    if (jj_3R_29()) return true;
+    if (jj_3R_14()) return true;
     return false;
   }
 
-  final private boolean jj_3_9() {
-    if (jj_3R_21()) return true;
+  final private boolean jj_3_13() {
+    if (jj_3R_26()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_65() {
+    if (jj_3R_14()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_14()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_21() {
+    if (jj_3R_49()) return true;
     return false;
   }
 
   final private boolean jj_3R_20() {
-    Token xsp;
-    if (jj_3_9()) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_9()) { jj_scanpos = xsp; break; }
-    }
-    if (jj_3R_12()) return true;
+    if (jj_3R_48()) return true;
     return false;
   }
 
-  final private boolean jj_3R_15() {
-    if (jj_3R_36()) return true;
+  final private boolean jj_3R_19() {
+    if (jj_3R_47()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_9() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_22()) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(0)) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_45() {
+    if (jj_3R_67()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_8() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_19()) {
+    jj_scanpos = xsp;
+    if (jj_3R_20()) {
+    jj_scanpos = xsp;
+    if (jj_3R_21()) return true;
+    }
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_58() {
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3_6()) { jj_scanpos = xsp; break; }
+      if (jj_3_8()) { jj_scanpos = xsp; break; }
     }
+    xsp = jj_scanpos;
+    if (jj_3_9()) jj_scanpos = xsp;
+    return false;
+  }
+
+  final private boolean jj_3_12() {
+    if (jj_3R_28()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_27() {
+    Token xsp;
+    if (jj_3_12()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_12()) { jj_scanpos = xsp; break; }
+    }
+    if (jj_3R_14()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_44() {
+    if (jj_3R_66()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_66() {
+    if (jj_3R_68()) return true;
+    if (jj_3R_58()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_11() {
+    if (jj_3R_26()) return true;
+    if (jj_3R_27()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_43() {
+    if (jj_3R_65()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_17() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_43()) {
+    jj_scanpos = xsp;
+    if (jj_3R_44()) {
+    jj_scanpos = xsp;
+    if (jj_3R_45()) return true;
+    }
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_13() {
+    if (jj_3R_27()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_7() {
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_18() {
+    if (jj_3R_46()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_7()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  final private boolean jj_3_6() {
+    if (jj_3R_18()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_41() {
+    if (jj_3R_64()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_40() {
+    if (jj_3R_63()) return true;
     return false;
   }
 
   final private boolean jj_3_5() {
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_25() {
+    if (jj_3R_52()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_39() {
+    if (jj_3R_62()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_24() {
+    if (jj_3R_51()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_23() {
+    if (jj_3R_50()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_38() {
+    if (jj_3R_61()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_10() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_23()) {
+    jj_scanpos = xsp;
+    if (jj_3R_24()) {
+    jj_scanpos = xsp;
+    if (jj_3R_25()) return true;
+    }
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_16() {
+    if (jj_3R_42()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_5()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_37() {
+    if (jj_3R_60()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_36() {
+    if (jj_3R_59()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_4() {
+    if (jj_3R_16()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_35() {
+    if (jj_3R_57()) return true;
+    if (jj_3R_58()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_3() {
     if (jj_3R_15()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_2() {
+    if (jj_3R_14()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_34() {
+    if (jj_3R_56()) return true;
     return false;
   }
 
@@ -1503,25 +1865,30 @@ public class XWikiScanner implements XWikiScannerConstants {
   public boolean lookingAhead = false;
   private boolean jj_semLA;
   private int jj_gen;
-  final private int[] jj_la1 = new int[25];
+  final private int[] jj_la1 = new int[31];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
+  static private int[] jj_la1_3;
   static {
       jj_la1_0();
       jj_la1_1();
       jj_la1_2();
+      jj_la1_3();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xe,0x0,};
+      jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xe,0x5,0x0,0x70,0x0,};
    }
    private static void jj_la1_1() {
-      jj_la1_1 = new int[] {0x40000,0x80000,0x100000,0x200000,0x400000,0x800000,0x1000000,0x2000000,0x4000000,0x8000000,0x10000000,0x20000000,0x40000000,0x80000000,0x0,0x0,0x0,0x0,0xfffc0000,0xf9840000,0xfffc0000,0xff840000,0x6000000,0x0,0xf9840000,};
+      jj_la1_1 = new int[] {0x4000000,0x8000000,0x10000000,0x20000000,0x40000000,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xfc000000,0x20000000,0x84000000,0xfc000000,0x84000000,0x0,0x0,0x0,0x0,0x84000000,};
    }
    private static void jj_la1_2() {
-      jj_la1_2 = new int[] {0x10,0x20,0x40,0x80,0x100,0x200,0x400,0x800,0x1000,0x2000,0x4000,0x8000,0x10000,0x20000,0x40001,0x80002,0x100004,0x200008,0x3fffff,0x3be61e,0x3fffff,0x3bfe1e,0x1800,0x0,0x3be61e,};
+      jj_la1_2 = new int[] {0x8000,0x10000,0x20000,0x40000,0x80000,0x100000,0x200001,0x400002,0x800004,0x1000008,0x2000010,0x4000020,0x8000040,0x10000080,0x20000100,0x40000200,0x80000400,0x800,0x1000,0x2000,0x4000,0xffffffff,0x440002,0xbcb0f5e5,0xffffffff,0xbff0f5ff,0x0,0x0,0x3000018,0x0,0xbcb0f5e5,};
    }
-  final private JJCalls[] jj_2_rtns = new JJCalls[12];
+   private static void jj_la1_3() {
+      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x2,0x4,0x8,0xf,0x0,0xe,0xf,0xe,0x0,0x0,0x0,0x0,0xe,};
+   }
+  final private JJCalls[] jj_2_rtns = new JJCalls[15];
   private boolean jj_rescan = false;
   private int jj_gc = 0;
 
@@ -1534,7 +1901,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1547,7 +1914,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1557,7 +1924,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1567,7 +1934,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1576,7 +1943,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1585,7 +1952,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 31; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1696,15 +2063,15 @@ public class XWikiScanner implements XWikiScannerConstants {
 
   public ParseException generateParseException() {
     jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[86];
-    for (int i = 0; i < 86; i++) {
+    boolean[] la1tokens = new boolean[100];
+    for (int i = 0; i < 100; i++) {
       la1tokens[i] = false;
     }
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 25; i++) {
+    for (int i = 0; i < 31; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -1716,10 +2083,13 @@ public class XWikiScanner implements XWikiScannerConstants {
           if ((jj_la1_2[i] & (1<<j)) != 0) {
             la1tokens[64+j] = true;
           }
+          if ((jj_la1_3[i] & (1<<j)) != 0) {
+            la1tokens[96+j] = true;
+          }
         }
       }
     }
-    for (int i = 0; i < 86; i++) {
+    for (int i = 0; i < 100; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
@@ -1744,7 +2114,7 @@ public class XWikiScanner implements XWikiScannerConstants {
 
   final private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 12; i++) {
+    for (int i = 0; i < 15; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -1763,6 +2133,9 @@ public class XWikiScanner implements XWikiScannerConstants {
             case 9: jj_3_10(); break;
             case 10: jj_3_11(); break;
             case 11: jj_3_12(); break;
+            case 12: jj_3_13(); break;
+            case 13: jj_3_14(); break;
+            case 14: jj_3_15(); break;
           }
         }
         p = p.next;
