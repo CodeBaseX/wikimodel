@@ -103,6 +103,13 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
     /**
      * @throws WikiParserException
      */
+    public void testVerbatimInline() throws WikiParserException {
+        test("<html><p><tt class=\"wikimodel-verbatim\">verbatim</tt></p></html>", "<p><code>verbatim</code></p>");
+    }
+
+    /**
+     * @throws WikiParserException
+     */
     public void testHeaders() throws WikiParserException {
         test("<html><h1>header1</h1></html>");
         test("<html><h2>header2</h2></html>");

@@ -664,19 +664,32 @@ public class XhtmlHandler extends DefaultHandler {
             }
         };
         TagStack.add("sub", handler);
-        
-        handler = new TagHandler(false, false, true) {
+
+        // There are 2 possible output for <tt>:
+        // * If there a class="wikimodel-verbatim" specified then we emit a onVerbatimInline() event
+        // * If there no class or a class with another value then we emit a Monospace Format event.
+        TagStack.add("tt", new TagHandler(false, false, true) {
             @Override
             protected void begin(TagContext context) {
-                context.getScannerContext().onFormat(IWemConstants.MONO);
+                String classValue = context.fAttributes.getValue("class");
+                if ((classValue != null) && classValue.equalsIgnoreCase("wikimodel-verbatim")) {
+                    fAccumulateContent = true;
+                } else {
+                    context.getScannerContext().onFormat(IWemConstants.MONO);
+                }
             }
 
             @Override
             protected void end(TagContext context) {
-                context.getScannerContext().onFormat(IWemConstants.MONO);
+                String classValue = context.fAttributes.getValue("class");
+                if ((classValue != null) && classValue.equalsIgnoreCase("wikimodel-verbatim")) {
+                    String str = context.getContent();
+                    context.getScannerContext().onVerbatim(str, true);
+                } else {
+                    context.getScannerContext().onFormat(IWemConstants.MONO);
+                }
             }
-        };
-        TagStack.add("tt", handler);
+        }); 
 
         TagStack.add("br", new TagHandler(false, false, false) {
             @Override
