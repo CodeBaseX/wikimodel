@@ -327,7 +327,7 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         test(
             "* item {{{formatted block}}} {macro}123{/macro} after",
             "<ul>\n"
-                + "  <li>item <pre>formatted block</pre>\n"
+                + "  <li>item <code>formatted block</code>"
                 + " <span class='macro' macroName='macro'><![CDATA[123]]></span> after</li>\n</ul>");
 
         test("? term:  definition");
@@ -871,6 +871,7 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testTables() throws WikiParserException {
+        // "!!" and "::" markup
         test("!! Header :: Cell ", ""
             + "<table><tbody>\n"
             + "  <tr><th> Header </th><td> Cell </td></tr>\n"
@@ -886,6 +887,16 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         test("Not a Header :: Not a Cell", "<p>Not a Header :: Not a Cell</p>");
         test("Not a Header::Not a Cell", "<p>Not a Header::Not a Cell</p>");
 
+        // "||" and "|" markup
+        test("|| Header | Cell ", ""
+            + "<table><tbody>\n"
+            + "  <tr><th> Header </th><td> Cell </td></tr>\n"
+            + "</tbody></table>");
+        test("||   Header    |    Cell    ", ""
+            + "<table><tbody>\n"
+            + "  <tr><th>   Header    </th><td>    Cell    </td></tr>\n"
+            + "</tbody></table>");
+
         test("|| cell 1.1 || cell 1.2\n" + "|| cell 2.1|| cell 2.2", ""
             + "<table><tbody>\n"
             + "  <tr><th> cell 1.1 </th><th> cell 1.2</th></tr>\n"
@@ -897,7 +908,9 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
             + "  <tr><td> cell 2.1</td><td> cell 2.2</td></tr>\n"
             + "</tbody></table>");
         test("|| Multi \nline  \nheader \n"
-            + "| Multi\nline\ncell\n\nOne,two,three", ""
+            + "| Multi\nline\ncell\n"
+            + "\n"
+            + "One,two,three", ""
             + "<table><tbody>\n"
             + "  <tr><th> Multi \nline  \nheader </th></tr>\n"
             + "  <tr><td> Multi\nline\ncell</td></tr>\n"
@@ -955,9 +968,6 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
     public void testVerbatimeBlocks() throws WikiParserException {
         test("{{{verbatim}}}", "<pre>verbatim</pre>");
         test("{{{ver\\}}}batim}}}", "<pre>ver}}}batim</pre>");
-        test("before{{{verbatim}}}after", "<p>before</p>\n"
-            + "<pre>verbatim</pre>\n"
-            + "<p>after</p>");
         test("{{{verbatim", "<pre>verbatim</pre>");
         test("{{{{{{verbatim", "<pre>{{{verbatim</pre>");
         test("{{{{{{verbatim}}}", "<pre>{{{verbatim</pre>");
@@ -973,6 +983,36 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
             "{{{verbatim}}}}}} - the three last symbols should be in a paragraph",
             "<pre>verbatim</pre>\n"
                 + "<p>}}} - the three last symbols should be in a paragraph</p>");
+
+        // inline verbatim blocks
+        test(" {{{abc}}}", "<p> <code>abc</code></p>");
+        test("before{{{abc}}}after", "<p>before<code>abc</code>after</p>");
+        test(" {{{{{{abc}}}}}}", "<p> <code>{{{abc}}}</code></p>");
+
+        test(" {{{verbatim}}}", "<p> <code>verbatim</code></p>");
+        test(" {{{{{{verbatim}}}", "<p> <code>{{{verbatim</code></p>");
+        test(" {{{{{{verbatim}}}}}}", "<p> <code>{{{verbatim}}}</code></p>");
+        test(
+            "before{{{xxx{{{verbatim}}}after",
+            "<p>before<code>xxx{{{verbatim}}}after</code></p>");
+        test(
+            "before{{{verbatim}}}after",
+            "<p>before<code>verbatim</code>after</p>");
+        test(
+            "before{{{verbatim}}}}}}after",
+            "<p>before<code>verbatim</code>}}}after</p>");
+
+        test(" `verbatim`", "<p> <code>verbatim</code></p>");
+        test(" `{{{verbatim`", "<p> <code>{{{verbatim</code></p>");
+        test(" `{{{verbatim}}}`", "<p> <code>{{{verbatim}}}</code></p>");
+        test("before`verbatim`after", "<p>before<code>verbatim</code>after</p>");
+        test(
+            "before`verbatim`}}}after",
+            "<p>before<code>verbatim</code>}}}after</p>");
+        // Broken inline verbatim
+        test(
+            "before`xxx{{{verbatim}}}after",
+            "<p>before`xxx<code>verbatim</code>after</p>");
 
         // Complex formatting
         test("!! Syntax !! Results\n"
