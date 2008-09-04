@@ -85,26 +85,42 @@ public class XWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testDefinitionLists() throws WikiParserException {
-        test(";term: definition");
-        test(";:just definition");
-        test(";just term");
-        test(";:");
+        test("; term: definition", "<dl>\n  <dt>term</dt>\n  <dd>definition</dd>\n</dl>");
+        test(";: just definition", "<dl>\n  <dd>just definition</dd>\n</dl>");
+        test("; just term", "<dl>\n  <dt>just term</dt>\n</dl>");
+        test(";: ", "<dl>\n  <dd></dd>\n</dl>");
 
-        test(";this:is_not_a_term : it is an uri");
+        test(";not: definition", "<p>;not: definition</p>");
+        test("; this:is_not_a_term : it is an uri", "<dl>\n  <dt><a href='this:is_not_a_term'>this:is_not_a_term</a>"
+            + "</dt>\n  <dd>it is an uri</dd>\n</dl>");
 
-        test(";term one: definition one\n"
-            + ";term two: definition two\n"
-            + ";term three: definition three");
+        test("; term one: definition one\n"
+            + "; term two: definition two\n"
+            + "; term three: definition three", "<dl>\n"
+            + "  <dt>term one</dt>\n"
+            + "  <dd>definition one</dd>\n"
+            + "  <dt>term two</dt>\n"
+            + "  <dd>definition two</dd>\n"
+            + "  <dt>term three</dt>\n"
+            + "  <dd>definition three</dd>\n"
+            + "</dl>");
 
-        test(";One,\ntwo,\nbucle my shoes...:\n"
+        test("; One,\ntwo,\nbucle my shoes...:\n"
             + "...Three\nfour,\nClose the door\n"
-            + ";Five,\nSix:Pick up\n sticks\n\ntam-tam, pam-pam...");
-
-        test(";__term__:''definition''");
-
-        test("this is not a definition --\n"
-            + " ;__not__ a term: ''not'' a definition\n"
-            + "----toto");
+            + "; Five,\nSix: Pick up\n sticks\n\ntam-tam, pam-pam...", "<dl>\n"
+            + "  <dt>One,\n"
+            + "two,\n"
+            + "bucle my shoes...</dt>\n"
+            + "  <dd>\n"
+            + "...Three\n"
+            + "four,\n"
+            + "Close the door</dd>\n"
+            + "  <dt>Five,\n"
+            + "Six</dt>\n"
+            + "  <dd>Pick up\n"
+            + " sticks</dd>\n"
+            + "</dl>\n"
+            + "<p>tam-tam, pam-pam...</p>");
     }
 
     /**
