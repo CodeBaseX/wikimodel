@@ -123,7 +123,7 @@ TOKEN_MGR_DECLS: {
 
 <DEFAULT, INITIAL_CONTEXT> TOKEN:
 {
-      <#LI: (<SPACE>)* ( ("*")+ | ( "1" | "*" )+ "." ) (<SPACE>)+ >
+      <#LI: (<SPACE>)* ( ("*")+ (":" | ";")* | ( "1" | "*" )+ "." (":" | ";")* | (":" | ";")+ ) (<SPACE>)+ >
     | <#HEADER: ( "1" ("." "1" ) {0, 5} ) (<SPACE>)+ >
     | <#ESCAPE: ( "\\" ~["\\", " ", "\t", "\n", "\r"] ) >
     | <#BR: "\\\\" >
@@ -150,6 +150,7 @@ TOKEN_MGR_DECLS: {
     | <#TABLE: ( "{table" (" " (~["}", "\n", "\r"])*)?  "}" ( (<SPACE>)* <NEW_LINE> )? ) >
 
 	| <#FORMAT_SYMBOL : ("~~" | "**" | "__" | "--" | "^^" | ",," | "##") >
+    | <#DD: (<SPACE>)* ":" (<SPACE>)* >
 // <common-tokens>
     // =========================================================================
     // New lines, spaces, special symbols and characters definitions
@@ -253,7 +254,8 @@ TOKEN_MGR_DECLS: {
     | <I_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
     | <I_BR : <BR> > : DEFAULT
     | <I_BLOCK_PARAMS: (<NEW_LINE>)? <PARAMS> > : DEFAULT
- 
+    | <I_DD: <DD> > : DEFAULT
+
     // "Standard" tokens. They are the same for all wikis.
     | <I_URI : <URI> > : DEFAULT
     | <I_NL: (<NEW_LINE>)? > : DEFAULT
@@ -282,7 +284,8 @@ TOKEN_MGR_DECLS: {
     | <D_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
     | <D_BR : <BR> > : DEFAULT
     | <D_BLOCK_PARAMS: <NEW_LINE> <PARAMS> > : DEFAULT
- 
+    | <D_DD: <DD> > : DEFAULT
+
     // "Standard" tokens. They are the same for all wikis.
     | <D_URI : <URI> > : DEFAULT
     | <D_NL: <NEW_LINE> > : DEFAULT
@@ -315,7 +318,8 @@ TOKEN_MGR_DECLS: {
     Token getFORMAT_SYMBOL(): {Token t=null;} {(t=<I_FORMAT_SYMBOL>|t=<D_FORMAT_SYMBOL>){return t;}}
     Token getBR(): {Token t=null;} {(t=<I_BR>|t=<D_BR>){return t;}}
     Token getBLOCK_PARAMS(): {Token t=null;} {(t=<I_BLOCK_PARAMS>|t=<D_BLOCK_PARAMS>){return t;}}
- 
+    Token getDD(): {Token t=null;} {(t=<I_DD>|t=<D_DD>){return t;}}
+
     // "Standard" tokens. They are the same for all wikis.
     Token getURI(): {Token t=null;} {(t=<I_URI>|t=<D_URI>){return t;}}
     Token getNL(): {Token t=null;} {(t=<I_NL>|t=<D_NL>){return t;}}
@@ -459,8 +463,7 @@ void listItem():
         t = getLIST_ITEM()
         {
 	        String str = t.image.trim();
-	        if (str.endsWith("."))
-	            str = str.substring(0, str.length() - 1);
+	        str = str.replace(".", "");
 	        str = str.replace('1', '#');
 	        fContext.beginListItem(str);
         }
@@ -820,6 +823,15 @@ void line():
             {
                 macro(t, false);
             }
-        ) 
+            |
+            t = getDD()
+            {
+                if (fContext.canApplyDefintionSplitter()) {
+                    fContext.onDefinitionListItemSplit();
+                } else {
+                    fContext.onSpecialSymbol(t.image);
+                }
+            }
+        )
     )+
 }
