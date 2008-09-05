@@ -346,7 +346,7 @@ void docElements():
 {
     header() 
     |
-    table() 
+    LOOKAHEAD(2) table() 
     |
     list()
     |
@@ -648,14 +648,29 @@ void paragraph():
     String str = "";
 }
 {
-    {
-        sendOnEmptyLinesEvent(false);
-        fContext.beginParagraph();
-    }
-    lines()
-    {
-        fContext.endParagraph();
-    }
+    (
+        ( t = getBLOCK_PARAMS() { str = t.image.trim(); } (LOOKAHEAD(2) getNL())?  )
+        {
+            WikiParameters params = newWikiParameters(str);
+            sendOnEmptyLinesEvent(false);
+            fContext.beginParagraph(params);
+        }
+        ( LOOKAHEAD(2) lines() )?
+        {
+            fContext.endParagraph();
+        }
+    )
+    |
+    (
+        {
+            sendOnEmptyLinesEvent(false);
+            fContext.beginParagraph();
+        }
+        lines()
+        {
+            fContext.endParagraph();
+        }
+    )
 }
 
 void quot():
