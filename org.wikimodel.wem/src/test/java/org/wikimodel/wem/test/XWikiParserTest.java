@@ -12,10 +12,7 @@ package org.wikimodel.wem.test;
 
 import java.io.StringReader;
 
-import org.wikimodel.wem.IWemListener;
-import org.wikimodel.wem.IWikiParser;
-import org.wikimodel.wem.IWikiPrinter;
-import org.wikimodel.wem.WikiParserException;
+import org.wikimodel.wem.*;
 import org.wikimodel.wem.xhtml.PrintListener;
 import org.wikimodel.wem.xwiki.XWikiParser;
 
@@ -443,9 +440,8 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test("This is a paragraph"
             + "\n"
             + "\n"
-            + " and this is a quotations\n"
-            + " the second line", "<p>This is a paragraph</p>\n"
-            + "<div style='height:2em;'></div>\n"
+            + ">and this is a quotations\n"
+            + "the second line", "<p>This is a paragraph</p>\n"
             + "<blockquote>\n"
             + "and this is a quotations\n"
             + "the second line\n"
