@@ -264,6 +264,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
                 }
 
                 public void beginTree(char type) {
+                    closeFormat();
                     fListener.beginQuotation(fQuotParams);
                 }
 
