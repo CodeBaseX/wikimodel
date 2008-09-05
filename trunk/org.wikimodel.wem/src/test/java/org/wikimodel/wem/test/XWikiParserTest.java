@@ -85,18 +85,19 @@ public class XWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testDefinitionLists() throws WikiParserException {
-        test("; term: definition", "<dl>\n  <dt>term</dt>\n  <dd>definition</dd>\n</dl>");
+        test("; term: definition", "<dl>\n  <dt>term: definition</dt>\n</dl>");
         test(";: just definition", "<dl>\n  <dd>just definition</dd>\n</dl>");
         test("; just term", "<dl>\n  <dt>just term</dt>\n</dl>");
         test(";: ", "<dl>\n  <dd></dd>\n</dl>");
 
         test(";not: definition", "<p>;not: definition</p>");
-        test("; this:is_not_a_term : it is an uri", "<dl>\n  <dt><a href='this:is_not_a_term'>this:is_not_a_term</a>"
-            + "</dt>\n  <dd>it is an uri</dd>\n</dl>");
+        test("; this:is_not_a_term : it is an uri", "<dl>\n"
+            + "  <dt><a href='this:is_not_a_term'>this:is_not_a_term</a> : it is an uri</dt>\n"
+            + "</dl>");
 
-        test("; term one: definition one\n"
-            + "; term two: definition two\n"
-            + "; term three: definition three", "<dl>\n"
+        test("; term one\n: definition one\n"
+            + "; term two\n: definition two\n"
+            + "; term three\n: definition three", "<dl>\n"
             + "  <dt>term one</dt>\n"
             + "  <dd>definition one</dd>\n"
             + "  <dt>term two</dt>\n"
@@ -105,14 +106,13 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             + "  <dd>definition three</dd>\n"
             + "</dl>");
 
-        test("; One,\ntwo,\nbucle my shoes...:\n"
+        test("; One,\ntwo,\nbucle my shoes...\n: "
             + "...Three\nfour,\nClose the door\n"
-            + "; Five,\nSix: Pick up\n sticks\n\ntam-tam, pam-pam...", "<dl>\n"
+            + "; Five,\nSix\n: Pick up\n sticks\n\ntam-tam, pam-pam...", "<dl>\n"
             + "  <dt>One,\n"
             + "two,\n"
             + "bucle my shoes...</dt>\n"
-            + "  <dd>\n"
-            + "...Three\n"
+            + "  <dd>...Three\n"
             + "four,\n"
             + "Close the door</dd>\n"
             + "  <dt>Five,\n"
