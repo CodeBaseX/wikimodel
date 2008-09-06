@@ -351,7 +351,7 @@ void docElements():
     |
     LOOKAHEAD(2) table() 
     |
-    list()
+    LOOKAHEAD(2) list()
     |
     macroBlock()
     |
@@ -441,11 +441,15 @@ void tableRow():
 
 void list():
 {
+    String str = "";
+    Token t = null;
 }
 {
+    ( LOOKAHEAD(2) t = getBLOCK_PARAMS() { str = t.image.trim(); } )?
     {
+        WikiParameters params = newWikiParameters(str);
         sendOnEmptyLinesEvent(true);
-        fContext.beginList();
+        fContext.beginList(params);
     }
     ( LOOKAHEAD(2) listItem() )+
     {
