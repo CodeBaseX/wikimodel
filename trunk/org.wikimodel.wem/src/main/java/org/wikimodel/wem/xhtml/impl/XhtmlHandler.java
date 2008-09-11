@@ -720,7 +720,8 @@ public class XhtmlHandler extends DefaultHandler {
             	// not the "html" one then we consider we're outside of a block
             	// element and we save the number of <br/> to emit an 
             	// onEmptyLines event.
-            	if ((context.getParent() == null) || (context.getParent().isTag("html"))) {
+            	if ((context.getParent() == null) || (context.getParent().isTag("html"))
+            	    || (context.getParent().isTag("body"))) {
             		int value = 0;
             		if (TagStack.getStackParameter("emptyLinesCount") != null) {
             			value = (Integer) TagStack.getStackParameter("emptyLinesCount");
