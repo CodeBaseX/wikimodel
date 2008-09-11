@@ -122,7 +122,6 @@ public class XhtmlHandler extends DefaultHandler {
         public boolean requiresDocument() {
             return fRequiresDocument;
         }
-
     }
 
     protected static class TagStack {
@@ -262,6 +261,13 @@ public class XhtmlHandler extends DefaultHandler {
 
         private static final int SPECIAL_SYMBOL = 2;
 
+        /**
+         * Allow saving parameters. 
+         * For example we save the number of br elements if we're outside 
+         * of a block element so that we can emit an onEmptyLines event.
+         */
+        private static Map<String, Object> fStackParameters = new HashMap<String, Object>(); 
+        
         public static void add(String tag, TagHandler handler) {
             fMap.put(tag, handler);
         }
@@ -389,10 +395,19 @@ public class XhtmlHandler extends DefaultHandler {
                 flushBuffer(buf, type);
             }
         }
+        
+        public static void setStackParameter(String name, Object data) {
+        	fStackParameters.put(name, data);
+        }
+        
+        public static Object getStackParameter(String name) {
+        	return fStackParameters.get(name);
+        }
 
     }
 
     static {
+        
         // TagStack.add("html", new TagHandler(false, false, true) {
         // @Override
         // public void begin(TagContext context) {
@@ -409,6 +424,7 @@ public class XhtmlHandler extends DefaultHandler {
         TagStack.add("p", new TagHandler(false, true, true) {
             @Override
             protected void begin(TagContext context) {
+                sendEmptyLines(context);
                 context.getScannerContext().beginParagraph(context.getParams());
             }
 
@@ -422,6 +438,7 @@ public class XhtmlHandler extends DefaultHandler {
         TagStack.add("table", new TagHandler(false, true, false) {
             @Override
             protected void begin(TagContext context) {
+                sendEmptyLines(context);
                 context.getScannerContext().beginTable(context.getParams());
             }
 
@@ -459,6 +476,7 @@ public class XhtmlHandler extends DefaultHandler {
         handler = new TagHandler(false, true, false) {
             @Override
             protected void begin(TagContext context) {
+                sendEmptyLines(context);
                 context.getScannerContext().beginList();
             }
 
@@ -487,6 +505,7 @@ public class XhtmlHandler extends DefaultHandler {
         TagStack.add("dl", new TagHandler(false, true, false) {
             @Override
             protected void begin(TagContext context) {
+                sendEmptyLines(context);
                 context.getScannerContext().beginList();
             }
 
@@ -524,6 +543,7 @@ public class XhtmlHandler extends DefaultHandler {
             protected void begin(TagContext context) {
                 String tag = context.getName();
                 int level = Integer.parseInt(tag.substring(1, 2));
+                sendEmptyLines(context);
                 context.getScannerContext().beginHeader(level);
             }
 
@@ -543,6 +563,7 @@ public class XhtmlHandler extends DefaultHandler {
         TagStack.add("hr", new TagHandler(false, true, false) {
             @Override
             protected void begin(TagContext context) {
+                sendEmptyLines(context);
                 context.getScannerContext().onHorizontalLine();
             }
         });
@@ -554,6 +575,7 @@ public class XhtmlHandler extends DefaultHandler {
             @Override
             protected void end(TagContext context) {
                 String str = context.getContent();
+                sendEmptyLines(context);
                 context.getScannerContext().onVerbatim(str, false);
             }
         });
@@ -694,9 +716,21 @@ public class XhtmlHandler extends DefaultHandler {
         TagStack.add("br", new TagHandler(false, false, false) {
             @Override
             protected void begin(TagContext context) {
-                context.getScannerContext().onLineBreak();
+            	// If the parent is not one of the known tags and if it's 
+            	// not the "html" one then we consider we're outside of a block
+            	// element and we save the number of <br/> to emit an 
+            	// onEmptyLines event.
+            	if ((context.getParent() == null) || (context.getParent().isTag("html"))) {
+            		int value = 0;
+            		if (TagStack.getStackParameter("emptyLinesCount") != null) {
+            			value = (Integer) TagStack.getStackParameter("emptyLinesCount");
+            		}
+            		value++;
+            		TagStack.setStackParameter("emptyLinesCount", value);
+            	} else {
+            		context.getScannerContext().onLineBreak();
+            	}
             }
-
         });
     }
 
@@ -792,4 +826,15 @@ public class XhtmlHandler extends DefaultHandler {
         fStack.beginElement(uri, localName, qName, attributes);
     }
 
+    /**
+     * Check if we need to emit an onEmptyLines() event.
+     */
+    public static void sendEmptyLines(TagContext context) {
+        Object linesCountObject = TagStack.getStackParameter("emptyLinesCount"); 
+        if ((linesCountObject != null) && ((Integer) linesCountObject > 0)) {
+            context.getScannerContext().onEmptyLines(((Integer) linesCountObject) - 1);
+            TagStack.setStackParameter("emptyLinesCount", null);
+        }
+    }
+    
 }
