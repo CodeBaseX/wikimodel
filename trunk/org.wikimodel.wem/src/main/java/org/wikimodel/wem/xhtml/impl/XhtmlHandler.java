@@ -356,6 +356,7 @@ public class XhtmlHandler extends DefaultHandler {
                 case '|':
                 case '}':
                 case '~':
+                case '\"':
                     type = SPECIAL_SYMBOL;
                     break;
                 case ' ':
@@ -387,7 +388,11 @@ public class XhtmlHandler extends DefaultHandler {
                     char ch = array[start + i];
                     int oldType = type;
                     type = getCharacterType(ch);
-                    if (type != oldType) {
+                    // We flush the buffer (i.e emit the events) if we have a 
+                    // different character type or whenever the type is that
+                    // of a special symbol since we want one onSpecialSymbol 
+                    // event for each special character.
+                    if ((type != oldType) || (oldType == SPECIAL_SYMBOL)) {
                         flushBuffer(buf, oldType);
                     }
                     buf.append(ch);
