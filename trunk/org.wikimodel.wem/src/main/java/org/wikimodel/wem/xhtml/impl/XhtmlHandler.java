@@ -143,17 +143,21 @@ public class XhtmlHandler extends DefaultHandler {
 
             String fUri;
 
+            TagStack fTagStack;
+            
             public TagContext(
                 TagContext parent,
                 String uri,
                 String localName,
                 String qName,
-                Attributes attributes) {
+                Attributes attributes,
+                TagStack tagStack) {
                 fUri = uri;
                 fLocalName = localName;
                 fQName = qName;
                 fParent = parent;
                 fAttributes = attributes;
+                fTagStack = tagStack; 
             }
 
             public boolean appendContent(char[] array, int start, int length) {
@@ -242,6 +246,10 @@ public class XhtmlHandler extends DefaultHandler {
                 return fUri;
             }
 
+            public TagStack getTagStack() {
+                return fTagStack;
+            }
+            
             public boolean isContentContainer() {
                 return fHandler == null || fHandler.isContentContainer();
             }
@@ -267,7 +275,7 @@ public class XhtmlHandler extends DefaultHandler {
          * For example we save the number of br elements if we're outside 
          * of a block element so that we can emit an onEmptyLines event.
          */
-        private static Map<String, Object> fStackParameters = new HashMap<String, Object>(); 
+        private Map<String, Object> fStackParameters = new HashMap<String, Object>(); 
         
         public static void add(String tag, TagHandler handler) {
             fMap.put(tag, handler);
@@ -293,7 +301,7 @@ public class XhtmlHandler extends DefaultHandler {
             String localName,
             String qName,
             Attributes attributes) {
-            fPeek = new TagContext(fPeek, uri, localName, qName, attributes);
+            fPeek = new TagContext(fPeek, uri, localName, qName, attributes, this);
             localName = fPeek.getName();
             TagHandler handler = fMap.get(localName);
             fPeek.beginElement(handler);
@@ -451,11 +459,11 @@ public class XhtmlHandler extends DefaultHandler {
             }
         }
         
-        public static void setStackParameter(String name, Object data) {
+        public void setStackParameter(String name, Object data) {
         	fStackParameters.put(name, data);
         }
         
-        public static Object getStackParameter(String name) {
+        public Object getStackParameter(String name) {
         	return fStackParameters.get(name);
         }
 
@@ -778,11 +786,11 @@ public class XhtmlHandler extends DefaultHandler {
             	if ((context.getParent() == null) || (context.getParent().isTag("html"))
             	    || (context.getParent().isTag("body"))) {
             		int value = 0;
-            		if (TagStack.getStackParameter("emptyLinesCount") != null) {
-            			value = (Integer) TagStack.getStackParameter("emptyLinesCount");
+            		if (context.getTagStack().getStackParameter("emptyLinesCount") != null) {
+            			value = (Integer) context.getTagStack().getStackParameter("emptyLinesCount");
             		}
             		value++;
-            		TagStack.setStackParameter("emptyLinesCount", value);
+            		context.getTagStack().setStackParameter("emptyLinesCount", value);
             	} else {
             		context.getScannerContext().onLineBreak();
             	}
@@ -886,10 +894,10 @@ public class XhtmlHandler extends DefaultHandler {
      * Check if we need to emit an onEmptyLines() event.
      */
     public static void sendEmptyLines(TagContext context) {
-        Object linesCountObject = TagStack.getStackParameter("emptyLinesCount"); 
+        Object linesCountObject = context.getTagStack().getStackParameter("emptyLinesCount"); 
         if ((linesCountObject != null) && ((Integer) linesCountObject > 0)) {
             context.getScannerContext().onEmptyLines(((Integer) linesCountObject) - 1);
-            TagStack.setStackParameter("emptyLinesCount", null);
+            context.getTagStack().setStackParameter("emptyLinesCount", null);
         }
     }
     
