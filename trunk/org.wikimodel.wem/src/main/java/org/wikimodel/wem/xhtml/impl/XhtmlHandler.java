@@ -28,6 +28,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * @author kotelnikov
+ * @author vmassol
  */
 public class XhtmlHandler extends DefaultHandler {
 
@@ -276,8 +277,15 @@ public class XhtmlHandler extends DefaultHandler {
 
         WikiScannerContext fScannerContext;
 
-        public TagStack(WikiScannerContext context) {
+        /**
+         * List of reserved keywords that the XHTML parser will escape
+         * when found inside a paragraph for example.
+         */
+        List<String> fReservedKeywords;
+
+        public TagStack(WikiScannerContext context, List<String> reservedKeywords) {
             fScannerContext = context;
+            fReservedKeywords = reservedKeywords;
         }
 
         public void beginElement(
@@ -308,7 +316,11 @@ public class XhtmlHandler extends DefaultHandler {
                         fScannerContext.onSpace(str);
                         break;
                     case SPECIAL_SYMBOL:
-                        fScannerContext.onSpecialSymbol(str);
+                    	// Make sure we send only one character for each onSpecialSymbol event
+                    	// since that's how the other parsers behave.
+                        for (int i = 0; i < str.length(); i++) {
+                            fScannerContext.onSpecialSymbol(str.substring(i, i + 1));
+                        }
                         break;
                     case CHARACTER:
                         str = WikiPageUtil.escapeXmlString(str);
@@ -388,16 +400,54 @@ public class XhtmlHandler extends DefaultHandler {
                     char ch = array[start + i];
                     int oldType = type;
                     type = getCharacterType(ch);
-                    // We flush the buffer (i.e emit the events) if we have a 
-                    // different character type or whenever the type is that
-                    // of a special symbol since we want one onSpecialSymbol 
-                    // event for each special character.
-                    if ((type != oldType) || (oldType == SPECIAL_SYMBOL)) {
-                        flushBuffer(buf, oldType);
+
+                    // Verify if we should flush the buffer. Here are the cases
+                    // when we need to flush:
+                    // 1) If the character type changes
+                    // 2) If we have special symbols in the buffer and some of
+                    //    them need to be escaped since they are special tokens
+                    //    in some wiki syntax grammar.
+
+                    if (oldType == SPECIAL_SYMBOL) {
+                        escapeSpecialCharacters(buf);
                     }
+                    if (type != oldType) {
+                        flushBuffer(buf, oldType);
+                    }                    
                     buf.append(ch);
                 }
+                if (type == SPECIAL_SYMBOL) {
+                    escapeSpecialCharacters(buf);
+                }
                 flushBuffer(buf, type);
+            }
+        }
+        
+        /**
+         * Verify if any special symbol characters should be escaped since they
+         * are special tokens in a given wiki syntax.
+         */
+        private void escapeSpecialCharacters(StringBuffer buf) {
+            for (String keyword: fReservedKeywords) {
+                if (buf.length() >= keyword.length()) {
+                    boolean found = true;
+                    for (int j = keyword.length() - 1; j > -1; j--) {
+                        if (buf.charAt(buf.length() - keyword.length() + j) != keyword.charAt(j)) {
+                            found = false;
+                            break;
+                        }
+                    }
+                    if (found) {
+                        if (buf.length() > keyword.length()) {
+                            flushBuffer(new StringBuffer(buf.substring(0, buf.length() - keyword.length())), SPECIAL_SYMBOL);
+                        }
+                        for (int i = 0; i < keyword.length(); i++) {
+                            fScannerContext.onEscape(keyword.substring(i, i + 1));
+                        }
+                        buf.setLength(0);
+                        break;
+                    }
+                }
             }
         }
         
@@ -759,8 +809,8 @@ public class XhtmlHandler extends DefaultHandler {
     /**
      * @param context
      */
-    public XhtmlHandler(WikiScannerContext context) {
-        fStack = new TagStack(context);
+    public XhtmlHandler(WikiScannerContext context, List<String> reservedKeywords) {
+        fStack = new TagStack(context, reservedKeywords);
     }
 
     /**
