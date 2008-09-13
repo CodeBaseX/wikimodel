@@ -657,12 +657,19 @@ public class XhtmlHandler extends DefaultHandler {
             protected void end(TagContext context) {
                 // TODO: it should be replaced by a normal parameters
                 WikiParameter ref = context.getParams().getParameter("href");
+                // Check if there's a class attribute with a "wikimodel-freestanding" value.
+                // If so it means we have a free standing link.
+                String classValue = context.fAttributes.getValue("class");
                 if (ref != null) {
-                    String content = context.getContent();
-                    WikiReference reference = new WikiReference(
-                        ref.getValue(),
-                        content);
-                    context.getScannerContext().onReference(reference);
+                    if ((classValue != null) && classValue.equalsIgnoreCase("wikimodel-freestanding")) {
+                        context.getScannerContext().onReference(ref.getValue());
+                    } else {
+                        String content = context.getContent();
+                        WikiReference reference = new WikiReference(
+                            ref.getValue(),
+                            content);
+                        context.getScannerContext().onReference(reference);
+                    }
                 }
             }
         });
