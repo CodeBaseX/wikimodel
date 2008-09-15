@@ -133,6 +133,8 @@ private final int jjMoveNfa_2(int startState, int curPos)
                      jjstateSet[jjnewStateCnt++] = 34;
                   else if (curChar == 42)
                      jjstateSet[jjnewStateCnt++] = 30;
+                  else if (curChar == 47)
+                     jjstateSet[jjnewStateCnt++] = 28;
                   else if (curChar == 33)
                      jjstateSet[jjnewStateCnt++] = 18;
                   else if (curChar == 58)
@@ -198,6 +200,14 @@ private final int jjMoveNfa_2(int startState, int curPos)
                case 22:
                case 23:
                   jjCheckNAddStates(31, 34);
+                  break;
+               case 28:
+                  if (curChar == 47 && kind > 94)
+                     kind = 94;
+                  break;
+               case 29:
+                  if (curChar == 47)
+                     jjstateSet[jjnewStateCnt++] = 28;
                   break;
                case 30:
                   if (curChar == 42 && kind > 94)
@@ -1752,8 +1762,6 @@ private final int jjMoveNfa_2(int startState, int curPos)
                      jjstateSet[jjnewStateCnt++] = 36;
                   else if (curChar == 95)
                      jjstateSet[jjnewStateCnt++] = 32;
-                  else if (curChar == 126)
-                     jjstateSet[jjnewStateCnt++] = 28;
                   else if (curChar == 91)
                      jjstateSet[jjnewStateCnt++] = 20;
                   else if (curChar == 124)
@@ -1839,14 +1847,6 @@ private final int jjMoveNfa_2(int startState, int curPos)
                case 27:
                   if (curChar == 91)
                      jjstateSet[jjnewStateCnt++] = 20;
-                  break;
-               case 28:
-                  if (curChar == 126 && kind > 94)
-                     kind = 94;
-                  break;
-               case 29:
-                  if (curChar == 126)
-                     jjstateSet[jjnewStateCnt++] = 28;
                   break;
                case 32:
                   if (curChar == 95 && kind > 94)
@@ -3884,6 +3884,8 @@ private final int jjMoveNfa_3(int startState, int curPos)
                      jjstateSet[jjnewStateCnt++] = 39;
                   else if (curChar == 44)
                      jjstateSet[jjnewStateCnt++] = 37;
+                  else if (curChar == 47)
+                     jjstateSet[jjnewStateCnt++] = 29;
                   if (curChar == 58)
                      jjCheckNAddTwoStates(136, 316);
                   else if (curChar == 42)
@@ -3982,6 +3984,14 @@ private final int jjMoveNfa_3(int startState, int curPos)
                case 23:
                case 24:
                   jjCheckNAddStates(837, 840);
+                  break;
+               case 29:
+                  if (curChar == 47 && kind > 72)
+                     kind = 72;
+                  break;
+               case 30:
+                  if (curChar == 47)
+                     jjstateSet[jjnewStateCnt++] = 29;
                   break;
                case 31:
                   if (curChar == 42 && kind > 72)
@@ -5524,8 +5534,6 @@ private final int jjMoveNfa_3(int startState, int curPos)
                      jjstateSet[jjnewStateCnt++] = 35;
                   else if (curChar == 95)
                      jjstateSet[jjnewStateCnt++] = 33;
-                  else if (curChar == 126)
-                     jjstateSet[jjnewStateCnt++] = 29;
                   else if (curChar == 91)
                      jjstateSet[jjnewStateCnt++] = 21;
                   if (curChar == 124)
@@ -5567,14 +5575,6 @@ private final int jjMoveNfa_3(int startState, int curPos)
                case 28:
                   if (curChar == 91)
                      jjstateSet[jjnewStateCnt++] = 21;
-                  break;
-               case 29:
-                  if (curChar == 126 && kind > 72)
-                     kind = 72;
-                  break;
-               case 30:
-                  if (curChar == 126)
-                     jjstateSet[jjnewStateCnt++] = 29;
                   break;
                case 33:
                   if (curChar == 95 && kind > 72)

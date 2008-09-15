@@ -140,7 +140,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test(
             "before **bold** after",
             "<p>before <strong>bold</strong> after</p>");
-        test("before ~~italic~~ after", "<p>before <em>italic</em> after</p>");
+        test("before //italic// after", "<p>before <em>italic</em> after</p>");
         test(
             "before --strike-- after",
             "<p>before <strike>strike</strike> after</p>");
@@ -157,7 +157,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
      */
     public void testFormats() throws WikiParserException {
         test("**bold**", "<p><strong>bold</strong></p>");
-        test("~~italic~~", "<p><em>italic</em></p>");
+        test("//italic//", "<p><em>italic</em></p>");
         test("--strike--", "<p><strike>strike</strike></p>");
         test("^^sup^^", "<p><sup>sup</sup></p>");
         test(",,sub,,", "<p><sub>sub</sub></p>");
@@ -535,16 +535,16 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test("this is not | a table", "<p>this is not | a table</p>");
 
         test(
-            "|| ~~Italic header~~ || **Bold header**\n"
-                + "| ~~Italic cell~~ | **Bold cell**\n",
+            "|| //Italic header// || **Bold header**\n"
+                + "| //Italic cell// | **Bold cell**\n",
             ""
                 + "<table><tbody>\n"
                 + "  <tr><th> <em>Italic header</em> </th><th> <strong>Bold header</strong></th></tr>\n"
                 + "  <tr><td> <em>Italic cell</em> </td><td> <strong>Bold cell</strong></td></tr>\n"
                 + "</tbody></table>");
         test(
-            "|| ~~Italic header || **Bold header \n"
-                + "| ~~Italic cell | **Bold cell \n",
+            "|| //Italic header || **Bold header \n"
+                + "| //Italic cell | **Bold cell \n",
             ""
                 + "<table><tbody>\n"
                 + "  <tr><th> <em>Italic header </em></th><th> <strong>Bold header </strong></th></tr>\n"

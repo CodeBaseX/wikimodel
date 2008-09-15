@@ -18,7 +18,6 @@ import org.wikimodel.wem.IWemListener;
 import org.wikimodel.wem.IWikiParser;
 import org.wikimodel.wem.IWikiPrinter;
 import org.wikimodel.wem.WikiParserException;
-import org.wikimodel.wem.WikiPrinter;
 import org.wikimodel.wem.xhtml.PrintListener;
 
 /**
