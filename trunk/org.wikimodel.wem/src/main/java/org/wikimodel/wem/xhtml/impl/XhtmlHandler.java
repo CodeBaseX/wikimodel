@@ -417,7 +417,7 @@ public class XhtmlHandler extends DefaultHandler {
                     //    in some wiki syntax grammar.
 
                     if (oldType == SPECIAL_SYMBOL) {
-                        escapeSpecialCharacters(buf);
+                        escapeWikiSyntaxCharacters(buf);
                     }
                     if (type != oldType) {
                         flushBuffer(buf, oldType);
@@ -425,7 +425,7 @@ public class XhtmlHandler extends DefaultHandler {
                     buf.append(ch);
                 }
                 if (type == SPECIAL_SYMBOL) {
-                    escapeSpecialCharacters(buf);
+                    escapeWikiSyntaxCharacters(buf);
                 }
                 flushBuffer(buf, type);
             }
@@ -435,7 +435,7 @@ public class XhtmlHandler extends DefaultHandler {
          * Verify if any special symbol characters should be escaped since they
          * are special tokens in a given wiki syntax.
          */
-        private void escapeSpecialCharacters(StringBuffer buf) {
+        private void escapeWikiSyntaxCharacters(StringBuffer buf) {
             for (String keyword: fReservedKeywords) {
                 if (buf.length() >= keyword.length()) {
                     boolean found = true;
