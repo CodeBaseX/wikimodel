@@ -717,8 +717,8 @@ public class XWikiScanner implements XWikiScannerConstants {
     boolean head = false;
     t = getTABLE_ROW();
         String str = t.image.trim();
-        if (str.startsWith("{{"))  {
-            int idx = str.indexOf("}}");
+        if (str.startsWith("(%"))  {
+            int idx = str.indexOf("%)");
             String p  = str.substring(2, idx);
             str = str.substring(idx + 2);
             head = (str.startsWith("!!") || str.startsWith("||"));
