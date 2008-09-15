@@ -149,7 +149,7 @@ TOKEN_MGR_DECLS: {
     | <#TABLE: ( "{table" (" " (~["}", "\n", "\r"])*)?  "}" ( (<SPACE>)* <NEW_LINE> )? ) >
     | <#QUOT_LINE: (">")+ >
 
-	| <#FORMAT_SYMBOL : ("~~" | "**" | "__" | "--" | "^^" | ",," | "##") >
+	| <#FORMAT_SYMBOL : ("//" | "**" | "__" | "--" | "^^" | ",," | "##") >
 // <common-tokens>
     // =========================================================================
     // New lines, spaces, special symbols and characters definitions
@@ -781,7 +781,7 @@ void line():
                 WikiStyle style = null;
                 if ("**".equals(str)) {
                 	style  = IWikiScannerContext.STRONG;
-                } else if ("~~".equals(str)) {
+                } else if ("//".equals(str)) {
                   	style  = IWikiScannerContext.EM;
                 } else if ("--".equals(str)) {
                   	style  = IWikiScannerContext.STRIKE;

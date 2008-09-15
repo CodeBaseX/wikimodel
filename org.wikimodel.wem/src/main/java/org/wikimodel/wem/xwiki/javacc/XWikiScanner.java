@@ -1185,7 +1185,7 @@ public class XWikiScanner implements XWikiScannerConstants {
                 WikiStyle style = null;
                 if ("**".equals(str)) {
                         style  = IWikiScannerContext.STRONG;
-                } else if ("~~".equals(str)) {
+                } else if ("//".equals(str)) {
                         style  = IWikiScannerContext.EM;
                 } else if ("--".equals(str)) {
                         style  = IWikiScannerContext.STRIKE;
