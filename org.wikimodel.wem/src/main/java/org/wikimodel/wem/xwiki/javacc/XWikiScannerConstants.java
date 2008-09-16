@@ -74,48 +74,50 @@ public interface XWikiScannerConstants {
   int URI_REG_NAME = 58;
   int I_ESCAPE = 59;
   int I_LIST_ITEM = 60;
-  int I_HEADER = 61;
-  int I_HORLINE = 62;
-  int I_TABLE_ROW = 63;
-  int I_TABLE_CELL = 64;
-  int I_REFERENCE = 65;
-  int I_VERBATIM_START = 66;
-  int I_VERBATIM_INLINE_START = 67;
-  int I_MACRO_EMPTY_BLOCK = 68;
-  int I_MACRO_BLOCK_START = 69;
-  int I_MACRO_EMPTY_INLINE = 70;
-  int I_MACRO_INLINE_START = 71;
-  int I_FORMAT_SYMBOL = 72;
-  int I_BR = 73;
-  int I_BLOCK_PARAMS = 74;
-  int I_QUOT_LINE = 75;
-  int I_URI = 76;
-  int I_NL = 77;
-  int I_SPACE = 78;
-  int I_WORD = 79;
-  int I_SPECIAL_SYMBOL = 80;
-  int D_ESCAPE = 81;
-  int D_LIST_ITEM = 82;
-  int D_HEADER = 83;
-  int D_HORLINE = 84;
-  int D_TABLE_ROW = 85;
-  int D_TABLE_CELL = 86;
-  int D_REFERENCE = 87;
-  int D_VERBATIM_START = 88;
-  int D_VERBATIM_INLINE_START = 89;
-  int D_MACRO_EMPTY_BLOCK = 90;
-  int D_MACRO_BLOCK_START = 91;
-  int D_MACRO_EMPTY_INLINE = 92;
-  int D_MACRO_INLINE_START = 93;
-  int D_FORMAT_SYMBOL = 94;
-  int D_BR = 95;
-  int D_BLOCK_PARAMS = 96;
-  int D_QUOT_LINE = 97;
-  int D_URI = 98;
-  int D_NL = 99;
-  int D_SPACE = 100;
-  int D_WORD = 101;
-  int D_SPECIAL_SYMBOL = 102;
+  int I_HEADER_BEGIN = 61;
+  int I_HEADER_END = 62;
+  int I_HORLINE = 63;
+  int I_TABLE_ROW = 64;
+  int I_TABLE_CELL = 65;
+  int I_REFERENCE = 66;
+  int I_VERBATIM_START = 67;
+  int I_VERBATIM_INLINE_START = 68;
+  int I_MACRO_EMPTY_BLOCK = 69;
+  int I_MACRO_BLOCK_START = 70;
+  int I_MACRO_EMPTY_INLINE = 71;
+  int I_MACRO_INLINE_START = 72;
+  int I_FORMAT_SYMBOL = 73;
+  int I_BR = 74;
+  int I_BLOCK_PARAMS = 75;
+  int I_QUOT_LINE = 76;
+  int I_URI = 77;
+  int I_NL = 78;
+  int I_SPACE = 79;
+  int I_WORD = 80;
+  int I_SPECIAL_SYMBOL = 81;
+  int D_ESCAPE = 82;
+  int D_LIST_ITEM = 83;
+  int D_HEADER_BEGIN = 84;
+  int D_HEADER_END = 85;
+  int D_HORLINE = 86;
+  int D_TABLE_ROW = 87;
+  int D_TABLE_CELL = 88;
+  int D_REFERENCE = 89;
+  int D_VERBATIM_START = 90;
+  int D_VERBATIM_INLINE_START = 91;
+  int D_MACRO_EMPTY_BLOCK = 92;
+  int D_MACRO_BLOCK_START = 93;
+  int D_MACRO_EMPTY_INLINE = 94;
+  int D_MACRO_INLINE_START = 95;
+  int D_FORMAT_SYMBOL = 96;
+  int D_BR = 97;
+  int D_BLOCK_PARAMS = 98;
+  int D_QUOT_LINE = 99;
+  int D_URI = 100;
+  int D_NL = 101;
+  int D_SPACE = 102;
+  int D_WORD = 103;
+  int D_SPECIAL_SYMBOL = 104;
 
   int VERBATIM_CONTEXT = 0;
   int MACRO_CONTEXT = 1;
@@ -184,7 +186,8 @@ public interface XWikiScannerConstants {
     "<URI_REG_NAME>",
     "<I_ESCAPE>",
     "<I_LIST_ITEM>",
-    "<I_HEADER>",
+    "<I_HEADER_BEGIN>",
+    "<I_HEADER_END>",
     "<I_HORLINE>",
     "<I_TABLE_ROW>",
     "<I_TABLE_CELL>",
@@ -206,7 +209,8 @@ public interface XWikiScannerConstants {
     "<I_SPECIAL_SYMBOL>",
     "<D_ESCAPE>",
     "<D_LIST_ITEM>",
-    "<D_HEADER>",
+    "<D_HEADER_BEGIN>",
+    "<D_HEADER_END>",
     "<D_HORLINE>",
     "<D_TABLE_ROW>",
     "<D_TABLE_CELL>",
