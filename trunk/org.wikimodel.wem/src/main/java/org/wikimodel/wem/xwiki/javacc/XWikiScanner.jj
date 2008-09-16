@@ -124,7 +124,7 @@ TOKEN_MGR_DECLS: {
 <DEFAULT, INITIAL_CONTEXT> TOKEN:
 {
       <#LI: (<SPACE>)* ( ("*")+ (":" | ";")* | ( "1" | "*" )+ "." (":" | ";")* | (":" | ";")+ ) (<SPACE>)+ >
-    | <#HEADER: ( "1" ("." "1" ) {0, 5} ) (<SPACE>)+ >
+    | <#HEADER: ("="){1, 6} >
     | <#ESCAPE: ( "\\" ~["\\", " ", "\t", "\n", "\r"] ) >
     | <#BR: "\\\\" >
     | <#VERBATIM_START: "{{{" >
@@ -239,7 +239,8 @@ TOKEN_MGR_DECLS: {
 // <initial-context>
       <I_ESCAPE: <ESCAPE> > : DEFAULT
     | <I_LIST_ITEM: (<NEW_LINE>)? <LI> > : DEFAULT
-    | <I_HEADER: (<NEW_LINE>)? <HEADER> > : DEFAULT
+    | <I_HEADER_BEGIN: (<NEW_LINE>)? <HEADER> (<SPACE>)* > : DEFAULT
+    | <I_HEADER_END: (<SPACE>)* <HEADER> > : DEFAULT
     | <I_HORLINE: (<NEW_LINE>)? <HORLINE> > : DEFAULT
     | <I_TABLE_ROW: (<NEW_LINE>)? ( <PARAMS> )? <CELL> > : DEFAULT
     | <I_TABLE_CELL : <CELL> > : DEFAULT 
@@ -269,7 +270,8 @@ TOKEN_MGR_DECLS: {
 // <default-context>
       <D_ESCAPE: <ESCAPE> > : DEFAULT
     | <D_LIST_ITEM: <NEW_LINE> <LI> > : DEFAULT
-    | <D_HEADER: <NEW_LINE> <HEADER> > : DEFAULT
+    | <D_HEADER_BEGIN: <NEW_LINE> <HEADER> (<SPACE>)* > : DEFAULT
+    | <D_HEADER_END: (<SPACE>)* <HEADER> > : DEFAULT
     | <D_HORLINE: <NEW_LINE> <HORLINE> > : DEFAULT
     | <D_TABLE_ROW: <NEW_LINE> ( <PARAMS> )? <CELL> > : DEFAULT
     | <D_TABLE_CELL : <CELL> > : DEFAULT 
@@ -303,7 +305,8 @@ TOKEN_MGR_DECLS: {
 // <getters>
     Token getESCAPE(): {Token t=null;} {(t=<I_ESCAPE>|t=<D_ESCAPE>){return t;}}
     Token getLIST_ITEM(): {Token t=null;} {(t=<I_LIST_ITEM>|t=<D_LIST_ITEM>){return t;}}
-    Token getHEADER(): {Token t=null;} {(t=<I_HEADER>|t=<D_HEADER>){return t;}}
+    Token getHEADER_BEGIN(): {Token t=null;} {(t=<I_HEADER_BEGIN>|t=<D_HEADER_BEGIN>){return t;}}
+    Token getHEADER_END(): {Token t=null;} {(t=<I_HEADER_END>|t=<D_HEADER_END>){return t;}}
     Token getHORLINE(): {Token t=null;} {(t=<I_HORLINE>|t=<D_HORLINE>){return t;}}
     Token getTABLE_ROW(): {Token t=null;} {(t=<I_TABLE_ROW>|t=<D_TABLE_ROW>){return t;}}
     Token getTABLE_CELL(): {Token t=null;} {(t=<I_TABLE_CELL>|t=<D_TABLE_CELL>){return t;}}
@@ -373,10 +376,10 @@ void header():
    Token t = null;
 }
 {
-    t = getHEADER()
+    t = getHEADER_BEGIN()
     {
         sendOnEmptyLinesEvent(true);
-        int level = (t.image.trim().length() + 1) / 2;
+        int level = t.image.trim().length();
         fContext.beginHeader(level);
     }
     (LOOKAHEAD(2) line())?
@@ -384,7 +387,6 @@ void header():
         fContext.endHeader();
     }
 }
-
 
 void table():
 {
@@ -803,6 +805,13 @@ void line():
 			    }
 				verbatimBody(true)
 			)
+            |
+            t = getHEADER_END()
+            {
+                if (!fContext.isInHeader()) {
+                    fContext.onSpecialSymbol(t.image);
+                }
+            }
             |
             t = getBR()
             {
