@@ -168,14 +168,12 @@ public class XWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testHeaders() throws WikiParserException {
-        test("1 Heading 1", "<h1>Heading 1</h1>");
-        test("1.1 Heading 2", "<h2>Heading 2</h2>");
-        test("1.1.1 Heading 3", "<h3>Heading 3</h3>");
-        test("1.1.1.1 Heading 4", "<h4>Heading 4</h4>");
-        test("1.1.1.1.1 Heading 5", "<h5>Heading 5</h5>");
-        test("1.1.1.1.1.1 Heading 6", "<h6>Heading 6</h6>");
-
-        test("1not a heading", "<p>1not a heading</p>");
+        test("= Heading 1", "<h1>Heading 1</h1>");
+        test("== Heading 2", "<h2>Heading 2</h2>");
+        test("=== Heading 3", "<h3>Heading 3</h3>");
+        test("==== Heading 4", "<h4>Heading 4</h4>");
+        test("===== Heading 5", "<h5>Heading 5</h5>");
+        test("====== Heading 6", "<h6>Heading 6</h6>");
     }
 
     /**
