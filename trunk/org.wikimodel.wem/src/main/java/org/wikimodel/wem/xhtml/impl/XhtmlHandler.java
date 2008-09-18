@@ -96,9 +96,6 @@ public class XhtmlHandler extends DefaultHandler {
         }
 
         public void beginElement(TagContext context) {
-            if (requiresParentDocument(context)) {
-                context.getScannerContext().endDocument();
-            }
             begin(context);
         }
 
@@ -106,9 +103,6 @@ public class XhtmlHandler extends DefaultHandler {
         }
 
         public final void endElement(TagContext context) {
-            if (requiresParentDocument(context)) {
-                context.getScannerContext().endDocument();
-            }
             end(context);
         }
 
@@ -294,6 +288,11 @@ public class XhtmlHandler extends DefaultHandler {
         public TagStack(WikiScannerContext context, List<String> reservedKeywords) {
             fScannerContext = context;
             fReservedKeywords = reservedKeywords;
+            
+            // Pre-initialize stack parameters for performance reason 
+            // (so that we don't have to check all the time if they're initialized or not)
+            setStackParameter("emptyLinesCount", 0);
+            setStackParameter("listStyles", new StringBuffer());
         }
 
         public void beginElement(
@@ -540,12 +539,16 @@ public class XhtmlHandler extends DefaultHandler {
             @Override
             protected void begin(TagContext context) {
                 sendEmptyLines(context);
-                context.getScannerContext().beginList();
+                // We only send a new list event if we're not already inside a list.
+                StringBuffer listStyles = (StringBuffer) context.getTagStack().getStackParameter("listStyles");
+                if (listStyles.length() == 0) {
+                    context.getScannerContext().beginList(context.getParams());
+                }
             }
 
             @Override
             protected void end(TagContext context) {
-                context.getScannerContext().endList();
+                // Note: Do not generate an endList() event since it'll be generated automatically by the next element.
             }
         };
         TagStack.add("ul", handler);
@@ -556,12 +559,20 @@ public class XhtmlHandler extends DefaultHandler {
                 String markup = context.getParent().getName().equals("ol")
                     ? "#"
                     : "*";
-                context.getScannerContext().beginListItem(markup);
+                StringBuffer listStyles = (StringBuffer) context.getTagStack().getStackParameter("listStyles");
+                listStyles.append(markup);
+                context.getScannerContext().beginListItem(listStyles.toString());
             }
 
             @Override
             protected void end(TagContext context) {
-                context.getScannerContext().endListItem();
+                StringBuffer listStyles = (StringBuffer) context.getTagStack().getStackParameter("listStyles");
+                // We should always have a length greater than 0 but we handle 
+                // the case where the user has entered some badly formed HTML
+                if (listStyles.length() > 0) {
+                    listStyles.setLength(listStyles.length() - 1);
+                }
+                // Note: Do not generate an endListItem() event since it'll be generated automatically by the next element.
             }
         });
 
@@ -792,10 +803,7 @@ public class XhtmlHandler extends DefaultHandler {
             	// onEmptyLines event.
             	if ((context.getParent() == null) || (context.getParent().isTag("html"))
             	    || (context.getParent().isTag("body"))) {
-            		int value = 0;
-            		if (context.getTagStack().getStackParameter("emptyLinesCount") != null) {
-            			value = (Integer) context.getTagStack().getStackParameter("emptyLinesCount");
-            		}
+            		int value = (Integer) context.getTagStack().getStackParameter("emptyLinesCount");
             		value++;
             		context.getTagStack().setStackParameter("emptyLinesCount", value);
             	} else {
@@ -901,9 +909,9 @@ public class XhtmlHandler extends DefaultHandler {
      * Check if we need to emit an onEmptyLines() event.
      */
     public static void sendEmptyLines(TagContext context) {
-        Object linesCountObject = context.getTagStack().getStackParameter("emptyLinesCount"); 
-        if ((linesCountObject != null) && ((Integer) linesCountObject > 0)) {
-            context.getScannerContext().onEmptyLines(((Integer) linesCountObject) - 1);
+        int lineCount = (Integer) context.getTagStack().getStackParameter("emptyLinesCount"); 
+        if (lineCount > 0) {
+            context.getScannerContext().onEmptyLines(lineCount - 1);
             context.getTagStack().setStackParameter("emptyLinesCount", null);
         }
     }
