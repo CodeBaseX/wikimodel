@@ -30,16 +30,6 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
     protected IWikiParser newWikiParser() {
         return new XhtmlParser();
     }
-//  This test fails, see http://code.google.com/p/wikimodel/issues/detail?id=22
-//    public void test() throws WikiParserException {
-//        test("<ul><li>a<ul><li>b</li></ul>b</li></ul>", ""
-//            + "<ul>\n"
-//            + "  <li>a<ul>\n"
-//            + "  <li>b</li>\n"
-//            + "</ul>\n"
-//            + "b</li>\n"
-//            + "</ul>");
-//    }
 
     /**
      * @throws WikiParserException
@@ -143,6 +133,15 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
      */
     public void testLists() throws WikiParserException {
         // TODO: add management of embedded block elements.
+        test("<html><ul><li>a<ul><li>b</li></ul></li><li>c</li></ul></html>", ""
+            + "<ul>\n"
+            + "  <li>a<ul>\n"
+            + "  <li>b</li>\n"
+            + "</ul>\n"
+            + "</li>\n"
+            + "  <li>c</li>\n"
+            + "</ul>");
+
         test("<html><ul>"
             + "<li>item one</li>"
             + "<li>before<hr />after</li>"
