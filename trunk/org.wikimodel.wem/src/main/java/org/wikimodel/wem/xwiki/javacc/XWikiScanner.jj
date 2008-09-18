@@ -809,7 +809,15 @@ void line():
             t = getHEADER_END()
             {
                 if (!fContext.isInHeader()) {
-                    fContext.onSpecialSymbol(t.image);
+                	int pos = t.image.indexOf('=');
+                	if (pos > 0) {
+                		// Spaces are sent as a single event.
+                		fContext.onSpace(t.image.substring(0, pos));
+                	} 
+                    for (int i = pos; i < t.image.length(); i++) {
+                        // And special symbols are sent as one event per symbol.
+                        fContext.onSpecialSymbol("=");
+                    }
                 }
             }
             |

@@ -1238,7 +1238,13 @@ public class XWikiScanner implements XWikiScannerConstants {
       case D_HEADER_END:
         t = getHEADER_END();
                 if (!fContext.isInHeader()) {
-                    fContext.onSpecialSymbol(t.image);
+                        int pos = t.image.indexOf('=');
+                        if (pos > 0) {
+                                fContext.onSpace(t.image.substring(0, pos));
+                        }
+                    for (int i = pos; i < t.image.length(); i++) {
+                        fContext.onSpecialSymbol("=");
+                    }
                 }
         break;
       case I_BR:
@@ -1883,6 +1889,11 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3R_43() {
+    if (jj_3R_69()) return true;
+    return false;
+  }
+
   final private boolean jj_3_15() {
     if (jj_3R_28()) return true;
     return false;
@@ -1893,13 +1904,13 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_43() {
-    if (jj_3R_69()) return true;
+  final private boolean jj_3R_42() {
+    if (jj_3R_68()) return true;
     return false;
   }
 
-  final private boolean jj_3R_42() {
-    if (jj_3R_68()) return true;
+  final private boolean jj_3R_41() {
+    if (jj_3R_67()) return true;
     return false;
   }
 
@@ -1913,23 +1924,23 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_41() {
-    if (jj_3R_67()) return true;
-    return false;
-  }
-
   final private boolean jj_3_9() {
     if (jj_3R_19()) return true;
     return false;
   }
 
-  final private boolean jj_3_8() {
-    if (jj_3R_16()) return true;
+  final private boolean jj_3R_40() {
+    if (jj_3R_66()) return true;
     return false;
   }
 
-  final private boolean jj_3R_40() {
-    if (jj_3R_66()) return true;
+  final private boolean jj_3R_39() {
+    if (jj_3R_65()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_8() {
+    if (jj_3R_16()) return true;
     return false;
   }
 
@@ -1942,11 +1953,6 @@ public class XWikiScanner implements XWikiScannerConstants {
       xsp = jj_scanpos;
       if (jj_3_9()) { jj_scanpos = xsp; break; }
     }
-    return false;
-  }
-
-  final private boolean jj_3R_39() {
-    if (jj_3R_65()) return true;
     return false;
   }
 
