@@ -11,8 +11,6 @@
 package org.wikimodel.wem.xhtml;
 
 import java.io.Reader;
-import java.util.Collections;
-import java.util.List;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -31,19 +29,15 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class XhtmlParser implements IWikiParser {
 
-    /**
-     * List of reserved keywords that the XHTML parser will escape
-     * when found inside a paragraph for example.
-     */
-    private List<String> fReservedKeywords;
+    private XhtmlEscapeHandler fEscapeHandler;
     
     public XhtmlParser() {
-        this(Collections.<String>emptyList());
+        this(null);
     }
 
-    public XhtmlParser(List<String> reservedKeywords) {
+    public XhtmlParser(XhtmlEscapeHandler escapeHandler) {
         super();
-        fReservedKeywords = reservedKeywords;
+        fEscapeHandler = escapeHandler;
     }
     
     /**
@@ -55,7 +49,7 @@ public class XhtmlParser implements IWikiParser {
      */
     public DefaultHandler getHandler(IWemListener listener) {
         WikiScannerContext context = new WikiScannerContext(listener);
-        XhtmlHandler handler = new XhtmlHandler(context, fReservedKeywords);
+        XhtmlHandler handler = new XhtmlHandler(context, fEscapeHandler);
         return handler;
     }
 

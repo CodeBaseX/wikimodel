@@ -124,7 +124,7 @@ TOKEN_MGR_DECLS: {
 <DEFAULT, INITIAL_CONTEXT> TOKEN:
 {
       <#LI: (<SPACE>)* ( ("*")+ (":" | ";")* | ( "1" | "*" )+ "." (":" | ";")* | (":" | ";")+ ) (<SPACE>)+ >
-    | <#HEADER: ("="){1, 6} >
+    | <#HEADER: ("=")+ >
     | <#ESCAPE: ( "\\" ~["\\", " ", "\t", "\n", "\r"] ) >
     | <#BR: "\\\\" >
     | <#VERBATIM_START: "{{{" >
@@ -818,7 +818,9 @@ void line():
                         // And special symbols are sent as one event per symbol.
                         fContext.onSpecialSymbol("=");
                     }
-                }
+                } else {
+			        fContext.endHeader();
+			    }
             }
             |
             t = getBR()
