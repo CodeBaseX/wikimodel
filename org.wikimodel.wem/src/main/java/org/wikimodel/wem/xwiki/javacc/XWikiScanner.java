@@ -46,7 +46,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     }
 
     protected WikiParameters newWikiParameters(String str) {
-        str = WikiScannerUtil.extractSubstring(str, "(%", "%)", '\\');
+        str = WikiScannerUtil.extractSubstring(str, "(%", "%)", '~');
         return new WikiParameters(str);
     }
 
@@ -892,7 +892,7 @@ public class XWikiScanner implements XWikiScannerConstants {
         jj_consume_token(-1);
         throw new ParseException();
       }
-            str = WikiScannerUtil.unescape(t.image, '\\');
+            str = WikiScannerUtil.unescape(t.image, '~');
             buf.append(str);
     }
     if (jj_2_12(2)) {

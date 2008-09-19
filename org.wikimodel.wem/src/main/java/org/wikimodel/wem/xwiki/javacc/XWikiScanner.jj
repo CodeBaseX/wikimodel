@@ -52,7 +52,7 @@ public class XWikiScanner {
     }
 
     protected WikiParameters newWikiParameters(String str) {
-        str = WikiScannerUtil.extractSubstring(str, "(%", "%)", '\\');
+        str = WikiScannerUtil.extractSubstring(str, "(%", "%)", '~');
         return new WikiParameters(str);
     }
     
@@ -125,24 +125,24 @@ TOKEN_MGR_DECLS: {
 {
       <#LI: (<SPACE>)* ( ("*")+ (":" | ";")* | ( "1" | "*" )+ "." (":" | ";")* | (":" | ";")+ ) (<SPACE>)+ >
     | <#HEADER: ("=")+ >
-    | <#ESCAPE: ( "\\" ~["\\", " ", "\t", "\n", "\r"] ) >
+    | <#ESCAPE: ( "~" ~[" ", "\t", "\n", "\r"] ) >
     | <#BR: "\\\\" >
     | <#VERBATIM_START: "{{{" >
     | <#VERBATIM_END: "}}}" > 
-    | <#ESCAPED: ( "\\\\" | "\\" ~["\\"] ) >
+    | <#ESCAPED: ( "\\\\" | "~" ) >
     | <#VERBATIM_CONTENT: ( 
           <ESCAPED>
-        | ~["}", "{", "\\"] 
+        | ~["}", "{", "~"] 
         | "}" ~["}"] | "}}" ~["}"]
         | "{" ~["{"] | "{{" ~["{"]
       )+ >
     | <#MACRO_NAME: ( <URI> | (<CHAR>)+ ) >
-    | <#MACRO_DEF: ( "\\" ~[] | ~["}"] | "}" ~["}"] )* >
+    | <#MACRO_DEF: ( "~" ~[] | ~["}"] | "}" ~["}"] )* >
     | <#MACRO_EMPTY: "{{" <MACRO_NAME> <MACRO_DEF> "/}}" >
     | <#MACRO_START: "{{" <MACRO_NAME> <MACRO_DEF> "}}" >
     | <#MACRO_END: "{{/" <MACRO_NAME> (<SPACE>)* "}}" > 
     | <#MACRO_CONTENT: ( <CHAR> | <SPACE> |<NEW_LINE> | <SPECIAL_SYMBOL> ) >
-    | <#REFERENCE:  ( "[[" ( "\\" ~[] | ~["]"] | "]" ~["]"] )* "]]" ) >
+    | <#REFERENCE:  ( "[[" ( "~" ~[] | ~["]"] | "]" ~["]"] )* "]]" ) >
     | <#HORLINE: "---" ("-")+ >
     | <#PARAMS:   "(%" ( <ESCAPED> | ~["%"] | ["%"] ~[")"] )* "%)" >
     | <#CELL: ( "||" | "|" | "::" | "!!" ) (<PARAMS>)? >
@@ -510,7 +510,7 @@ void verbatimBody(boolean inline):
             | t = getINTERNAL_VERBATIM_START()
         )
         {
-            str = WikiScannerUtil.unescape(t.image, '\\');
+            str = WikiScannerUtil.unescape(t.image, '~');
             buf.append(str);        
         }
     )*

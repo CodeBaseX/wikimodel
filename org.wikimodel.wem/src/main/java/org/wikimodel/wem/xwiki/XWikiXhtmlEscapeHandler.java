@@ -25,7 +25,7 @@ public class XWikiXhtmlEscapeHandler implements XhtmlEscapeHandler
 {
     private static final Pattern LIST_PATTERN = Pattern.compile("\\p{Blank}*((\\*+[:;]*)|([1*]+\\.[:;]*)|([:;]+))\\p{Blank}+");
     
-    private List<String> fReservedKeywords = Arrays.asList("**", "~~", "##", "--", "__", "^^", ",,", "[[", "]]", "{{", "}}");
+    private List<String> fReservedKeywords = Arrays.asList("**", "//", "##", "--", "__", "^^", ",,", "[[", "]]", "{{", "}}");
     
     public void initialize(Map<String, Object> context)
     {
@@ -39,6 +39,13 @@ public class XWikiXhtmlEscapeHandler implements XhtmlEscapeHandler
 
         StringBuilder buffer = (StringBuilder) context.get("buffer");
         buffer.append(current.getCharacter());
+        
+        // Escape the escape symbol
+        if (current.getCharacter() == '~') {
+            result.setType(XhtmlCharacterType.ESCAPED);
+            context.put("isPotentialList", Boolean.FALSE);
+            return result;
+        }
         
         // Escape = symbols when in a header
         if (current.getCharacter() == '=') {
