@@ -124,7 +124,7 @@ TOKEN_MGR_DECLS: {
 <DEFAULT, INITIAL_CONTEXT> TOKEN:
 {
       <#LI: (<SPACE>)* ( ("*")+ (":" | ";")* | ( "1" | "*" )+ "." (":" | ";")* | (":" | ";")+ ) (<SPACE>)+ >
-    | <#HEADER: ("=")+ >
+    | <#HEADER: (<SPACE>)* ("=")+ >
     | <#ESCAPE: ( "~" ~[" ", "\t", "\n", "\r"] ) >
     | <#BR: "\\\\" >
     | <#VERBATIM_START: "{{{" >
@@ -240,7 +240,7 @@ TOKEN_MGR_DECLS: {
       <I_ESCAPE: <ESCAPE> > : DEFAULT
     | <I_LIST_ITEM: (<NEW_LINE>)? <LI> > : DEFAULT
     | <I_HEADER_BEGIN: (<NEW_LINE>)? <HEADER> (<SPACE>)* > : DEFAULT
-    | <I_HEADER_END: (<SPACE>)* <HEADER> > : DEFAULT
+    | <I_HEADER_END: <HEADER> > : DEFAULT
     | <I_HORLINE: (<NEW_LINE>)? <HORLINE> > : DEFAULT
     | <I_TABLE_ROW: (<NEW_LINE>)? ( <PARAMS> )? <CELL> > : DEFAULT
     | <I_TABLE_CELL : <CELL> > : DEFAULT 
@@ -271,7 +271,7 @@ TOKEN_MGR_DECLS: {
       <D_ESCAPE: <ESCAPE> > : DEFAULT
     | <D_LIST_ITEM: <NEW_LINE> <LI> > : DEFAULT
     | <D_HEADER_BEGIN: <NEW_LINE> <HEADER> (<SPACE>)* > : DEFAULT
-    | <D_HEADER_END: (<SPACE>)* <HEADER> > : DEFAULT
+    | <D_HEADER_END: <HEADER> > : DEFAULT
     | <D_HORLINE: <NEW_LINE> <HORLINE> > : DEFAULT
     | <D_TABLE_ROW: <NEW_LINE> ( <PARAMS> )? <CELL> > : DEFAULT
     | <D_TABLE_CELL : <CELL> > : DEFAULT 
