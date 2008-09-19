@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import org.wikimodel.wem.IWemConstants;
 import org.wikimodel.wem.WikiPageUtil;
@@ -21,6 +22,9 @@ import org.wikimodel.wem.WikiParameter;
 import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.impl.WikiScannerContext;
+import org.wikimodel.wem.xhtml.XhtmlCharacter;
+import org.wikimodel.wem.xhtml.XhtmlCharacterType;
+import org.wikimodel.wem.xhtml.XhtmlEscapeHandler;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -279,15 +283,11 @@ public class XhtmlHandler extends DefaultHandler {
 
         WikiScannerContext fScannerContext;
 
-        /**
-         * List of reserved keywords that the XHTML parser will escape
-         * when found inside a paragraph for example.
-         */
-        List<String> fReservedKeywords;
+        XhtmlEscapeHandler fEscapeHandler;
 
-        public TagStack(WikiScannerContext context, List<String> reservedKeywords) {
+        public TagStack(WikiScannerContext context, XhtmlEscapeHandler escapeHandler) {
             fScannerContext = context;
-            fReservedKeywords = reservedKeywords;
+            fEscapeHandler = escapeHandler;
             
             // Pre-initialize stack parameters for performance reason 
             // (so that we don't have to check all the time if they're initialized or not)
@@ -311,38 +311,8 @@ public class XhtmlHandler extends DefaultHandler {
             fPeek = fPeek.fParent;
         }
 
-        /**
-         * @param buf
-         * @param type
-         */
-        private void flushBuffer(StringBuffer buf, int type) {
-            if (buf.length() > 0) {
-                String str = buf.toString();
-                switch (type) {
-                    case SPACE:
-                        fScannerContext.onSpace(str);
-                        break;
-                    case SPECIAL_SYMBOL:
-                    	// Make sure we send only one character for each onSpecialSymbol event
-                    	// since that's how the other parsers behave.
-                        for (int i = 0; i < str.length(); i++) {
-                            fScannerContext.onSpecialSymbol(str.substring(i, i + 1));
-                        }
-                        break;
-                    case CHARACTER:
-                        str = WikiPageUtil.escapeXmlString(str);
-                        fScannerContext.onWord(str);
-                        break;
-                    case NEW_LINE:
-                        fScannerContext.onNewLine();
-                        break;
-                }
-            }
-            buf.delete(0, buf.length());
-        }
-
-        private int getCharacterType(char ch) {
-            int type = CHARACTER;
+        private XhtmlCharacterType getCharacterType(char ch) {
+            XhtmlCharacterType type = XhtmlCharacterType.CHARACTER;
             switch (ch) {
                 case '!':
                 case '\'':
@@ -376,18 +346,17 @@ public class XhtmlHandler extends DefaultHandler {
                 case '}':
                 case '~':
                 case '\"':
-                    type = SPECIAL_SYMBOL;
+                    type = XhtmlCharacterType.SPECIAL_SYMBOL;
                     break;
                 case ' ':
                 case '\t':
-                    type = SPACE;
+                    type = XhtmlCharacterType.SPACE;
                     break;
                 case '\n':
                 case '\r':
-                    type = NEW_LINE;
+                    type = XhtmlCharacterType.NEW_LINE;
                     break;
                 default:
-                    type = CHARACTER;
                     break;
             }
             return type;
@@ -397,64 +366,73 @@ public class XhtmlHandler extends DefaultHandler {
             return fScannerContext;
         }
 
+        private void flushStack(Stack<XhtmlCharacter> stack) {
+            while (stack.size() > 0) {
+                XhtmlCharacter character = stack.remove(0);
+                switch (character.getType()) {
+                    case ESCAPED:
+                        fScannerContext.onEscape("" + character.getCharacter());
+                        break;
+                    case NEW_LINE:
+                        fScannerContext.onNewLine();
+                        break;
+                    case SPECIAL_SYMBOL:
+                        fScannerContext.onSpecialSymbol("" + character.getCharacter());
+                        break;
+                    case SPACE:
+                        StringBuffer spaceBuffer = new StringBuffer(" ");
+                        while ((stack.size() > 0) && (stack.firstElement().getType() == XhtmlCharacterType.SPACE)) {
+                            stack.remove(0);
+                            spaceBuffer.append(' ');
+                        }
+                        fScannerContext.onSpace(spaceBuffer.toString());
+                        break;
+                    default:
+                        StringBuffer charBuffer = new StringBuffer();
+                        charBuffer.append(character.getCharacter());
+                        while ((stack.size() > 0) && (stack.firstElement().getType() == XhtmlCharacterType.CHARACTER)) {
+                            charBuffer.append(stack.firstElement().getCharacter());
+                            stack.remove(0);
+                        }
+                        fScannerContext.onWord(WikiPageUtil.escapeXmlString(charBuffer.toString()));
+                }
+            }            
+        }
+        
         public void onCharacters(char[] array, int start, int length) {
             if (!fPeek.isContentContainer())
                 return;
             if (!fPeek.appendContent(array, start, length)) {
-                StringBuffer buf = new StringBuffer();
-                int type = CHARACTER;
+                Stack<XhtmlCharacter> stack = new Stack<XhtmlCharacter>();
+                Map<String, Object> characterContext = new HashMap<String, Object>();
+                fEscapeHandler.initialize(characterContext);
                 for (int i = 0; i < length; i++) {
-                    char ch = array[start + i];
-                    int oldType = type;
-                    type = getCharacterType(ch);
+                    XhtmlCharacter current = new XhtmlCharacter(array[start + i], getCharacterType(array[start + i]));
+                    XhtmlCharacter result = current;
+                    if (fEscapeHandler != null) {
 
-                    // Verify if we should flush the buffer. Here are the cases
-                    // when we need to flush:
-                    // 1) If the character type changes
-                    // 2) If we have special symbols in the buffer and some of
-                    //    them need to be escaped since they are special tokens
-                    //    in some wiki syntax grammar.
-
-                    if (oldType == SPECIAL_SYMBOL) {
-                        escapeWikiSyntaxCharacters(buf);
-                    }
-                    if (type != oldType) {
-                        flushBuffer(buf, oldType);
-                    }                    
-                    buf.append(ch);
-                }
-                if (type == SPECIAL_SYMBOL) {
-                    escapeWikiSyntaxCharacters(buf);
-                }
-                flushBuffer(buf, type);
-            }
-        }
-        
-        /**
-         * Verify if any special symbol characters should be escaped since they
-         * are special tokens in a given wiki syntax.
-         */
-        private void escapeWikiSyntaxCharacters(StringBuffer buf) {
-            for (String keyword: fReservedKeywords) {
-                if (buf.length() >= keyword.length()) {
-                    boolean found = true;
-                    for (int j = keyword.length() - 1; j > -1; j--) {
-                        if (buf.charAt(buf.length() - keyword.length() + j) != keyword.charAt(j)) {
-                            found = false;
-                            break;
+                        // In order to find the HTML tag being handled we need to find the first non null handler
+                        TagContext context = fPeek;
+                        TagHandler handler = context.fHandler;
+                        while ((handler == null) && (context.getParent() != null)) {
+                            context = context.getParent();
+                            handler = context.fHandler;
                         }
-                    }
-                    if (found) {
-                        if (buf.length() > keyword.length()) {
-                            flushBuffer(new StringBuffer(buf.substring(0, buf.length() - keyword.length())), SPECIAL_SYMBOL);
+                        String tag;
+                        if (handler == null) {
+                            // We haven't found a handler. It means we're inside the top element and we assume we're on an implicit paragraph.
+                            tag = "p";
+                        } else {
+                            tag = context.getLocalName().toLowerCase();
                         }
-                        for (int i = 0; i < keyword.length(); i++) {
-                            fScannerContext.onEscape(keyword.substring(i, i + 1));
-                        }
-                        buf.setLength(0);
-                        break;
+                        
+                        result = fEscapeHandler.handleCharacter(current, stack, tag, characterContext);
                     }
+                    stack.push(result);
                 }
+                
+                // Now send the events.
+                flushStack(stack);
             }
         }
         
@@ -832,8 +810,8 @@ public class XhtmlHandler extends DefaultHandler {
     /**
      * @param context
      */
-    public XhtmlHandler(WikiScannerContext context, List<String> reservedKeywords) {
-        fStack = new TagStack(context, reservedKeywords);
+    public XhtmlHandler(WikiScannerContext context, XhtmlEscapeHandler escapeHandler) {
+        fStack = new TagStack(context, escapeHandler);
     }
 
     /**

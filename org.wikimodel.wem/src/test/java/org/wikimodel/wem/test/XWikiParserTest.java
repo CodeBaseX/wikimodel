@@ -174,6 +174,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test("==== Heading 4", "<h4>Heading 4</h4>");
         test("===== Heading 5", "<h5>Heading 5</h5>");
         test("====== Heading 6", "<h6>Heading 6</h6>");
+        test("= Heading 1 =some", "<h1>Heading 1</h1>\n<p>some</p>");
     }
 
     /**

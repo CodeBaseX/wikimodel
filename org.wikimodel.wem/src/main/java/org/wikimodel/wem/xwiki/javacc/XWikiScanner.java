@@ -1240,12 +1240,16 @@ public class XWikiScanner implements XWikiScannerConstants {
                 if (!fContext.isInHeader()) {
                         int pos = t.image.indexOf('=');
                         if (pos > 0) {
+                                // Spaces are sent as a single event.
                                 fContext.onSpace(t.image.substring(0, pos));
                         }
                     for (int i = pos; i < t.image.length(); i++) {
+                        // And special symbols are sent as one event per symbol.
                         fContext.onSpecialSymbol("=");
                     }
-                }
+                } else {
+                                fContext.endHeader();
+                            }
         break;
       case I_BR:
       case D_BR:
@@ -1871,6 +1875,11 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3R_43() {
+    if (jj_3R_69()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_45() {
     if (jj_3R_28()) return true;
     return false;
@@ -1889,8 +1898,8 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_43() {
-    if (jj_3R_69()) return true;
+  final private boolean jj_3R_42() {
+    if (jj_3R_68()) return true;
     return false;
   }
 
@@ -1901,11 +1910,6 @@ public class XWikiScanner implements XWikiScannerConstants {
 
   final private boolean jj_3_10() {
     if (jj_3R_18()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_42() {
-    if (jj_3R_68()) return true;
     return false;
   }
 
@@ -1924,13 +1928,13 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3_9() {
-    if (jj_3R_19()) return true;
+  final private boolean jj_3R_40() {
+    if (jj_3R_66()) return true;
     return false;
   }
 
-  final private boolean jj_3R_40() {
-    if (jj_3R_66()) return true;
+  final private boolean jj_3_9() {
+    if (jj_3R_19()) return true;
     return false;
   }
 
@@ -1944,6 +1948,11 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3R_38() {
+    if (jj_3R_64()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_14() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1953,11 +1962,6 @@ public class XWikiScanner implements XWikiScannerConstants {
       xsp = jj_scanpos;
       if (jj_3_9()) { jj_scanpos = xsp; break; }
     }
-    return false;
-  }
-
-  final private boolean jj_3R_38() {
-    if (jj_3R_64()) return true;
     return false;
   }
 
