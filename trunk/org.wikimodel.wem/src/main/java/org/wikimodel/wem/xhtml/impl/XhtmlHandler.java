@@ -400,6 +400,11 @@ public class XhtmlHandler extends DefaultHandler {
         }
         
         public void onCharacters(char[] array, int start, int length) {
+            
+            // In order to handle the following case where no explicit paragraph is specified we need to flush any recorded empty lines:
+            // <html>one two three<br/><br/>hello</html>
+            sendEmptyLines(fPeek);
+            
             if (!fPeek.isContentContainer())
                 return;
             if (!fPeek.appendContent(array, start, length)) {
@@ -890,7 +895,7 @@ public class XhtmlHandler extends DefaultHandler {
         int lineCount = (Integer) context.getTagStack().getStackParameter("emptyLinesCount"); 
         if (lineCount > 0) {
             context.getScannerContext().onEmptyLines(lineCount - 1);
-            context.getTagStack().setStackParameter("emptyLinesCount", null);
+            context.getTagStack().setStackParameter("emptyLinesCount", 0);
         }
     }
     
