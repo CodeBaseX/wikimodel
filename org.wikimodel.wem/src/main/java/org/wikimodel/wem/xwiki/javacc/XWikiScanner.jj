@@ -552,8 +552,8 @@ void sendOnEmptyLinesEvent(boolean shouldIncrement):
 }
 {
     {
-        if (emptyLinesCount > 0) {
-            fContext.onEmptyLines(shouldIncrement ? emptyLinesCount + 1 : emptyLinesCount);
+        if (emptyLinesCount > 1) {
+            fContext.onEmptyLines(shouldIncrement ? emptyLinesCount : emptyLinesCount - 1);
         }
         emptyLinesCount = 0;
     }

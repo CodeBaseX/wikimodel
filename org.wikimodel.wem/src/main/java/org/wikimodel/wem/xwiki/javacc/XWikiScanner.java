@@ -946,8 +946,8 @@ public class XWikiScanner implements XWikiScannerConstants {
  * lexer "eats" a NewLine token to recognize these block elements.
  */
   final public void sendOnEmptyLinesEvent(boolean shouldIncrement) throws ParseException {
-        if (emptyLinesCount > 0) {
-            fContext.onEmptyLines(shouldIncrement ? emptyLinesCount + 1 : emptyLinesCount);
+        if (emptyLinesCount > 1) {
+            fContext.onEmptyLines(shouldIncrement ? emptyLinesCount : emptyLinesCount - 1);
         }
         emptyLinesCount = 0;
   }
