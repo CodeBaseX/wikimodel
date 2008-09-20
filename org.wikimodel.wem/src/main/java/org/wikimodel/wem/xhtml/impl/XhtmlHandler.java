@@ -293,6 +293,7 @@ public class XhtmlHandler extends DefaultHandler {
             // (so that we don't have to check all the time if they're initialized or not)
             setStackParameter("emptyLinesCount", 0);
             setStackParameter("listStyles", new StringBuffer());
+            setStackParameter("isInBlockElement", false);
         }
 
         public void beginElement(
@@ -401,9 +402,12 @@ public class XhtmlHandler extends DefaultHandler {
         
         public void onCharacters(char[] array, int start, int length) {
             
-            // In order to handle the following case where no explicit paragraph is specified we need to flush any recorded empty lines:
-            // <html>one two three<br/><br/>hello</html>
-            sendEmptyLines(fPeek);
+            // If we outside of a block element and we have characters assume we're in a paragraph since we allow
+            // implicit paragraphs.
+            boolean isInBlockElement = (Boolean) fPeek.getTagStack().getStackParameter("isInBlockElement");
+            if (!isInBlockElement) {
+                fPeek.getTagStack().setStackParameter("isInBlockElement", true);
+            }
             
             if (!fPeek.isContentContainer())
                 return;
@@ -471,11 +475,13 @@ public class XhtmlHandler extends DefaultHandler {
             protected void begin(TagContext context) {
                 sendEmptyLines(context);
                 context.getScannerContext().beginParagraph(context.getParams());
+                context.getTagStack().setStackParameter("isInBlockElement", true);
             }
 
             @Override
             protected void end(TagContext context) {
                 context.getScannerContext().endParagraph();
+                context.getTagStack().setStackParameter("isInBlockElement", false);
             }
         });
 
@@ -485,11 +491,13 @@ public class XhtmlHandler extends DefaultHandler {
             protected void begin(TagContext context) {
                 sendEmptyLines(context);
                 context.getScannerContext().beginTable(context.getParams());
+                context.getTagStack().setStackParameter("isInBlockElement", true);
             }
 
             @Override
             protected void end(TagContext context) {
                 context.getScannerContext().endTable();
+                context.getTagStack().setStackParameter("isInBlockElement", false);
             }
         });
         TagStack.add("tr", new TagHandler(false, false, false) {
@@ -527,11 +535,13 @@ public class XhtmlHandler extends DefaultHandler {
                 if (listStyles.length() == 0) {
                     context.getScannerContext().beginList(context.getParams());
                 }
+                context.getTagStack().setStackParameter("isInBlockElement", true);
             }
 
             @Override
             protected void end(TagContext context) {
                 // Note: Do not generate an endList() event since it'll be generated automatically by the next element.
+                context.getTagStack().setStackParameter("isInBlockElement", false);
             }
         };
         TagStack.add("ul", handler);
@@ -564,11 +574,13 @@ public class XhtmlHandler extends DefaultHandler {
             protected void begin(TagContext context) {
                 sendEmptyLines(context);
                 context.getScannerContext().beginList();
+                context.getTagStack().setStackParameter("isInBlockElement", true);
             }
 
             @Override
             protected void end(TagContext context) {
                 context.getScannerContext().endList();
+                context.getTagStack().setStackParameter("isInBlockElement", false);
             }
         });
         TagStack.add("dt", new TagHandler(false, false, true) {
@@ -602,11 +614,13 @@ public class XhtmlHandler extends DefaultHandler {
                 int level = Integer.parseInt(tag.substring(1, 2));
                 sendEmptyLines(context);
                 context.getScannerContext().beginHeader(level);
+                context.getTagStack().setStackParameter("isInBlockElement", true);
             }
 
             @Override
             protected void end(TagContext context) {
                 context.getScannerContext().endHeader();
+                context.getTagStack().setStackParameter("isInBlockElement", false);
             }
         };
         TagStack.add("h1", handler);
@@ -622,6 +636,13 @@ public class XhtmlHandler extends DefaultHandler {
             protected void begin(TagContext context) {
                 sendEmptyLines(context);
                 context.getScannerContext().onHorizontalLine();
+                context.getTagStack().setStackParameter("isInBlockElement", true);
+            }
+
+            @Override
+            protected void end(TagContext context)
+            {
+                context.getTagStack().setStackParameter("isInBlockElement", false);
             }
         });
         TagStack.add("pre", new TagHandler(false, true, true) {
@@ -780,12 +801,9 @@ public class XhtmlHandler extends DefaultHandler {
         TagStack.add("br", new TagHandler(false, false, false) {
             @Override
             protected void begin(TagContext context) {
-            	// If the parent is not one of the known tags and if it's 
-            	// not the "html" one then we consider we're outside of a block
-            	// element and we save the number of <br/> to emit an 
-            	// onEmptyLines event.
-            	if ((context.getParent() == null) || (context.getParent().isTag("html"))
-            	    || (context.getParent().isTag("body"))) {
+                // If we're outside of a block element we save the number of <br/> to emit an onEmptyLines event.
+            	boolean isInBlockElement = (Boolean) context.getTagStack().getStackParameter("isInBlockElement");
+                if (!isInBlockElement) {
             		int value = (Integer) context.getTagStack().getStackParameter("emptyLinesCount");
             		value++;
             		context.getTagStack().setStackParameter("emptyLinesCount", value);
