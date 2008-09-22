@@ -10,13 +10,16 @@
  *******************************************************************************/
 package org.wikimodel.wem;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
  * An immutable set of styles.
  * 
  * @author MikhailKotelnikov
+ * @author VincentMassol
  */
 public class WikiFormat {
 
@@ -26,7 +29,7 @@ public class WikiFormat {
 
     private String fOpeningTags;
 
-    private Set<WikiStyle> fStyles = new HashSet<WikiStyle>();
+    private LinkedHashSet<WikiStyle> fStyles = new LinkedHashSet<WikiStyle>();
 
     /**
      * 
@@ -64,7 +67,7 @@ public class WikiFormat {
      * Creates a new style set and adds the given style to it.
      * 
      * @param style the style to add
-     * @return a new comy of the style set containing the given style
+     * @return a new copy of the style set containing the given style
      */
     public WikiFormat addStyle(WikiStyle style) {
         if (fStyles.contains(style))
@@ -137,7 +140,7 @@ public class WikiFormat {
      * Creates a new style set which does not contain the specified style.
      * 
      * @param style the style to add
-     * @return a new comy of the style set containing the given style
+     * @return a new copy of the style set containing the given style
      */
     public WikiFormat removeStyle(WikiStyle style) {
         if (!fStyles.contains(style))
@@ -148,12 +151,12 @@ public class WikiFormat {
     }
 
     /**
-     * Creaetes a new format object where the specified style is switched: if
+     * Creates a new format object where the specified style is switched: if
      * this format contains the given style then the resulting format does not
-     * nad vice versa.
+     * and vice versa.
      * 
      * @param wikiStyle the style to switch
-     * @return a format object where the given style is inversed relatively to
+     * @return a format object where the given style is inverted relatively to
      *         this format
      */
     public WikiFormat switchStyle(WikiStyle wikiStyle) {
@@ -165,6 +168,13 @@ public class WikiFormat {
         return clone;
     }
 
+    /**
+     * @return the list of styles in the order in which they were created
+     */
+    public List<WikiStyle> getStyles() {
+        return new ArrayList<WikiStyle>(fStyles);
+    }
+    
     /**
      * @see java.lang.Object#toString()
      */
