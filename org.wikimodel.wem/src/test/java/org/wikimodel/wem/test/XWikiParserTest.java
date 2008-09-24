@@ -12,7 +12,10 @@ package org.wikimodel.wem.test;
 
 import java.io.StringReader;
 
-import org.wikimodel.wem.*;
+import org.wikimodel.wem.IWemListener;
+import org.wikimodel.wem.IWikiParser;
+import org.wikimodel.wem.IWikiPrinter;
+import org.wikimodel.wem.WikiParserException;
 import org.wikimodel.wem.xhtml.PrintListener;
 import org.wikimodel.wem.xwiki.XWikiParser;
 
@@ -88,9 +91,11 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test(";: ", "<dl>\n  <dd></dd>\n</dl>");
 
         test(";not: definition", "<p>;not: definition</p>");
-        test("; this:is_not_a_term : it is an uri", "<dl>\n"
-            + "  <dt><a href='this:is_not_a_term'>this:is_not_a_term</a> : it is an uri</dt>\n"
-            + "</dl>");
+        test(
+            "; this:is_not_a_term : it is an uri",
+            "<dl>\n"
+                + "  <dt><a href='this:is_not_a_term'>this:is_not_a_term</a> : it is an uri</dt>\n"
+                + "</dl>");
 
         test("; term one\n: definition one\n"
             + "; term two\n: definition two\n"
@@ -103,21 +108,23 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             + "  <dd>definition three</dd>\n"
             + "</dl>");
 
-        test("; One,\ntwo,\nbucle my shoes...\n: "
-            + "...Three\nfour,\nClose the door\n"
-            + "; Five,\nSix\n: Pick up\n sticks\n\ntam-tam, pam-pam...", "<dl>\n"
-            + "  <dt>One,\n"
-            + "two,\n"
-            + "bucle my shoes...</dt>\n"
-            + "  <dd>...Three\n"
-            + "four,\n"
-            + "Close the door</dd>\n"
-            + "  <dt>Five,\n"
-            + "Six</dt>\n"
-            + "  <dd>Pick up\n"
-            + " sticks</dd>\n"
-            + "</dl>\n"
-            + "<p>tam-tam, pam-pam...</p>");
+        test(
+            "; One,\ntwo,\nbucle my shoes...\n: "
+                + "...Three\nfour,\nClose the door\n"
+                + "; Five,\nSix\n: Pick up\n sticks\n\ntam-tam, pam-pam...",
+            "<dl>\n"
+                + "  <dt>One,\n"
+                + "two,\n"
+                + "bucle my shoes...</dt>\n"
+                + "  <dd>...Three\n"
+                + "four,\n"
+                + "Close the door</dd>\n"
+                + "  <dt>Five,\n"
+                + "Six</dt>\n"
+                + "  <dd>Pick up\n"
+                + " sticks</dd>\n"
+                + "</dl>\n"
+                + "<p>tam-tam, pam-pam...</p>");
     }
 
     /**
@@ -259,6 +266,9 @@ public class XWikiParserTest extends AbstractWikiParserTest {
     }
 
     public void testMacro() throws WikiParserException {
+        test("{{toto1}}a{{/toto1}}{{toto2/}}", ""
+            + "<pre class='macro' macroName='toto1'><![CDATA[a]]></pre>\n"
+            + "<pre class='macro' macroName='toto2'><![CDATA[]]></pre>");
         test(
             "{{toto}}a{{/toto}}",
             "<pre class='macro' macroName='toto'><![CDATA[a]]></pre>");
@@ -464,8 +474,8 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             "before wiki:Hello after",
             "<p>before <a href='wiki:Hello'>wiki:Hello</a> after</p>");
         test(
-            "before wiki:\\Hello after",
-            "<p>before wiki:<span class='escaped'>H</span>ello after</p>");
+            "before wiki~:Hello after",
+            "<p>before wiki<span class='escaped'>:</span>Hello after</p>");
 
         // Not a reference
         test("before [toto] after", "<p>before [toto] after</p>");
@@ -563,7 +573,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             + "<table a='b'><tbody>\n"
             + "  <tr><td> cell </td></tr>\n"
             + "</tbody></table>");
-        test("(%a=b%)\n:: cell ", ""
+        test("(%a=b%)\n| cell ", ""
             + "<table a='b'><tbody>\n"
             + "  <tr><td> cell </td></tr>\n"
             + "</tbody></table>");
@@ -579,6 +589,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
 
     public void testVerbatim() throws WikiParserException {
         test("{{{abc}}}", "<pre>abc</pre>");
+        test("{{{abc}}}{{{cde}}}", "<pre>abc</pre>\n<pre>cde</pre>");
         test(
             "before\n{{{abc}}}after",
             "<p>before</p>\n<pre>abc</pre>\n<p>after</p>");
