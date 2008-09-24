@@ -87,7 +87,7 @@ TOKEN_MGR_DECLS: {
     | <INTERNAL_VERBATIM_END: <VERBATIM_END> > {
             verbatimBlockDepth--;
             if (verbatimBlockDepth == 0)  {
-                SwitchTo(DEFAULT);
+                SwitchTo(INITIAL_CONTEXT);
             } else {
                 SwitchTo(VERBATIM_CONTEXT);
             }
@@ -112,7 +112,7 @@ TOKEN_MGR_DECLS: {
             if (name.startsWith("/" + macroName)) {
                 macroDepth--;
                 if (macroDepth == 0) {
-                    context = DEFAULT;
+                    context = INITIAL_CONTEXT;
                 }
             }
             SwitchTo(context);
@@ -129,9 +129,8 @@ TOKEN_MGR_DECLS: {
     | <#BR: "\\\\" >
     | <#VERBATIM_START: "{{{" >
     | <#VERBATIM_END: "}}}" > 
-    | <#ESCAPED: ( "\\\\" | "~" ) >
     | <#VERBATIM_CONTENT: ( 
-          <ESCAPED>
+          "~" ~[]
         | ~["}", "{", "~"] 
         | "}" ~["}"] | "}}" ~["}"]
         | "{" ~["{"] | "{{" ~["{"]
@@ -144,7 +143,7 @@ TOKEN_MGR_DECLS: {
     | <#MACRO_CONTENT: ( <CHAR> | <SPACE> |<NEW_LINE> | <SPECIAL_SYMBOL> ) >
     | <#REFERENCE:  ( "[[" ( "~" ~[] | ~["]"] | "]" ~["]"] )* "]]" ) >
     | <#HORLINE: "---" ("-")+ >
-    | <#PARAMS:   "(%" ( <ESCAPED> | ~["%"] | ["%"] ~[")"] )* "%)" >
+    | <#PARAMS:   "(%" ( "~" ~[] | ~["%"] | ["%"] ~[")"] )* "%)" >
     | <#CELL: ( "||" | "|" | "::" | "!!" ) (<PARAMS>)? >
     | <#TABLE: ( "{table" (" " (~["}", "\n", "\r"])*)?  "}" ( (<SPACE>)* <NEW_LINE> )? ) >
     | <#QUOT_LINE: (">")+ >
