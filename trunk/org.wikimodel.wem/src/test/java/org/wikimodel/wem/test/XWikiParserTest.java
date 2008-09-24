@@ -266,9 +266,15 @@ public class XWikiParserTest extends AbstractWikiParserTest {
     }
 
     public void testMacro() throws WikiParserException {
+        test("{{macro/}}{{macro/}}", ""
+            + "<pre class='macro' macroName='macro'><![CDATA[]]></pre>\n"
+            + "<pre class='macro' macroName='macro'><![CDATA[]]></pre>");
         test("{{toto1}}a{{/toto1}}{{toto2/}}", ""
             + "<pre class='macro' macroName='toto1'><![CDATA[a]]></pre>\n"
             + "<pre class='macro' macroName='toto2'><![CDATA[]]></pre>");
+        test("{{toto}}a{{/toto}}{{toto}}{{/toto}}", ""
+            + "<pre class='macro' macroName='toto'><![CDATA[a]]></pre>\n"
+            + "<pre class='macro' macroName='toto'><![CDATA[]]></pre>");
         test(
             "{{toto}}a{{/toto}}",
             "<pre class='macro' macroName='toto'><![CDATA[a]]></pre>");
