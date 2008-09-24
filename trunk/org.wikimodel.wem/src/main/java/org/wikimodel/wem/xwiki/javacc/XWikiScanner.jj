@@ -341,6 +341,7 @@ void doParse():
     ( docElements() )*
     <EOF>
     {
+        sendOnEmptyLinesEvent(true);
         fContext.endDocument();
     }
 }

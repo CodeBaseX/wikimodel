@@ -448,18 +448,6 @@ public class XhtmlHandler extends DefaultHandler {
     }
 
     static {
-        
-        // TagStack.add("html", new TagHandler(false, false, true) {
-        // @Override
-        // public void begin(TagContext context) {
-        // context.getScannerContext().beginDocument();
-        // }
-        //
-        // @Override
-        // public void end(TagContext context) {
-        // context.getScannerContext().endDocument();
-        // }
-        // });
 
         // Simple block elements (p, pre, quotation...)
         TagStack.add("p", new TagHandler(false, true, true) {
@@ -808,7 +796,7 @@ public class XhtmlHandler extends DefaultHandler {
      * even call onCharacters() for every single characters! Thus we need to accumulate
      * the characters in a buffer before we process them.
      */
-    private StringBuffer accumulationBuffer;
+    private StringBuffer fAccumulationBuffer;
 
     /**
      * @param context
@@ -823,8 +811,8 @@ public class XhtmlHandler extends DefaultHandler {
     @Override
     public void characters(char[] array, int start, int length)
         throws SAXException {
-        if (accumulationBuffer != null) {
-            accumulationBuffer.append(array, start, length);
+        if (fAccumulationBuffer != null) {
+            fAccumulationBuffer.append(array, start, length);
         }
     }
 
@@ -833,6 +821,7 @@ public class XhtmlHandler extends DefaultHandler {
      */
     @Override
     public void endDocument() throws SAXException {
+        sendEmptyLines(fStack.fPeek);
         fStack.endElement();
     }
 
@@ -843,9 +832,9 @@ public class XhtmlHandler extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String qName)
         throws SAXException {
-        if (accumulationBuffer != null && accumulationBuffer.length() > 0) {
-            fStack.onCharacters(accumulationBuffer.toString().toCharArray(), 0, accumulationBuffer.length());
-            accumulationBuffer.setLength(0);
+        if (fAccumulationBuffer != null && fAccumulationBuffer.length() > 0) {
+            fStack.onCharacters(fAccumulationBuffer.toString().toCharArray(), 0, fAccumulationBuffer.length());
+            fAccumulationBuffer.setLength(0);
         }
         fStack.endElement();
     }
@@ -879,10 +868,10 @@ public class XhtmlHandler extends DefaultHandler {
         String localName,
         String qName,
         Attributes attributes) throws SAXException {
-        if (accumulationBuffer != null && accumulationBuffer.length() > 0) {
-            fStack.onCharacters(accumulationBuffer.toString().toCharArray(), 0, accumulationBuffer.length());
+        if (fAccumulationBuffer != null && fAccumulationBuffer.length() > 0) {
+            fStack.onCharacters(fAccumulationBuffer.toString().toCharArray(), 0, fAccumulationBuffer.length());
         }
-        accumulationBuffer = new StringBuffer();
+        fAccumulationBuffer = new StringBuffer();
         fStack.beginElement(uri, localName, qName, attributes);
     }
 
