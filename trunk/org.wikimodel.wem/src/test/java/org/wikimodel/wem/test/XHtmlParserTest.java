@@ -119,6 +119,7 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
             + "<p>before</p>\n"
             + "<hr />\n"
             + "<p>after</p>");
+        test("<html><hr a='b' /></html>", "<hr a='b' />");
     }
 
     /**

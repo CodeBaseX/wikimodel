@@ -371,11 +371,11 @@ public class CompositeListener implements IWemListener {
     }
 
     /**
-     * @see org.wikimodel.wem.IWemListener#onHorizontalLine()
+     * @see org.wikimodel.wem.IWemListener#onHorizontalLine(WikiParameters params)
      */
-    public void onHorizontalLine() {
+    public void onHorizontalLine(WikiParameters params) {
         for (IWemListener listener : fListeners) {
-            listener.onHorizontalLine();
+            listener.onHorizontalLine(params);
         }
     }
 

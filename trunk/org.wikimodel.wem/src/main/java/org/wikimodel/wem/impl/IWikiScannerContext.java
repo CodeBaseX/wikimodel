@@ -137,6 +137,8 @@ public interface IWikiScannerContext extends IWemConstants {
 
     void onHorizontalLine();
 
+    void onHorizontalLine(WikiParameters params);
+
     void onLineBreak();
 
     void onMacroBlock(String macroName, WikiParameters params, String content);

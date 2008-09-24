@@ -264,6 +264,10 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().onHorizontalLine();
     }
 
+    public void onHorizontalLine(WikiParameters params) {
+        getContext().onHorizontalLine(params);
+    }
+
     public void onLineBreak() {
         getContext().onLineBreak();
     }

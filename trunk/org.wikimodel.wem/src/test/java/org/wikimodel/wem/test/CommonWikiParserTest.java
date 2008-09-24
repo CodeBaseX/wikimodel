@@ -263,6 +263,7 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         test("-----------", "<hr />");
         test("----\nabc", "<hr />\n<p>abc</p>");
         test("before\n----\nafter", "<p>before</p>\n<hr />\n<p>after</p>");
+        test("{{a=b}}\n----", "<hr a='b' />");
 
         // Not lines
         test(" -----------", "<p> &mdash;&mdash;&mdash;</p>");

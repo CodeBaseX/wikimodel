@@ -350,7 +350,7 @@ void docElements():
 {
 }
 {
-    header() 
+    LOOKAHEAD(2) header() 
     |
     LOOKAHEAD(2) table() 
     |
@@ -359,7 +359,7 @@ void docElements():
     macroBlock()
     |
     // Non-interpreted content or empty content
-    ( verbatimBlock() | horline() )
+    LOOKAHEAD(2) ( verbatimBlock() | horline() )
     |
     (
     LOOKAHEAD(2) 
@@ -373,14 +373,20 @@ void docElements():
 
 void header():
 {
-   Token t = null;
+    Token t = null;
+    String str = "";
+    WikiParameters params = WikiParameters.EMPTY;
 }
 {
+    ( LOOKAHEAD(2) t = getBLOCK_PARAMS() { str = t.image.trim(); } )?
+    {
+        params = newWikiParameters(str);
+    }
     t = getHEADER_BEGIN()
     {
         sendOnEmptyLinesEvent(true);
         int level = t.image.trim().length();
-        fContext.beginHeader(level);
+        fContext.beginHeader(level, params);
     }
     (LOOKAHEAD(2) line())?
     {
@@ -642,12 +648,18 @@ void macro(Token t, boolean block):
 void horline():
 {
     Token t = null;
+    String str = "";
+    WikiParameters params = WikiParameters.EMPTY;
 }
 {
+    ( LOOKAHEAD(2) t = getBLOCK_PARAMS() { str = t.image.trim(); } )?
+    {
+        params = newWikiParameters(str);
+    }
     t = getHORLINE()
     {
         sendOnEmptyLinesEvent(true);
-        fContext.onHorizontalLine();
+        fContext.onHorizontalLine(params);
     }
 }
 

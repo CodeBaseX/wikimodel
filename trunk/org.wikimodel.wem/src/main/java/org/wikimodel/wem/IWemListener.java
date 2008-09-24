@@ -91,7 +91,7 @@ public interface IWemListener {
 
     void onExtensionInline(String extensionName, WikiParameters params);
 
-    void onHorizontalLine();
+    void onHorizontalLine(WikiParameters params);
 
     void onLineBreak();
 
