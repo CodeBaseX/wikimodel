@@ -406,7 +406,9 @@ public class XhtmlHandler extends DefaultHandler {
             if (!fPeek.appendContent(array, start, length)) {
                 Stack<XhtmlCharacter> stack = new Stack<XhtmlCharacter>();
                 Map<String, Object> characterContext = new HashMap<String, Object>();
-                fEscapeHandler.initialize(characterContext);
+                if (fEscapeHandler != null) {
+                	fEscapeHandler.initialize(characterContext);
+                }
                 for (int i = 0; i < length; i++) {
                     XhtmlCharacter current = new XhtmlCharacter(array[start + i], getCharacterType(array[start + i]));
                     XhtmlCharacter result = current;
@@ -605,7 +607,7 @@ public class XhtmlHandler extends DefaultHandler {
             @Override
             protected void begin(TagContext context) {
                 sendEmptyLines(context);
-                context.getScannerContext().onHorizontalLine();
+                context.getScannerContext().onHorizontalLine(context.getParams());
             }
         });
         TagStack.add("pre", new TagHandler(false, true, true) {

@@ -219,7 +219,7 @@ public class JspWikiSerializer implements IWemListener {
 
     }
 
-    public void onHorizontalLine() {
+    public void onHorizontalLine(WikiParameters params) {
         println("----");
 
     }

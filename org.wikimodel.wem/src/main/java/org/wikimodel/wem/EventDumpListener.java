@@ -259,8 +259,8 @@ public class EventDumpListener extends PrintTextListener {
     }
 
     @Override
-    public void onHorizontalLine() {
-        println("onHorizontalLine()");
+    public void onHorizontalLine(WikiParameters params) {
+        println("onHorizontalLine([" + params + "])");
     }
 
     @Override

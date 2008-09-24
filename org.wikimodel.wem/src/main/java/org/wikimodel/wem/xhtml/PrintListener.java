@@ -209,8 +209,8 @@ public class PrintListener extends PrintInlineListener {
     }
 
     @Override
-    public void onHorizontalLine() {
-        println("<hr />");
+    public void onHorizontalLine(WikiParameters params) {
+        println("<hr" + params + " />");
     }
 
     @Override

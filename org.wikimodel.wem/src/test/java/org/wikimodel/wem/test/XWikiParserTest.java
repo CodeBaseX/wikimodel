@@ -193,6 +193,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test("-----------");
         test(" -----------");
         test("----abc");
+        test("(%a=b%)\n----", "<hr a='b' />");
     }
 
     /**

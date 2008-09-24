@@ -664,8 +664,12 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     }
 
     public void onHorizontalLine() {
+    	onHorizontalLine(WikiParameters.EMPTY);
+    }
+
+    public void onHorizontalLine(WikiParameters params) {
         closeBlock();
-        fListener.onHorizontalLine();
+        fListener.onHorizontalLine(params);
     }
 
     public void onLineBreak() {
