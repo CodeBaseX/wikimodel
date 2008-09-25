@@ -16,16 +16,36 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.wikimodel.wem.IWemConstants;
 import org.wikimodel.wem.WikiPageUtil;
 import org.wikimodel.wem.WikiParameter;
 import org.wikimodel.wem.WikiParameters;
-import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.impl.WikiScannerContext;
 import org.wikimodel.wem.xhtml.XhtmlCharacter;
 import org.wikimodel.wem.xhtml.XhtmlCharacterType;
 import org.wikimodel.wem.xhtml.XhtmlEscapeHandler;
-import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
+import org.wikimodel.wem.xhtml.handler.BoldTagHandler;
+import org.wikimodel.wem.xhtml.handler.DefinitionDescriptionTagHandler;
+import org.wikimodel.wem.xhtml.handler.DefinitionListTagHandler;
+import org.wikimodel.wem.xhtml.handler.DefinitionTermTagHandler;
+import org.wikimodel.wem.xhtml.handler.DivisionTagHandler;
+import org.wikimodel.wem.xhtml.handler.HeaderTagHandler;
+import org.wikimodel.wem.xhtml.handler.HorizontalLineTagHandler;
+import org.wikimodel.wem.xhtml.handler.ItalicTagHandler;
+import org.wikimodel.wem.xhtml.handler.LineBreakTagHandler;
+import org.wikimodel.wem.xhtml.handler.ListItemTagHandler;
+import org.wikimodel.wem.xhtml.handler.ListTagHandler;
+import org.wikimodel.wem.xhtml.handler.ParagraphTagHandler;
+import org.wikimodel.wem.xhtml.handler.PreserveTagHandler;
+import org.wikimodel.wem.xhtml.handler.ReferenceTagHandler;
+import org.wikimodel.wem.xhtml.handler.StrikedOutTagHandler;
+import org.wikimodel.wem.xhtml.handler.SubScriptTagHandler;
+import org.wikimodel.wem.xhtml.handler.SuperScriptTagHandler;
+import org.wikimodel.wem.xhtml.handler.TableDataTagHandler;
+import org.wikimodel.wem.xhtml.handler.TableRowTagHandler;
+import org.wikimodel.wem.xhtml.handler.TableTagHandler;
+import org.wikimodel.wem.xhtml.handler.TagHandler;
+import org.wikimodel.wem.xhtml.handler.TeletypeTagHandler;
+import org.wikimodel.wem.xhtml.handler.UnderlineTagHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -36,94 +56,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class XhtmlHandler extends DefaultHandler {
 
-    // TODO: add management of embedded block elements.
-    public static class TagHandler {
-
-        /**
-         * @param context
-         * @return <code>true</code> if the current tag represented by the given
-         *         context requires a parent document
-         */
-        private static boolean requiresParentDocument(TagContext context) {
-            if (context == null)
-                return true;
-            if (context.fHandler == null
-                || !context.fHandler.requiresDocument())
-                return false;
-            boolean inContainer = false;
-            TagContext parent = context.fParent;
-            while (parent != null) {
-                if (parent.fHandler != null) {
-                    inContainer = parent.fHandler.isDocumentContainer();
-                    break;
-                }
-                parent = parent.fParent;
-            }
-            return inContainer;
-        }
-
-        public boolean fAccumulateContent;
-
-        /**
-         * This flag is <code>true</code> if the current tag can have a text
-         * content
-         */
-        private final boolean fContentContainer;
-
-        /**
-         * This flag shows if the current tag can be used as a container for
-         * embedded documents.
-         */
-        private final boolean fDocumentContainer;
-
-        /**
-         * This flag shows if the current tag should be created as a direct
-         * child of a document.
-         */
-        private final boolean fRequiresDocument;
-
-        /**
-         * @param documentContainer
-         * @param requiresDocument
-         * @param contentContainer
-         */
-        public TagHandler(
-            boolean documentContainer,
-            boolean requiresDocument,
-            boolean contentContainer) {
-            fDocumentContainer = documentContainer;
-            fRequiresDocument = requiresDocument;
-            fContentContainer = contentContainer;
-        }
-
-        protected void begin(TagContext context) {
-        }
-
-        public void beginElement(TagContext context) {
-            begin(context);
-        }
-
-        protected void end(TagContext context) {
-        }
-
-        public final void endElement(TagContext context) {
-            end(context);
-        }
-
-        public boolean isContentContainer() {
-            return fContentContainer;
-        }
-
-        public boolean isDocumentContainer() {
-            return fDocumentContainer;
-        }
-
-        public boolean requiresDocument() {
-            return fRequiresDocument;
-        }
-    }
-
-    protected static class TagStack {
+    public static class TagStack {
 
         public class TagContext {
 
@@ -159,7 +92,7 @@ public class XhtmlHandler extends DefaultHandler {
             }
 
             public boolean appendContent(char[] array, int start, int length) {
-                if (fHandler == null || !fHandler.fAccumulateContent)
+                if (fHandler == null || !fHandler.isAccumulateContent())
                     return false;
                 if (fContent == null) {
                     fContent = new StringBuffer();
@@ -255,12 +188,11 @@ public class XhtmlHandler extends DefaultHandler {
             public boolean isTag(String string) {
                 return string.equals(fLocalName.toLowerCase());
             }
-
         }
 
         private static final int CHARACTER = 0;
 
-        private static Map<String, TagHandler> fMap = new HashMap<String, TagHandler>();
+        private Map<String, TagHandler> fMap = new HashMap<String, TagHandler>();
 
         private static final int NEW_LINE = 3;
 
@@ -275,8 +207,12 @@ public class XhtmlHandler extends DefaultHandler {
          */
         private Map<String, Object> fStackParameters = new HashMap<String, Object>(); 
         
-        public static void add(String tag, TagHandler handler) {
+        public void add(String tag, TagHandler handler) {
             fMap.put(tag, handler);
+        }
+        
+        public void addAll(Map<String, TagHandler> handlers) {
+        	fMap.putAll(handlers);
         }
 
         private TagContext fPeek;
@@ -449,341 +385,6 @@ public class XhtmlHandler extends DefaultHandler {
 
     }
 
-    static {
-
-        // Simple block elements (p, pre, quotation...)
-        TagStack.add("p", new TagHandler(false, true, true) {
-            @Override
-            protected void begin(TagContext context) {
-                sendEmptyLines(context);
-                context.getScannerContext().beginParagraph(context.getParams());
-            }
-
-            @Override
-            protected void end(TagContext context) {
-                context.getScannerContext().endParagraph();
-            }
-        });
-
-        // Tables
-        TagStack.add("table", new TagHandler(false, true, false) {
-            @Override
-            protected void begin(TagContext context) {
-                sendEmptyLines(context);
-                context.getScannerContext().beginTable(context.getParams());
-            }
-
-            @Override
-            protected void end(TagContext context) {
-                context.getScannerContext().endTable();
-            }
-        });
-        TagStack.add("tr", new TagHandler(false, false, false) {
-            @Override
-            protected void begin(TagContext context) {
-                context.getScannerContext().beginTableRow(false);
-            }
-
-            @Override
-            protected void end(TagContext context) {
-                context.getScannerContext().endTableRow();
-            }
-        });
-        TagHandler handler = new TagHandler(true, false, true) {
-            @Override
-            protected void begin(TagContext context) {
-                context.getScannerContext().beginTableCell(context.isTag("th"));
-            }
-
-            @Override
-            protected void end(TagContext context) {
-                context.getScannerContext().endTableCell();
-            }
-        };
-        TagStack.add("td", handler);
-        TagStack.add("th", handler);
-
-        // Lists
-        handler = new TagHandler(false, true, false) {
-            @Override
-            protected void begin(TagContext context) {
-                sendEmptyLines(context);
-                // We only send a new list event if we're not already inside a list.
-                StringBuffer listStyles = (StringBuffer) context.getTagStack().getStackParameter("listStyles");
-                if (listStyles.length() == 0) {
-                    context.getScannerContext().beginList(context.getParams());
-                }
-            }
-
-            @Override
-            protected void end(TagContext context) {
-                // Note: Do not generate an endList() event since it'll be generated automatically by the next element.
-            }
-        };
-        TagStack.add("ul", handler);
-        TagStack.add("ol", handler);
-        TagStack.add("li", new TagHandler(true, false, true) {
-            @Override
-            public void begin(TagContext context) {
-                String markup = context.getParent().getName().equals("ol")
-                    ? "#"
-                    : "*";
-                StringBuffer listStyles = (StringBuffer) context.getTagStack().getStackParameter("listStyles");
-                listStyles.append(markup);
-                context.getScannerContext().beginListItem(listStyles.toString());
-            }
-
-            @Override
-            protected void end(TagContext context) {
-                StringBuffer listStyles = (StringBuffer) context.getTagStack().getStackParameter("listStyles");
-                // We should always have a length greater than 0 but we handle 
-                // the case where the user has entered some badly formed HTML
-                if (listStyles.length() > 0) {
-                    listStyles.setLength(listStyles.length() - 1);
-                }
-                // Note: Do not generate an endListItem() event since it'll be generated automatically by the next element.
-            }
-        });
-
-        TagStack.add("dl", new TagHandler(false, true, false) {
-            @Override
-            protected void begin(TagContext context) {
-                sendEmptyLines(context);
-                context.getScannerContext().beginList();
-            }
-
-            @Override
-            protected void end(TagContext context) {
-                context.getScannerContext().endList();
-            }
-        });
-        TagStack.add("dt", new TagHandler(false, false, true) {
-            @Override
-            protected void begin(TagContext context) {
-                context.getScannerContext().beginListItem(";");
-            }
-
-            @Override
-            protected void end(TagContext context) {
-                context.getScannerContext().endListItem();
-            }
-        });
-        TagStack.add("dd", new TagHandler(true, false, true) {
-            @Override
-            protected void begin(TagContext context) {
-                context.getScannerContext().beginListItem(":");
-            }
-
-            @Override
-            protected void end(TagContext context) {
-                context.getScannerContext().endListItem();
-            }
-        });
-
-        // Headers
-        handler = new TagHandler(false, true, true) {
-            @Override
-            protected void begin(TagContext context) {
-                String tag = context.getName();
-                int level = Integer.parseInt(tag.substring(1, 2));
-                sendEmptyLines(context);
-                context.getScannerContext().beginHeader(level);
-            }
-
-            @Override
-            protected void end(TagContext context) {
-                context.getScannerContext().endHeader();
-            }
-        };
-        TagStack.add("h1", handler);
-        TagStack.add("h2", handler);
-        TagStack.add("h3", handler);
-        TagStack.add("h4", handler);
-        TagStack.add("h5", handler);
-        TagStack.add("h6", handler);
-
-        // Unique block elements
-        TagStack.add("hr", new TagHandler(false, true, false) {
-            @Override
-            protected void begin(TagContext context) {
-                sendEmptyLines(context);
-                context.getScannerContext().onHorizontalLine(context.getParams());
-            }
-        });
-        TagStack.add("pre", new TagHandler(false, true, true) {
-            {
-                fAccumulateContent = true;
-            }
-
-            @Override
-            protected void end(TagContext context) {
-                String str = context.getContent();
-                sendEmptyLines(context);
-                context.getScannerContext().onVerbatim(str, false);
-            }
-        });
-
-        // In-line elements
-        TagStack.add("a", new TagHandler(false, false, true) {
-            {
-                fAccumulateContent = true;
-            }
-
-            @Override
-            protected void begin(TagContext context) {
-            }
-
-            @Override
-            protected void end(TagContext context) {
-                // TODO: it should be replaced by a normal parameters
-                WikiParameter ref = context.getParams().getParameter("href");
-                // Check if there's a class attribute with a "wikimodel-freestanding" value.
-                // If so it means we have a free standing link.
-                String classValue = context.fAttributes.getValue("class");
-                if (ref != null) {
-                    if ((classValue != null) && classValue.equalsIgnoreCase("wikimodel-freestanding")) {
-                        context.getScannerContext().onReference(ref.getValue());
-                    } else {
-                        String content = context.getContent();
-                        WikiReference reference = new WikiReference(
-                            ref.getValue(),
-                            content);
-                        context.getScannerContext().onReference(reference);
-                    }
-                }
-            }
-        });
-
-        handler = new TagHandler(false, false, true) {
-            @Override
-            protected void begin(TagContext context) {
-                context.getScannerContext().onFormat(IWemConstants.STRONG);
-            }
-
-            @Override
-            protected void end(TagContext context) {
-                context.getScannerContext().onFormat(IWemConstants.STRONG);
-            }
-        };
-        TagStack.add("strong", handler);
-        TagStack.add("b", handler);
-        
-        handler = new TagHandler(false, false, true) {
-            @Override
-            protected void begin(TagContext context) {
-                context.getScannerContext().onFormat(IWemConstants.INS);
-            }
-
-            @Override
-            protected void end(TagContext context) {
-                context.getScannerContext().onFormat(IWemConstants.INS);
-            }
-        };
-        TagStack.add("u", handler);
-        TagStack.add("ins", handler);
-
-        handler = new TagHandler(false, false, true) {
-            @Override
-            protected void begin(TagContext context) {
-                context.getScannerContext().onFormat(IWemConstants.STRIKE);
-            }
-
-            @Override
-            protected void end(TagContext context) {
-                context.getScannerContext().onFormat(IWemConstants.STRIKE);
-            }
-        };
-        TagStack.add("del", handler);
-        TagStack.add("s", handler);
-        TagStack.add("strike", handler);
-        
-        handler = new TagHandler(false, false, true) {
-            @Override
-            protected void begin(TagContext context) {
-                context.getScannerContext().onFormat(IWemConstants.EM);
-            }
-
-            @Override
-            protected void end(TagContext context) {
-                context.getScannerContext().onFormat(IWemConstants.EM);
-            }
-        };
-        TagStack.add("em", handler);
-        TagStack.add("i", handler);
-        
-        handler = new TagHandler(false, false, true) {
-            @Override
-            protected void begin(TagContext context) {
-                context.getScannerContext().onFormat(IWemConstants.SUP);
-            }
-
-            @Override
-            protected void end(TagContext context) {
-                context.getScannerContext().onFormat(IWemConstants.SUP);
-            }
-        };
-        TagStack.add("sup", handler);
-        
-        handler = new TagHandler(false, false, true) {
-            @Override
-            protected void begin(TagContext context) {
-                context.getScannerContext().onFormat(IWemConstants.SUB);
-            }
-
-            @Override
-            protected void end(TagContext context) {
-                context.getScannerContext().onFormat(IWemConstants.SUB);
-            }
-        };
-        TagStack.add("sub", handler);
-
-        // There are 2 possible output for <tt>:
-        // * If there a class="wikimodel-verbatim" specified then we emit a onVerbatimInline() event
-        // * If there no class or a class with another value then we emit a Monospace Format event.
-        TagStack.add("tt", new TagHandler(false, false, true) {
-            @Override
-            protected void begin(TagContext context) {
-                String classValue = context.fAttributes.getValue("class");
-                if ((classValue != null) && classValue.equalsIgnoreCase("wikimodel-verbatim")) {
-                    fAccumulateContent = true;
-                } else {
-                    context.getScannerContext().onFormat(IWemConstants.MONO);
-                }
-            }
-
-            @Override
-            protected void end(TagContext context) {
-                String classValue = context.fAttributes.getValue("class");
-                if ((classValue != null) && classValue.equalsIgnoreCase("wikimodel-verbatim")) {
-                    String str = context.getContent();
-                    context.getScannerContext().onVerbatim(str, true);
-                } else {
-                    context.getScannerContext().onFormat(IWemConstants.MONO);
-                }
-            }
-        }); 
-
-        TagStack.add("br", new TagHandler(false, false, false) {
-            @Override
-            protected void begin(TagContext context) {
-        		context.getScannerContext().onLineBreak();
-            }
-        });
-
-        TagStack.add("div", new TagHandler(true, false, true) {
-            @Override
-            protected void begin(TagContext context) {
-                // Check if we have a div meaning an empty line between block
-                String classValue = context.fAttributes.getValue("class");
-                if ((classValue != null) && classValue.equalsIgnoreCase("wikimodel-emptyline")) {
-                    int value = (Integer) context.getTagStack().getStackParameter("emptyLinesCount");
-                    value++;
-                    context.getTagStack().setStackParameter("emptyLinesCount", value);
-                }                
-            }
-        });
-    }
-
     protected String fDocumentSectionUri;
 
     protected String fDocumentUri;
@@ -803,8 +404,54 @@ public class XhtmlHandler extends DefaultHandler {
     /**
      * @param context
      */
-    public XhtmlHandler(WikiScannerContext context, XhtmlEscapeHandler escapeHandler) {
+    public XhtmlHandler(WikiScannerContext context, Map<String, TagHandler> extraHandlers, XhtmlEscapeHandler escapeHandler) {
         fStack = new TagStack(context, escapeHandler);
+        
+        // Register default handlers
+        fStack.add("p", new ParagraphTagHandler());
+        fStack.add("table", new TableTagHandler());
+        fStack.add("tr", new TableRowTagHandler());
+        TagHandler handler = new TableDataTagHandler();
+        fStack.add("td", handler);
+        fStack.add("th", handler);
+        handler = new ListTagHandler();
+        fStack.add("ul", handler);
+        fStack.add("ol", handler);
+        fStack.add("li", new ListItemTagHandler());
+        fStack.add("dl", new DefinitionListTagHandler());
+        fStack.add("dt", new DefinitionTermTagHandler());
+        fStack.add("dd", new DefinitionDescriptionTagHandler());
+        handler = new HeaderTagHandler();
+        fStack.add("h1", handler);
+        fStack.add("h2", handler);
+        fStack.add("h3", handler);
+        fStack.add("h4", handler);
+        fStack.add("h5", handler);
+        fStack.add("h6", handler);
+        fStack.add("hr", new HorizontalLineTagHandler());
+        fStack.add("pre", new PreserveTagHandler());
+        fStack.add("a", new ReferenceTagHandler());
+        handler = new BoldTagHandler();
+        fStack.add("strong", handler);
+        fStack.add("b", handler);
+        handler = new UnderlineTagHandler();
+        fStack.add("ins", handler);
+        fStack.add("u", handler);
+        handler = new StrikedOutTagHandler();
+        fStack.add("del", handler);
+        fStack.add("strike", handler);
+        fStack.add("s", handler);
+        handler = new ItalicTagHandler();
+        fStack.add("em", handler);
+        fStack.add("i", handler);
+        fStack.add("sup", new SuperScriptTagHandler());
+        fStack.add("sub", new SubScriptTagHandler());
+        fStack.add("tt", new TeletypeTagHandler());
+        fStack.add("br", new LineBreakTagHandler());
+        fStack.add("div", new DivisionTagHandler());
+
+        // Register extra handlers
+        fStack.addAll(extraHandlers);
     }
 
     /**
@@ -823,7 +470,7 @@ public class XhtmlHandler extends DefaultHandler {
      */
     @Override
     public void endDocument() throws SAXException {
-        sendEmptyLines(fStack.fPeek);
+        TagHandler.sendEmptyLines(fStack.fPeek);
         fStack.endElement();
     }
 
@@ -876,16 +523,4 @@ public class XhtmlHandler extends DefaultHandler {
         fAccumulationBuffer = new StringBuffer();
         fStack.beginElement(uri, localName, qName, attributes);
     }
-
-    /**
-     * Check if we need to emit an onEmptyLines() event.
-     */
-    public static void sendEmptyLines(TagContext context) {
-        int lineCount = (Integer) context.getTagStack().getStackParameter("emptyLinesCount"); 
-        if (lineCount > 0) {
-            context.getScannerContext().onEmptyLines(lineCount);
-            context.getTagStack().setStackParameter("emptyLinesCount", 0);
-        }
-    }
-    
 }

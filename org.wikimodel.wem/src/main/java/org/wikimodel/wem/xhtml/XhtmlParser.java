@@ -11,6 +11,8 @@
 package org.wikimodel.wem.xhtml;
 
 import java.io.Reader;
+import java.util.Collections;
+import java.util.Map;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -19,6 +21,7 @@ import org.wikimodel.wem.IWemListener;
 import org.wikimodel.wem.IWikiParser;
 import org.wikimodel.wem.WikiParserException;
 import org.wikimodel.wem.impl.WikiScannerContext;
+import org.wikimodel.wem.xhtml.handler.TagHandler;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -30,13 +33,24 @@ import org.xml.sax.helpers.DefaultHandler;
 public class XhtmlParser implements IWikiParser {
 
     private XhtmlEscapeHandler fEscapeHandler;
+
+    private Map<String, TagHandler> fExtraHandlers;
     
     public XhtmlParser() {
-        this(null);
+        this(Collections.<String, TagHandler>emptyMap(), null);
+    }
+
+    public XhtmlParser(Map<String, TagHandler> extraHandlers) {
+        this(extraHandlers, null);
     }
 
     public XhtmlParser(XhtmlEscapeHandler escapeHandler) {
+        this(Collections.<String, TagHandler>emptyMap(), escapeHandler);
+    }
+
+    public XhtmlParser(Map<String, TagHandler> extraHandlers, XhtmlEscapeHandler escapeHandler) {
         super();
+        fExtraHandlers = extraHandlers;
         fEscapeHandler = escapeHandler;
     }
     
@@ -49,7 +63,7 @@ public class XhtmlParser implements IWikiParser {
      */
     public DefaultHandler getHandler(IWemListener listener) {
         WikiScannerContext context = new WikiScannerContext(listener);
-        XhtmlHandler handler = new XhtmlHandler(context, fEscapeHandler);
+        XhtmlHandler handler = new XhtmlHandler(context, fExtraHandlers, fEscapeHandler);
         return handler;
     }
 
