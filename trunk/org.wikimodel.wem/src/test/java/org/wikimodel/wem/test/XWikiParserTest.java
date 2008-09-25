@@ -447,6 +447,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             + "Second line of the same paragraph.\n"
             + "\n"
             + "The second paragraph");
+        test("(% a='b' %)\nparagraph1\n\nparagraph2", "<p a='b'>paragraph1</p>\n<p>paragraph2</p>");
     }
 
     /**
