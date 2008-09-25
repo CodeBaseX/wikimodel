@@ -482,6 +482,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
             closeFormat();
             fListener.endParagraph(fParagraphParams);
             fBlockType = IBlockTypes.NONE;
+            fParagraphParams = WikiParameters.EMPTY;
         }
     }
 
