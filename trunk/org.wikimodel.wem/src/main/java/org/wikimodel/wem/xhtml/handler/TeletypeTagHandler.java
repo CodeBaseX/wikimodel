@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.wikimodel.wem.xhtml.handler;
 
+import java.util.Arrays;
+
 import org.wikimodel.wem.IWemConstants;
 import org.wikimodel.wem.WikiParameter;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
@@ -41,7 +43,7 @@ public class TeletypeTagHandler extends TagHandler {
     @Override
     protected void end(TagContext context) {
         WikiParameter param = context.getParams().getParameter("class");
-        if ((param != null) && param.getValue().equalsIgnoreCase("wikimodel-verbatim")) {
+        if ((param != null) && Arrays.asList(param.getValue().split(" ")).contains("wikimodel-verbatim")) {
             String str = context.getContent();
             context.getScannerContext().onVerbatim(str, true);
         } else {
