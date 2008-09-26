@@ -33,7 +33,7 @@ public class TeletypeTagHandler extends TagHandler {
     @Override
     protected void begin(TagContext context) {
         WikiParameter param = context.getParams().getParameter("class");
-        if ((param != null) && param.getValue().equalsIgnoreCase("wikimodel-verbatim")) {
+        if ((param != null) && Arrays.asList(param.getValue().split(" ")).contains("wikimodel-verbatim")) {
             setAccumulateContent(true);
         } else {
             context.getScannerContext().onFormat(IWemConstants.MONO);
