@@ -34,7 +34,14 @@ public class ListTagHandler extends TagHandler {
 
     @Override
     protected void end(TagContext context) {
-        // Note: Do not generate an endList() event since it'll be generated automatically by the next element.
+        // We only need to close the list if we're on the last list item. 
+    	// Note that we need to close the list explicitely and not wait for the next element to close it
+    	// since the next element could be an implicit paragraph.
+    	// For example: <html><ul><li>item</li></ul>a</html>
+        StringBuffer listStyles = (StringBuffer) context.getTagStack().getStackParameter("listStyles");
+        if (listStyles.length() == 0) {
+        	context.getScannerContext().endList();
+        }
     }
 
 }
