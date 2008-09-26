@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.wikimodel.wem.xhtml.handler;
 
+import java.util.Arrays;
+
 import org.wikimodel.wem.WikiParameter;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 
@@ -27,7 +29,7 @@ public class DivisionTagHandler extends TagHandler {
     protected void begin(TagContext context) {
         // Check if we have a div meaning an empty line between block
         WikiParameter param = context.getParams().getParameter("class");
-        if ((param != null) && param.getValue().equalsIgnoreCase("wikimodel-emptyline")) {
+        if ((param != null) && Arrays.asList(param.getValue().split(" ")).contains("wikimodel-emptyline")) {
             int value = (Integer) context.getTagStack().getStackParameter("emptyLinesCount");
             value++;
             context.getTagStack().setStackParameter("emptyLinesCount", value);
