@@ -36,6 +36,7 @@ import org.wikimodel.wem.xhtml.handler.ListItemTagHandler;
 import org.wikimodel.wem.xhtml.handler.ListTagHandler;
 import org.wikimodel.wem.xhtml.handler.ParagraphTagHandler;
 import org.wikimodel.wem.xhtml.handler.PreserveTagHandler;
+import org.wikimodel.wem.xhtml.handler.QuoteTagHandler;
 import org.wikimodel.wem.xhtml.handler.ReferenceTagHandler;
 import org.wikimodel.wem.xhtml.handler.StrikedOutTagHandler;
 import org.wikimodel.wem.xhtml.handler.SubScriptTagHandler;
@@ -229,6 +230,7 @@ public class XhtmlHandler extends DefaultHandler {
             // (so that we don't have to check all the time if they're initialized or not)
             setStackParameter("emptyLinesCount", 0);
             setStackParameter("listStyles", new StringBuffer());
+            setStackParameter("quoteDepth", new Integer(0));
         }
 
         public void beginElement(
@@ -449,6 +451,9 @@ public class XhtmlHandler extends DefaultHandler {
         fStack.add("tt", new TeletypeTagHandler());
         fStack.add("br", new LineBreakTagHandler());
         fStack.add("div", new DivisionTagHandler());
+        handler = new QuoteTagHandler();
+        fStack.add("blockquote", handler);
+        fStack.add("quote", handler);
 
         // Register extra handlers
         fStack.addAll(extraHandlers);

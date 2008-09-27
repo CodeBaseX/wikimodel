@@ -179,6 +179,12 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testQuot() throws WikiParserException {
+    	test("<html><blockquote>quote</blockquote></html>", 
+    		"<blockquote>\nquote\n</blockquote>");
+    	test("<html><blockquote>line1<blockquote>line2<blockquote>line3</blockquote>"
+    	    + "line4</blockquote></blockquote></html>", 
+    	    "<blockquote>\nline1<blockquote>\nline2<blockquote>\nline3\n</blockquote>"
+    	    + "\n\nline4\n</blockquote>\n\n</blockquote>");
     }
 
     /**

@@ -34,12 +34,14 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         int PARAGRAPH = 1 << 8;
 
         int QUOT = 1 << 9;
+        
+        int QUOT_LI = (1 << 10) | QUOT;
 
-        int TABLE = 1 << 10;
+        int TABLE = 1 << 11;
 
-        int TABLE_ROW = (1 << 11) | TABLE;
+        int TABLE_ROW = (1 << 12) | TABLE;
 
-        int TABLE_ROW_CELL = (1 << 12) | TABLE_ROW;
+        int TABLE_ROW_CELL = (1 << 13) | TABLE_ROW;
     }
 
     private int fBlockType = IBlockTypes.NONE;
@@ -74,6 +76,8 @@ class InternalWikiScannerContext implements IWikiScannerContext {
 
     private WikiParameters fQuotParams;
 
+    private int fQuoteDepth = 0;
+    
     private int fTableCellCounter = -1;
 
     private WikiParameters fTableCellParams = WikiParameters.EMPTY;
@@ -253,28 +257,32 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     }
 
     public void beginQuot() {
-        if (fBlockType != IBlockTypes.QUOT) {
+        if ((fBlockType & IBlockTypes.QUOT) != IBlockTypes.QUOT) {
             closeBlock();
             if (fQuotParams == null)
                 fQuotParams = WikiParameters.EMPTY;
             IListListener listener = new IListListener() {
 
                 public void beginRow(char treeType, char rowType) {
-                    fListener.beginQuotationLine();
+                    fBlockType = IBlockTypes.QUOT_LI;
+                	fListener.beginQuotationLine();
                 }
 
                 public void beginTree(char type) {
                     closeFormat();
                     fListener.beginQuotation(fQuotParams);
+                    fBlockType = IBlockTypes.QUOT;
                 }
 
                 public void endRow(char treeType, char rowType) {
                     fListener.endQuotationLine();
+                    fBlockType = IBlockTypes.QUOT_LI;
                 }
 
                 public void endTree(char type) {
                     closeFormat();
                     fListener.endQuotation(fQuotParams);
+                    fBlockType = IBlockTypes.QUOT;
                 }
 
             };
@@ -297,6 +305,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         for (int i = 0; i < depth; i++)
             buf.append(" ");
         buf.append("*");
+        fQuoteDepth = depth;
         fQuotBuilder.alignContext(buf.toString());
     }
 
@@ -371,6 +380,8 @@ class InternalWikiScannerContext implements IWikiScannerContext {
             checkListItem();
         } else if (!isInTableCell() && !isInListItem()) {
             closeBlock();
+        } else if (isInQuotation()) {
+        	checkQuotationLine();
         }
     }
 
@@ -380,6 +391,12 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         }
     }
 
+    private void checkQuotationLine() {
+    	if (!isInQuotationLine()) {
+    		beginQuotLine(fQuoteDepth);
+    	}
+    }
+    
     private void checkParagraph() {
         if (!isInParagraph()) {
             beginParagraph();
@@ -391,6 +408,8 @@ class InternalWikiScannerContext implements IWikiScannerContext {
             checkTableCell();
         } else if (isInList()) {
             checkListItem();
+        } else if (isInQuotation()) {
+        	checkQuotationLine();
         } else if (isNoBlockElements()) {
             checkParagraph();
         }
@@ -413,9 +432,6 @@ class InternalWikiScannerContext implements IWikiScannerContext {
             case IBlockTypes.PARAGRAPH:
                 endParagraph();
                 break;
-            case IBlockTypes.QUOT:
-                endQuot();
-                break;
             case IBlockTypes.INFO:
                 endInfo();
                 break;
@@ -424,6 +440,8 @@ class InternalWikiScannerContext implements IWikiScannerContext {
                     endTable();
                 } else if ((fBlockType & IBlockTypes.LIST) != 0) {
                     endList();
+                } else if ((fBlockType & IBlockTypes.QUOT) != 0) {
+                	endQuot();
                 }
                 break;
         }
@@ -508,7 +526,11 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     }
 
     public void endQuotLine() {
-        //
+    	fQuoteDepth--;
+    	if (fQuoteDepth < 0) {
+    		fQuoteDepth = 0;
+    	}
+        fBlockType = IBlockTypes.QUOT;
     }
 
     public void endTable() {
@@ -599,9 +621,17 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     public boolean isInList() {
         return fBlockType == IBlockTypes.LIST;
     }
+    
+    public boolean isInQuotation() {
+    	return fBlockType == IBlockTypes.QUOT;
+    }
 
     private boolean isInListItem() {
         return (fBlockType & IBlockTypes.LIST_LI) == IBlockTypes.LIST_LI;
+    }
+    
+    private boolean isInQuotationLine() {
+    	return (fBlockType & IBlockTypes.QUOT_LI) == IBlockTypes.QUOT_LI; 
     }
 
     private boolean isInParagraph() {
