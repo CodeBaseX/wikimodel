@@ -21,6 +21,7 @@ import org.wikimodel.wem.IWemListener;
 import org.wikimodel.wem.IWikiParser;
 import org.wikimodel.wem.WikiParserException;
 import org.wikimodel.wem.impl.WikiScannerContext;
+import org.wikimodel.wem.xhtml.handler.CommentHandler;
 import org.wikimodel.wem.xhtml.handler.TagHandler;
 import org.wikimodel.wem.xhtml.impl.LocalEntityResolver;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler;
@@ -37,22 +38,23 @@ public class XhtmlParser implements IWikiParser {
 
     private Map<String, TagHandler> fExtraHandlers;
     
+    private CommentHandler fCommentHandler;
+    
     public XhtmlParser() {
-        this(Collections.<String, TagHandler>emptyMap(), null);
+        fExtraHandlers = Collections.<String, TagHandler>emptyMap();
+        fCommentHandler = new CommentHandler();
     }
 
-    public XhtmlParser(Map<String, TagHandler> extraHandlers) {
-        this(extraHandlers, null);
-    }
-
-    public XhtmlParser(XhtmlEscapeHandler escapeHandler) {
-        this(Collections.<String, TagHandler>emptyMap(), escapeHandler);
-    }
-
-    public XhtmlParser(Map<String, TagHandler> extraHandlers, XhtmlEscapeHandler escapeHandler) {
-        super();
+    public void setExtraHandlers(Map<String, TagHandler> extraHandlers) {
         fExtraHandlers = extraHandlers;
+    }
+
+    public void setEscapeHandler(XhtmlEscapeHandler escapeHandler) {
         fEscapeHandler = escapeHandler;
+    }
+
+    public void setCommentHandler(CommentHandler commentHandler) {
+        fCommentHandler = commentHandler;
     }
     
     /**
@@ -64,7 +66,7 @@ public class XhtmlParser implements IWikiParser {
      */
     public DefaultHandler getHandler(IWemListener listener) {
         WikiScannerContext context = new WikiScannerContext(listener);
-        XhtmlHandler handler = new XhtmlHandler(context, fExtraHandlers, fEscapeHandler);
+        XhtmlHandler handler = new XhtmlHandler(context, fExtraHandlers, fEscapeHandler, fCommentHandler);
         return handler;
     }
 
@@ -83,6 +85,7 @@ public class XhtmlParser implements IWikiParser {
             xmlReader.setEntityResolver(new LocalEntityResolver());
             DefaultHandler handler = getHandler(listener);
             xmlReader.setContentHandler(handler);
+            xmlReader.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
             InputSource source = new InputSource(reader);
             xmlReader.parse(source);
         } catch (Exception e) {
