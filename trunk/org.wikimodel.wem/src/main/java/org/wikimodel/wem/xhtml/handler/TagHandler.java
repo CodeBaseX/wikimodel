@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.wikimodel.wem.xhtml.handler;
 
+import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 
 /**
@@ -118,6 +119,10 @@ public class TagHandler {
             context.getScannerContext().onEmptyLines(lineCount);
             context.getTagStack().setStackParameter("emptyLinesCount", 0);
         }
+    }
+    
+    public void initialize(TagStack stack) {
+        // Nothing to do by default. Override in children classes if need be. 
     }
     
 }

@@ -24,6 +24,7 @@ import org.wikimodel.wem.xhtml.XhtmlCharacter;
 import org.wikimodel.wem.xhtml.XhtmlCharacterType;
 import org.wikimodel.wem.xhtml.XhtmlEscapeHandler;
 import org.wikimodel.wem.xhtml.handler.BoldTagHandler;
+import org.wikimodel.wem.xhtml.handler.CommentHandler;
 import org.wikimodel.wem.xhtml.handler.DefinitionDescriptionTagHandler;
 import org.wikimodel.wem.xhtml.handler.DefinitionListTagHandler;
 import org.wikimodel.wem.xhtml.handler.DefinitionTermTagHandler;
@@ -49,13 +50,14 @@ import org.wikimodel.wem.xhtml.handler.TeletypeTagHandler;
 import org.wikimodel.wem.xhtml.handler.UnderlineTagHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * @author kotelnikov
  * @author vmassol
  */
-public class XhtmlHandler extends DefaultHandler {
+public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
     public static class TagStack {
 
@@ -195,6 +197,8 @@ public class XhtmlHandler extends DefaultHandler {
 
         private Map<String, TagHandler> fMap = new HashMap<String, TagHandler>();
 
+        private CommentHandler fCommentHandler;
+        
         private static final int NEW_LINE = 3;
 
         private static final char SPACE = 1;
@@ -216,6 +220,10 @@ public class XhtmlHandler extends DefaultHandler {
         	fMap.putAll(handlers);
         }
 
+        public void setCommentHandler(CommentHandler handler) {
+            fCommentHandler = handler;
+        }
+        
         private TagContext fPeek;
 
         WikiScannerContext fScannerContext;
@@ -225,9 +233,11 @@ public class XhtmlHandler extends DefaultHandler {
         public TagStack(WikiScannerContext context, XhtmlEscapeHandler escapeHandler) {
             fScannerContext = context;
             fEscapeHandler = escapeHandler;
+            fCommentHandler = new CommentHandler();
             
             // Pre-initialize stack parameters for performance reason 
             // (so that we don't have to check all the time if they're initialized or not)
+            setStackParameter("ignoreElements", false);
             setStackParameter("emptyLinesCount", 0);
             setStackParameter("listStyles", new StringBuffer());
             setStackParameter("quoteDepth", new Integer(0));
@@ -241,11 +251,17 @@ public class XhtmlHandler extends DefaultHandler {
             fPeek = new TagContext(fPeek, uri, localName, qName, attributes, this);
             localName = fPeek.getName();
             TagHandler handler = fMap.get(localName);
-            fPeek.beginElement(handler);
+            boolean ignoreElements = (Boolean) getStackParameter("ignoreElements");
+            if (!ignoreElements) {
+                fPeek.beginElement(handler);
+            }
         }
 
         public void endElement() {
-            fPeek.endElement();
+            boolean ignoreElements = (Boolean) getStackParameter("ignoreElements");
+            if (!ignoreElements) {
+                fPeek.endElement();
+            }
             fPeek = fPeek.fParent;
         }
 
@@ -341,6 +357,10 @@ public class XhtmlHandler extends DefaultHandler {
             
             if (!fPeek.isContentContainer())
                 return;
+            boolean ignoreElements = (Boolean) getStackParameter("ignoreElements");
+            if (ignoreElements)
+                return;
+
             if (!fPeek.appendContent(array, start, length)) {
                 Stack<XhtmlCharacter> stack = new Stack<XhtmlCharacter>();
                 Map<String, Object> characterContext = new HashMap<String, Object>();
@@ -376,6 +396,10 @@ public class XhtmlHandler extends DefaultHandler {
                 flushStack(stack);
             }
         }
+
+        public void onComment(char[] array, int start, int length) {
+            fCommentHandler.onComment(new String(array, start, length), fScannerContext, this);
+        }
         
         public void setStackParameter(String name, Object data) {
         	fStackParameters.put(name, data);
@@ -403,11 +427,17 @@ public class XhtmlHandler extends DefaultHandler {
      */
     private StringBuffer fAccumulationBuffer;
 
+    public XhtmlHandler(WikiScannerContext context, Map<String, TagHandler> extraHandlers, XhtmlEscapeHandler escapeHandler) {
+        this(context, extraHandlers, escapeHandler, new CommentHandler());
+    }
+
     /**
      * @param context
      */
-    public XhtmlHandler(WikiScannerContext context, Map<String, TagHandler> extraHandlers, XhtmlEscapeHandler escapeHandler) {
+    public XhtmlHandler(WikiScannerContext context, Map<String, TagHandler> extraHandlers, 
+        XhtmlEscapeHandler escapeHandler, CommentHandler commentHandler) {
         fStack = new TagStack(context, escapeHandler);
+        fStack.setCommentHandler(commentHandler);
         
         // Register default handlers
         fStack.add("p", new ParagraphTagHandler());
@@ -457,6 +487,11 @@ public class XhtmlHandler extends DefaultHandler {
 
         // Register extra handlers
         fStack.addAll(extraHandlers);
+        
+        // Allow each handler to have some initialization
+        for (TagHandler tagElementHandler: fStack.fMap.values()) {
+            tagElementHandler.initialize(fStack);
+        }
     }
 
     /**
@@ -527,5 +562,42 @@ public class XhtmlHandler extends DefaultHandler {
         }
         fAccumulationBuffer = new StringBuffer();
         fStack.beginElement(uri, localName, qName, attributes);
+    }
+
+    // Lexical handler methods
+
+    public void comment(char[] array, int start, int length) throws SAXException
+    {
+        fStack.onComment(array, start, length);
+    }
+
+    public void endCDATA() throws SAXException
+    {
+        // Nothing to do
+    }
+
+    public void endDTD() throws SAXException
+    {
+        // Nothing to do
+    }
+
+    public void endEntity(String arg0) throws SAXException
+    {
+        // Nothing to do
+    }
+
+    public void startCDATA() throws SAXException
+    {
+        // Nothing to do
+    }
+
+    public void startDTD(String arg0, String arg1, String arg2) throws SAXException
+    {
+        // Nothing to do
+    }
+
+    public void startEntity(String arg0) throws SAXException
+    {
+        // Nothing to do
     }
 }
