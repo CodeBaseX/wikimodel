@@ -70,10 +70,10 @@ public class WikiReferenceParser implements IWikiReferenceParser {
     }
 
     /**
-     * Returns the given string splitted to individual segments
+     * Returns the given string split to individual segments
      * 
      * @param str the string to split
-     * @return the given string splitted to individual segments
+     * @return the given string split to individual segments
      */
     protected String[] splitToChunks(String str) {
         String delimiter = "[|>]";

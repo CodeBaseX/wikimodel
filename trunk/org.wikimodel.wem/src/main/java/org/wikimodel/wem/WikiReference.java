@@ -40,7 +40,7 @@ public class WikiReference {
 
     /**
      * Additional parameters associated with this reference. This is an optional
-     * part of the refernece.
+     * part of the reference.
      */
     private final WikiParameters fParameters;
 

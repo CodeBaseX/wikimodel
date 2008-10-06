@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.wikimodel.wem.xwiki;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
 import org.wikimodel.wem.WikiReferenceParser;
 
 /**
@@ -29,5 +33,15 @@ public class XWikiReferenceParser extends WikiReferenceParser {
         if (chunks.length > 1)
             return chunks[1];
         return chunks[0];
+    }
+
+    @Override
+    protected String[] splitToChunks(String str) {
+        StringTokenizer st = new StringTokenizer(str, "|>");
+        String[] chunks = new String[st.countTokens()];
+        for (int i = 0; st.hasMoreTokens(); i++) {
+            chunks[i] = st.nextToken();
+        }
+        return chunks;
     }
 }
