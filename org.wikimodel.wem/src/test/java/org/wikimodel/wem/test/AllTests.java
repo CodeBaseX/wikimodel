@@ -16,7 +16,7 @@ import junit.framework.TestSuite;
 public class AllTests {
 
     public static Test suite() {
-        TestSuite suite = new TestSuite("Test for org.wikimodel.wem.creole");
+        TestSuite suite = new TestSuite("Test for WikiModel grammars");
         // $JUnit-BEGIN$
         suite.addTestSuite(CreoleWikiParserTest.class);
         suite.addTestSuite(GWikiParserTest.class);
