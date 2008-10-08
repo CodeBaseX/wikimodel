@@ -303,7 +303,12 @@ public class CreoleWikiParserTest extends AbstractWikiParserTest {
     public void testTables() throws WikiParserException {
         test("|= Header 1.1 |= Header 1.2\n"
             + "| Cell 2.1 | Cell 2.2\n"
-            + "| Cell 3.1 |= Head 3.2");
+            + "| Cell 3.1 |= Head 3.2", ""
+            + "<table><tbody>\n"
+            + "  <tr><th> Header 1.1 </th><th> Header 1.2</th></tr>\n"
+            + "  <tr><td> Cell 2.1 </td><td> Cell 2.2</td></tr>\n"
+            + "  <tr><td> Cell 3.1 </td><th> Head 3.2</th></tr>\n"
+            + "</tbody></table>");
         test("abc || cde");
     }
 

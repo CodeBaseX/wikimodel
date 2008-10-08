@@ -881,12 +881,50 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
             + "<table><tbody>\n"
             + "  <tr><th>   Header    </th><td>    Cell    </td></tr>\n"
             + "</tbody></table>");
+        test("!! Header 1.1 !! Header 1.2\n"
+            + ":: Cell 2.1 :: Cell 2.2\n"
+            + ":: Cell 3.1 !! Head 3.2", ""
+            + "<table><tbody>\n"
+            + "  <tr><th> Header 1.1 </th><th> Header 1.2</th></tr>\n"
+            + "  <tr><td> Cell 2.1 </td><td> Cell 2.2</td></tr>\n"
+            + "  <tr><td> Cell 3.1 </td><th> Head 3.2</th></tr>\n"
+            + "</tbody></table>");
 
         test("::Cell 1 :: Cell 2", "<table><tbody>\n"
             + "  <tr><td>Cell 1 </td><td> Cell 2</td></tr>\n"
             + "</tbody></table>");
         test("Not a Header :: Not a Cell", "<p>Not a Header :: Not a Cell</p>");
         test("Not a Header::Not a Cell", "<p>Not a Header::Not a Cell</p>");
+
+        // Creole syntax
+        test("|= Header 1.1 |= Header 1.2\n"
+            + "| Cell 2.1 | Cell 2.2\n"
+            + "| Cell 3.1 |= Head 3.2", ""
+            + "<table><tbody>\n"
+            + "  <tr><th> Header 1.1 </th><th> Header 1.2</th></tr>\n"
+            + "  <tr><td> Cell 2.1 </td><td> Cell 2.2</td></tr>\n"
+            + "  <tr><td> Cell 3.1 </td><th> Head 3.2</th></tr>\n"
+            + "</tbody></table>");
+        test("|={{a=b}} Header 1.1 |= Header 1.2\n"
+            + "| Cell 2.1 | Cell 2.2\n"
+            + "| Cell 3.1 |={{c=d}} Head 3.2", ""
+            + "<table><tbody>\n"
+            + "  <tr><th a='b'> Header 1.1 </th><th> Header 1.2</th></tr>\n"
+            + "  <tr><td> Cell 2.1 </td><td> Cell 2.2</td></tr>\n"
+            + "  <tr><td> Cell 3.1 </td><th c='d'> Head 3.2</th></tr>\n"
+            + "</tbody></table>");
+        test(
+            "{{x=y}}|={{a=b}} Header 1.1 |={{n=m}} Header 1.2",
+            ""
+                + "<table><tbody>\n"
+                + "  <tr x='y'><th a='b'> Header 1.1 </th><th n='m'> Header 1.2</th></tr>\n"
+                + "</tbody></table>");
+        test(
+            "{{A=B}}\n{{x=y}}|={{a=b}} Header 1.1 |={{n=m}} Header 1.2",
+            ""
+                + "<table A='B'><tbody>\n"
+                + "  <tr x='y'><th a='b'> Header 1.1 </th><th n='m'> Header 1.2</th></tr>\n"
+                + "</tbody></table>");
 
         // "||" and "|" markup
         test("|| Header | Cell ", ""

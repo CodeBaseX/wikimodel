@@ -63,6 +63,10 @@ public class CommonWikiScanner {
             fContext.onExtensionInline(str, params);
         }
     }
+    
+    protected boolean isTableHeader(String str) {
+    	return str.startsWith("!!") || str.startsWith("||") || str.startsWith("|=");
+    }
 
 }
 
@@ -169,7 +173,7 @@ TOKEN_MGR_DECLS: {
     | <#VERBATIM_INLINE: ["`"] ( <ESCAPED> | ~["`", "\\"] )* ["`"] >
     | <#REFERENCE:  ( "[" ( <ESCAPED> | ~["]", "\\"] )* "]" | "(=" ( <ESCAPED> | ~["=", "\\"] | "=" ~[")"] )* "=)") >
     | <#HORLINE: "---" ("-")+ >
-    | <#CELL: ( "||" | "|" | "::" | "!!" ) (<PARAMS>)? >
+    | <#CELL: ( "|=" | "||" | "|" | "::" | "!!" ) (<PARAMS>)? >
     | <#QUOT_BLOCK: ("Q" | "q") (<PARAMS>)? ":" >
     | <#QUOT_LINE: (">")+ >
     | <#FORMAT_SYMBOL : ( 
@@ -595,11 +599,11 @@ void tableRow():
             int idx = str.indexOf("}}");
             String p  = str.substring(2, idx); 
             str = str.substring(idx + 2);
-            head = (str.startsWith("!!") || str.startsWith("||"));
+            head = isTableHeader(str);
             rowParams = new WikiParameters(p);
             cellParams = newWikiParameters(str);
         } else {
-            head = (str.startsWith("!!") || str.startsWith("||"));
+            head = isTableHeader(str);
             if (head || str.startsWith("::")) {
                 str = str.substring(2);
             } else {
@@ -1085,7 +1089,7 @@ void line():
                 if (fContext.isInTable()) {
                     str = t.image.trim();
                     WikiParameters cellParams = newWikiParameters(str);
-                    boolean head  = str.startsWith("||") || str.startsWith("!!");
+                    boolean head  = isTableHeader(str);
                     fContext.onTableCell(head, cellParams);
                 } else {
                     fContext.onSpecialSymbol(t.image);

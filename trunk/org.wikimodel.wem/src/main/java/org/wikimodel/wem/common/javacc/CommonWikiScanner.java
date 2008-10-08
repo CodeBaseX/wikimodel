@@ -58,6 +58,10 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
         }
     }
 
+    protected boolean isTableHeader(String str) {
+        return str.startsWith("!!") || str.startsWith("||") || str.startsWith("|=");
+    }
+
   final public Token getINTERNAL_VERBATIM_START() throws ParseException {
                                          Token t=null;
     t = jj_consume_token(INTERNAL_VERBATIM_START);
@@ -1245,11 +1249,11 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
             int idx = str.indexOf("}}");
             String p  = str.substring(2, idx);
             str = str.substring(idx + 2);
-            head = (str.startsWith("!!") || str.startsWith("||"));
+            head = isTableHeader(str);
             rowParams = new WikiParameters(p);
             cellParams = newWikiParameters(str);
         } else {
-            head = (str.startsWith("!!") || str.startsWith("||"));
+            head = isTableHeader(str);
             if (head || str.startsWith("::")) {
                 str = str.substring(2);
             } else {
@@ -1878,7 +1882,7 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
                 if (fContext.isInTable()) {
                     str = t.image.trim();
                     WikiParameters cellParams = newWikiParameters(str);
-                    boolean head  = str.startsWith("||") || str.startsWith("!!");
+                    boolean head  = isTableHeader(str);
                     fContext.onTableCell(head, cellParams);
                 } else {
                     fContext.onSpecialSymbol(t.image);
@@ -2151,17 +2155,6 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
     try { return !jj_3_33(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(32, xla); }
-  }
-
-  final private boolean jj_3R_70() {
-    if (jj_3R_38()) return true;
-    return false;
-  }
-
-  final private boolean jj_3_32() {
-    if (jj_3R_39()) return true;
-    if (jj_3R_25()) return true;
-    return false;
   }
 
   final private boolean jj_3R_38() {
@@ -3262,6 +3255,17 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
 
   final private boolean jj_3R_39() {
     if (jj_3R_37()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_70() {
+    if (jj_3R_38()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_32() {
+    if (jj_3R_39()) return true;
+    if (jj_3R_25()) return true;
     return false;
   }
 
