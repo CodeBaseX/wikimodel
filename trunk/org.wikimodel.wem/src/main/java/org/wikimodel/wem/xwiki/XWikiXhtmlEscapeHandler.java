@@ -20,6 +20,8 @@ import java.util.regex.Pattern;
 import org.wikimodel.wem.xhtml.XhtmlCharacterType;
 import org.wikimodel.wem.xhtml.XhtmlCharacter;
 import org.wikimodel.wem.xhtml.XhtmlEscapeHandler;
+import org.wikimodel.wem.xhtml.handler.TagHandler;
+import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 
 public class XWikiXhtmlEscapeHandler implements XhtmlEscapeHandler
 {
@@ -37,10 +39,11 @@ public class XWikiXhtmlEscapeHandler implements XhtmlEscapeHandler
         context.put("buffer", new StringBuilder());
     }
 
-    public XhtmlCharacter handleCharacter(XhtmlCharacter current, Stack<XhtmlCharacter> characters, String currentTag, Map<String, Object> context)
+    public XhtmlCharacter handleCharacter(XhtmlCharacter current, Stack<XhtmlCharacter> characters, TagContext tagContext, Map<String, Object> context)
     {
         XhtmlCharacter result = current;
-
+        String currentTag = getTagName(tagContext);
+        
         StringBuilder buffer = (StringBuilder) context.get("buffer");
         buffer.append(current.getCharacter());
         
@@ -126,5 +129,26 @@ public class XWikiXhtmlEscapeHandler implements XhtmlEscapeHandler
         }
         
         return result;
+    }
+    
+    protected String getTagName(TagContext tagContext)
+    {
+        // In order to find the HTML tag being handled we need to find the first non null handler
+        // We also ignore SPAN tags since we want to handle their content as normal content.
+        TagContext context = tagContext;
+        TagHandler handler = context.fHandler;
+        while (((handler == null) || context.getLocalName().equalsIgnoreCase("span")) && (context.getParent() != null)) {
+            context = context.getParent();
+            handler = context.fHandler;
+        }
+        String tag;
+        if (handler == null) {
+            // We haven't found a handler. It means we're inside the top element and we assume we're on an implicit paragraph.
+            tag = "p";
+        } else {
+            tag = context.getLocalName().toLowerCase();
+        }
+        
+        return tag;
     }
 }

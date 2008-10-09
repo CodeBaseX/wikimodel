@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.wikimodel.wem.xhtml.handler;
 
-import org.wikimodel.wem.impl.WikiScannerContext;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack;
 
 /**
@@ -18,7 +17,7 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack;
  */
 public class CommentHandler {
 
-    public void onComment(String content, WikiScannerContext context, TagStack stack) {
+    public void onComment(String content, TagStack stack) {
         // Override this class and this method if you want to provide special handling
         // of comments.
     }

@@ -36,11 +36,10 @@ public class ReferenceTagHandler extends TagHandler {
     protected void end(TagContext context) {
         // TODO: it should be replaced by a normal parameters
         WikiParameter ref = context.getParams().getParameter("href");
-        // Check if there's a class attribute with a "wikimodel-freestanding" value.
-        // If so it means we have a free standing link.
-        WikiParameter classParam = context.getParams().getParameter("class");
         if (ref != null) {
-            if ((classParam != null) && classParam.getValue().equalsIgnoreCase("wikimodel-freestanding")) {
+            // Check if there's a class attribute with a "wikimodel-freestanding" value.
+            // If so it means we have a free standing link.
+            if (isFreeStandingReference(context)) {
                 context.getScannerContext().onReference(ref.getValue());
             } else {
                 String content = context.getContent();
@@ -50,5 +49,13 @@ public class ReferenceTagHandler extends TagHandler {
                 context.getScannerContext().onReference(reference);
             }
         }
+    }
+    
+    protected boolean isFreeStandingReference(TagContext context)
+    {
+        // Check if there's a class attribute with a "wikimodel-freestanding" value.
+        // If so it means we have a free standing link.
+        WikiParameter classParam = context.getParams().getParameter("class");
+        return ((classParam != null) && classParam.getValue().equalsIgnoreCase("wikimodel-freestanding"));
     }
 }
