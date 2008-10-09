@@ -319,6 +319,10 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
         public WikiScannerContext getScannerContext() {
             return fScannerContext;
         }
+        
+        public void setScannerContext(WikiScannerContext context) {
+            fScannerContext = context;
+        }
 
         private void flushStack(Stack<XhtmlCharacter> stack) {
             while (stack.size() > 0) {
@@ -371,23 +375,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
                     XhtmlCharacter current = new XhtmlCharacter(array[start + i], getCharacterType(array[start + i]));
                     XhtmlCharacter result = current;
                     if (fEscapeHandler != null) {
-
-                        // In order to find the HTML tag being handled we need to find the first non null handler
-                        TagContext context = fPeek;
-                        TagHandler handler = context.fHandler;
-                        while ((handler == null) && (context.getParent() != null)) {
-                            context = context.getParent();
-                            handler = context.fHandler;
-                        }
-                        String tag;
-                        if (handler == null) {
-                            // We haven't found a handler. It means we're inside the top element and we assume we're on an implicit paragraph.
-                            tag = "p";
-                        } else {
-                            tag = context.getLocalName().toLowerCase();
-                        }
-                        
-                        result = fEscapeHandler.handleCharacter(current, stack, tag, characterContext);
+                        result = fEscapeHandler.handleCharacter(current, stack, fPeek, characterContext);
                     }
                     stack.push(result);
                 }
@@ -398,7 +386,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
         }
 
         public void onComment(char[] array, int start, int length) {
-            fCommentHandler.onComment(new String(array, start, length), fScannerContext, this);
+            fCommentHandler.onComment(new String(array, start, length), this);
         }
         
         public void setStackParameter(String name, Object data) {

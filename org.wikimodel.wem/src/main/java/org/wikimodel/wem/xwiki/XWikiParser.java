@@ -45,5 +45,4 @@ public class XWikiParser implements IWikiParser {
             throw new WikiParserException(e);
         }
     }
-
 }

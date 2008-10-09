@@ -10,17 +10,22 @@
  *******************************************************************************/
 package org.wikimodel.wem.xwiki;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.wikimodel.wem.WikiReferenceParser;
 
 /**
  * @author kotelnikov
+ * @author vmassol
  */
 public class XWikiReferenceParser extends WikiReferenceParser {
 
+    /**
+     * Note that use Pattern.DOTALL since a link can span multiple lines in XWiki syntax.
+     */
+    private static final Pattern LINK_PATTERN = Pattern.compile("(?:(.*)(?:>>|\\|\\|))?(.*)", Pattern.DOTALL);
+    
     @Override
     protected String getLabel(String[] chunks) {
         if (chunks.length > 1)
@@ -37,10 +42,23 @@ public class XWikiReferenceParser extends WikiReferenceParser {
 
     @Override
     protected String[] splitToChunks(String str) {
-        StringTokenizer st = new StringTokenizer(str, "|>");
-        String[] chunks = new String[st.countTokens()];
-        for (int i = 0; st.hasMoreTokens(); i++) {
-            chunks[i] = st.nextToken();
+        String[] chunks;
+        Matcher matcher = LINK_PATTERN.matcher(str);
+        if (matcher.matches()) {
+            boolean hasLabel = (matcher.group(1) != null);
+            boolean hasReference = (matcher.group(2) != null);
+            if (hasLabel && hasReference) {
+                chunks = new String[2];
+                chunks[0] = matcher.group(1);
+                chunks[1] = matcher.group(2);
+            } else if (hasReference) {
+                chunks = new String[1];
+                chunks[0] = matcher.group(2);
+            } else {
+                chunks = new String[0];
+            }
+        } else {
+            chunks = new String[0];
         }
         return chunks;
     }

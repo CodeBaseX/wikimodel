@@ -13,8 +13,10 @@ package org.wikimodel.wem.xhtml;
 import java.util.Map;
 import java.util.Stack;
 
+import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
+
 public interface XhtmlEscapeHandler
 {
     void initialize(Map<String, Object> context);
-    XhtmlCharacter handleCharacter(XhtmlCharacter current, Stack<XhtmlCharacter> characters, String currentTag, Map<String, Object> context);
+    XhtmlCharacter handleCharacter(XhtmlCharacter current, Stack<XhtmlCharacter> characters, TagContext tagContent, Map<String, Object> context);
 }
