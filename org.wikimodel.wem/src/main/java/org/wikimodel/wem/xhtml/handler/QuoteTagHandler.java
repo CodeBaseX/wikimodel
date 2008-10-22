@@ -25,6 +25,7 @@ public class QuoteTagHandler extends TagHandler {
     protected void begin(TagContext context) {
     	int quoteDepth = (Integer) context.getTagStack().getStackParameter("quoteDepth");
         if (quoteDepth == 0) {
+            context.getTagStack().setStackParameter("insideBlockElement", true);
         	context.getScannerContext().beginQuot(context.getParams());
         }
         quoteDepth++;
@@ -42,6 +43,7 @@ public class QuoteTagHandler extends TagHandler {
     	context.getScannerContext().endQuotLine();
     	if (quoteDepth == 0) {
     		context.getScannerContext().endQuot();
+            context.getTagStack().setStackParameter("insideBlockElement", false);
     	}
         context.getTagStack().setStackParameter("quoteDepth", quoteDepth);
     }
