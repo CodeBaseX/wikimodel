@@ -28,6 +28,7 @@ public class ListTagHandler extends TagHandler {
         // We only send a new list event if we're not already inside a list.
         StringBuffer listStyles = (StringBuffer) context.getTagStack().getStackParameter("listStyles");
         if (listStyles.length() == 0) {
+            context.getTagStack().setStackParameter("insideBlockElement", true);
             context.getScannerContext().beginList(context.getParams());
         }
     }
@@ -41,6 +42,7 @@ public class ListTagHandler extends TagHandler {
         StringBuffer listStyles = (StringBuffer) context.getTagStack().getStackParameter("listStyles");
         if (listStyles.length() == 0) {
         	context.getScannerContext().endList();
+            context.getTagStack().setStackParameter("insideBlockElement", false);
         }
     }
 

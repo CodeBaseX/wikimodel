@@ -25,11 +25,13 @@ public class ParagraphTagHandler extends TagHandler {
     @Override
     protected void begin(TagContext context) {
         sendEmptyLines(context);
+        context.getTagStack().setStackParameter("insideBlockElement", true);
         context.getScannerContext().beginParagraph(context.getParams());
     }
 
     @Override
     protected void end(TagContext context) {
         context.getScannerContext().endParagraph();
+        context.getTagStack().setStackParameter("insideBlockElement", false);
     }
 }

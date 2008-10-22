@@ -241,6 +241,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
             setStackParameter("emptyLinesCount", 0);
             setStackParameter("listStyles", new StringBuffer());
             setStackParameter("quoteDepth", new Integer(0));
+            setStackParameter("insideBlockElement", false);
         }
 
         public void beginElement(
@@ -556,6 +557,11 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
     public void comment(char[] array, int start, int length) throws SAXException
     {
+        // If there's any characters not yet handled, handle them now.
+        if (fAccumulationBuffer != null && fAccumulationBuffer.length() > 0) {
+            fStack.onCharacters(fAccumulationBuffer.toString().toCharArray(), 0, fAccumulationBuffer.length());
+        }
+        fAccumulationBuffer = new StringBuffer();
         fStack.onComment(array, start, length);
     }
 
