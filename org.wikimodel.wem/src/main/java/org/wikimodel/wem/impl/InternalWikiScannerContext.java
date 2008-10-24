@@ -690,10 +690,16 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         closeFormat(false);
         if (forceClose) {
             fNewFormat = fNewFormat.removeStyle(wikiStyle);
-        } else
+        } else {
             fNewFormat = fNewFormat.switchStyle(wikiStyle);
+        }
     }
 
+    public void onFormat(WikiParameters params) {
+        closeFormat(false);
+        fNewFormat = fNewFormat.setParameters(params.toList());
+    }
+   
     public void onHorizontalLine() {
     	onHorizontalLine(WikiParameters.EMPTY);
     }

@@ -39,6 +39,7 @@ import org.wikimodel.wem.xhtml.handler.ParagraphTagHandler;
 import org.wikimodel.wem.xhtml.handler.PreserveTagHandler;
 import org.wikimodel.wem.xhtml.handler.QuoteTagHandler;
 import org.wikimodel.wem.xhtml.handler.ReferenceTagHandler;
+import org.wikimodel.wem.xhtml.handler.SpanTagHandler;
 import org.wikimodel.wem.xhtml.handler.StrikedOutTagHandler;
 import org.wikimodel.wem.xhtml.handler.SubScriptTagHandler;
 import org.wikimodel.wem.xhtml.handler.SuperScriptTagHandler;
@@ -473,6 +474,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
         handler = new QuoteTagHandler();
         fStack.add("blockquote", handler);
         fStack.add("quote", handler);
+        fStack.add("span", new SpanTagHandler());
 
         // Register extra handlers
         fStack.addAll(extraHandlers);

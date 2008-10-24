@@ -251,6 +251,10 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().onFormat(wikiStyle);
     }
 
+    public void onFormat(WikiParameters params) {
+        getContext().onFormat(params);
+    }
+
     /**
      * @see org.wikimodel.wem.impl.WikiScannerContext#onFormat(org.wikimodel.wem.WikiStyle,
      *      boolean)

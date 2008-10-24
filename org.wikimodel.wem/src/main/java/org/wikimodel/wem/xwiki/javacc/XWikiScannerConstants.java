@@ -87,35 +87,37 @@ public interface XWikiScannerConstants {
   int I_FORMAT_SYMBOL = 71;
   int I_BR = 72;
   int I_BLOCK_PARAMS = 73;
-  int I_QUOT_LINE = 74;
-  int I_URI = 75;
-  int I_NL = 76;
-  int I_SPACE = 77;
-  int I_WORD = 78;
-  int I_SPECIAL_SYMBOL = 79;
-  int D_ESCAPE = 80;
-  int D_LIST_ITEM = 81;
-  int D_HEADER_BEGIN = 82;
-  int D_HEADER_END = 83;
-  int D_HORLINE = 84;
-  int D_TABLE_ROW = 85;
-  int D_TABLE_CELL = 86;
-  int D_REFERENCE = 87;
-  int D_VERBATIM_START = 88;
-  int D_VERBATIM_INLINE_START = 89;
-  int D_MACRO_EMPTY_BLOCK = 90;
-  int D_MACRO_BLOCK_START = 91;
-  int D_MACRO_EMPTY_INLINE = 92;
-  int D_MACRO_INLINE_START = 93;
-  int D_FORMAT_SYMBOL = 94;
-  int D_BR = 95;
-  int D_BLOCK_PARAMS = 96;
-  int D_QUOT_LINE = 97;
-  int D_URI = 98;
-  int D_NL = 99;
-  int D_SPACE = 100;
-  int D_WORD = 101;
-  int D_SPECIAL_SYMBOL = 102;
+  int I_INLINE_PARAMS = 74;
+  int I_QUOT_LINE = 75;
+  int I_URI = 76;
+  int I_NL = 77;
+  int I_SPACE = 78;
+  int I_WORD = 79;
+  int I_SPECIAL_SYMBOL = 80;
+  int D_ESCAPE = 81;
+  int D_LIST_ITEM = 82;
+  int D_HEADER_BEGIN = 83;
+  int D_HEADER_END = 84;
+  int D_HORLINE = 85;
+  int D_TABLE_ROW = 86;
+  int D_TABLE_CELL = 87;
+  int D_REFERENCE = 88;
+  int D_VERBATIM_START = 89;
+  int D_VERBATIM_INLINE_START = 90;
+  int D_MACRO_EMPTY_BLOCK = 91;
+  int D_MACRO_BLOCK_START = 92;
+  int D_MACRO_EMPTY_INLINE = 93;
+  int D_MACRO_INLINE_START = 94;
+  int D_FORMAT_SYMBOL = 95;
+  int D_BR = 96;
+  int D_BLOCK_PARAMS = 97;
+  int D_INLINE_PARAMS = 98;
+  int D_QUOT_LINE = 99;
+  int D_URI = 100;
+  int D_NL = 101;
+  int D_SPACE = 102;
+  int D_WORD = 103;
+  int D_SPECIAL_SYMBOL = 104;
 
   int VERBATIM_CONTEXT = 0;
   int MACRO_CONTEXT = 1;
@@ -197,6 +199,7 @@ public interface XWikiScannerConstants {
     "<I_FORMAT_SYMBOL>",
     "<I_BR>",
     "<I_BLOCK_PARAMS>",
+    "<I_INLINE_PARAMS>",
     "<I_QUOT_LINE>",
     "<I_URI>",
     "<I_NL>",
@@ -220,6 +223,7 @@ public interface XWikiScannerConstants {
     "<D_FORMAT_SYMBOL>",
     "<D_BR>",
     "<D_BLOCK_PARAMS>",
+    "<D_INLINE_PARAMS>",
     "<D_QUOT_LINE>",
     "<D_URI>",
     "<D_NL>",

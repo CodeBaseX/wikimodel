@@ -252,6 +252,7 @@ TOKEN_MGR_DECLS: {
     | <I_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
     | <I_BR : <BR> > : DEFAULT
     | <I_BLOCK_PARAMS: (<NEW_LINE>)? <PARAMS> > : DEFAULT
+    | <I_INLINE_PARAMS: <PARAMS> > : DEFAULT
     | <I_QUOT_LINE: (<NEW_LINE>)? <QUOT_LINE> > : DEFAULT
 
     // "Standard" tokens. They are the same for all wikis.
@@ -283,6 +284,7 @@ TOKEN_MGR_DECLS: {
     | <D_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
     | <D_BR : <BR> > : DEFAULT
     | <D_BLOCK_PARAMS: <NEW_LINE> <PARAMS> > : DEFAULT
+    | <D_INLINE_PARAMS: <PARAMS> > : DEFAULT
     | <D_QUOT_LINE: <NEW_LINE> <QUOT_LINE> > : DEFAULT
 
     // "Standard" tokens. They are the same for all wikis.
@@ -318,6 +320,7 @@ TOKEN_MGR_DECLS: {
     Token getFORMAT_SYMBOL(): {Token t=null;} {(t=<I_FORMAT_SYMBOL>|t=<D_FORMAT_SYMBOL>){return t;}}
     Token getBR(): {Token t=null;} {(t=<I_BR>|t=<D_BR>){return t;}}
     Token getBLOCK_PARAMS(): {Token t=null;} {(t=<I_BLOCK_PARAMS>|t=<D_BLOCK_PARAMS>){return t;}}
+    Token getINLINE_PARAMS(): {Token t=null;} {(t=<I_INLINE_PARAMS>|t=<D_INLINE_PARAMS>){return t;}}
     Token getQUOT_LINE(): {Token t=null;} {(t=<I_QUOT_LINE>|t=<D_QUOT_LINE>){return t;}}
 
     // "Standard" tokens. They are the same for all wikis.
@@ -665,16 +668,35 @@ void horline():
 void paragraph():
 {
     Token t = null;
-    String str = "";
+    String params1 = "";
+    String params2 = "";
+    boolean inline = true;
 }
 {
     (
-        ( t = getBLOCK_PARAMS() { str = t.image.trim(); } (LOOKAHEAD(2) getNL())?  )
-        {
-            WikiParameters params = newWikiParameters(str);
-            sendOnEmptyLinesEvent(false);
-            fContext.beginParagraph(params);
-        }
+        ( LOOKAHEAD(2)
+          ( ( t = getBLOCK_PARAMS() { params1 = t.image.trim(); } )
+            ( t = getBLOCK_PARAMS() { params2 = t.image.trim(); } )
+          ) 
+          {
+              sendOnEmptyLinesEvent(false);
+        	  fContext.beginParagraph(newWikiParameters(params1));
+        	  fContext.onFormat(newWikiParameters(params2));
+          }
+          |
+          ( ( t = getBLOCK_PARAMS() { params1 = t.image.trim(); } )
+            ( LOOKAHEAD(2) getNL() { inline = false; } )?
+       	  )
+          {
+              sendOnEmptyLinesEvent(false);
+              if (inline) {
+              	  fContext.beginParagraph();
+           	      fContext.onFormat(newWikiParameters(params1));
+              } else {
+            	  fContext.beginParagraph(newWikiParameters(params1));
+              }
+          }
+        )
         ( LOOKAHEAD(2) lines() )?
         {
             fContext.endParagraph();
@@ -768,6 +790,11 @@ void line():
 {
     ( LOOKAHEAD(2)
         (
+            t = getINLINE_PARAMS()
+            {
+            	fContext.onFormat(newWikiParameters(t.image.trim()));
+            }
+            |
             t = getESCAPE()
             {
                 fContext.onEscape("" + t.image.charAt(1));
