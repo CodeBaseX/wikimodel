@@ -129,6 +129,8 @@ public interface IWikiScannerContext extends IWemConstants {
 
     void onFormat(WikiStyle wikiStyle);
 
+    void onFormat(WikiParameters params);
+
     /**
      * @see org.wikimodel.wem.impl.WikiScannerContext#onFormat(org.wikimodel.wem.WikiStyle,
      *      boolean)
