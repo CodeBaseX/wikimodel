@@ -458,11 +458,11 @@ public class CompositeListener implements IWemListener {
     }
 
     /**
-     * @see org.wikimodel.wem.IWemListener#onVerbatimBlock(java.lang.String)
+     * @see org.wikimodel.wem.IWemListener#onVerbatimBlock(String, WikiParameters)
      */
-    public void onVerbatimBlock(String str) {
+    public void onVerbatimBlock(String str, WikiParameters params) {
         for (IWemListener listener : fListeners) {
-            listener.onVerbatimBlock(str);
+            listener.onVerbatimBlock(str, params);
         }
     }
 

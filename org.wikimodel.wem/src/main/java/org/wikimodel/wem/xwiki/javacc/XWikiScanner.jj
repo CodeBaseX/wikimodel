@@ -361,7 +361,7 @@ void docElements():
     macroBlock()
     |
     // Non-interpreted content or empty content
-    LOOKAHEAD(2) ( verbatimBlock() | horline() )
+    LOOKAHEAD(2) ( LOOKAHEAD(2) verbatimBlock() | horline() )
     |
     (
     LOOKAHEAD(2) 
@@ -496,15 +496,20 @@ void block():
 
 void verbatimBlock():
 {
+    WikiParameters verbatimParameters = WikiParameters.EMPTY;
+    Token t = null;
 }
 {
+    ( LOOKAHEAD(2) t = getBLOCK_PARAMS() { verbatimParameters = newWikiParameters(t.image.trim()); } )?
+    {
+    }
     getVERBATIM_START()
     {
     }
-	verbatimBody(false)
+	verbatimBody(false, verbatimParameters)
 }
 
-void verbatimBody(boolean inline):
+void verbatimBody(boolean inline, WikiParameters params):
 {
     Token t = null;
     StringBuffer buf = new StringBuffer();
@@ -527,7 +532,8 @@ void verbatimBody(boolean inline):
         str = buf.toString();
         if (str.endsWith("}}}"))
             str = str.substring(0, str.length() - "}}}".length());
-        fContext.onVerbatim(str, inline);
+        sendOnEmptyLinesEvent(true);
+        fContext.onVerbatim(str, inline, params);
     }
 }
 
@@ -841,7 +847,7 @@ void line():
 			    t = getVERBATIM_INLINE_START()
 			    {
 			    }
-				verbatimBody(true)
+				verbatimBody(true, WikiParameters.EMPTY)
 			)
             |
             t = getHEADER_END()

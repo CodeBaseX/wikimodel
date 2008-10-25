@@ -343,6 +343,10 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().onVerbatim(str, inline);
     }
 
+    public void onVerbatim(String str, boolean inline, WikiParameters params) {
+        getContext().onVerbatim(str, inline, params);
+    }
+
     public void onWord(String str) {
         getContext().onWord(str);
     }

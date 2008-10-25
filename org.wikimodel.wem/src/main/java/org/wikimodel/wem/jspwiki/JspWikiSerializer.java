@@ -292,7 +292,7 @@ public class JspWikiSerializer implements IWemListener {
 
     }
 
-    public void onVerbatimBlock(String str) {
+    public void onVerbatimBlock(String str, WikiParameters params) {
         print("{{{" + str + "}}}");
     }
 
