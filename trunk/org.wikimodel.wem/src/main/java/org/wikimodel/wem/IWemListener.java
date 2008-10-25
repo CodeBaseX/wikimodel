@@ -123,7 +123,7 @@ public interface IWemListener {
 
     void onTableCaption(String str);
 
-    void onVerbatimBlock(String str);
+    void onVerbatimBlock(String str, WikiParameters parameters);
 
     void onVerbatimInline(String str);
 

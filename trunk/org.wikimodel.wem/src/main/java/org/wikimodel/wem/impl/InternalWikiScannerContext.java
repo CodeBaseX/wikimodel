@@ -780,14 +780,18 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     }
 
     public void onVerbatim(String str, boolean inline) {
+        onVerbatim(str, inline, WikiParameters.EMPTY);
+    }
+
+    public void onVerbatim(String str, boolean inline, WikiParameters params) {
         if (!inline) {
             checkBlockContainer();
-            fListener.onVerbatimBlock(str);
+            fListener.onVerbatimBlock(str, params);
         } else {
             fListener.onVerbatimInline(str);
         }
     }
-
+    
     public void onWord(String str) {
         checkStyleOpened();
         fListener.onWord(str);

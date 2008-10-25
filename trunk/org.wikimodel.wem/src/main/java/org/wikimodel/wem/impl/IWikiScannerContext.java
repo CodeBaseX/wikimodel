@@ -182,6 +182,8 @@ public interface IWikiScannerContext extends IWemConstants {
      */
     void onVerbatim(String str, boolean inline);
 
+    void onVerbatim(String str, boolean inline, WikiParameters params);
+
     void onWord(String str);
 
 }

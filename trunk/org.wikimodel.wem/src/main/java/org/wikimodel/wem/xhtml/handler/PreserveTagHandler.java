@@ -30,7 +30,7 @@ public class PreserveTagHandler extends TagHandler {
     protected void end(TagContext context) {
         String str = context.getContent();
         sendEmptyLines(context);
-        context.getScannerContext().onVerbatim(str, false);
+        context.getScannerContext().onVerbatim(str, false, context.getParams());
     }
 
 }

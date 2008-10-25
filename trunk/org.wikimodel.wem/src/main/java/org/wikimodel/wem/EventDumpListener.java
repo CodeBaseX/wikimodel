@@ -322,7 +322,7 @@ public class EventDumpListener extends PrintTextListener {
     }
 
     @Override
-    public void onVerbatimBlock(String str) {
+    public void onVerbatimBlock(String str, WikiParameters params) {
         println("onVerbatimBlock('" + str + "')");
     }
 

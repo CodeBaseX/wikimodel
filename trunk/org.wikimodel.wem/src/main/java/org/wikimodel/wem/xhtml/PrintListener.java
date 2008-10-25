@@ -246,8 +246,8 @@ public class PrintListener extends PrintInlineListener {
     }
 
     @Override
-    public void onVerbatimBlock(String str) {
-        println("<pre>" + WikiPageUtil.escapeXmlString(str) + "</pre>");
+    public void onVerbatimBlock(String str, WikiParameters params) {
+        println("<pre" + params + ">" + WikiPageUtil.escapeXmlString(str) + "</pre>");
     }
 
 }
