@@ -255,6 +255,7 @@ public class PrintTextListener implements IWemListener {
 
             @Override
             protected void handleImage(String ref, String label) {
+
                 handleReference(ref, label);
             }
 
@@ -286,7 +287,8 @@ public class PrintTextListener implements IWemListener {
     }
 
     /**
-     * @see org.wikimodel.wem.IWemListener#onHorizontalLine(WikiParameters params)
+     * @see org.wikimodel.wem.IWemListener#onHorizontalLine(WikiParameters
+     *      params)
      */
     public void onHorizontalLine(WikiParameters params) {
     }
