@@ -163,6 +163,12 @@ public class XWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testFormats() throws WikiParserException {
+        test("(% param1='value1' param2='value2' %)");
+        test("xxx (% param1='value1' param2='value2' %) xxx ");
+        // (% param3="value3" %)hello(%%) world
+        //
+        // (% param3="valueA" %)hello (% param3="valueB" %)world
+
         test("**bold**", "<p><strong>bold</strong></p>");
         test("//italic//", "<p><em>italic</em></p>");
         test("--strike--", "<p><strike>strike</strike></p>");
@@ -447,7 +453,9 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             + "Second line of the same paragraph.\n"
             + "\n"
             + "The second paragraph");
-        test("(% a='b' %)\nparagraph1\n\nparagraph2", "<p a='b'>paragraph1</p>\n<p>paragraph2</p>");
+        test(
+            "(% a='b' %)\nparagraph1\n\nparagraph2",
+            "<p a='b'>paragraph1</p>\n<p>paragraph2</p>");
     }
 
     /**

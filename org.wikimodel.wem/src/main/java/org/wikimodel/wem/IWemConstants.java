@@ -10,35 +10,113 @@
  *******************************************************************************/
 package org.wikimodel.wem;
 
+/**
+ * This interface contains main styles used to define text formatting. Note that
+ * individual parsers can extends this set by adding new styles.
+ * 
+ * @author kotelnikov
+ */
 public interface IWemConstants {
 
-    public static final WikiStyle BIG = new WikiStyle("big");
-
-    public static final WikiStyle CODE = new WikiStyle("code");
-
-    public static final WikiStyle DEL = new WikiStyle("del");
-
-    public static final WikiStyle EM = new WikiStyle("em");
-
-    public static final WikiStyle INS = new WikiStyle("ins");
-
-    public static final WikiStyle MONO = new WikiStyle("mono");
+    /**
+     * Bigger font
+     * 
+     * @see 
+     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_big"
+     */
+    WikiStyle BIG = new WikiStyle("big");
 
     /**
-     * References...
+     * Program code.
+     * 
+     * @see 
+     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_code"
      */
-    public static final WikiStyle REF = new WikiStyle("ref");
+    WikiStyle CODE = new WikiStyle("code");
 
-    public static final WikiStyle SMALL = new WikiStyle("small");
+    /**
+     * Deleted Text
+     * 
+     * @see 
+     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_del"
+     */
+    WikiStyle DEL = new WikiStyle("del");
 
-    public static final WikiStyle STRIKE = new WikiStyle("strike");
+    /**
+     * Emphasis (should be used as a replacement for the "i" element).
+     * 
+     * @see 
+     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_em"
+     */
+    WikiStyle EM = new WikiStyle("em");
 
-    public static final WikiStyle STRONG = new WikiStyle("strong");
+    /**
+     * Inserted Text
+     * 
+     * @see 
+     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_ins"
+     */
+    WikiStyle INS = new WikiStyle("ins");
 
-    public static final WikiStyle SUB = new WikiStyle("sub");
+    /**
+     * FIXME: there is no such a symbol. Should be replaced by the {@link #TT}
+     * element.
+     */
+    WikiStyle MONO = new WikiStyle("mono");
 
-    public static final WikiStyle SUP = new WikiStyle("sup");
+    /**
+     * References... FIXME: check what does it mean... I (kotelnikov) did not
+     * found any references on such an HTML element. This style should be
+     * removed or replaced by something else.
+     */
+    WikiStyle REF = new WikiStyle("ref");
 
-    public static final WikiStyle TT = new WikiStyle("tt");
+    /**
+     *Smaller font.
+     * 
+     * @see 
+     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_small"
+     */
+    WikiStyle SMALL = new WikiStyle("small");
+
+    /**
+     * Strike-through
+     * 
+     * @see 
+     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_strike"
+     */
+    WikiStyle STRIKE = new WikiStyle("strike");
+
+    /**
+     * Strong emphasis.
+     * 
+     * @see 
+     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_strong"
+     */
+    WikiStyle STRONG = new WikiStyle("strong");
+
+    /**
+     * Subscript
+     * 
+     * @see 
+     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_sub"
+     */
+    WikiStyle SUB = new WikiStyle("sub");
+
+    /**
+     * Superscript
+     * 
+     * @see 
+     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_sup"
+     */
+    WikiStyle SUP = new WikiStyle("sup");
+
+    /**
+     * Fixed pitch font.
+     * 
+     * @see 
+     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_tt"
+     */
+    WikiStyle TT = new WikiStyle("tt");
 
 }

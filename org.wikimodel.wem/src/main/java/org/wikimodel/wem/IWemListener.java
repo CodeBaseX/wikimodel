@@ -11,122 +11,36 @@
 package org.wikimodel.wem;
 
 /**
+ * This interface is a marker for classes implementing all WEM listeners. In the
+ * future it should be removed and replaced by an Object Adapter providing
+ * individual listeners. Such a provider should be used something like that:
+ * 
+ * <pre>
+ * IWemListenerProvider provider = new MyWemListenerProvider();
+ * provider.registerListener(
+ *      IWemListenerDocument.class, 
+ *      new MyDocumentListener());
+ * ...
+ * IWemListenerDocument docListener = 
+ *      provider.getListener(IWemListenerProvider.class);
+ * if (docListener != null) {
+ *      docListener.beginDocument();
+ * }
+ * </pre>
+ * 
+ * Adapter-based approach is much more flexible and it can be used to
+ * transparently extend parsers to handle new types of structural elements.
+ * 
  * @author MikhailKotelnikov
  */
-public interface IWemListener {
-
-    void beginDefinitionDescription();
-
-    void beginDefinitionList(WikiParameters params);
-
-    void beginDefinitionTerm();
-
-    void beginDocument();
-
-    void beginFormat(WikiFormat format);
-
-    void beginHeader(int level, WikiParameters params);
-
-    void beginInfoBlock(char infoType, WikiParameters params);
-
-    void beginList(WikiParameters params, boolean ordered);
-
-    void beginListItem();
-
-    void beginParagraph(WikiParameters params);
-
-    void beginPropertyBlock(String propertyUri, boolean doc);
-
-    void beginPropertyInline(String str);
-
-    void beginQuotation(WikiParameters params);
-
-    void beginQuotationLine();
-
-    void beginTable(WikiParameters params);
-
-    void beginTableCell(boolean tableHead, WikiParameters params);
-
-    void beginTableRow(WikiParameters params);
-
-    void endDefinitionDescription();
-
-    void endDefinitionList(WikiParameters params);
-
-    void endDefinitionTerm();
-
-    void endDocument();
-
-    void endFormat(WikiFormat format);
-
-    void endHeader(int level, WikiParameters params);
-
-    void endInfoBlock(char infoType, WikiParameters params);
-
-    void endList(WikiParameters params, boolean ordered);
-
-    void endListItem();
-
-    void endParagraph(WikiParameters params);
-
-    void endPropertyBlock(String propertyUri, boolean doc);
-
-    void endPropertyInline(String inlineProperty);
-
-    void endQuotation(WikiParameters params);
-
-    void endQuotationLine();
-
-    void endTable(WikiParameters params);
-
-    void endTableCell(boolean tableHead, WikiParameters params);
-
-    void endTableRow(WikiParameters params);
-
-    void onEmptyLines(int count);
-
-    void onEscape(String str);
-
-    void onExtensionBlock(String extensionName, WikiParameters params);
-
-    void onExtensionInline(String extensionName, WikiParameters params);
-
-    void onHorizontalLine(WikiParameters params);
-
-    void onLineBreak();
-
-    void onMacroBlock(String macroName, WikiParameters params, String content);
-
-    void onMacroInline(String macroName, WikiParameters params, String content);
-
-    void onNewLine();
-
-    /**
-     * This method is called to notify that an URI (an implicit reference) was
-     * found in the parsed wiki document.
-     * 
-     * @param ref the URI
-     */
-    void onReference(String ref);
-
-    /**
-     * This method is called to notify that a structured reference was found in
-     * the text
-     * 
-     * @param ref the reference the reference
-     */
-    void onReference(WikiReference ref);
-
-    void onSpace(String str);
-
-    void onSpecialSymbol(String str);
-
-    void onTableCaption(String str);
-
-    void onVerbatimBlock(String str, WikiParameters parameters);
-
-    void onVerbatimInline(String str);
-
-    void onWord(String str);
-
+public interface IWemListener
+    extends
+    IWemListenerDocument,
+    IWemListenerSimpleBlocks,
+    IWemListenerInline,
+    IWemListenerTable,
+    IWemListenerList,
+    IWemListenerSemantic,
+    IWemListenerProgramming {
+    //
 }
