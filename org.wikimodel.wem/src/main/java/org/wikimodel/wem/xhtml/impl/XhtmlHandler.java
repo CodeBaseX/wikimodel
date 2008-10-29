@@ -452,7 +452,9 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
         fStack.add("h6", handler);
         fStack.add("hr", new HorizontalLineTagHandler());
         fStack.add("pre", new PreserveTagHandler());
-        fStack.add("a", new ReferenceTagHandler());
+        handler = new ReferenceTagHandler();
+        fStack.add("a", handler);
+        fStack.add("img", handler);
         handler = new BoldTagHandler();
         fStack.add("strong", handler);
         fStack.add("b", handler);
