@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.wikimodel.wem.xwiki;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.wikimodel.wem.WikiReferenceParser;
 
 /**
@@ -21,45 +18,50 @@ import org.wikimodel.wem.WikiReferenceParser;
  */
 public class XWikiReferenceParser extends WikiReferenceParser {
 
-    /**
-     * Note that use Pattern.DOTALL since a link can span multiple lines in XWiki syntax.
-     */
-    private static final Pattern LINK_PATTERN = Pattern.compile("(?:(.*)(?:>>|\\|\\|))?(.*)", Pattern.DOTALL);
-    
     @Override
     protected String getLabel(String[] chunks) {
-        if (chunks.length > 1)
-            return chunks[0];
-        return null;
-    }
-
-    @Override
-    protected String getLink(String[] chunks) {
-        if (chunks.length > 1)
-            return chunks[1];
         return chunks[0];
     }
 
     @Override
+    protected String getLink(String[] chunks) {
+        return chunks[1];
+    }
+
+    @Override
+    protected String getParameters(String[] chunks)
+    {
+        return chunks[2];
+    }
+
+    @Override
     protected String[] splitToChunks(String str) {
-        String[] chunks;
-        Matcher matcher = LINK_PATTERN.matcher(str);
-        if (matcher.matches()) {
-            boolean hasLabel = (matcher.group(1) != null);
-            boolean hasReference = (matcher.group(2) != null);
-            if (hasLabel && hasReference) {
-                chunks = new String[2];
-                chunks[0] = matcher.group(1);
-                chunks[1] = matcher.group(2);
-            } else if (hasReference) {
-                chunks = new String[1];
-                chunks[0] = matcher.group(2);
+        String[] chunks = new String[3];
+
+        // Note: It's important to use lastIndexOf() since it's possible to 
+        // have ">" characters in the label part. 
+        int labelSeparatorPosition = str.lastIndexOf(">>");
+        if (labelSeparatorPosition > -1) {
+            chunks[0] = str.substring(0, labelSeparatorPosition);
+            String buffer = str.substring(labelSeparatorPosition + 2);
+            int referenceSeparatorPosition = buffer.indexOf("||");
+            if (referenceSeparatorPosition > -1) {
+                chunks[1] = buffer.substring(0, referenceSeparatorPosition);
+                chunks[2] = buffer.substring(referenceSeparatorPosition + 2);                
             } else {
-                chunks = new String[0];
+                chunks[1] = buffer;
             }
         } else {
-            chunks = new String[0];
+            // Same as above we want to allow the link to use the | character
+            int referenceSeparatorPosition = str.lastIndexOf("||");
+            if (referenceSeparatorPosition > -1) {
+                chunks[1] = str.substring(0, referenceSeparatorPosition);
+                chunks[2] = str.substring(referenceSeparatorPosition + 2);
+            } else {
+                chunks[1] = str;
+            }
         }
+        
         return chunks;
     }
 }
