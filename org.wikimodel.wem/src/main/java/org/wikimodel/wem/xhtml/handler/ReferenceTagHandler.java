@@ -35,7 +35,7 @@ public class ReferenceTagHandler extends TagHandler {
     protected void end(TagContext context) {
         // TODO: it should be replaced by a normal parameters
         WikiParameter ref = null;
-        if (context.getLocalName().equals("img")) {
+        if (context.getName().equals("img")) {
             ref = context.getParams().getParameter("src");
         } else {
             ref = context.getParams().getParameter("href");
