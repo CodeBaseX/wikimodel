@@ -51,6 +51,7 @@ import org.wikimodel.wem.xhtml.handler.TeletypeTagHandler;
 import org.wikimodel.wem.xhtml.handler.UnderlineTagHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.ext.Attributes2;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -64,34 +65,26 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
         public class TagContext {
 
-            private final Attributes fAttributes;
+            private final WikiParameters fParameters;
 
+            private String fName;
+            
             private StringBuffer fContent;
 
             public TagHandler fHandler;
 
-            String fLocalName;
-
             private final TagContext fParent;
-
-            String fQName;
-
-            String fUri;
 
             TagStack fTagStack;
             
             public TagContext(
                 TagContext parent,
-                String uri,
-                String localName,
-                String qName,
-                Attributes attributes,
+                String name,
+                WikiParameters params,
                 TagStack tagStack) {
-                fUri = uri;
-                fLocalName = localName;
-                fQName = qName;
+                fName = name;
                 fParent = parent;
-                fAttributes = attributes;
+                fParameters = params;
                 fTagStack = tagStack; 
             }
 
@@ -129,56 +122,20 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
                     .toString()) : "";
             }
 
-            public String getLocalName() {
-                return fLocalName;
-            }
-
-            private String getLocalName(
-                String uri,
-                String localName,
-                String name,
-                boolean upperCase) {
-                String result = (localName != null && !"".equals(localName))
-                    ? localName
-                    : name;
-                return upperCase ? result.toUpperCase() : result;
-            }
-
             public String getName() {
-                return getLocalName(fUri, fLocalName, fQName, false);
+                return fName;
             }
-
+            
             public WikiParameters getParams() {
-                List<WikiParameter> list = new ArrayList<WikiParameter>();
-                int len = fAttributes != null ? fAttributes.getLength() : 0;
-                for (int i = 0; i < len; i++) {
-                    String key = getLocalName(
-                        fAttributes.getURI(i),
-                        fAttributes.getQName(i),
-                        fAttributes.getLocalName(i),
-                        false);
-                    String value = fAttributes.getValue(i);
-                    WikiParameter param = new WikiParameter(key, value);
-                    list.add(param);
-                }
-                WikiParameters params = new WikiParameters(list);
-                return params;
+                return fParameters;
             }
 
             public TagContext getParent() {
                 return fParent;
             }
 
-            public String getQName() {
-                return fQName;
-            }
-
             public WikiScannerContext getScannerContext() {
                 return fScannerContext;
-            }
-
-            public String getUri() {
-                return fUri;
             }
 
             public TagStack getTagStack() {
@@ -190,7 +147,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
             }
 
             public boolean isTag(String string) {
-                return string.equals(fLocalName.toLowerCase());
+                return string.equals(fName.toLowerCase());
             }
         }
 
@@ -246,13 +203,11 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
         }
 
         public void beginElement(
-            String uri,
-            String localName,
-            String qName,
-            Attributes attributes) {
-            fPeek = new TagContext(fPeek, uri, localName, qName, attributes, this);
-            localName = fPeek.getName();
-            TagHandler handler = fMap.get(localName);
+            String name,
+            WikiParameters params) {
+            fPeek = new TagContext(fPeek, name, params, this);
+            name = fPeek.getName();
+            TagHandler handler = fMap.get(name);
             boolean ignoreElements = (Boolean) getStackParameter("ignoreElements");
             if (!ignoreElements) {
                 fPeek.beginElement(handler);
@@ -417,6 +372,11 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
      */
     private StringBuffer fAccumulationBuffer;
 
+    /**
+     * If true then the parser is still processing the DTD and thus we should ignore all Comments/CDATA sections.
+     */
+    private boolean fIsInDTD;
+    
     public XhtmlHandler(WikiScannerContext context, Map<String, TagHandler> extraHandlers, XhtmlEscapeHandler escapeHandler) {
         this(context, extraHandlers, escapeHandler, new CommentHandler());
     }
@@ -537,7 +497,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
      */
     @Override
     public void startDocument() throws SAXException {
-        fStack.beginElement(null, null, null, null);
+        fStack.beginElement(null, null);
     }
 
     /**
@@ -554,19 +514,21 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
             fStack.onCharacters(fAccumulationBuffer.toString().toCharArray(), 0, fAccumulationBuffer.length());
         }
         fAccumulationBuffer = new StringBuffer();
-        fStack.beginElement(uri, localName, qName, attributes);
+        fStack.beginElement(getLocalName(uri, localName, qName, false), getParameters(attributes));
     }
 
     // Lexical handler methods
 
     public void comment(char[] array, int start, int length) throws SAXException
     {
-        // If there's any characters not yet handled, handle them now.
-        if (fAccumulationBuffer != null && fAccumulationBuffer.length() > 0) {
-            fStack.onCharacters(fAccumulationBuffer.toString().toCharArray(), 0, fAccumulationBuffer.length());
+        if (!fIsInDTD) {
+            // If there's any characters not yet handled, handle them now.
+            if (fAccumulationBuffer != null && fAccumulationBuffer.length() > 0) {
+                fStack.onCharacters(fAccumulationBuffer.toString().toCharArray(), 0, fAccumulationBuffer.length());
+            }
+            fAccumulationBuffer = new StringBuffer();
+            fStack.onComment(array, start, length);
         }
-        fAccumulationBuffer = new StringBuffer();
-        fStack.onComment(array, start, length);
     }
 
     public void endCDATA() throws SAXException
@@ -576,7 +538,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
     public void endDTD() throws SAXException
     {
-        // Nothing to do
+        fIsInDTD = false;
     }
 
     public void endEntity(String arg0) throws SAXException
@@ -591,11 +553,53 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
     public void startDTD(String arg0, String arg1, String arg2) throws SAXException
     {
-        // Nothing to do
+        fIsInDTD = true;
     }
 
     public void startEntity(String arg0) throws SAXException
     {
         // Nothing to do
     }
+    
+    private String getLocalName(
+        String uri,
+        String localName,
+        String name,
+        boolean upperCase) {
+        String result = (localName != null && !"".equals(localName))
+            ? localName
+            : name;
+        return upperCase ? result.toUpperCase() : result;
+    }
+
+    private WikiParameters getParameters(Attributes attributes) {
+        List<WikiParameter> params = new ArrayList<WikiParameter>();
+        for (int i = 0; i < attributes.getLength(); i++) {
+            String key = getLocalName(
+                attributes.getURI(i),
+                attributes.getQName(i),
+                attributes.getLocalName(i),
+                false);
+            String value = attributes.getValue(i);
+            WikiParameter param = new WikiParameter(key, value);
+
+            // The XHTML DTD specifies some default value for some attributes. For example for a TD element
+            // it defines colspan=1 and rowspan=1. Thus we'll get a colspan and rowspan attribute passed to
+            // the current method even though they are not defined in the source XHTML content.
+            // However with SAX2 it's possible to check if an attribute is defined in the source or not using
+            // the Attributes2 class.
+            // See http://www.saxproject.org/apidoc/org/xml/sax/package-summary.html#package_description
+            if (attributes instanceof Attributes2) {
+                Attributes2 attributes2 = (Attributes2) attributes;
+                // If the attribute is present in the XHTML source file then add it, otherwise skip it.
+                if (attributes2.isSpecified(i)) {
+                    params.add(param);
+                }
+            } else {
+                params.add(param);
+            }
+        }
+        return new WikiParameters(params);
+    }
+    
 }

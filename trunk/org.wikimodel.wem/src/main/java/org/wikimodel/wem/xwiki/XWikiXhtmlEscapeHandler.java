@@ -137,7 +137,7 @@ public class XWikiXhtmlEscapeHandler implements XhtmlEscapeHandler
         // We also ignore SPAN tags since we want to handle their content as normal content.
         TagContext context = tagContext;
         TagHandler handler = context.fHandler;
-        while (((handler == null) || context.getLocalName().equalsIgnoreCase("span")) && (context.getParent() != null)) {
+        while (((handler == null) || context.getName().equalsIgnoreCase("span")) && (context.getParent() != null)) {
             context = context.getParent();
             handler = context.fHandler;
         }
@@ -146,7 +146,7 @@ public class XWikiXhtmlEscapeHandler implements XhtmlEscapeHandler
             // We haven't found a handler. It means we're inside the top element and we assume we're on an implicit paragraph.
             tag = "p";
         } else {
-            tag = context.getLocalName().toLowerCase();
+            tag = context.getName().toLowerCase();
         }
         
         return tag;
