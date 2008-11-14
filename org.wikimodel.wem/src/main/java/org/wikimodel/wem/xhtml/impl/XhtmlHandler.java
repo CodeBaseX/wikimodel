@@ -88,13 +88,13 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
                 fTagStack = tagStack; 
             }
 
-            public boolean appendContent(char[] array, int start, int length) {
+            public boolean appendContent(String content) {
                 if (fHandler == null || !fHandler.isAccumulateContent())
                     return false;
                 if (fContent == null) {
                     fContent = new StringBuffer();
                 }
-                fContent.append(array, start, length);
+                fContent.append(content);
                 return true;
             }
 
@@ -261,6 +261,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
                     break;
                 case ' ':
                 case '\t':
+                case 160: // This is a &nbsp;
                     type = XhtmlCharacterType.SPACE;
                     break;
                 case '\n':
@@ -288,11 +289,11 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
                     case ESCAPED:
                         fScannerContext.onEscape("" + character.getCharacter());
                         break;
-                    case NEW_LINE:
-                        fScannerContext.onNewLine();
-                        break;
                     case SPECIAL_SYMBOL:
                         fScannerContext.onSpecialSymbol("" + character.getCharacter());
+                        break;
+                    case NEW_LINE:
+                        fScannerContext.onLineBreak();
                         break;
                     case SPACE:
                         StringBuffer spaceBuffer = new StringBuffer(" ");
@@ -314,7 +315,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
             }            
         }
         
-        public void onCharacters(char[] array, int start, int length) {
+        public void onCharacters(String content) {
             
             if (!fPeek.isContentContainer())
                 return;
@@ -322,14 +323,15 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
             if (ignoreElements)
                 return;
 
-            if (!fPeek.appendContent(array, start, length)) {
+            if (!fPeek.appendContent(content)) {
                 Stack<XhtmlCharacter> stack = new Stack<XhtmlCharacter>();
                 Map<String, Object> characterContext = new HashMap<String, Object>();
                 if (fEscapeHandler != null) {
                 	fEscapeHandler.initialize(characterContext);
                 }
-                for (int i = 0; i < length; i++) {
-                    XhtmlCharacter current = new XhtmlCharacter(array[start + i], getCharacterType(array[start + i]));
+                for (int i = 0; i < content.length(); i++) {
+                    char c = content.charAt(i);
+                    XhtmlCharacter current = new XhtmlCharacter(c, getCharacterType(c));
                     XhtmlCharacter result = current;
                     if (fEscapeHandler != null) {
                         result = fEscapeHandler.handleCharacter(current, stack, fPeek, characterContext);
@@ -364,19 +366,6 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
     TagStack fStack;
 
-    /**
-     * SAX parsers are allowed to call the characters() method several times in a row.
-     * Some parsers have a buffer of 8K (Crimson), others of 16K (Xerces) and others can
-     * even call onCharacters() for every single characters! Thus we need to accumulate
-     * the characters in a buffer before we process them.
-     */
-    private StringBuffer fAccumulationBuffer;
-
-    /**
-     * If true then the parser is still processing the DTD and thus we should ignore all Comments/CDATA sections.
-     */
-    private boolean fIsInDTD;
-    
     public XhtmlHandler(WikiScannerContext context, Map<String, TagHandler> extraHandlers, XhtmlEscapeHandler escapeHandler) {
         this(context, extraHandlers, escapeHandler, new CommentHandler());
     }
@@ -453,9 +442,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
     @Override
     public void characters(char[] array, int start, int length)
         throws SAXException {
-        if (fAccumulationBuffer != null) {
-            fAccumulationBuffer.append(array, start, length);
-        }
+        fStack.onCharacters(new String(array, start, length));
     }
 
     /**
@@ -474,10 +461,6 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
     @Override
     public void endElement(String uri, String localName, String qName)
         throws SAXException {
-        if (fAccumulationBuffer != null && fAccumulationBuffer.length() > 0) {
-            fStack.onCharacters(fAccumulationBuffer.toString().toCharArray(), 0, fAccumulationBuffer.length());
-            fAccumulationBuffer.setLength(0);
-        }
         fStack.endElement();
     }
 
@@ -510,10 +493,6 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
         String localName,
         String qName,
         Attributes attributes) throws SAXException {
-        if (fAccumulationBuffer != null && fAccumulationBuffer.length() > 0) {
-            fStack.onCharacters(fAccumulationBuffer.toString().toCharArray(), 0, fAccumulationBuffer.length());
-        }
-        fAccumulationBuffer = new StringBuffer();
         fStack.beginElement(getLocalName(uri, localName, qName, false), getParameters(attributes));
     }
 
@@ -521,14 +500,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
     public void comment(char[] array, int start, int length) throws SAXException
     {
-        if (!fIsInDTD) {
-            // If there's any characters not yet handled, handle them now.
-            if (fAccumulationBuffer != null && fAccumulationBuffer.length() > 0) {
-                fStack.onCharacters(fAccumulationBuffer.toString().toCharArray(), 0, fAccumulationBuffer.length());
-            }
-            fAccumulationBuffer = new StringBuffer();
-            fStack.onComment(array, start, length);
-        }
+        fStack.onComment(array, start, length);
     }
 
     public void endCDATA() throws SAXException
@@ -538,7 +510,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
     public void endDTD() throws SAXException
     {
-        fIsInDTD = false;
+        // Nothing to do
     }
 
     public void endEntity(String arg0) throws SAXException
@@ -553,7 +525,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
     public void startDTD(String arg0, String arg1, String arg2) throws SAXException
     {
-        fIsInDTD = true;
+        // Nothing to do
     }
 
     public void startEntity(String arg0) throws SAXException
@@ -601,5 +573,4 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
         }
         return new WikiParameters(params);
     }
-    
 }

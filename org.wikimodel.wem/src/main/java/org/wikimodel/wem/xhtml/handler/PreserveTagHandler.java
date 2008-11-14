@@ -22,6 +22,8 @@ public class PreserveTagHandler extends TagHandler {
 		super(false, true, true);
 	}
 	
+    @Override
+    protected void begin(TagContext context)
     {
         setAccumulateContent(true);
     }
@@ -32,5 +34,4 @@ public class PreserveTagHandler extends TagHandler {
         sendEmptyLines(context);
         context.getScannerContext().onVerbatim(str, false, context.getParams());
     }
-
 }
