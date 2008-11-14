@@ -21,6 +21,9 @@ import org.wikimodel.wem.IWemListener;
 import org.wikimodel.wem.IWikiParser;
 import org.wikimodel.wem.WikiParserException;
 import org.wikimodel.wem.impl.WikiScannerContext;
+import org.wikimodel.wem.xhtml.filter.AccumulationXMLFilter;
+import org.wikimodel.wem.xhtml.filter.DTDXMLFilter;
+import org.wikimodel.wem.xhtml.filter.XHTMLWhitespaceXMLFilter;
 import org.wikimodel.wem.xhtml.handler.CommentHandler;
 import org.wikimodel.wem.xhtml.handler.TagHandler;
 import org.wikimodel.wem.xhtml.impl.LocalEntityResolver;
@@ -40,6 +43,11 @@ public class XhtmlParser implements IWikiParser {
     
     private CommentHandler fCommentHandler;
     
+    /**
+     * Optional XML Reader that can be specified. This is the solution for setting up custom XML filters.  
+     */
+    private XMLReader fXmlReader;
+    
     public XhtmlParser() {
         fExtraHandlers = Collections.<String, TagHandler>emptyMap();
         fCommentHandler = new CommentHandler();
@@ -55,6 +63,10 @@ public class XhtmlParser implements IWikiParser {
 
     public void setCommentHandler(CommentHandler commentHandler) {
         fCommentHandler = commentHandler;
+    }
+    
+    public void setXmlReader(XMLReader xmlReader) {
+        fXmlReader = xmlReader;
     }
     
     /**
@@ -77,20 +89,49 @@ public class XhtmlParser implements IWikiParser {
     public void parse(Reader reader, IWemListener listener)
         throws WikiParserException {
         try {
-            SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-            SAXParser parser = parserFactory.newSAXParser();
-            XMLReader xmlReader = parser.getXMLReader();
-            xmlReader.setFeature("http://xml.org/sax/features/namespaces", 
-                true);
-            xmlReader.setEntityResolver(new LocalEntityResolver());
+            XMLReader xmlReader = getXMLReader();
+
+            // The WikiModel-specific handler
             DefaultHandler handler = getHandler(listener);
+            
+            xmlReader.setFeature("http://xml.org/sax/features/namespaces", true);
+            xmlReader.setEntityResolver(new LocalEntityResolver());
             xmlReader.setContentHandler(handler);
             xmlReader.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
+
             InputSource source = new InputSource(reader);
             xmlReader.parse(source);
+            
         } catch (Exception e) {
             throw new WikiParserException(e);
         }
     }    
 
+    private XMLReader getXMLReader() throws Exception
+    {
+        XMLReader reader;
+        
+        if (fXmlReader != null) {
+            reader = fXmlReader;
+        } else {
+            SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+            SAXParser parser = parserFactory.newSAXParser();
+            XMLReader xmlReader = parser.getXMLReader();
+
+            // Ignore SAX callbacks when the parser parses the DTD
+            DTDXMLFilter dtdFilter = new DTDXMLFilter(xmlReader);
+                       
+            // Add a XML Filter to accumulate onCharacters() calls since SAX
+            // parser may call it several times.
+            AccumulationXMLFilter accumulationFilter = new AccumulationXMLFilter(dtdFilter);
+
+            // Add a XML Filter to remove non-semantic white spaces. We need to do that since all WikiModel 
+            // events contain only semantic information.
+            XHTMLWhitespaceXMLFilter whitespaceFilter = new XHTMLWhitespaceXMLFilter(accumulationFilter);
+
+            reader = whitespaceFilter;
+        }
+        
+        return reader;
+    }
 }

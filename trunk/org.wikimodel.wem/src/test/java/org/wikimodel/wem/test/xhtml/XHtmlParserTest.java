@@ -8,14 +8,16 @@
  * Contributors:
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
-package org.wikimodel.wem.test;
+package org.wikimodel.wem.test.xhtml;
 
 import org.wikimodel.wem.IWikiParser;
 import org.wikimodel.wem.WikiParserException;
+import org.wikimodel.wem.test.AbstractWikiParserTest;
 import org.wikimodel.wem.xhtml.XhtmlParser;
 
 /**
  * @author MikhailKotelnikov
+ * @author vmassol
  */
 public class XHtmlParserTest extends AbstractWikiParserTest {
 
