@@ -23,6 +23,11 @@ import org.wikimodel.wem.xhtml.XhtmlEscapeHandler;
 import org.wikimodel.wem.xhtml.handler.TagHandler;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 
+/**
+ * Escape characters that would be confused for XWiki wiki syntax if they were not escaped.
+ *  
+ * @author Vincent Massol
+ */
 public class XWikiXhtmlEscapeHandler implements XhtmlEscapeHandler
 {
     private static final Pattern LIST_PATTERN = Pattern.compile("\\p{Blank}*((\\*+[:;]*)|([1*]+\\.[:;]*)|([:;]+))\\p{Blank}+");
@@ -39,6 +44,10 @@ public class XWikiXhtmlEscapeHandler implements XhtmlEscapeHandler
         context.put("buffer", new StringBuilder());
     }
 
+    /**
+     * {@inheritDoc}
+     * @see XhtmlEscapeHandler#handleCharacter(XhtmlCharacter, Stack, TagContext, Map)
+     */
     public XhtmlCharacter handleCharacter(XhtmlCharacter current, Stack<XhtmlCharacter> characters, TagContext tagContext, Map<String, Object> context)
     {
         XhtmlCharacter result = current;
@@ -55,7 +64,8 @@ public class XWikiXhtmlEscapeHandler implements XhtmlEscapeHandler
             return result;
         }
         
-        // Escape = symbols when in a header or when starting a line
+        // Escape = symbols when in a header (since it would be confused for closing header symbols) 
+        // or when starting a line (since otherwise it would be considered as a header syntax in xwiki syntax)
         if (current.getCharacter() == '=') {
             boolean isPotentialHeader = (Boolean) context.get("isPotentialHeader");
             if (currentTag.equals("h1") || currentTag.equals("h2") || currentTag.equals("h3") 
