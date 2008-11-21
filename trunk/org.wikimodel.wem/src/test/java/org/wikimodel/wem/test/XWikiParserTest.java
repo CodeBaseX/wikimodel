@@ -478,6 +478,12 @@ public class XWikiParserTest extends AbstractWikiParserTest {
      */
     public void testReferences() throws WikiParserException {
         test(
+            "before [[xx[[image:img.gif]]yy]] after",
+            "<p>before <a href='xx[[image:img.gif]]yy'>xx[[image:img.gif]]yy</a> after</p>");
+        test(
+            "before [[xx[[image:img.gif bqdf]]yy]] after",
+            "<p>before <a href='xx[[image:img.gif bqdf]]yy'>xx[[image:img.gif bqdf]]yy</a> after</p>");
+        test(
             "before http://www.foo.bar/com after",
             "<p>before <a href='http://www.foo.bar/com'>http://www.foo.bar/com</a> after</p>");
         test(
