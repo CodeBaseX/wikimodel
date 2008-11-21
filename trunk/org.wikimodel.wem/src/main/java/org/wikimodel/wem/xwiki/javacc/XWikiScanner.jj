@@ -62,6 +62,7 @@ PARSER_END(XWikiScanner)
 
 TOKEN_MGR_DECLS: {
     int verbatimBlockDepth = 0;
+    int referenceBlockDepth = 0;
     int tableDepth = 0; 
     String macroName = "";
     int macroDepth = 0;
@@ -121,6 +122,19 @@ TOKEN_MGR_DECLS: {
     | <INTERNAL_MACRO_CONTENT: <MACRO_CONTENT> > : MACRO_CONTEXT
 }
 
+<REFERENCE_CONTEXT> TOKEN:
+{
+      <INTERNAL_REFERENCE_START: <REFERENCE_START> > { referenceBlockDepth++; } : REFERENCE_CONTEXT
+    | <INTERNAL_REFERENCE_END: <REFERENCE_END> > {
+            referenceBlockDepth--;
+            if (referenceBlockDepth == 0)  {
+                SwitchTo(INITIAL_CONTEXT);
+            } else {
+                SwitchTo(REFERENCE_CONTEXT);
+            }
+        }
+    | <INTERNAL_REFERENCE_CONTENT: <REFERENCE_CONTENT> > : REFERENCE_CONTEXT
+}
 <DEFAULT, INITIAL_CONTEXT> TOKEN:
 {
       <#LI: (<SPACE>)* ( ("*")+ (":" | ";")* | ( "1" | "*" )+ "." (":" | ";")* | (":" | ";")+ ) (<SPACE>)+ >
@@ -141,7 +155,14 @@ TOKEN_MGR_DECLS: {
     | <#MACRO_START: "{{" <MACRO_NAME> <MACRO_DEF> "}}" >
     | <#MACRO_END: "{{/" <MACRO_NAME> (<SPACE>)* "}}" > 
     | <#MACRO_CONTENT: ( <CHAR> | <SPACE> |<NEW_LINE> | <SPECIAL_SYMBOL> ) >
-    | <#REFERENCE:  ( "[[" ( "~" ~[] | ~["]"] | "]" ~["]"] )* "]]" ) >
+    | <#REFERENCE_START: "[[" >
+    | <#REFERENCE_END: "]]" >
+    | <#REFERENCE_CONTENT: (
+          "~" ~[]
+        | ~["]", "[", "~"] 
+        | "]" ~["]"]
+        | "[" ~["["]
+      )+ >
     | <#HORLINE: "---" ("-")+ >
     | <#PARAMS:   "(%" ( "~" ~[] | ~["%"] | ["%"] ~[")"] )* "%)" >
     | <#CELL: ( "||" | "|" | "::" | "!!" ) (<PARAMS>)? >
@@ -242,7 +263,7 @@ TOKEN_MGR_DECLS: {
     | <I_HORLINE: (<NEW_LINE>)? <HORLINE> > : DEFAULT
     | <I_TABLE_ROW: (<NEW_LINE>)? ( <PARAMS> )? <CELL> > : DEFAULT
     | <I_TABLE_CELL : <CELL> > : DEFAULT 
-    | <I_REFERENCE : <REFERENCE> > : DEFAULT
+    | <I_REFERENCE_START : <REFERENCE_START> > { referenceBlockDepth++; } : REFERENCE_CONTEXT
     | <I_VERBATIM_START: (<NEW_LINE>)? <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
     | <I_VERBATIM_INLINE_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
     | <I_MACRO_EMPTY_BLOCK: (<NEW_LINE>)? <MACRO_EMPTY> > : INITIAL_CONTEXT
@@ -274,7 +295,7 @@ TOKEN_MGR_DECLS: {
     | <D_HORLINE: <NEW_LINE> <HORLINE> > : DEFAULT
     | <D_TABLE_ROW: <NEW_LINE> ( <PARAMS> )? <CELL> > : DEFAULT
     | <D_TABLE_CELL : <CELL> > : DEFAULT 
-    | <D_REFERENCE : <REFERENCE> > : DEFAULT
+    | <D_REFERENCE_START : <REFERENCE_START> > { referenceBlockDepth++; } : REFERENCE_CONTEXT
     | <D_VERBATIM_START: <NEW_LINE> <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
     | <D_VERBATIM_INLINE_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
     | <D_MACRO_EMPTY_BLOCK: <NEW_LINE> <MACRO_EMPTY> > : INITIAL_CONTEXT
@@ -302,6 +323,9 @@ TOKEN_MGR_DECLS: {
     Token getINTERNAL_MACRO_START(): {Token t=null;} {(t=<INTERNAL_MACRO_START>){return t;}}
     Token getINTERNAL_MACRO_END(): {Token t=null;} {(t=<INTERNAL_MACRO_END>){return t;}}
     Token getINTERNAL_MACRO_CONTENT(): {Token t=null;} {(t=<INTERNAL_MACRO_CONTENT>){return t;}}
+    Token getINTERNAL_REFERENCE_START(): {Token t=null;} {(t=<INTERNAL_REFERENCE_START>){return t;}}
+    Token getINTERNAL_REFERENCE_END(): {Token t=null;} {(t=<INTERNAL_REFERENCE_END>){return t;}}
+    Token getINTERNAL_REFERENCE_CONTENT(): {Token t=null;} {(t=<INTERNAL_REFERENCE_CONTENT>){return t;}}
 // <getters>
     Token getESCAPE(): {Token t=null;} {(t=<I_ESCAPE>|t=<D_ESCAPE>){return t;}}
     Token getLIST_ITEM(): {Token t=null;} {(t=<I_LIST_ITEM>|t=<D_LIST_ITEM>){return t;}}
@@ -310,7 +334,7 @@ TOKEN_MGR_DECLS: {
     Token getHORLINE(): {Token t=null;} {(t=<I_HORLINE>|t=<D_HORLINE>){return t;}}
     Token getTABLE_ROW(): {Token t=null;} {(t=<I_TABLE_ROW>|t=<D_TABLE_ROW>){return t;}}
     Token getTABLE_CELL(): {Token t=null;} {(t=<I_TABLE_CELL>|t=<D_TABLE_CELL>){return t;}}
-    Token getREFERENCE(): {Token t=null;} {(t=<I_REFERENCE>|t=<D_REFERENCE>){return t;}}
+    Token getREFERENCE_START(): {Token t=null;} {(t=<I_REFERENCE_START>|t=<D_REFERENCE_START>){return t;}}
     Token getVERBATIM_START(): {Token t=null;} {(t=<I_VERBATIM_START>|t=<D_VERBATIM_START>){return t;}}
     Token getVERBATIM_INLINE_START(): {Token t=null;} {(t=<I_VERBATIM_INLINE_START>|t=<D_VERBATIM_INLINE_START>){return t;}}
     Token getMACRO_EMPTY_BLOCK(): {Token t=null;} {(t=<I_MACRO_EMPTY_BLOCK>|t=<D_MACRO_EMPTY_BLOCK>){return t;}}
@@ -534,6 +558,34 @@ void verbatimBody(boolean inline, WikiParameters params):
             str = str.substring(0, str.length() - "}}}".length());
         sendOnEmptyLinesEvent(true);
         fContext.onVerbatim(str, inline, params);
+    }
+}
+
+void referenceBody():
+{
+    Token t = null;
+    StringBuffer buf = new StringBuffer();
+    String str = null;
+}
+{
+    (LOOKAHEAD(2)
+        (
+              t = getINTERNAL_REFERENCE_CONTENT()
+            | t = getINTERNAL_REFERENCE_END()
+            | t = getINTERNAL_REFERENCE_START()
+        )
+        {
+            str = WikiScannerUtil.unescape(t.image, '~');
+            buf.append(str);        
+        }
+    )*
+    (LOOKAHEAD(2) ( t = getINTERNAL_REFERENCE_END() | <EOF>) )? 
+    {
+        str = buf.toString();
+        if (str.endsWith("]]"))
+            str = str.substring(0, str.length() - "]]".length());
+        WikiReference ref = fReferenceParser.parse(str);
+        fContext.onReference(ref);
     }
 }
 
@@ -877,16 +929,12 @@ void line():
                 fContext.onReference(t.image.trim());
             }
             |
-            t = getREFERENCE() 
-            {
-                str = t.image.trim();
-                if (str.startsWith("[[")) {
-                    str = str.substring(2, str.length() - 2);
-                    str = str.trim();
-                }
-                WikiReference ref = fReferenceParser.parse(str);
-                fContext.onReference(ref);
-            }
+            (
+			    t = getREFERENCE_START()
+			    {
+			    }
+				referenceBody()
+			)
             |
             t = getTABLE_CELL() 
             {
