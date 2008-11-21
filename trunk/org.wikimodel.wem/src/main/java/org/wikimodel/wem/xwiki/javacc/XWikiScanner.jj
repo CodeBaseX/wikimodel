@@ -579,11 +579,11 @@ void referenceBody():
             buf.append(str);        
         }
     )*
-    (LOOKAHEAD(2) ( t = getINTERNAL_REFERENCE_END() | <EOF>) )? 
+    (LOOKAHEAD(2) ( t = getINTERNAL_REFERENCE_END() ) )? 
     {
-        str = buf.toString();
+        str = buf.toString().trim();
         if (str.endsWith("]]"))
-            str = str.substring(0, str.length() - "]]".length());
+            str = str.substring(0, str.length() - "]]".length()).trim();
         WikiReference ref = fReferenceParser.parse(str);
         fContext.onReference(ref);
     }
