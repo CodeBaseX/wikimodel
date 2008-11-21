@@ -604,6 +604,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
     }
 
     public void testVerbatim() throws WikiParserException {
+        test("this is {{{verbatim", "<p>this is <code>verbatim</code></p>");
         test("{{{abc}}}", "<pre>abc</pre>");
         test("{{{abc}}}{{{cde}}}", "<pre>abc</pre>\n<pre>cde</pre>");
         test(
