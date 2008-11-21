@@ -141,7 +141,8 @@ TOKEN_MGR_DECLS: {
     | <#MACRO_START: "{{" <MACRO_NAME> <MACRO_DEF> "}}" >
     | <#MACRO_END: "{{/" <MACRO_NAME> (<SPACE>)* "}}" > 
     | <#MACRO_CONTENT: ( <CHAR> | <SPACE> |<NEW_LINE> | <SPECIAL_SYMBOL> ) >
-    | <#REFERENCE:  ( "[[" ( "~" ~[] | ~["]"] | "]" ~["]"] )* "]]" ) >
+    | <#REFERENCE_IMAGE: "[[image:" ("~" ~[] | ~["]"] | "]" ~["]"] )* "]]" >
+    | <#REFERENCE:  ( "[[" ( <REFERENCE_IMAGE> | "~" ~[] | ~["]"] | "]" ~["]"] )* "]]" ) >
     | <#HORLINE: "---" ("-")+ >
     | <#PARAMS:   "(%" ( "~" ~[] | ~["%"] | ["%"] ~[")"] )* "%)" >
     | <#CELL: ( "||" | "|" | "::" | "!!" ) (<PARAMS>)? >
