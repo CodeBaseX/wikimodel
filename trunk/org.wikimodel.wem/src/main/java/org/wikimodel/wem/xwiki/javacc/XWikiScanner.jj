@@ -2,6 +2,10 @@ options
 {
     STATIC = false;
     UNICODE_INPUT = true;
+    // Uncomment below for debugging
+    //DEBUG_PARSER = true;
+    //DEBUG_LOOKAHEAD = true;
+    //DEBUG_TOKEN_MANAGER = true;
 }
 
 PARSER_BEGIN(XWikiScanner)
@@ -147,8 +151,10 @@ TOKEN_MGR_DECLS: {
     | <#PARAMS:   "(%" ( "~" ~[] | ~["%"] | ["%"] ~[")"] )* "%)" >
     | <#CELL: ( "||" | "|" | "::" | "!!" ) (<PARAMS>)? >
     | <#QUOT_LINE: (">")+ >
-
-	| <#FORMAT_SYMBOL : ("//" | "**" | "__" | "--" | "^^" | ",," | "##") >
+	| <#FORMAT_SYMBOL: ("//" | "**" | "__" | "--" | "^^" | ",," | "##") >
+	
+	| <#XWIKI_URI: ( ( <XWIKI_URI_URIS> ( <URI_PATH_ABSOLUTE> | <URI_PATH_ROOTLESS> ) ) | <URI_SCHEME_COMPOSITE> "://" <URI_AUTHORITY> <URI_PATH_ABEMPTY> ) ("?" <URI_QUERY>)? ("#" <URI_FRAGMENT>)? >
+	| <#XWIKI_URI_URIS: "mailto:" | "attach:" | "image:" >
 // <common-tokens>
     // =========================================================================
     // New lines, spaces, special symbols and characters definitions
@@ -255,9 +261,9 @@ TOKEN_MGR_DECLS: {
     | <I_BLOCK_PARAMS: (<NEW_LINE>)? <PARAMS> > : DEFAULT
     | <I_INLINE_PARAMS: <PARAMS> > : DEFAULT
     | <I_QUOT_LINE: (<NEW_LINE>)? <QUOT_LINE> > : DEFAULT
-
+    | <I_XWIKI_URI: <XWIKI_URI> > : DEFAULT
+    
     // "Standard" tokens. They are the same for all wikis.
-    | <I_URI : <URI> > : DEFAULT
     | <I_NL: (<NEW_LINE>)? > : DEFAULT
     | <I_SPACE : ( <SPACE> )+ > : DEFAULT
     | <I_WORD : ( <CHAR> )+ > : DEFAULT
@@ -287,9 +293,9 @@ TOKEN_MGR_DECLS: {
     | <D_BLOCK_PARAMS: <NEW_LINE> <PARAMS> > : DEFAULT
     | <D_INLINE_PARAMS: <PARAMS> > : DEFAULT
     | <D_QUOT_LINE: <NEW_LINE> <QUOT_LINE> > : DEFAULT
-
+    | <D_XWIKI_URI: <XWIKI_URI> > : DEFAULT
+    
     // "Standard" tokens. They are the same for all wikis.
-    | <D_URI : <URI> > : DEFAULT
     | <D_NL: <NEW_LINE> > : DEFAULT
     | <D_SPACE : ( <SPACE> )+ > : DEFAULT
     | <D_WORD : ( <CHAR> )+ > : DEFAULT
@@ -323,9 +329,9 @@ TOKEN_MGR_DECLS: {
     Token getBLOCK_PARAMS(): {Token t=null;} {(t=<I_BLOCK_PARAMS>|t=<D_BLOCK_PARAMS>){return t;}}
     Token getINLINE_PARAMS(): {Token t=null;} {(t=<I_INLINE_PARAMS>|t=<D_INLINE_PARAMS>){return t;}}
     Token getQUOT_LINE(): {Token t=null;} {(t=<I_QUOT_LINE>|t=<D_QUOT_LINE>){return t;}}
-
+    Token getXWIKI_URI(): {Token t=null;} {(t=<I_XWIKI_URI>|t=<D_XWIKI_URI>){return t;}}
+    
     // "Standard" tokens. They are the same for all wikis.
-    Token getURI(): {Token t=null;} {(t=<I_URI>|t=<D_URI>){return t;}}
     Token getNL(): {Token t=null;} {(t=<I_NL>|t=<D_NL>){return t;}}
     Token getSPACE(): {Token t=null;} {(t=<I_SPACE>|t=<D_SPACE>){return t;}}
     Token getWORD(): {Token t=null;} {(t=<I_WORD>|t=<D_WORD>){return t;}}
@@ -873,7 +879,7 @@ void line():
                 fContext.onLineBreak();
             }
             |
-            t = getURI()
+            t = getXWIKI_URI()
             {
                 fContext.onReference(t.image.trim());
             }
