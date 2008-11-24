@@ -94,7 +94,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test(
             "; this:is_not_a_term : it is an uri",
             "<dl>\n"
-                + "  <dt><a href='this:is_not_a_term'>this:is_not_a_term</a> : it is an uri</dt>\n"
+                + "  <dt>this:is_not_a_term : it is an uri</dt>\n"
                 + "</dl>");
 
         test("; term one\n: definition one\n"
@@ -494,7 +494,10 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             "<p>before <a href='[toto] [tata]'>[toto] [tata]</a> after</p>");
         test(
             "before wiki:Hello after",
-            "<p>before <a href='wiki:Hello'>wiki:Hello</a> after</p>");
+            "<p>before wiki:Hello after</p>");
+        test(
+            "before mailto:Hello after",
+            "<p>before <a href='mailto:Hello'>mailto:Hello</a> after</p>");
         test(
             "before wiki~:Hello after",
             "<p>before wiki<span class='escaped'>:</span>Hello after</p>");
