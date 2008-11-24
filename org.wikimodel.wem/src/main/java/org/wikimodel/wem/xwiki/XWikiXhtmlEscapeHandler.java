@@ -34,7 +34,9 @@ public class XWikiXhtmlEscapeHandler implements XhtmlEscapeHandler
     
     private static final Pattern HEADER_PATTERN = Pattern.compile("\\p{Blank}*=+");
 
-    private List<String> fReservedKeywords = Arrays.asList("**", "//", "##", "--", "__", "^^", ",,", "[[", "]]", "{{", "}}");
+    private static final Pattern MACRO_PATTERN = Pattern.compile("\\{\\{[^\\t\\n\\r !\"#\\$%&'\\(\\)\\*\\+,-\\.\\/\\:;<=>\\?@\\[\\\\\\]^_`\\{\\|\\}\\~]"); 
+    
+    private List<String> fReservedKeywords = Arrays.asList("**", "//", "##", "--", "__", "^^", ",,");
     
     public void initialize(Map<String, Object> context)
     {
@@ -59,8 +61,8 @@ public class XWikiXhtmlEscapeHandler implements XhtmlEscapeHandler
         // Escape the escape symbol
         if (current.getCharacter() == '~') {
             result.setType(XhtmlCharacterType.ESCAPED);
-            context.put("isPotentialList", Boolean.FALSE);
-            context.put("isPotentialHeader", Boolean.FALSE);
+            context.put("isPotentialList", false);
+            context.put("isPotentialHeader", false);
             return result;
         }
         
@@ -71,8 +73,8 @@ public class XWikiXhtmlEscapeHandler implements XhtmlEscapeHandler
             if (currentTag.equals("h1") || currentTag.equals("h2") || currentTag.equals("h3") 
                 || currentTag.equals("h4") || currentTag.equals("h5") || currentTag.equals("h6")) {
                 result.setType(XhtmlCharacterType.ESCAPED);
-                context.put("isPotentialList", Boolean.FALSE);
-                context.put("isPotentialHeader", Boolean.FALSE);
+                context.put("isPotentialList", false);
+                context.put("isPotentialHeader", false);
                 return result;
             } else if (isPotentialHeader && currentTag.equals("p")) {
                 boolean isStillInHeader = (Boolean) context.get("isStillInHeader");
@@ -92,13 +94,13 @@ public class XWikiXhtmlEscapeHandler implements XhtmlEscapeHandler
                                 ch.setType(XhtmlCharacterType.ESCAPED);
                             }
                         }
-                        context.put("isStillInHeader", Boolean.TRUE);
+                        context.put("isStillInHeader", true);
                     }
-                    context.put("isPotentialList", Boolean.FALSE);
+                    context.put("isPotentialList", false);
                 }
             }
         } else {
-            context.put("isStillInHeader", Boolean.FALSE);
+            context.put("isStillInHeader", false);
         }
 
         // Escape lists
@@ -120,22 +122,47 @@ public class XWikiXhtmlEscapeHandler implements XhtmlEscapeHandler
                             }
                         }
                     }
-                    context.put("isPotentialList", Boolean.FALSE);
-                    context.put("isPotentialHeader", Boolean.FALSE);
+                    context.put("isPotentialList", false);
+                    context.put("isPotentialHeader", false);
                 }
             }            
         }
         
-        // Escape all reserved keywords
         if (characters.size() > 0) {
+
+            // Only escape "[[" if there's a matching "]]".
+            if (current.getCharacter() == ']' && characters.peek().getCharacter() == ']') {
+                // Look for "[["
+                int pos = buffer.indexOf("[[");
+                if (pos > -1) {
+                    // We need to escape the "[[" characters
+                    characters.get(pos).setType(XhtmlCharacterType.ESCAPED);
+                    characters.get(pos + 1).setType(XhtmlCharacterType.ESCAPED);
+                }
+            }
+
+            // Only escape "{{" if there's a matching "}}" and if there's no special character just after the "{{"
+            if (current.getCharacter() == '}' && characters.peek().getCharacter() == '}') {
+                // Look for "{{" followed by a non special character
+                Matcher matcher = MACRO_PATTERN.matcher(buffer);
+                while (matcher.find()) {
+                    // We need to escape the "{{" characters
+                    int pos = matcher.start();
+                    characters.get(pos).setType(XhtmlCharacterType.ESCAPED);
+                    characters.get(pos + 1).setType(XhtmlCharacterType.ESCAPED);
+                }
+            }            
+            
+            // Escape all reserved keywords
             XhtmlCharacter previous = characters.peek();
             if (fReservedKeywords.contains("" + previous.getCharacter() + current.getCharacter())) {
                 previous.setType(XhtmlCharacterType.ESCAPED);
                 result.setType(XhtmlCharacterType.ESCAPED);
-                context.put("isPotentialList", Boolean.FALSE);
-                context.put("isPotentialHeader", Boolean.FALSE);
+                context.put("isPotentialList", false);
+                context.put("isPotentialHeader", false);
                 return result;
             }
+
         }
         
         return result;
