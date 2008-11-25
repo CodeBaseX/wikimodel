@@ -16,20 +16,14 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  * @author kotelnikov
  * @author vmassol
  */
-public class DefinitionTermTagHandler extends TagHandler {
+public class DefinitionTermTagHandler extends ListItemTagHandler {
 
 	public DefinitionTermTagHandler() {
 		super(false, false, true);
 	}
 
     @Override
-    protected void begin(TagContext context) {
-        context.getScannerContext().beginListItem(";");
+    public void begin(TagContext context) {
+        begin(";", context);
     }
-
-    @Override
-    protected void end(TagContext context) {
-        context.getScannerContext().endListItem();
-    }
-
 }

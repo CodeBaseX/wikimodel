@@ -22,18 +22,21 @@ public class ListItemTagHandler extends TagHandler {
 		super(true, false, true);
 	}
 
+	public ListItemTagHandler(boolean documentContainer, boolean requiresDocument, boolean contentContainer)
+	{
+	    super(documentContainer, requiresDocument, contentContainer);
+	}
+	
     @Override
     public void begin(TagContext context) {
         String markup = context.getParent().getName().equals("ol")
             ? "#"
             : "*";
-        StringBuffer listStyles = (StringBuffer) context.getTagStack().getStackParameter("listStyles");
-        listStyles.append(markup);
-        context.getScannerContext().beginListItem(listStyles.toString());
+        begin(markup, context);
     }
 
     @Override
-    protected void end(TagContext context) {
+    public void end(TagContext context) {
         StringBuffer listStyles = (StringBuffer) context.getTagStack().getStackParameter("listStyles");
         // We should always have a length greater than 0 but we handle 
         // the case where the user has entered some badly formed HTML
@@ -42,5 +45,11 @@ public class ListItemTagHandler extends TagHandler {
         }
         // Note: Do not generate an endListItem() event since it'll be generated automatically by the next element.
     }
-	
+    
+    protected void begin(String markup, TagContext context)
+    {
+        StringBuffer listStyles = (StringBuffer) context.getTagStack().getStackParameter("listStyles");
+        listStyles.append(markup);
+        context.getScannerContext().beginListItem(listStyles.toString());
+    }
 }
