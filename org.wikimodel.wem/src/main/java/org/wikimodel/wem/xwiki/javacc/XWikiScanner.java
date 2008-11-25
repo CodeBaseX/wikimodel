@@ -777,12 +777,12 @@ public class XWikiScanner implements XWikiScannerConstants {
             int idx = str.indexOf("%)");
             String p  = str.substring(2, idx);
             str = str.substring(idx + 2);
-            head = (str.startsWith("!!") || str.startsWith("||"));
+            head = (str.startsWith("!=") || str.startsWith("|="));
             rowParams = new WikiParameters(p);
             cellParams = newWikiParameters(str);
         } else {
-            head = (str.startsWith("!!") || str.startsWith("||"));
-            if (head || str.startsWith("::")) {
+            head = (str.startsWith("!=") || str.startsWith("|="));
+            if (head || str.startsWith("!!")) {
                 str = str.substring(2);
             } else {
                 str = str.substring(1);
@@ -1366,7 +1366,7 @@ public class XWikiScanner implements XWikiScannerConstants {
                 if (fContext.isInTable()) {
                     str = t.image.trim();
                     WikiParameters cellParams = newWikiParameters(str);
-                    boolean head  = str.startsWith("||") || str.startsWith("!!");
+                    boolean head  = str.startsWith("|=") || str.startsWith("!=");
                     fContext.onTableCell(head, cellParams);
                 } else {
                     fContext.onSpecialSymbol(t.image);
