@@ -514,28 +514,28 @@ public class XWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testTables() throws WikiParserException {
-        // "!!" and "::" markup
-        test("!! Header :: Cell ", ""
+        // "!=" and "!!" markup
+        test("!= Header !! Cell ", ""
             + "<table><tbody>\n"
             + "  <tr><th> Header </th><td> Cell </td></tr>\n"
             + "</tbody></table>");
-        test("!!   Header    ::    Cell    ", ""
+        test("!=   Header    !!    Cell    ", ""
             + "<table><tbody>\n"
             + "  <tr><th>   Header    </th><td>    Cell    </td></tr>\n"
             + "</tbody></table>");
 
-        test("::Cell 1 :: Cell 2", "<table><tbody>\n"
+        test("!!Cell 1 !! Cell 2", "<table><tbody>\n"
             + "  <tr><td>Cell 1 </td><td> Cell 2</td></tr>\n"
             + "</tbody></table>");
-        test("Not a Header :: Not a Cell", "<p>Not a Header :: Not a Cell</p>");
-        test("Not a Header::Not a Cell", "<p>Not a Header::Not a Cell</p>");
+        test("Not a Header !! Not a Cell", "<p>Not a Header !! Not a Cell</p>");
+        test("Not a Header!!Not a Cell", "<p>Not a Header!!Not a Cell</p>");
 
-        // "||" and "|" markup
-        test("|| Header | Cell ", ""
+        // "|=" and "|" markup
+        test("|= Header | Cell ", ""
             + "<table><tbody>\n"
             + "  <tr><th> Header </th><td> Cell </td></tr>\n"
             + "</tbody></table>");
-        test("||   Header    |    Cell    ", ""
+        test("|=   Header    |    Cell    ", ""
             + "<table><tbody>\n"
             + "  <tr><th>   Header    </th><td>    Cell    </td></tr>\n"
             + "</tbody></table>");
@@ -546,17 +546,17 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test("Not a Header | Not a Cell", "<p>Not a Header | Not a Cell</p>");
         test("Not a Header|Not a Cell", "<p>Not a Header|Not a Cell</p>");
 
-        test("|| cell 1.1 || cell 1.2\n" + "|| cell 2.1|| cell 2.2", ""
+        test("|= cell 1.1 |= cell 1.2\n" + "|= cell 2.1|= cell 2.2", ""
             + "<table><tbody>\n"
             + "  <tr><th> cell 1.1 </th><th> cell 1.2</th></tr>\n"
             + "  <tr><th> cell 2.1</th><th> cell 2.2</th></tr>\n"
             + "</tbody></table>");
-        test("|| Head 1.1 || Head 1.2\n" + "| cell 2.1| cell 2.2", ""
+        test("|= Head 1.1 |= Head 1.2\n" + "| cell 2.1| cell 2.2", ""
             + "<table><tbody>\n"
             + "  <tr><th> Head 1.1 </th><th> Head 1.2</th></tr>\n"
             + "  <tr><td> cell 2.1</td><td> cell 2.2</td></tr>\n"
             + "</tbody></table>");
-        test("|| Multi \nline  \nheader \n"
+        test("|= Multi \nline  \nheader \n"
             + "| Multi\nline\ncell\n"
             + "\n"
             + "One,two,three", ""
@@ -565,11 +565,11 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             + "  <tr><td> Multi\nline\ncell</td></tr>\n"
             + "</tbody></table>\n"
             + "<p>One,two,three</p>");
-        test("this is not || a table", "<p>this is not || a table</p>");
+        test("this is not |= a table", "<p>this is not |= a table</p>");
         test("this is not | a table", "<p>this is not | a table</p>");
 
         test(
-            "|| //Italic header// || **Bold header**\n"
+            "|= //Italic header// |= **Bold header**\n"
                 + "| //Italic cell// | **Bold cell**\n",
             ""
                 + "<table><tbody>\n"
@@ -577,7 +577,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
                 + "  <tr><td> <em>Italic cell</em> </td><td> <strong>Bold cell</strong></td></tr>\n"
                 + "</tbody></table>");
         test(
-            "|| //Italic header || **Bold header \n"
+            "|= //Italic header |= **Bold header \n"
                 + "| //Italic cell | **Bold cell \n",
             ""
                 + "<table><tbody>\n"
@@ -586,11 +586,11 @@ public class XWikiParserTest extends AbstractWikiParserTest {
                 + "</tbody></table>");
 
         // Table parameters
-        test("(%a=b%)\n|| Header ", ""
+        test("(%a=b%)\n|= Header ", ""
             + "<table a='b'><tbody>\n"
             + "  <tr><th> Header </th></tr>\n"
             + "</tbody></table>");
-        test("(%a=b%)\n!! Header ", ""
+        test("(%a=b%)\n!= Header ", ""
             + "<table a='b'><tbody>\n"
             + "  <tr><th> Header </th></tr>\n"
             + "</tbody></table>");
@@ -604,11 +604,11 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             + "</tbody></table>");
 
         // Row parameters
-        test("(%a=b%)||cell");
-        test("(%a=b%)::cell1\n(%c=d%)::cell2");
+        test("(%a=b%)|=cell");
+        test("(%a=b%)!!cell1\n(%c=d%)!!cell2");
 
-        test("(%a=b%)\n(%c=d%)||(%e=f%) cell");
-        test("(%a=b%)\n(%c=d%)::(%e=f%) cell ::(%g=h%)");
+        test("(%a=b%)\n(%c=d%)|=(%e=f%) cell");
+        test("(%a=b%)\n(%c=d%)!!(%e=f%) cell !!(%g=h%)");
 
     }
 
