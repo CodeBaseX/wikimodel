@@ -340,7 +340,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     }
 
     public void beginTableRow(boolean headCell) {
-        if (beginTableRow((WikiParameters) null)) {
+        if (beginTableRowInternal((WikiParameters) null)) {
             beginTableCell(headCell, null);
         }
     }
@@ -349,12 +349,17 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         boolean head,
         WikiParameters rowParams,
         WikiParameters cellParams) {
-        if (beginTableRow(rowParams)) {
+        if (beginTableRowInternal(rowParams)) {
             beginTableCell(head, cellParams);
         }
     }
 
-    private boolean beginTableRow(WikiParameters rowParams) {
+    public void beginTableRow(WikiParameters rowParams)
+    {
+        beginTableRowInternal(rowParams);
+    }
+
+    private boolean beginTableRowInternal(WikiParameters rowParams) {
         boolean result = false;
         if ((fBlockType & IBlockTypes.TABLE_ROW) != IBlockTypes.TABLE_ROW) {
             beginTable();

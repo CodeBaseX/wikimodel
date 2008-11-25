@@ -42,6 +42,8 @@ public interface IWikiScannerContext extends IWemConstants {
 
     void beginTable(WikiParameters params);
 
+    void beginTableCell(boolean headCell, WikiParameters params);
+
     void beginTableCell(boolean headCell);
 
     /**
@@ -53,7 +55,7 @@ public interface IWikiScannerContext extends IWemConstants {
     void beginTableRow(boolean headCell);
 
     /**
-     * Starts a new with the first row cell.
+     * Starts a new table row and adds the first cell to the table.
      * 
      * @param head if this parameter is <code>true</code> then this method
      *        starts the header cell at the beginning of the line
@@ -65,6 +67,11 @@ public interface IWikiScannerContext extends IWemConstants {
         WikiParameters rowParams,
         WikiParameters cellParams);
 
+    /**
+     * Starts a new table row (but doesn't add a cell).
+     */
+    void beginTableRow(WikiParameters rowParams);
+    
     boolean canApplyDefintionSplitter();
 
     void closeBlock();

@@ -102,6 +102,10 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().beginTableCell(headCell);
     }
 
+    public void beginTableCell(boolean headCell, WikiParameters params) {
+        getContext().beginTableCell(headCell, params);
+    }
+
     public void beginTableRow(boolean headCell) {
         getContext().beginTableRow(headCell);
     }
@@ -111,6 +115,11 @@ public class WikiScannerContext implements IWikiScannerContext {
         WikiParameters rowParams,
         WikiParameters cellParams) {
         getContext().beginTableRow(head, rowParams, cellParams);
+    }
+    
+    public void beginTableRow(WikiParameters rowParams)
+    {
+        getContext().beginTableRow(rowParams);
     }
 
     public boolean canApplyDefintionSplitter() {

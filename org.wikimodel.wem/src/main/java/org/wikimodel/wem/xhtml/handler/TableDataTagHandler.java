@@ -24,7 +24,7 @@ public class TableDataTagHandler extends TagHandler {
 
     @Override
     protected void begin(TagContext context) {
-        context.getScannerContext().beginTableCell(context.isTag("th"));
+        context.getScannerContext().beginTableCell(context.isTag("th"), context.getParams());
     }
 
     @Override

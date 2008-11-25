@@ -24,11 +24,7 @@ public class TableRowTagHandler extends TagHandler {
 
     @Override
     protected void begin(TagContext context) {
-        // Don't issue a beginTableRow() event since we need to pass to it whether the row is 
-        // a header row or not and we don't know this at this point in time. We'll know it
-        // on the next element (whether it's a TH or a TD. Since the InternalWikiScannerContext
-        // automatically open a table row if none has been created when the onTableCell event is
-        // sent we don't need to do anything here.
+        context.getScannerContext().beginTableRow(context.getParams());
     }
 
     @Override
