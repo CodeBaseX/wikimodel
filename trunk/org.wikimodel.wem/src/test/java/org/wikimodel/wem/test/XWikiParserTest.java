@@ -500,7 +500,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             "<p>before <a href='mailto:Hello'>mailto:Hello</a> after</p>");
         test(
             "before wiki~:Hello after",
-            "<p>before wiki<span class='escaped'>:</span>Hello after</p>");
+            "<p>before wiki:Hello after</p>");
 
         // Not a reference
         test("before [toto] after", "<p>before [toto] after</p>");
