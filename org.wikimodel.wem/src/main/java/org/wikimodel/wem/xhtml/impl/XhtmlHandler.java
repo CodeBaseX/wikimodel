@@ -22,7 +22,6 @@ import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.impl.WikiScannerContext;
 import org.wikimodel.wem.xhtml.XhtmlCharacter;
 import org.wikimodel.wem.xhtml.XhtmlCharacterType;
-import org.wikimodel.wem.xhtml.XhtmlEscapeHandler;
 import org.wikimodel.wem.xhtml.handler.BoldTagHandler;
 import org.wikimodel.wem.xhtml.handler.CommentHandler;
 import org.wikimodel.wem.xhtml.handler.DefinitionDescriptionTagHandler;
@@ -185,11 +184,8 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
         WikiScannerContext fScannerContext;
 
-        XhtmlEscapeHandler fEscapeHandler;
-
-        public TagStack(WikiScannerContext context, XhtmlEscapeHandler escapeHandler) {
+        public TagStack(WikiScannerContext context) {
             fScannerContext = context;
-            fEscapeHandler = escapeHandler;
             fCommentHandler = new CommentHandler();
             
             // Pre-initialize stack parameters for performance reason 
@@ -324,17 +320,10 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
             if (!fPeek.appendContent(content)) {
                 Stack<XhtmlCharacter> stack = new Stack<XhtmlCharacter>();
-                Map<String, Object> characterContext = new HashMap<String, Object>();
-                if (fEscapeHandler != null) {
-                	fEscapeHandler.initialize(characterContext);
-                }
                 for (int i = 0; i < content.length(); i++) {
                     char c = content.charAt(i);
                     XhtmlCharacter current = new XhtmlCharacter(c, getCharacterType(c));
                     XhtmlCharacter result = current;
-                    if (fEscapeHandler != null) {
-                        result = fEscapeHandler.handleCharacter(current, stack, fPeek, characterContext);
-                    }
                     stack.push(result);
                 }
                 
@@ -365,16 +354,15 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
     TagStack fStack;
 
-    public XhtmlHandler(WikiScannerContext context, Map<String, TagHandler> extraHandlers, XhtmlEscapeHandler escapeHandler) {
-        this(context, extraHandlers, escapeHandler, new CommentHandler());
+    public XhtmlHandler(WikiScannerContext context, Map<String, TagHandler> extraHandlers) {
+        this(context, extraHandlers, new CommentHandler());
     }
 
     /**
      * @param context
      */
-    public XhtmlHandler(WikiScannerContext context, Map<String, TagHandler> extraHandlers, 
-        XhtmlEscapeHandler escapeHandler, CommentHandler commentHandler) {
-        fStack = new TagStack(context, escapeHandler);
+    public XhtmlHandler(WikiScannerContext context, Map<String, TagHandler> extraHandlers, CommentHandler commentHandler) {
+        fStack = new TagStack(context);
         fStack.setCommentHandler(commentHandler);
         
         // Register default handlers

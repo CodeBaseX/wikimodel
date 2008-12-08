@@ -37,8 +37,6 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class XhtmlParser implements IWikiParser {
 
-    private XhtmlEscapeHandler fEscapeHandler;
-
     private Map<String, TagHandler> fExtraHandlers;
     
     private CommentHandler fCommentHandler;
@@ -55,10 +53,6 @@ public class XhtmlParser implements IWikiParser {
 
     public void setExtraHandlers(Map<String, TagHandler> extraHandlers) {
         fExtraHandlers = extraHandlers;
-    }
-
-    public void setEscapeHandler(XhtmlEscapeHandler escapeHandler) {
-        fEscapeHandler = escapeHandler;
     }
 
     public void setCommentHandler(CommentHandler commentHandler) {
@@ -78,7 +72,7 @@ public class XhtmlParser implements IWikiParser {
      */
     public DefaultHandler getHandler(IWemListener listener) {
         WikiScannerContext context = new WikiScannerContext(listener);
-        XhtmlHandler handler = new XhtmlHandler(context, fExtraHandlers, fEscapeHandler, fCommentHandler);
+        XhtmlHandler handler = new XhtmlHandler(context, fExtraHandlers, fCommentHandler);
         return handler;
     }
 

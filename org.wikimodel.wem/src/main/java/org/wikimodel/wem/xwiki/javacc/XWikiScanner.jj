@@ -129,7 +129,6 @@ TOKEN_MGR_DECLS: {
 {
       <#LI: (<SPACE>)* ( ("*")+ (":" | ";")* | ( "1" | "*" )+ "." (":" | ";")* | (":" | ";")+ ) (<SPACE>)+ >
     | <#HEADER: (<SPACE>)* ("=")+ >
-    | <#ESCAPE: ( "~" ~[" ", "\t", "\n", "\r"] ) >
     | <#BR: "\\\\" >
     | <#VERBATIM_START: "{{{" >
     | <#VERBATIM_END: "}}}" > 
@@ -139,12 +138,12 @@ TOKEN_MGR_DECLS: {
         | "}" ~["}"] | "}}" ~["}"]
         | "{" ~["{"] | "{{" ~["{"]
       )+ >
-    | <#MACRO_NAME: ( <URI> | (<CHAR>)+ ) >
+    | <#MACRO_NAME: ( <URI> | (<XWIKI_CHAR>)+ ) >
     | <#MACRO_DEF: ( "~" ~[] | ~["}"] | "}" ~["}"] )* >
     | <#MACRO_EMPTY: "{{" <MACRO_NAME> <MACRO_DEF> "/}}" >
     | <#MACRO_START: "{{" <MACRO_NAME> <MACRO_DEF> "}}" >
     | <#MACRO_END: "{{/" <MACRO_NAME> (<SPACE>)* "}}" > 
-    | <#MACRO_CONTENT: ( <CHAR> | <SPACE> |<NEW_LINE> | <SPECIAL_SYMBOL> ) >
+    | <#MACRO_CONTENT: ( <XWIKI_CHAR> | <SPACE> |<NEW_LINE> | <XWIKI_SPECIAL_SYMBOL> ) >
     | <#REFERENCE_IMAGE: "[[image:" ("~" ~[] | ~["]"] | "]" ~["]"] )* "]]" >
     | <#REFERENCE:  ( "[[" ( <REFERENCE_IMAGE> | "~" ~[] | ~["]"] | "]" ~["]"] )* "]]" ) >
     | <#HORLINE: "---" ("-")+ >
@@ -155,6 +154,8 @@ TOKEN_MGR_DECLS: {
 	
 	| <#XWIKI_URI: ( ( <XWIKI_URI_URIS> ( <URI_PATH_ABSOLUTE> | <URI_PATH_ROOTLESS> ) ) | <URI_SCHEME_COMPOSITE> "://" <URI_AUTHORITY> <URI_PATH_ABEMPTY> ) ("?" <URI_QUERY>)? ("#" <URI_FRAGMENT>)? >
 	| <#XWIKI_URI_URIS: "mailto:" | "attach:" | "image:" >
+	| <#XWIKI_SPECIAL_SYMBOL: <SPECIAL_SYMBOL> | "~" <SPECIAL_SYMBOL> >
+	| <#XWIKI_CHAR: <CHAR> | "~" <CHAR> >
 // <common-tokens>
     // =========================================================================
     // New lines, spaces, special symbols and characters definitions
@@ -242,8 +243,7 @@ TOKEN_MGR_DECLS: {
 <INITIAL_CONTEXT> TOKEN:
 {
 // <initial-context>
-      <I_ESCAPE: <ESCAPE> > : DEFAULT
-    | <I_LIST_ITEM: (<NEW_LINE>)? <LI> > : DEFAULT
+      <I_LIST_ITEM: (<NEW_LINE>)? <LI> > : DEFAULT
     | <I_HEADER_BEGIN: (<NEW_LINE>)? <HEADER> (<SPACE>)* > : DEFAULT
     | <I_HEADER_END: <HEADER> > : DEFAULT
     | <I_HORLINE: (<NEW_LINE>)? <HORLINE> > : DEFAULT
@@ -266,16 +266,15 @@ TOKEN_MGR_DECLS: {
     // "Standard" tokens. They are the same for all wikis.
     | <I_NL: (<NEW_LINE>)? > : DEFAULT
     | <I_SPACE : ( <SPACE> )+ > : DEFAULT
-    | <I_WORD : ( <CHAR> )+ > : DEFAULT
-    | <I_SPECIAL_SYMBOL : <SPECIAL_SYMBOL> > : DEFAULT
+    | <I_WORD : ( <XWIKI_CHAR> )+ > : DEFAULT
+    | <I_SPECIAL_SYMBOL : <XWIKI_SPECIAL_SYMBOL> > : DEFAULT
 // </initial-context>    
 }
 
 <DEFAULT> TOKEN:
 {
 // <default-context>
-      <D_ESCAPE: <ESCAPE> > : DEFAULT
-    | <D_LIST_ITEM: <NEW_LINE> <LI> > : DEFAULT
+      <D_LIST_ITEM: <NEW_LINE> <LI> > : DEFAULT
     | <D_HEADER_BEGIN: <NEW_LINE> <HEADER> (<SPACE>)* > : DEFAULT
     | <D_HEADER_END: <HEADER> > : DEFAULT
     | <D_HORLINE: <NEW_LINE> <HORLINE> > : DEFAULT
@@ -298,8 +297,8 @@ TOKEN_MGR_DECLS: {
     // "Standard" tokens. They are the same for all wikis.
     | <D_NL: <NEW_LINE> > : DEFAULT
     | <D_SPACE : ( <SPACE> )+ > : DEFAULT
-    | <D_WORD : ( <CHAR> )+ > : DEFAULT
-    | <D_SPECIAL_SYMBOL : <SPECIAL_SYMBOL> > : DEFAULT
+    | <D_WORD : ( <XWIKI_CHAR> )+ > : DEFAULT
+    | <D_SPECIAL_SYMBOL : <XWIKI_SPECIAL_SYMBOL> > : DEFAULT
 // </default-context>
 }
 
@@ -310,7 +309,6 @@ TOKEN_MGR_DECLS: {
     Token getINTERNAL_MACRO_END(): {Token t=null;} {(t=<INTERNAL_MACRO_END>){return t;}}
     Token getINTERNAL_MACRO_CONTENT(): {Token t=null;} {(t=<INTERNAL_MACRO_CONTENT>){return t;}}
 // <getters>
-    Token getESCAPE(): {Token t=null;} {(t=<I_ESCAPE>|t=<D_ESCAPE>){return t;}}
     Token getLIST_ITEM(): {Token t=null;} {(t=<I_LIST_ITEM>|t=<D_LIST_ITEM>){return t;}}
     Token getHEADER_BEGIN(): {Token t=null;} {(t=<I_HEADER_BEGIN>|t=<D_HEADER_BEGIN>){return t;}}
     Token getHEADER_END(): {Token t=null;} {(t=<I_HEADER_END>|t=<D_HEADER_END>){return t;}}
@@ -808,14 +806,9 @@ void line():
             	fContext.onFormat(newWikiParameters(t.image.trim()));
             }
             |
-            t = getESCAPE()
-            {
-                fContext.onEscape("" + t.image.charAt(1));
-            }
-            |
             t = getWORD()
             {
-                fContext.onWord(t.image);
+                fContext.onWord(t.image.replaceAll("~", ""));
             }
             |
             t = getSPACE()
@@ -825,7 +818,12 @@ void line():
             |
             t = getSPECIAL_SYMBOL()
             {
-                fContext.onSpecialSymbol(t.image);
+                if (t.image.length() == 2) {
+                    // The first char is an escape symbol, only send the second one
+                    fContext.onSpecialSymbol("" + t.image.charAt(1));
+                } else {
+                	fContext.onSpecialSymbol(t.image);
+                }
             }
             |
             t = getFORMAT_SYMBOL()
