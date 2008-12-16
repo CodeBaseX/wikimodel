@@ -435,6 +435,24 @@ public class XWikiScanner implements XWikiScannerConstants {
     throw new Error("Missing return statement in function");
   }
 
+  final public Token getXWIKI_SPACE() throws ParseException {
+                             Token t=null;
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case I_XWIKI_SPACE:
+      t = jj_consume_token(I_XWIKI_SPACE);
+      break;
+    case D_XWIKI_SPACE:
+      t = jj_consume_token(D_XWIKI_SPACE);
+      break;
+    default:
+      jj_la1[19] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+                                                                                   {if (true) return t;}
+    throw new Error("Missing return statement in function");
+  }
+
     // "Standard" tokens. They are the same for all wikis.
   final public Token getNL() throws ParseException {
                     Token t=null;
@@ -446,29 +464,11 @@ public class XWikiScanner implements XWikiScannerConstants {
       t = jj_consume_token(D_NL);
       break;
     default:
-      jj_la1[19] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-                                                        {if (true) return t;}
-    throw new Error("Missing return statement in function");
-  }
-
-  final public Token getSPACE() throws ParseException {
-                       Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_SPACE:
-      t = jj_consume_token(I_SPACE);
-      break;
-    case D_SPACE:
-      t = jj_consume_token(D_SPACE);
-      break;
-    default:
       jj_la1[20] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
-                                                                 {if (true) return t;}
+                                                        {if (true) return t;}
     throw new Error("Missing return statement in function");
   }
 
@@ -534,8 +534,8 @@ public class XWikiScanner implements XWikiScannerConstants {
       case I_INLINE_PARAMS:
       case I_QUOT_LINE:
       case I_XWIKI_URI:
+      case I_XWIKI_SPACE:
       case I_NL:
-      case I_SPACE:
       case I_WORD:
       case I_SPECIAL_SYMBOL:
       case D_LIST_ITEM:
@@ -557,8 +557,8 @@ public class XWikiScanner implements XWikiScannerConstants {
       case D_INLINE_PARAMS:
       case D_QUOT_LINE:
       case D_XWIKI_URI:
+      case D_XWIKI_SPACE:
       case D_NL:
-      case D_SPACE:
       case D_WORD:
       case D_SPECIAL_SYMBOL:
         ;
@@ -622,7 +622,7 @@ public class XWikiScanner implements XWikiScannerConstants {
           case I_INLINE_PARAMS:
           case I_QUOT_LINE:
           case I_XWIKI_URI:
-          case I_SPACE:
+          case I_XWIKI_SPACE:
           case I_WORD:
           case I_SPECIAL_SYMBOL:
           case D_HEADER_END:
@@ -637,7 +637,7 @@ public class XWikiScanner implements XWikiScannerConstants {
           case D_INLINE_PARAMS:
           case D_QUOT_LINE:
           case D_XWIKI_URI:
-          case D_SPACE:
+          case D_XWIKI_SPACE:
           case D_WORD:
           case D_SPECIAL_SYMBOL:
             if (jj_2_2(2)) {
@@ -655,7 +655,7 @@ public class XWikiScanner implements XWikiScannerConstants {
               case I_BLOCK_PARAMS:
               case I_INLINE_PARAMS:
               case I_XWIKI_URI:
-              case I_SPACE:
+              case I_XWIKI_SPACE:
               case I_WORD:
               case I_SPECIAL_SYMBOL:
               case D_HEADER_END:
@@ -669,7 +669,7 @@ public class XWikiScanner implements XWikiScannerConstants {
               case D_BLOCK_PARAMS:
               case D_INLINE_PARAMS:
               case D_XWIKI_URI:
-              case D_SPACE:
+              case D_XWIKI_SPACE:
               case D_WORD:
               case D_SPECIAL_SYMBOL:
                 paragraph();
@@ -833,7 +833,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     case I_BR:
     case I_INLINE_PARAMS:
     case I_XWIKI_URI:
-    case I_SPACE:
+    case I_XWIKI_SPACE:
     case I_WORD:
     case I_SPECIAL_SYMBOL:
     case D_HEADER_END:
@@ -846,7 +846,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     case D_BR:
     case D_INLINE_PARAMS:
     case D_XWIKI_URI:
-    case D_SPACE:
+    case D_XWIKI_SPACE:
     case D_WORD:
     case D_SPECIAL_SYMBOL:
       lines();
@@ -1133,7 +1133,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     case I_BR:
     case I_INLINE_PARAMS:
     case I_XWIKI_URI:
-    case I_SPACE:
+    case I_XWIKI_SPACE:
     case I_WORD:
     case I_SPECIAL_SYMBOL:
     case D_HEADER_END:
@@ -1146,7 +1146,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     case D_BR:
     case D_INLINE_PARAMS:
     case D_XWIKI_URI:
-    case D_SPACE:
+    case D_XWIKI_SPACE:
     case D_WORD:
     case D_SPECIAL_SYMBOL:
             sendOnEmptyLinesEvent(false);
@@ -1251,10 +1251,10 @@ public class XWikiScanner implements XWikiScannerConstants {
         t = getWORD();
                 fContext.onWord(t.image.replaceAll("~", ""));
         break;
-      case I_SPACE:
-      case D_SPACE:
-        t = getSPACE();
-                fContext.onSpace(t.image);
+      case I_XWIKI_SPACE:
+      case D_XWIKI_SPACE:
+        t = getXWIKI_SPACE();
+                fContext.onSpace(t.image.replaceAll("~", ""));
         break;
       case I_SPECIAL_SYMBOL:
       case D_SPECIAL_SYMBOL:
@@ -1566,9 +1566,19 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_75() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(73)) {
+    if (jj_scan_token(74)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(96)) return true;
+    if (jj_scan_token(97)) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_65() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(81)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(104)) return true;
     }
     return false;
   }
@@ -1581,9 +1591,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_74() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(72)) {
+    if (jj_scan_token(73)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(95)) return true;
+    if (jj_scan_token(96)) return true;
     }
     return false;
   }
@@ -1591,9 +1601,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_68() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(69)) {
+    if (jj_scan_token(70)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(92)) return true;
+    if (jj_scan_token(93)) return true;
     }
     return false;
   }
@@ -1601,9 +1611,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_63() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(77)) {
+    if (jj_scan_token(78)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(100)) return true;
+    if (jj_scan_token(101)) return true;
     }
     return false;
   }
@@ -1619,9 +1629,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_81() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(71)) {
+    if (jj_scan_token(72)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(94)) return true;
+    if (jj_scan_token(95)) return true;
     }
     return false;
   }
@@ -1629,19 +1639,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_71() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(79)) {
+    if (jj_scan_token(80)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(102)) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_65() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(81)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(104)) return true;
+    if (jj_scan_token(103)) return true;
     }
     return false;
   }
@@ -1649,9 +1649,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_64() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(82)) {
+    if (jj_scan_token(83)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(105)) return true;
+    if (jj_scan_token(106)) return true;
     }
     return false;
   }
@@ -1659,9 +1659,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_18() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(76)) {
+    if (jj_scan_token(77)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(99)) return true;
+    if (jj_scan_token(100)) return true;
     }
     return false;
   }
@@ -1679,9 +1679,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_80() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(70)) {
+    if (jj_scan_token(71)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(93)) return true;
+    if (jj_scan_token(94)) return true;
     }
     return false;
   }
@@ -1689,9 +1689,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_67() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(74)) {
+    if (jj_scan_token(75)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(97)) return true;
+    if (jj_scan_token(98)) return true;
     }
     return false;
   }
@@ -1699,25 +1699,25 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_62() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(78)) {
+    if (jj_scan_token(79)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(101)) return true;
+    if (jj_scan_token(102)) return true;
     }
-    return false;
-  }
-
-  final private boolean jj_3R_79() {
-    if (jj_3R_81()) return true;
     return false;
   }
 
   final private boolean jj_3R_30() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(80)) {
+    if (jj_scan_token(82)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(103)) return true;
+    if (jj_scan_token(105)) return true;
     }
+    return false;
+  }
+
+  final private boolean jj_3R_79() {
+    if (jj_3R_81()) return true;
     return false;
   }
 
@@ -1729,9 +1729,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_47() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(68)) {
+    if (jj_scan_token(69)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(91)) return true;
+    if (jj_scan_token(92)) return true;
     }
     return false;
   }
@@ -1784,9 +1784,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_70() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(75)) {
+    if (jj_scan_token(76)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(98)) return true;
+    if (jj_scan_token(99)) return true;
     }
     return false;
   }
@@ -1804,9 +1804,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_73() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(66)) {
+    if (jj_scan_token(67)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(89)) return true;
+    if (jj_scan_token(90)) return true;
     }
     return false;
   }
@@ -1814,9 +1814,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_72() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(67)) {
+    if (jj_scan_token(68)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(90)) return true;
+    if (jj_scan_token(91)) return true;
     }
     return false;
   }
@@ -1834,9 +1834,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_49() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(62)) {
+    if (jj_scan_token(63)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(85)) return true;
+    if (jj_scan_token(86)) return true;
     }
     return false;
   }
@@ -1844,9 +1844,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_51() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(65)) {
+    if (jj_scan_token(66)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(88)) return true;
+    if (jj_scan_token(89)) return true;
     }
     return false;
   }
@@ -1859,9 +1859,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_69() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(63)) {
+    if (jj_scan_token(64)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(86)) return true;
+    if (jj_scan_token(87)) return true;
     }
     return false;
   }
@@ -1881,9 +1881,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_76() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(64)) {
+    if (jj_scan_token(65)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(87)) return true;
+    if (jj_scan_token(88)) return true;
     }
     return false;
   }
@@ -1891,9 +1891,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_55() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(61)) {
+    if (jj_scan_token(62)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(84)) return true;
+    if (jj_scan_token(85)) return true;
     }
     return false;
   }
@@ -2298,9 +2298,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_66() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(83)) {
+    if (jj_scan_token(84)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(106)) return true;
+    if (jj_scan_token(107)) return true;
     }
     return false;
   }
@@ -2334,13 +2334,13 @@ public class XWikiScanner implements XWikiScannerConstants {
       jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xe,0x5,0x0,0x70,0x0,0x0,0x0,};
    }
    private static void jj_la1_1() {
-      jj_la1_1 = new int[] {0x20000000,0x40000000,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xe0000000,0x0,0x80000000,0x0,0x80000000,0x80000000,0x0,0x0,0x0,0x0,0x0,0x80000000,0x80000000,};
+      jj_la1_1 = new int[] {0x40000000,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc0000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_2() {
-      jj_la1_2 = new int[] {0x100000,0x200000,0x400000,0x800001,0x1000002,0x2000004,0x4000008,0x8000010,0x10000020,0x20000040,0x40000080,0x80000100,0x200,0x400,0x800,0x1000,0x2000,0x4000,0x8000,0x10000,0x20000,0x40000,0x80000,0xffffffff,0x801001,0x964ebf2c,0x600000c0,0x964fff2c,0xfe4ebffc,0x0,0x0,0x600000c0,0x0,0x1000,0x964ebf2c,0x964eaf2c,};
+      jj_la1_2 = new int[] {0x200000,0x400000,0x800001,0x1000002,0x2000004,0x4000008,0x8000010,0x10000020,0x20000040,0x40000080,0x80000100,0x200,0x400,0x800,0x1000,0x2000,0x4000,0x8000,0x10000,0x20000,0x40000,0x80000,0x100000,0xffffffff,0x1002002,0x2c9b7e59,0xc0000180,0x2c9ffe59,0xfc9b7ff9,0x0,0x0,0xc0000180,0x0,0x2000,0x2c9b7e59,0x2c9b5e59,};
    }
    private static void jj_la1_3() {
-      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x2,0x4,0x8,0x10,0x20,0x40,0x80,0x100,0x200,0x400,0x7ff,0x8,0x75f,0x0,0x7ff,0x75f,0x0,0x0,0x0,0x0,0x8,0x75f,0x757,};
+      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x2,0x4,0x8,0x10,0x20,0x40,0x80,0x100,0x200,0x400,0x800,0xfff,0x10,0xdbf,0x0,0xfff,0xdbf,0x0,0x0,0x0,0x0,0x10,0xdbf,0xdaf,};
    }
   final private JJCalls[] jj_2_rtns = new JJCalls[28];
   private boolean jj_rescan = false;
@@ -2517,8 +2517,8 @@ public class XWikiScanner implements XWikiScannerConstants {
 
   public ParseException generateParseException() {
     jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[107];
-    for (int i = 0; i < 107; i++) {
+    boolean[] la1tokens = new boolean[108];
+    for (int i = 0; i < 108; i++) {
       la1tokens[i] = false;
     }
     if (jj_kind >= 0) {
@@ -2543,7 +2543,7 @@ public class XWikiScanner implements XWikiScannerConstants {
         }
       }
     }
-    for (int i = 0; i < 107; i++) {
+    for (int i = 0; i < 108; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

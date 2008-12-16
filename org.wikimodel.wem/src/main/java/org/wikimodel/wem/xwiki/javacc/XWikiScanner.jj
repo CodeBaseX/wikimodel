@@ -127,8 +127,8 @@ TOKEN_MGR_DECLS: {
 
 <DEFAULT, INITIAL_CONTEXT> TOKEN:
 {
-      <#LI: (<SPACE>)* ( ("*")+ (":" | ";")* | ( "1" | "*" )+ "." (":" | ";")* | (":" | ";")+ ) (<SPACE>)+ >
-    | <#HEADER: (<SPACE>)* ("=")+ >
+      <#LI: (<XWIKI_SPACE>)* ( ("*")+ (":" | ";")* | ( "1" | "*" )+ "." (":" | ";")* | (":" | ";")+ ) (<XWIKI_SPACE>)+ >
+    | <#HEADER: (<XWIKI_SPACE>)* ("=")+ >
     | <#BR: "\\\\" >
     | <#VERBATIM_START: "{{{" >
     | <#VERBATIM_END: "}}}" > 
@@ -142,8 +142,8 @@ TOKEN_MGR_DECLS: {
     | <#MACRO_DEF: ( "~" ~[] | ~["}"] | "}" ~["}"] )* >
     | <#MACRO_EMPTY: "{{" <MACRO_NAME> <MACRO_DEF> "/}}" >
     | <#MACRO_START: "{{" <MACRO_NAME> <MACRO_DEF> "}}" >
-    | <#MACRO_END: "{{/" <MACRO_NAME> (<SPACE>)* "}}" > 
-    | <#MACRO_CONTENT: ( <XWIKI_CHAR> | <SPACE> |<NEW_LINE> | <XWIKI_SPECIAL_SYMBOL> ) >
+    | <#MACRO_END: "{{/" <MACRO_NAME> (<XWIKI_SPACE>)* "}}" > 
+    | <#MACRO_CONTENT: ( <XWIKI_CHAR> | <XWIKI_SPACE> |<NEW_LINE> | <XWIKI_SPECIAL_SYMBOL> ) >
     | <#REFERENCE_IMAGE: "[[image:" ("~" ~[] | ~["]"] | "]" ~["]"] )* "]]" >
     | <#REFERENCE:  ( "[[" ( <REFERENCE_IMAGE> | "~" ~[] | ~["]"] | "]" ~["]"] )* "]]" ) >
     | <#HORLINE: "---" ("-")+ >
@@ -156,6 +156,7 @@ TOKEN_MGR_DECLS: {
 	| <#XWIKI_URI_URIS: "mailto:" | "attach:" | "image:" >
 	| <#XWIKI_SPECIAL_SYMBOL: <SPECIAL_SYMBOL> | "~" <SPECIAL_SYMBOL> >
 	| <#XWIKI_CHAR: <CHAR> | "~" <CHAR> >
+	| <#XWIKI_SPACE: <SPACE> | "~" <SPACE> >
 // <common-tokens>
     // =========================================================================
     // New lines, spaces, special symbols and characters definitions
@@ -244,7 +245,7 @@ TOKEN_MGR_DECLS: {
 {
 // <initial-context>
       <I_LIST_ITEM: (<NEW_LINE>)? <LI> > : DEFAULT
-    | <I_HEADER_BEGIN: (<NEW_LINE>)? <HEADER> (<SPACE>)* > : DEFAULT
+    | <I_HEADER_BEGIN: (<NEW_LINE>)? <HEADER> (<XWIKI_SPACE>)* > : DEFAULT
     | <I_HEADER_END: <HEADER> > : DEFAULT
     | <I_HORLINE: (<NEW_LINE>)? <HORLINE> > : DEFAULT
     | <I_TABLE_ROW: (<NEW_LINE>)? ( <PARAMS> )? <CELL> > : DEFAULT
@@ -262,10 +263,10 @@ TOKEN_MGR_DECLS: {
     | <I_INLINE_PARAMS: <PARAMS> > : DEFAULT
     | <I_QUOT_LINE: (<NEW_LINE>)? <QUOT_LINE> > : DEFAULT
     | <I_XWIKI_URI: <XWIKI_URI> > : DEFAULT
+    | <I_XWIKI_SPACE : ( <XWIKI_SPACE> )+ > : DEFAULT
     
     // "Standard" tokens. They are the same for all wikis.
     | <I_NL: (<NEW_LINE>)? > : DEFAULT
-    | <I_SPACE : ( <SPACE> )+ > : DEFAULT
     | <I_WORD : ( <XWIKI_CHAR> )+ > : DEFAULT
     | <I_SPECIAL_SYMBOL : <XWIKI_SPECIAL_SYMBOL> > : DEFAULT
 // </initial-context>    
@@ -275,7 +276,7 @@ TOKEN_MGR_DECLS: {
 {
 // <default-context>
       <D_LIST_ITEM: <NEW_LINE> <LI> > : DEFAULT
-    | <D_HEADER_BEGIN: <NEW_LINE> <HEADER> (<SPACE>)* > : DEFAULT
+    | <D_HEADER_BEGIN: <NEW_LINE> <HEADER> (<XWIKI_SPACE>)* > : DEFAULT
     | <D_HEADER_END: <HEADER> > : DEFAULT
     | <D_HORLINE: <NEW_LINE> <HORLINE> > : DEFAULT
     | <D_TABLE_ROW: <NEW_LINE> ( <PARAMS> )? <CELL> > : DEFAULT
@@ -293,10 +294,10 @@ TOKEN_MGR_DECLS: {
     | <D_INLINE_PARAMS: <PARAMS> > : DEFAULT
     | <D_QUOT_LINE: <NEW_LINE> <QUOT_LINE> > : DEFAULT
     | <D_XWIKI_URI: <XWIKI_URI> > : DEFAULT
+    | <D_XWIKI_SPACE : ( <XWIKI_SPACE> )+ > : DEFAULT
     
     // "Standard" tokens. They are the same for all wikis.
     | <D_NL: <NEW_LINE> > : DEFAULT
-    | <D_SPACE : ( <SPACE> )+ > : DEFAULT
     | <D_WORD : ( <XWIKI_CHAR> )+ > : DEFAULT
     | <D_SPECIAL_SYMBOL : <XWIKI_SPECIAL_SYMBOL> > : DEFAULT
 // </default-context>
@@ -328,10 +329,10 @@ TOKEN_MGR_DECLS: {
     Token getINLINE_PARAMS(): {Token t=null;} {(t=<I_INLINE_PARAMS>|t=<D_INLINE_PARAMS>){return t;}}
     Token getQUOT_LINE(): {Token t=null;} {(t=<I_QUOT_LINE>|t=<D_QUOT_LINE>){return t;}}
     Token getXWIKI_URI(): {Token t=null;} {(t=<I_XWIKI_URI>|t=<D_XWIKI_URI>){return t;}}
+    Token getXWIKI_SPACE(): {Token t=null;} {(t=<I_XWIKI_SPACE>|t=<D_XWIKI_SPACE>){return t;}}
     
     // "Standard" tokens. They are the same for all wikis.
     Token getNL(): {Token t=null;} {(t=<I_NL>|t=<D_NL>){return t;}}
-    Token getSPACE(): {Token t=null;} {(t=<I_SPACE>|t=<D_SPACE>){return t;}}
     Token getWORD(): {Token t=null;} {(t=<I_WORD>|t=<D_WORD>){return t;}}
     Token getSPECIAL_SYMBOL(): {Token t=null;} {(t=<I_SPECIAL_SYMBOL>|t=<D_SPECIAL_SYMBOL>){return t;}}
 // </getters>
@@ -811,9 +812,9 @@ void line():
                 fContext.onWord(t.image.replaceAll("~", ""));
             }
             |
-            t = getSPACE()
+            t = getXWIKI_SPACE()
             {
-                fContext.onSpace(t.image);
+                fContext.onSpace(t.image.replaceAll("~", ""));
             }
             |
             t = getSPECIAL_SYMBOL()
