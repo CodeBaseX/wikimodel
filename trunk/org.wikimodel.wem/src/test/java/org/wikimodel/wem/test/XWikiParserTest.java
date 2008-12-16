@@ -131,15 +131,9 @@ public class XWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testEscape() throws WikiParserException {
-        test("[a reference]");
-        test("[[not a reference]");
-
-        test("~First letter is escaped");
-        test("~[not a reference]");
-        test("~~escaped tilda");
-        test("~ just a tilda because there is an espace after this tilda...");
-
-        test("!Heading\n~!Not a heading\n!Heading again!");
+        test("~First letter is escaped", "<p>First letter is escaped</p>");
+        test("~ A space just after a tilda the tilda should desapear", "<p> A space just after a tilda the tilda should desapear</p>");
+        test("~~escaped tilda", "<p>~escaped tilda</p>");
     }
 
     public void testFormat() throws Exception {
