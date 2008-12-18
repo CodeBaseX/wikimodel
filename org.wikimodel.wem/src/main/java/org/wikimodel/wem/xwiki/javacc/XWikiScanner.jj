@@ -127,8 +127,8 @@ TOKEN_MGR_DECLS: {
 
 <DEFAULT, INITIAL_CONTEXT> TOKEN:
 {
-      <#LI: (<XWIKI_SPACE>)* ( ("*")+ (":" | ";")* | ( "1" | "*" )+ "." (":" | ";")* | (":" | ";")+ ) (<XWIKI_SPACE>)+ >
-    | <#HEADER: (<XWIKI_SPACE>)* ("=")+ >
+      <#LI: (<SPACE>)* ( ("*")+ (":" | ";")* | ( "1" | "*" )+ "." (":" | ";")* | (":" | ";")+ ) (<SPACE>)+ >
+    | <#HEADER: (<SPACE>)* ("=")+ >
     | <#BR: "\\\\" >
     | <#VERBATIM_START: "{{{" >
     | <#VERBATIM_END: "}}}" > 
@@ -142,8 +142,8 @@ TOKEN_MGR_DECLS: {
     | <#MACRO_DEF: ( "~" ~[] | ~["}"] | "}" ~["}"] )* >
     | <#MACRO_EMPTY: "{{" <MACRO_NAME> <MACRO_DEF> "/}}" >
     | <#MACRO_START: "{{" <MACRO_NAME> <MACRO_DEF> "}}" >
-    | <#MACRO_END: "{{/" <MACRO_NAME> (<XWIKI_SPACE>)* "}}" > 
-    | <#MACRO_CONTENT: ( <XWIKI_CHAR> | <XWIKI_SPACE> |<NEW_LINE> | <XWIKI_SPECIAL_SYMBOL> ) >
+    | <#MACRO_END: "{{/" <MACRO_NAME> (<SPACE>)* "}}" > 
+    | <#MACRO_CONTENT: ( <XWIKI_CHAR> | <SPACE> |<NEW_LINE> | <XWIKI_SPECIAL_SYMBOL> ) >
     | <#REFERENCE_IMAGE: "[[image:" ("~" ~[] | ~["]"] | "]" ~["]"] )* "]]" >
     | <#REFERENCE:  ( "[[" ( <REFERENCE_IMAGE> | "~" ~[] | ~["]"] | "]" ~["]"] )* "]]" ) >
     | <#HORLINE: "---" ("-")+ >
@@ -245,7 +245,7 @@ TOKEN_MGR_DECLS: {
 {
 // <initial-context>
       <I_LIST_ITEM: (<NEW_LINE>)? <LI> > : DEFAULT
-    | <I_HEADER_BEGIN: (<NEW_LINE>)? <HEADER> (<XWIKI_SPACE>)* > : DEFAULT
+    | <I_HEADER_BEGIN: (<NEW_LINE>)? <HEADER> (<SPACE>)* > : DEFAULT
     | <I_HEADER_END: <HEADER> > : DEFAULT
     | <I_HORLINE: (<NEW_LINE>)? <HORLINE> > : DEFAULT
     | <I_TABLE_ROW: (<NEW_LINE>)? ( <PARAMS> )? <CELL> > : DEFAULT
@@ -276,7 +276,7 @@ TOKEN_MGR_DECLS: {
 {
 // <default-context>
       <D_LIST_ITEM: <NEW_LINE> <LI> > : DEFAULT
-    | <D_HEADER_BEGIN: <NEW_LINE> <HEADER> (<XWIKI_SPACE>)* > : DEFAULT
+    | <D_HEADER_BEGIN: <NEW_LINE> <HEADER> (<SPACE>)* > : DEFAULT
     | <D_HEADER_END: <HEADER> > : DEFAULT
     | <D_HORLINE: <NEW_LINE> <HORLINE> > : DEFAULT
     | <D_TABLE_ROW: <NEW_LINE> ( <PARAMS> )? <CELL> > : DEFAULT
