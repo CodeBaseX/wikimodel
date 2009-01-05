@@ -396,7 +396,7 @@ void header():
         int level = t.image.trim().length();
         fContext.beginHeader(level, params);
     }
-    (LOOKAHEAD(2) line())?
+    (LOOKAHEAD(2) lines())?
     {
         fContext.endHeader();
     }
