@@ -711,7 +711,7 @@ public class XWikiScanner implements XWikiScannerConstants {
         int level = t.image.trim().length();
         fContext.beginHeader(level, params);
     if (jj_2_8(2)) {
-      line();
+      lines();
     } else {
       ;
     }
@@ -1618,7 +1618,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_32() {
+  final private boolean jj_3R_31() {
     if (jj_3R_62()) return true;
     Token xsp;
     xsp = jj_scanpos;
@@ -1752,7 +1752,7 @@ public class XWikiScanner implements XWikiScannerConstants {
   }
 
   final private boolean jj_3_24() {
-    if (jj_3R_32()) return true;
+    if (jj_3R_31()) return true;
     return false;
   }
 
@@ -1939,7 +1939,7 @@ public class XWikiScanner implements XWikiScannerConstants {
   }
 
   final private boolean jj_3_22() {
-    if (jj_3R_31()) return true;
+    if (jj_3R_19()) return true;
     return false;
   }
 
@@ -2013,7 +2013,7 @@ public class XWikiScanner implements XWikiScannerConstants {
   }
 
   final private boolean jj_3R_52() {
-    if (jj_3R_31()) return true;
+    if (jj_3R_19()) return true;
     return false;
   }
 
@@ -2207,7 +2207,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_19() {
+  final private boolean jj_3R_33() {
     Token xsp;
     if (jj_3_28()) return true;
     while (true) {
@@ -2244,7 +2244,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_33() {
+  final private boolean jj_3R_32() {
     if (jj_3R_30()) return true;
     return false;
   }
@@ -2255,8 +2255,8 @@ public class XWikiScanner implements XWikiScannerConstants {
   }
 
   final private boolean jj_3_27() {
+    if (jj_3R_32()) return true;
     if (jj_3R_33()) return true;
-    if (jj_3R_19()) return true;
     return false;
   }
 
@@ -2265,8 +2265,8 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_31() {
-    if (jj_3R_19()) return true;
+  final private boolean jj_3R_19() {
+    if (jj_3R_33()) return true;
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
@@ -2306,7 +2306,7 @@ public class XWikiScanner implements XWikiScannerConstants {
   }
 
   final private boolean jj_3_25() {
-    if (jj_3R_31()) return true;
+    if (jj_3R_19()) return true;
     return false;
   }
 
