@@ -30,7 +30,7 @@ import org.wikimodel.wem.xhtml.handler.DivisionTagHandler;
 import org.wikimodel.wem.xhtml.handler.HeaderTagHandler;
 import org.wikimodel.wem.xhtml.handler.HorizontalLineTagHandler;
 import org.wikimodel.wem.xhtml.handler.ItalicTagHandler;
-import org.wikimodel.wem.xhtml.handler.LineBreakTagHandler;
+import org.wikimodel.wem.xhtml.handler.BreakTagHandler;
 import org.wikimodel.wem.xhtml.handler.ListItemTagHandler;
 import org.wikimodel.wem.xhtml.handler.ListTagHandler;
 import org.wikimodel.wem.xhtml.handler.ParagraphTagHandler;
@@ -408,7 +408,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
         fStack.add("sup", new SuperScriptTagHandler());
         fStack.add("sub", new SubScriptTagHandler());
         fStack.add("tt", new TeletypeTagHandler());
-        fStack.add("br", new LineBreakTagHandler());
+        fStack.add("br", new BreakTagHandler());
         fStack.add("div", new DivisionTagHandler());
         handler = new QuoteTagHandler();
         fStack.add("blockquote", handler);

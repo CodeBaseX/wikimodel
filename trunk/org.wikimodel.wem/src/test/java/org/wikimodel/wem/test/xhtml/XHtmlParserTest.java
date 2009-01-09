@@ -128,7 +128,7 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testLineBreak() throws WikiParserException {
-        test("<html>before<br />after</html>", "<p>before<br />after</p>");
+        test("<html>before<br />after</html>", "<p>before\nafter</p>");
     }
 
     /**
