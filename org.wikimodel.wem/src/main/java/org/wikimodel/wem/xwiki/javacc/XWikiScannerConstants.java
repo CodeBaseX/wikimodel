@@ -139,7 +139,7 @@ public interface XWikiScannerConstants {
     "<HEADER>",
     "\"\\\\\\\\\"",
     "\"{{{\"",
-    "\"}}}\"",
+    "<VERBATIM_END>",
     "<VERBATIM_CONTENT>",
     "<MACRO_NAME>",
     "<MACRO_DEF>",

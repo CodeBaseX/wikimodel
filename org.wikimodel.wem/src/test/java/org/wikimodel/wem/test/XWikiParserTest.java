@@ -91,11 +91,9 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test(";: ", "<dl>\n  <dd></dd>\n</dl>");
 
         test(";not: definition", "<p>;not: definition</p>");
-        test(
-            "; this:is_not_a_term : it is an uri",
-            "<dl>\n"
-                + "  <dt>this:is_not_a_term : it is an uri</dt>\n"
-                + "</dl>");
+        test("; this:is_not_a_term : it is an uri", "<dl>\n"
+            + "  <dt>this:is_not_a_term : it is an uri</dt>\n"
+            + "</dl>");
 
         test("; term one\n: definition one\n"
             + "; term two\n: definition two\n"
@@ -132,7 +130,9 @@ public class XWikiParserTest extends AbstractWikiParserTest {
      */
     public void testEscape() throws WikiParserException {
         test("~First letter is escaped", "<p>First letter is escaped</p>");
-        test("~ A space just after a tilda the tilda should desapear", "<p> A space just after a tilda the tilda should desapear</p>");
+        test(
+            "~ A space just after a tilda the tilda should desapear",
+            "<p> A space just after a tilda the tilda should desapear</p>");
         test("~~escaped tilda", "<p>~escaped tilda</p>");
     }
 
@@ -487,15 +487,11 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test(
             "before [[ [toto] [tata] ]] after",
             "<p>before <a href='[toto] [tata]'>[toto] [tata]</a> after</p>");
-        test(
-            "before wiki:Hello after",
-            "<p>before wiki:Hello after</p>");
+        test("before wiki:Hello after", "<p>before wiki:Hello after</p>");
         test(
             "before mailto:Hello after",
             "<p>before <a href='mailto:Hello'>mailto:Hello</a> after</p>");
-        test(
-            "before wiki~:Hello after",
-            "<p>before wiki:Hello after</p>");
+        test("before wiki~:Hello after", "<p>before wiki:Hello after</p>");
 
         // Not a reference
         test("before [toto] after", "<p>before [toto] after</p>");
@@ -608,6 +604,13 @@ public class XWikiParserTest extends AbstractWikiParserTest {
     }
 
     public void testVerbatim() throws WikiParserException {
+        String str = "}}}\n\n";
+        if (str.matches("[\n\r]+$"))
+            System.out.println("Hello");
+        test(
+            "{{{verbatim}}}\n* not really",
+            "<pre>verbatim</pre>\n<ul>\n  <li>not really</li>\n</ul>");
+
         test("this is {{{verbatim", "<p>this is <code>verbatim</code></p>");
         test("{{{abc}}}", "<pre>abc</pre>");
         test("{{{abc}}}{{{cde}}}", "<pre>abc</pre>\n<pre>cde</pre>");

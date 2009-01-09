@@ -371,11 +371,21 @@ public class CompositeListener implements IWemListener {
     }
 
     /**
-     * @see org.wikimodel.wem.IWemListener#onHorizontalLine(WikiParameters params)
+     * @see org.wikimodel.wem.IWemListener#onHorizontalLine(WikiParameters
+     *      params)
      */
     public void onHorizontalLine(WikiParameters params) {
         for (IWemListener listener : fListeners) {
             listener.onHorizontalLine(params);
+        }
+    }
+
+    /**
+     * @see org.wikimodel.wem.IWemListenerInline#onImage(org.wikimodel.wem.WikiReference)
+     */
+    public void onImage(WikiReference ref) {
+        for (IWemListener listener : fListeners) {
+            listener.onImage(ref);
         }
     }
 
@@ -458,7 +468,8 @@ public class CompositeListener implements IWemListener {
     }
 
     /**
-     * @see org.wikimodel.wem.IWemListener#onVerbatimBlock(String, WikiParameters)
+     * @see org.wikimodel.wem.IWemListener#onVerbatimBlock(String,
+     *      WikiParameters)
      */
     public void onVerbatimBlock(String str, WikiParameters params) {
         for (IWemListener listener : fListeners) {
