@@ -16,15 +16,14 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  * @author kotelnikov
  * @author vmassol
  */
-public class LineBreakTagHandler extends TagHandler {
+public class BreakTagHandler extends TagHandler {
 
-	public LineBreakTagHandler() {
+	public BreakTagHandler() {
 		super(false, false, false);
 	}
 
     @Override
     protected void begin(TagContext context) {
-		context.getScannerContext().onLineBreak();
+        context.getScannerContext().onNewLine();
     }
-
 }
