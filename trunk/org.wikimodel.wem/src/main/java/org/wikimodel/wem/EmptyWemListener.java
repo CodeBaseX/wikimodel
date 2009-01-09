@@ -294,10 +294,19 @@ public class EmptyWemListener implements IWemListener {
     }
 
     /**
-     * @see org.wikimodel.wem.IWemListener#onHorizontalLine(WikiParameters params)
+     * @see org.wikimodel.wem.IWemListener#onHorizontalLine(WikiParameters
+     *      params)
      */
     public void onHorizontalLine(WikiParameters params) {
         //
+    }
+
+    /**
+     * @see org.wikimodel.wem.IWemListenerInline#onImage(org.wikimodel.wem.WikiReference)
+     */
+    public void onImage(WikiReference ref) {
+        // TODO Auto-generated method stub
+
     }
 
     /**
@@ -369,7 +378,8 @@ public class EmptyWemListener implements IWemListener {
     }
 
     /**
-     * @see org.wikimodel.wem.IWemListener#onVerbatimBlock(String, WikiParameters)
+     * @see org.wikimodel.wem.IWemListener#onVerbatimBlock(String,
+     *      WikiParameters)
      */
     public void onVerbatimBlock(String str, WikiParameters params) {
         //

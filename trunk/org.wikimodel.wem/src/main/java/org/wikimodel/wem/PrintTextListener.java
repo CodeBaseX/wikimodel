@@ -293,6 +293,10 @@ public class PrintTextListener implements IWemListener {
     public void onHorizontalLine(WikiParameters params) {
     }
 
+    public void onImage(WikiReference ref) {
+        onReference(ref);
+    }
+
     /**
      * @see org.wikimodel.wem.IWemListener#onLineBreak()
      */
@@ -353,7 +357,8 @@ public class PrintTextListener implements IWemListener {
     }
 
     /**
-     * @see org.wikimodel.wem.IWemListener#onVerbatimBlock(String, WikiParameters)
+     * @see org.wikimodel.wem.IWemListener#onVerbatimBlock(String,
+     *      WikiParameters)
      */
     public void onVerbatimBlock(String str, WikiParameters params) {
         print(str);

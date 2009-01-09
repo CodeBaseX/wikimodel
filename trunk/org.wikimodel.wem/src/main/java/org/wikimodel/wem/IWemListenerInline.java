@@ -68,6 +68,14 @@ public interface IWemListenerInline {
     void onEscape(String str);
 
     /**
+     * This method is called to notify that a structured reference was found in
+     * the text
+     * 
+     * @param ref the reference the reference
+     */
+    void onImage(WikiReference ref);
+
+    /**
      * This method is called to notify about a forced line break found in the
      * text. Note that the line break symbol can be found in the middle of a
      * "physical" line so this event is not equals to the {@link #onNewLine()}

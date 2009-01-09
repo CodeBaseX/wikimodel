@@ -131,7 +131,7 @@ TOKEN_MGR_DECLS: {
     | <#HEADER: (<SPACE>)* ("=")+ >
     | <#BR: "\\\\" >
     | <#VERBATIM_START: "{{{" >
-    | <#VERBATIM_END: "}}}" > 
+    | <#VERBATIM_END: "}}}" (<NEW_LINE>)? > 
     | <#VERBATIM_CONTENT: ( 
           "~" ~[]
         | ~["}", "{", "~"] 
@@ -501,43 +501,54 @@ void block():
 }
 
 void verbatimBlock():
-{
-    WikiParameters verbatimParameters = WikiParameters.EMPTY;
+{ 
+    WikiParameters params = WikiParameters.EMPTY;
     Token t = null;
 }
 {
-    ( LOOKAHEAD(2) t = getBLOCK_PARAMS() { verbatimParameters = newWikiParameters(t.image.trim()); } )?
+    ( LOOKAHEAD(2) t = getBLOCK_PARAMS() { params = newWikiParameters(t.image.trim()); } )?
     {
     }
     getVERBATIM_START()
     {
     }
-	verbatimBody(false, verbatimParameters)
+	verbatimBody(false, params)
 }
 
 void verbatimBody(boolean inline, WikiParameters params):
 {
     Token t = null;
     StringBuffer buf = new StringBuffer();
+    // begin of the verbatim block; we need it to make trim() safly
+    buf.append("{{{"); 
     String str = null;
+    boolean hasVerbatimEnd = true;
 }
 {
     (LOOKAHEAD(2)
         (
-              t = getINTERNAL_VERBATIM_CONTENT()
-            | t = getINTERNAL_VERBATIM_END()
-            | t = getINTERNAL_VERBATIM_START()
+              t = getINTERNAL_VERBATIM_CONTENT() {  hasVerbatimEnd = false; }
+            | t = getINTERNAL_VERBATIM_END() {  hasVerbatimEnd = true; }
+            | t = getINTERNAL_VERBATIM_START() {  hasVerbatimEnd = false; }
         )
         {
             str = WikiScannerUtil.unescape(t.image, '~');
             buf.append(str);        
         }
     )*
-    (LOOKAHEAD(2) ( t = getINTERNAL_VERBATIM_END() | <EOF>) )? 
+    (LOOKAHEAD(2) ( t = getINTERNAL_VERBATIM_END() { buf.append(t.image); hasVerbatimEnd = true; } | <EOF> { hasVerbatimEnd = false; }) )? 
     {
         str = buf.toString();
-        if (str.endsWith("}}}"))
+        // If this block does not have a explicit end of the block then we should not trim it and remove
+        // last "}}}" characters
+        if (hasVerbatimEnd) { 
+            // If we did not found a new line at the end of a block then it should be an inline element
+            char ch = str.charAt(str.length() - 1);
+            inline |= (ch != '\r' && ch != '\n');
+            str = str.trim();
             str = str.substring(0, str.length() - "}}}".length());
+        }
+        str = str.substring("{{{".length());
         sendOnEmptyLinesEvent(true);
         fContext.onVerbatim(str, inline, params);
     }
