@@ -38,7 +38,7 @@ public class CommentHandler {
             String macroContent = "";
             if (tokens.length > 1) {
                 macroParams = WikiParameters.newWikiParameters(tokens[1]);
-                if (tokens.length > 0) {
+                if (tokens.length > 2) {
                     macroContent = tokens[2];
                 }
             }
