@@ -38,7 +38,9 @@ public class CommentHandler {
             String macroContent = "";
             if (tokens.length > 1) {
                 macroParams = WikiParameters.newWikiParameters(tokens[1]);
-                macroContent = tokens[2];
+                if (tokens.length > 0) {
+                    macroContent = tokens[2];
+                }
             }
             
             // If we're inside a block element then issue an inline macro event otherwise issue a block macro event
