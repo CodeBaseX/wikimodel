@@ -33,6 +33,7 @@ public class PrintInlineListener extends PrintTextListener {
     /**
      * @see org.wikimodel.wem.IWemListener#beginFormat(org.wikimodel.wem.WikiFormat)
      */
+    @Override
     public void beginFormat(WikiFormat format) {
         print(format.getTags(true));
     }
@@ -40,6 +41,7 @@ public class PrintInlineListener extends PrintTextListener {
     /**
      * @see org.wikimodel.wem.IWemListener#beginPropertyInline(java.lang.String)
      */
+    @Override
     public void beginPropertyInline(String str) {
         print("<span class='property' url='"
             + WikiPageUtil.escapeXmlAttribute(str)
@@ -49,6 +51,7 @@ public class PrintInlineListener extends PrintTextListener {
     /**
      * @see org.wikimodel.wem.IWemListener#endFormat(org.wikimodel.wem.WikiFormat)
      */
+    @Override
     public void endFormat(WikiFormat format) {
         print(format.getTags(false));
     }
@@ -56,6 +59,7 @@ public class PrintInlineListener extends PrintTextListener {
     /**
      * @see org.wikimodel.wem.IWemListener#endPropertyInline(java.lang.String)
      */
+    @Override
     public void endPropertyInline(String inlineProperty) {
         print("</span>");
     }
@@ -83,23 +87,21 @@ public class PrintInlineListener extends PrintTextListener {
         if (entity != null) {
             entity = "&" + entity + ";";
             if (str.startsWith(" --")) {
-                entity = "&nbsp;" + entity + " ";
+                entity = "&#160;" + entity + " ";
             }
         }
         return entity;
     }
 
     /**
-     * Returns <code>true</code> if special Wiki entities should be
-     * represented as the corresponding HTML entities or they should be
-     * visualized using the corresponding XHTML codes (like &amp;amp; and so
-     * on). This method can be overloaded in subclasses to re-define the
-     * visualization style.
+     * Returns <code>true</code> if special Wiki entities should be represented
+     * as the corresponding HTML entities or they should be visualized using the
+     * corresponding XHTML codes (like &amp;amp; and so on). This method can be
+     * overloaded in subclasses to re-define the visualization style.
      * 
-     * @return <code>true</code> if special Wiki entities should be
-     *         represented as the corresponding HTML entities or they should be
-     *         visualized using the corresponding XHTML codes (like &amp;amp;
-     *         and so on).
+     * @return <code>true</code> if special Wiki entities should be represented
+     *         as the corresponding HTML entities or they should be visualized
+     *         using the corresponding XHTML codes (like &amp;amp; and so on).
      */
     protected boolean isHtmlEntities() {
         return true;
@@ -133,12 +135,14 @@ public class PrintInlineListener extends PrintTextListener {
     /**
      * @see org.wikimodel.wem.IWemListener#onEscape(java.lang.String)
      */
+    @Override
     public void onEscape(String str) {
         print("<span class='escaped'>"
             + WikiPageUtil.escapeXmlString(str)
             + "</span>");
     }
 
+    @Override
     public void onExtensionInline(String extensionName, WikiParameters params) {
         print("<span class='extension' extension='"
             + extensionName
@@ -151,6 +155,7 @@ public class PrintInlineListener extends PrintTextListener {
      * @see org.wikimodel.wem.IWemListener#onLineBreak()
      */
 
+    @Override
     public void onLineBreak() {
         print("<br />");
     }
@@ -158,6 +163,7 @@ public class PrintInlineListener extends PrintTextListener {
     /**
      * @see org.wikimodel.wem.IWemListener#onSpecialSymbol(java.lang.String)
      */
+    @Override
     public void onSpecialSymbol(String str) {
         String entity = getSymbolEntity(str);
         if (entity == null) {
@@ -169,6 +175,7 @@ public class PrintInlineListener extends PrintTextListener {
     /**
      * @see org.wikimodel.wem.IWemListener#onVerbatimInline(java.lang.String)
      */
+    @Override
     public void onVerbatimInline(String str) {
         print("<code>" + WikiPageUtil.escapeXmlString(str) + "</code>");
     }
