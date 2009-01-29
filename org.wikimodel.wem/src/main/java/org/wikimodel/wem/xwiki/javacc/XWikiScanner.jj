@@ -251,8 +251,7 @@ TOKEN_MGR_DECLS: {
     | <I_TABLE_ROW: (<NEW_LINE>)? ( <PARAMS> )? <CELL> > : DEFAULT
     | <I_TABLE_CELL : <CELL> > : DEFAULT 
     | <I_REFERENCE : <REFERENCE> > : DEFAULT
-    | <I_VERBATIM_START: (<NEW_LINE>)? <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
-    | <I_VERBATIM_INLINE_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
+    | <I_VERBATIM_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
     | <I_MACRO_EMPTY_BLOCK: (<NEW_LINE>)? <MACRO_EMPTY> > : INITIAL_CONTEXT
     | <I_MACRO_BLOCK_START: (<NEW_LINE>)? <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
     | <I_MACRO_EMPTY_INLINE: <MACRO_EMPTY> > : DEFAULT
@@ -282,8 +281,7 @@ TOKEN_MGR_DECLS: {
     | <D_TABLE_ROW: <NEW_LINE> ( <PARAMS> )? <CELL> > : DEFAULT
     | <D_TABLE_CELL : <CELL> > : DEFAULT 
     | <D_REFERENCE : <REFERENCE> > : DEFAULT
-    | <D_VERBATIM_START: <NEW_LINE> <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
-    | <D_VERBATIM_INLINE_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
+    | <D_VERBATIM_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
     | <D_MACRO_EMPTY_BLOCK: <NEW_LINE> <MACRO_EMPTY> > : INITIAL_CONTEXT
     | <D_MACRO_BLOCK_START: <NEW_LINE> <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
     | <D_MACRO_EMPTY_INLINE: <MACRO_EMPTY> > : DEFAULT
@@ -318,7 +316,6 @@ TOKEN_MGR_DECLS: {
     Token getTABLE_CELL(): {Token t=null;} {(t=<I_TABLE_CELL>|t=<D_TABLE_CELL>){return t;}}
     Token getREFERENCE(): {Token t=null;} {(t=<I_REFERENCE>|t=<D_REFERENCE>){return t;}}
     Token getVERBATIM_START(): {Token t=null;} {(t=<I_VERBATIM_START>|t=<D_VERBATIM_START>){return t;}}
-    Token getVERBATIM_INLINE_START(): {Token t=null;} {(t=<I_VERBATIM_INLINE_START>|t=<D_VERBATIM_INLINE_START>){return t;}}
     Token getMACRO_EMPTY_BLOCK(): {Token t=null;} {(t=<I_MACRO_EMPTY_BLOCK>|t=<D_MACRO_EMPTY_BLOCK>){return t;}}
     Token getMACRO_BLOCK_START(): {Token t=null;} {(t=<I_MACRO_BLOCK_START>|t=<D_MACRO_BLOCK_START>){return t;}}
     Token getMACRO_EMPTY_INLINE(): {Token t=null;} {(t=<I_MACRO_EMPTY_INLINE>|t=<D_MACRO_EMPTY_INLINE>){return t;}}
@@ -366,8 +363,11 @@ void docElements():
     |
     macroBlock()
     |
-    // Non-interpreted content or empty content
-    LOOKAHEAD(2) ( LOOKAHEAD(2) verbatimBlock() | horline() )
+    // Non-interpreted content
+    LOOKAHEAD(3) verbatimBlock()
+    |
+    // Empty content
+    LOOKAHEAD(2) horline()
     |
     (
     LOOKAHEAD(2) 
@@ -497,7 +497,7 @@ void block():
 {
 }
 {
-    ( lines() | verbatimBlock() | macroBlock() )
+    ( lines() | macroBlock() )
 }
 
 void verbatimBlock():
@@ -507,6 +507,9 @@ void verbatimBlock():
 }
 {
     ( LOOKAHEAD(2) t = getBLOCK_PARAMS() { params = newWikiParameters(t.image.trim()); } )?
+    {
+    }
+    (LOOKAHEAD(2) ( t = getNL() { }) )?
     {
     }
     getVERBATIM_START()
@@ -523,6 +526,7 @@ void verbatimBody(boolean inline, WikiParameters params):
     buf.append("{{{"); 
     String str = null;
     boolean hasVerbatimEnd = true;
+    boolean eof = false;
 }
 {
     (LOOKAHEAD(2)
@@ -536,21 +540,43 @@ void verbatimBody(boolean inline, WikiParameters params):
             buf.append(str);        
         }
     )*
-    (LOOKAHEAD(2) ( t = getINTERNAL_VERBATIM_END() { buf.append(t.image); hasVerbatimEnd = true; } | <EOF> { hasVerbatimEnd = false; }) )? 
+    (LOOKAHEAD(2) ( t = <EOF> { eof = true; }) )?
     {
         str = buf.toString();
         // If this block does not have a explicit end of the block then we should not trim it and remove
         // last "}}}" characters
+        boolean beginParagraph = false;
+        char ch = str.charAt(str.length() - 1);
+        boolean endingNewLine = ch == '\r' || ch == '\n';
         if (hasVerbatimEnd) { 
             // If we did not found a new line at the end of a block then it should be an inline element
-            char ch = str.charAt(str.length() - 1);
-            inline |= (ch != '\r' && ch != '\n');
+            if (inline == false) {
+                beginParagraph = inline |= !endingNewLine && !eof;
+            }
             str = str.trim();
             str = str.substring(0, str.length() - "}}}".length());
         }
         str = str.substring("{{{".length());
-        sendOnEmptyLinesEvent(true);
-        fContext.onVerbatim(str, inline, params);
+        
+        if (beginParagraph) {
+        	sendOnEmptyLinesEvent(false);
+            fContext.beginParagraph();
+            if (params.getSize() > 0) {
+                fContext.onFormat(params);
+            }
+        } else {
+        	sendOnEmptyLinesEvent(true);
+        }
+
+		fContext.onVerbatim(str, inline, params);
+        if (endingNewLine && inline) {
+        	fContext.onLineBreak();
+        }
+
+        if (beginParagraph) {
+            lines();
+        	fContext.endParagraph();
+        }        	
     }
 }
 
@@ -861,7 +887,7 @@ void line():
             }
             |
             (
-			    t = getVERBATIM_INLINE_START()
+			    t = getVERBATIM_START()
 			    {
 			    }
 				verbatimBody(true, WikiParameters.EMPTY)

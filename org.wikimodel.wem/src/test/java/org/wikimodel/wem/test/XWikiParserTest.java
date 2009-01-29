@@ -604,28 +604,23 @@ public class XWikiParserTest extends AbstractWikiParserTest {
     }
 
     public void testVerbatim() throws WikiParserException {
-        String str = "}}}\n\n";
-        if (str.matches("[\n\r]+$"))
-            System.out.println("Hello");
         test(
             "{{{verbatim}}}\n* not really",
             "<pre>verbatim</pre>\n<ul>\n  <li>not really</li>\n</ul>");
 
         test("this is {{{verbatim", "<p>this is <code>verbatim</code></p>");
         test("{{{abc}}}", "<pre>abc</pre>");
-        test("{{{abc}}}{{{cde}}}", "<pre>abc</pre>\n<pre>cde</pre>");
-        test(
-            "before\n{{{abc}}}after",
-            "<p>before</p>\n<pre>abc</pre>\n<p>after</p>");
         test("{{{{{{abc}}}}}}", "<pre>{{{abc}}}</pre>");
 
         // Inline verbatim
         // test(" {{{abc}}}", "<p> <code>abc</code></p>");
+        test("{{{abc}}}{{{cde}}}", "<p><code>abc</code><code>cde</code></p>");
+        test("{{{abc}}}after", "<p><code>abc</code>after</p>");
         test("before{{{abc}}}after", "<p>before<code>abc</code>after</p>");
         test(
             "before{{{{{{abc}}}}}}after",
             "<p>before<code>{{{abc}}}</code>after</p>");
-
+        test("}}}", "<p>}}}</p>");
     }
 
 }

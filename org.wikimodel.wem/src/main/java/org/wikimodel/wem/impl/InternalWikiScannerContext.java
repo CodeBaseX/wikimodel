@@ -793,6 +793,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
             checkBlockContainer();
             fListener.onVerbatimBlock(str, params);
         } else {
+            checkStyleOpened();
             fListener.onVerbatimInline(str);
         }
     }
