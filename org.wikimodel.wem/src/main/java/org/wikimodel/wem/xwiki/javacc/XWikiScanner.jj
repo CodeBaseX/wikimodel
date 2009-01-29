@@ -130,6 +130,8 @@ TOKEN_MGR_DECLS: {
       <#LI: (<SPACE>)* ( ("*")+ (":" | ";")* | ( "1" | "*" )+ "." (":" | ";")* | (":" | ";")+ ) (<SPACE>) >
     | <#HEADER: (<SPACE>)* ("=")+ >
     | <#BR: "\\\\" >
+    | <#DOC_BEGIN: (<SPACE>)* "(((" (<SPACE>)* >
+    | <#DOC_END:   (<SPACE>)* ")))" (<SPACE>)* >
     | <#VERBATIM_START: "{{{" >
     | <#VERBATIM_END: "}}}" (<NEW_LINE>)? > 
     | <#VERBATIM_CONTENT: ( 
@@ -244,7 +246,9 @@ TOKEN_MGR_DECLS: {
 <INITIAL_CONTEXT> TOKEN:
 {
 // <initial-context>
-      <I_LIST_ITEM: (<NEW_LINE>)? <LI> > : DEFAULT
+      <I_DOC_BEGIN: <DOC_BEGIN> > : INITIAL_CONTEXT
+    | <I_DOC_END: <DOC_END> > : DEFAULT
+    | <I_LIST_ITEM: (<NEW_LINE>)? <LI> > : DEFAULT
     | <I_HEADER_BEGIN: (<NEW_LINE>)? <HEADER> (<SPACE>)* > : DEFAULT
     | <I_HEADER_END: <HEADER> > : DEFAULT
     | <I_HORLINE: (<NEW_LINE>)? <HORLINE> > : DEFAULT
@@ -274,7 +278,9 @@ TOKEN_MGR_DECLS: {
 <DEFAULT> TOKEN:
 {
 // <default-context>
-      <D_LIST_ITEM: <NEW_LINE> <LI> > : DEFAULT
+      <D_DOC_BEGIN: <DOC_BEGIN> > : INITIAL_CONTEXT
+    | <D_DOC_END: <DOC_END> > : DEFAULT
+    | <D_LIST_ITEM: <NEW_LINE> <LI> > : DEFAULT
     | <D_HEADER_BEGIN: <NEW_LINE> <HEADER> (<SPACE>)* > : DEFAULT
     | <D_HEADER_END: <HEADER> > : DEFAULT
     | <D_HORLINE: <NEW_LINE> <HORLINE> > : DEFAULT
@@ -308,6 +314,8 @@ TOKEN_MGR_DECLS: {
     Token getINTERNAL_MACRO_END(): {Token t=null;} {(t=<INTERNAL_MACRO_END>){return t;}}
     Token getINTERNAL_MACRO_CONTENT(): {Token t=null;} {(t=<INTERNAL_MACRO_CONTENT>){return t;}}
 // <getters>
+    Token getDOC_BEGIN(): {Token t=null;} {(t=<I_DOC_BEGIN>|t=<D_DOC_BEGIN>){return t;}}
+    Token getDOC_END(): {Token t=null;} {(t=<I_DOC_END>|t=<D_DOC_END>){return t;}}
     Token getLIST_ITEM(): {Token t=null;} {(t=<I_LIST_ITEM>|t=<D_LIST_ITEM>){return t;}}
     Token getHEADER_BEGIN(): {Token t=null;} {(t=<I_HEADER_BEGIN>|t=<D_HEADER_BEGIN>){return t;}}
     Token getHEADER_END(): {Token t=null;} {(t=<I_HEADER_END>|t=<D_HEADER_END>){return t;}}
@@ -343,7 +351,7 @@ void doParse():
     {
         fContext.beginDocument();
     }
-    ( docElements() )*
+    ( docElements() | getDOC_END() )*
     <EOF>
     {
         sendOnEmptyLinesEvent(true);
@@ -361,6 +369,9 @@ void docElements():
     |
     LOOKAHEAD(2) list()
     |
+    // Embedded documents
+    embeddedDocument()
+    |
     macroBlock()
     |
     // Non-interpreted content
@@ -377,6 +388,24 @@ void docElements():
     )
     | 
     emptyParagraph()
+}
+
+void embeddedDocument():
+{
+    Token t = null;
+}
+{
+    t = getDOC_BEGIN()
+    {
+        fContext.beginDocument();
+    }
+    ( docElements() )*
+    (
+        getDOC_END() | <EOF>
+    )
+    {
+        fContext.endDocument();
+    }
 }
 
 void header():
@@ -497,7 +526,7 @@ void block():
 {
 }
 {
-    ( lines() | macroBlock() )
+    ( embeddedDocument() | macroBlock() | lines() )
 }
 
 void verbatimBlock():
