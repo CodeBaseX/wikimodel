@@ -31,16 +31,17 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         super(name);
     }
 
+    
     /**
      * @param string
      * @param control
      * @throws WikiParserException
      */
-    private void doTest(String string, String control)
+    private void doCustomTest(String string, String control)
         throws WikiParserException {
         println("==================================================");
         StringReader reader = new StringReader(string);
-        IWikiParser parser = new XWikiParser();
+        IWikiParser parser = newWikiParser();
         final StringBuffer buf = new StringBuffer();
 
         IWikiPrinter printer = newPrinter(buf);
@@ -71,16 +72,81 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             "before **bold** after",
             "<p>before <strong>bold</strong> after</p>");
 
-        doTest(
+        doCustomTest(
             "before **bold** after",
             "<p>{before}[ ]<strong>{bold}</strong>[ ]{after}</p>");
-        doTest("before \n* bold after", "<p>{before}[ ]</p>\n"
+        doCustomTest("before \n* bold after", "<p>{before}[ ]</p>\n"
             + "<ul>\n"
             + "  <li>{bold}[ ]{after}</li>\n"
             + "</ul>"
             + "");
     }
 
+    /**
+     * @throws WikiParserException
+     */
+    public void testDocuments() throws WikiParserException {
+        test("before ((( inside ))) after ", "<p>before</p>\n" +
+        		"<div class='doc'>\n" +
+        		"<p>inside</p>\n" +
+        		"</div>\n" +
+        		"<p>after </p>");
+        test("before inside ))) after ", "<p>before inside</p>\n" +
+            "<p>after </p>");
+        test("before (((\ninside ))) after ", "<p>before</p>\n" +
+            "<div class='doc'>\n" +
+            "<p>inside</p>\n" +
+            "</div>\n" +
+            "<p>after </p>");
+        test("before (((\n inside ))) after ", "<p>before</p>\n" +
+            "<div class='doc'>\n" +
+            "<p> inside</p>\n" +
+            "</div>\n" +
+            "<p>after </p>");
+        test("| Line One | First doc: (((\n inside ))) after \n"
+            + "|Line Two | Second doc: (((lkjlj))) skdjg", "<table><tbody>\n" +
+            "  <tr><td> Line One </td><td> First doc:<div class='doc'>\n" +
+            "<p> inside</p>\n" +
+            "</div>\n" +
+            "after </td></tr>\n" +
+            "  <tr><td>Line Two </td><td> Second doc:<div class='doc'>\n" +
+            "<p>lkjlj</p>\n" +
+            "</div>\n" +
+            "skdjg</td></tr>\n" +
+            "</tbody></table>");
+        test("| This is a table: | (((* item one\n"
+            + "* item two\n"
+            + " * subitem 1\n"
+            + " * subitem 2\n"
+            + "* item three))) ", "<table><tbody>\n" +
+            "  <tr><td> This is a table: </td><td><div class='doc'>\n" +
+            "<ul>\n" +
+            "  <li>item one</li>\n" +
+            "  <li>item two</li>\n" +
+            "  <li>subitem 1</li>\n" +
+            "  <li>subitem 2</li>\n" +
+            "  <li>item three</li>\n" +
+            "</ul>\n" +
+            "</div>\n" +
+            "</td></tr>\n" +
+            "</tbody></table>");
+
+        test("before ((( opened and not closed", "<p>before</p>\n" +
+            "<div class='doc'>\n" +
+            "<p>opened and not closed</p>\n" +
+            "</div>");
+        test("before ((( one ((( two ((( three ", "<p>before</p>\n" +
+            "<div class='doc'>\n" +
+            "<p>one</p>\n" +
+            "<div class='doc'>\n" +
+            "<p>two</p>\n" +
+            "<div class='doc'>\n" +
+            "<p>three </p>\n" +
+            "</div>\n" +
+            "</div>\n" +
+            "</div>");
+    }
+    
     /**
      * @throws WikiParserException
      */
