@@ -18,6 +18,7 @@ import org.wikimodel.wem.xhtml.XhtmlParser;
 /**
  * @author MikhailKotelnikov
  * @author vmassol
+ * @author thomas.mortagne
  */
 public class XHtmlParserTest extends AbstractWikiParserTest {
 
@@ -33,6 +34,105 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
         return new XhtmlParser();
     }
 
+    /**
+     * @throws WikiParserException
+     */
+    public void testDocuments() throws WikiParserException {
+        test("<html><p>before</p>\n" +
+            "<div class='doc'>\n" +
+            "<p>inside</p>\n" +
+            "</div>\n" +
+            "<p>after</p></html>",
+            "<p>before</p>\n" +
+            "<div class='doc'>\n" +
+            "<p>inside</p>\n" +
+            "</div>\n" +
+            "<p>after</p>");
+        test("<html><p>before</p>\n" +
+            "<div class='doc'>\n" +
+            "<p>inside</p>\n" +
+            "</div>\n" +
+            "<p>after</p></html>",
+            "<p>before</p>\n" +
+            "<div class='doc'>\n" +
+            "<p>inside</p>\n" +
+            "</div>\n" +
+            "<p>after</p>");
+        test("<html><table><tbody>\n" +
+            " <tr><td> Line One </td><td> First doc:<div class='doc'>\n" +
+            "<p>inside</p>\n" +
+            "</div>\n" +
+            " after</td></tr>\n" +
+            "   <tr><td>Line Two</td><td>Second doc:<div class='doc'>\n" +
+            "<p>lkjlj</p>\n" +
+            "</div>\n" +
+            " skdjg</td></tr>\n" +
+            "</tbody></table></html>",
+            "<table><tbody>\n" +
+            "  <tr><td>Line One</td><td>First doc:<div class='doc'>\n" +
+            "<p>inside</p>\n" +
+            "</div>\n" +
+            " after</td></tr>\n" +
+            "  <tr><td>Line Two</td><td>Second doc:<div class='doc'>\n" +
+            "<p>lkjlj</p>\n" +
+            "</div>\n" +
+            " skdjg</td></tr>\n" +
+            "</tbody></table>");
+        test("<html><table><tbody>\n" +
+            "  <tr><td>This is a table:</td><td><div class='doc'>\n" +
+            "<ul>\n" +
+            "  <li>item one</li>\n" +
+            "  <li>item two</li>\n" +
+            "  <li>subitem 1</li>\n" +
+            "  <li>subitem 2</li>\n" +
+            "  <li>item three</li>\n" +
+            "</ul>\n" +
+            "</div>\n" +
+            "</td></tr>\n" +
+            "</tbody></table></html>",
+            "<table><tbody>\n" +
+            "  <tr><td>This is a table:</td><td><div class='doc'>\n" +
+            "<ul>\n" +
+            "  <li>item one</li>\n" +
+            "  <li>item two</li>\n" +
+            "  <li>subitem 1</li>\n" +
+            "  <li>subitem 2</li>\n" +
+            "  <li>item three</li>\n" +
+            "</ul>\n" +
+            "</div>\n" +
+            "</td></tr>\n" +
+            "</tbody></table>");
+
+        test("<html><p>before</p>\n" +
+            "<div class='doc'>\n" +
+            "<p>opened and not closed</p>\n" +
+            "</div></html>",
+            "<p>before</p>\n" +
+            "<div class='doc'>\n" +
+            "<p>opened and not closed</p>\n" +
+            "</div>");
+        test("<html><p>before</p>\n" +
+            "<div class='doc'>\n" +
+            "<p>one</p>\n" +
+            "<div class='doc'>\n" +
+            "<p>two</p>\n" +
+            "<div class='doc'>\n" +
+            "<p>three</p>\n" +
+            "</div>\n" +
+            "</div>\n" +
+            "</div></html>",
+            "<p>before</p>\n" +
+            "<div class='doc'>\n" +
+            "<p>one</p>\n" +
+            "<div class='doc'>\n" +
+            "<p>two</p>\n" +
+            "<div class='doc'>\n" +
+            "<p>three</p>\n" +
+            "</div>\n" +
+            "</div>\n" +
+            "</div>");
+    }
+    
     /**
      * @throws WikiParserException
      */
