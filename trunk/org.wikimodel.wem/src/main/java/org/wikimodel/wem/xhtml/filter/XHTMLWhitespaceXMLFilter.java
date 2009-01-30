@@ -20,7 +20,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 /**
- * Removes non-semantic whitespaces in XML elements. 
+ * Removes non-semantic whitespaces in XML elements. See http://www.w3.org/TR/html4/struct/text.html#h-9.1 for more details.
  * 
  * Possible use cases:
  * <p/>
