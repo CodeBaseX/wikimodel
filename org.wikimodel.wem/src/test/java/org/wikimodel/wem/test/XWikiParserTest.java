@@ -21,6 +21,7 @@ import org.wikimodel.wem.xwiki.XWikiParser;
 
 /**
  * @author MikhailKotelnikov
+ * @author thomas.mortagne
  */
 public class XWikiParserTest extends AbstractWikiParserTest {
 
@@ -96,11 +97,6 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test("before (((\ninside ))) after ", "<p>before</p>\n" +
             "<div class='doc'>\n" +
             "<p>inside</p>\n" +
-            "</div>\n" +
-            "<p>after </p>");
-        test("before (((\n inside ))) after ", "<p>before</p>\n" +
-            "<div class='doc'>\n" +
-            "<p> inside</p>\n" +
             "</div>\n" +
             "<p>after </p>");
         test("| Line One | First doc: (((\n inside ))) after \n"

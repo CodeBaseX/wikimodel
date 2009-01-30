@@ -18,22 +18,51 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 /**
  * @author kotelnikov
  * @author vmassol
+ * @author thomas.mortagne
  */
-public class DivisionTagHandler extends TagHandler {
+public class DivisionTagHandler extends TagHandler
+{
 
-	public DivisionTagHandler() {
-		super(true, false, true);
-	}
-
-    @Override
-    protected void begin(TagContext context) {
-        // Check if we have a div meaning an empty line between block
-        WikiParameter param = context.getParams().getParameter("class");
-        if ((param != null) && Arrays.asList(param.getValue().split(" ")).contains("wikimodel-emptyline")) {
-            int value = (Integer) context.getTagStack().getStackParameter("emptyLinesCount");
-            value++;
-            context.getTagStack().setStackParameter("emptyLinesCount", value);
-        }                
+    public DivisionTagHandler()
+    {
+        super(true, false, true);
     }
 
+    /**
+     * @return the class used to indicate the division block is an embedded document.
+     */
+    protected String getDocumentClass()
+    {
+        return "doc";
+    }
+
+    @Override
+    protected void begin(TagContext context)
+    {
+        WikiParameter param = context.getParams().getParameter("class");
+        if (param != null) {
+            // Check if we have a div meaning an empty line between block
+            if (Arrays.asList(param.getValue().split(" ")).contains("wikimodel-emptyline")) {
+                int value = (Integer) context.getTagStack().getStackParameter("emptyLinesCount");
+                value++;
+                context.getTagStack().setStackParameter("emptyLinesCount", value);
+            }
+
+            // Check if we have a div meaning start of embedded document
+            if (Arrays.asList(param.getValue().split(" ")).contains(getDocumentClass())) {
+                context.getScannerContext().beginDocument();
+            }
+        }
+    }
+
+    @Override
+    protected void end(TagContext context)
+    {
+        WikiParameter param = context.getParams().getParameter("class");
+        if (param != null) {
+            if (Arrays.asList(param.getValue().split(" ")).contains(getDocumentClass())) {
+                context.getScannerContext().endDocument();
+            }
+        }
+    }
 }
