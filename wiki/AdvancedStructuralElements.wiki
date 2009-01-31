@@ -16,7 +16,7 @@ WikiModel introduces the notion of wiki document properties. There are two types
 
 = Embedded documents =
 
-The WikiModel introduces the notion of "embedded documents". The possible structure of such a document is exactly the same as the structure of the topmost one. It means that using embedded documents becomes possible to put block elements inside others blocks. This is a unique feature of the WikiModel. Embedded documents are delimited by the following syntactical elements: `(((`...`)))`. One embedded document can contain its own embedded  documetns and there is no limits of embrications. 
+The WikiModel introduces the notion of "embedded documents". The possible structure of such a document is exactly the same as the structure of the topmost one. It means that using embedded documents becomes possible to put block elements inside others blocks. This is a unique feature of the WikiModel. Embedded documents are delimited by the following syntactical elements: `(((`...`)))`. One embedded document can contain its own embedded  documents and there is no limits of imbrications. 
 
 Syntax for embedded documents:
 {{{
