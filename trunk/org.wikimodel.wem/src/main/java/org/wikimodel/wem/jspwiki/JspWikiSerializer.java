@@ -224,6 +224,11 @@ public class JspWikiSerializer implements IWemListener {
 
     }
 
+    public void onImage(String ref) {
+        // TODO Auto-generated method stub
+        
+    }
+    
     public void onImage(WikiReference ref) {
         // TODO Auto-generated method stub
 

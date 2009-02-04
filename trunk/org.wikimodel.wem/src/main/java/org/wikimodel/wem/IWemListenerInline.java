@@ -68,6 +68,14 @@ public interface IWemListenerInline {
     void onEscape(String str);
 
     /**
+     * This method is called to notify that an free standing image was
+     * found in the parsed wiki document.
+     * 
+     * @param ref the reference the reference
+     */
+    void onImage(String ref);
+    
+    /**
      * This method is called to notify that a structured reference was found in
      * the text
      * 

@@ -381,6 +381,15 @@ public class CompositeListener implements IWemListener {
     }
 
     /**
+     * @see org.wikimodel.wem.IWemListenerInline#onImage(java.lang.String)
+     */
+    public void onImage(String ref) {
+	for (IWemListener listener : fListeners) {
+            listener.onImage(ref);
+        }
+    }
+    
+    /**
      * @see org.wikimodel.wem.IWemListenerInline#onImage(org.wikimodel.wem.WikiReference)
      */
     public void onImage(WikiReference ref) {

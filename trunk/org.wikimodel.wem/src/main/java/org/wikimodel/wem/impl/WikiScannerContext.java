@@ -315,6 +315,10 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().onReference(ref);
     }
 
+    public void onImage(String ref) {
+        getContext().onImage(ref);
+    }
+    
     public void onImage(WikiReference ref) {
         getContext().onImage(ref);
     }
