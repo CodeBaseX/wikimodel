@@ -315,8 +315,7 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().onReference(ref);
     }
 
-    public void onImage(WikiReference ref)
-    {
+    public void onImage(WikiReference ref) {
         getContext().onImage(ref);
     }
     
