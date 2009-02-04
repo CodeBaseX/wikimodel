@@ -295,6 +295,10 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
     public void testReferences() throws WikiParserException {
     }
 
+    public void testImages() throws WikiParserException {
+        test("<html><img src=\"target\" alt=\"some description\"/></html>","<p><img src=\"target\" alt=\"some description\"/></p>");
+    }
+    
     /**
      * @throws WikiParserException
      */

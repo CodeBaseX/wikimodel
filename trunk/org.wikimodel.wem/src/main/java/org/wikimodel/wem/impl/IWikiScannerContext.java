@@ -162,6 +162,8 @@ public interface IWikiScannerContext extends IWemConstants {
 
     void onReference(WikiReference ref);
 
+    void onImage(WikiReference ref);
+    
     void onSpace(String str);
 
     void onSpecialSymbol(String str);

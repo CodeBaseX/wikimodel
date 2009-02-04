@@ -56,6 +56,11 @@ public class WikiParameters {
         this((String) null);
     }
 
+    public WikiParameters(WikiParameters parameters) {
+        super();
+        fList.addAll(parameters.fList);
+    }
+
     /**
      * @param list
      */
