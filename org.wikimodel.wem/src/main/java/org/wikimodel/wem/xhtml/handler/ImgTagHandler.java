@@ -18,33 +18,30 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 /**
  * @author thomas.mortagne
  */
-public class ImgTagHandler extends TagHandler {
-
-    public ImgTagHandler() {
-	super(false, false, true);
-    }
-
-    @Override
-    protected void begin(TagContext context) {
-	setAccumulateContent(true);
-    }
-
+public class ImgTagHandler extends ReferenceTagHandler {
     @Override
     protected void end(TagContext context) {
 	WikiParameter src = context.getParams().getParameter("src");
-	WikiParameter alt = context.getParams().getParameter("alt");
 
 	if (src != null) {
 	    // Remove src and alt parameters for event parameters since it
 	    // already consumed as reference and label
 	    WikiParameters parameters = new WikiParameters(context.getParams());
 	    parameters.remove("src");
-	    parameters.remove("alt");
 
-	    WikiReference reference = new WikiReference(src.getValue(),
-		    alt != null ? alt.getValue() : null, parameters);
+	    if (isFreeStandingReference(context)) {
+		WikiReference reference = new WikiReference(src.getValue());
 
-	    context.getScannerContext().onImage(reference);
+		context.getScannerContext().onImage(reference);
+	    } else {
+		WikiParameter alt = context.getParams().getParameter("alt");
+		parameters.remove("alt");
+
+		WikiReference reference = new WikiReference(src.getValue(),
+			alt != null ? alt.getValue() : null, parameters);
+
+		context.getScannerContext().onImage(reference);
+	    }
 	}
     }
 }
