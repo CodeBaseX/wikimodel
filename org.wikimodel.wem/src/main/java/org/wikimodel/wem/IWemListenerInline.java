@@ -113,7 +113,7 @@ public interface IWemListenerInline {
      * @param ref the reference the reference
      */
     void onReference(WikiReference ref);
-
+    
     /**
      * This method is called to notify about a sequence of space symbols (like
      * " " or "\t" symbols).

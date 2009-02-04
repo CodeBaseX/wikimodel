@@ -294,7 +294,12 @@ public class PrintTextListener implements IWemListener {
     }
 
     public void onImage(WikiReference ref) {
-        onReference(ref);
+        print("<img");
+        print(" src=\"" + ref.getLink() + "\"");
+        if (ref.getLabel() != null) {
+            print(" alt=\"" + ref.getLabel() + "\"");
+        }
+        print("/>");
     }
 
     /**

@@ -29,6 +29,7 @@ import org.wikimodel.wem.xhtml.handler.DefinitionTermTagHandler;
 import org.wikimodel.wem.xhtml.handler.DivisionTagHandler;
 import org.wikimodel.wem.xhtml.handler.HeaderTagHandler;
 import org.wikimodel.wem.xhtml.handler.HorizontalLineTagHandler;
+import org.wikimodel.wem.xhtml.handler.ImgTagHandler;
 import org.wikimodel.wem.xhtml.handler.ItalicTagHandler;
 import org.wikimodel.wem.xhtml.handler.BreakTagHandler;
 import org.wikimodel.wem.xhtml.handler.ListItemTagHandler;
@@ -391,6 +392,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
         fStack.add("pre", new PreserveTagHandler());
         handler = new ReferenceTagHandler();
         fStack.add("a", handler);
+        handler = new ImgTagHandler();
         fStack.add("img", handler);
         handler = new BoldTagHandler();
         fStack.add("strong", handler);

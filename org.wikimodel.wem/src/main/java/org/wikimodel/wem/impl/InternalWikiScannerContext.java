@@ -755,6 +755,11 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         fListener.onReference(ref);
     }
 
+    public void onImage(WikiReference ref) {
+        checkStyleOpened();
+        fListener.onImage(ref);
+    }
+
     public void onSpace(String str) {
         checkStyleOpened();
         fListener.onSpace(str);
