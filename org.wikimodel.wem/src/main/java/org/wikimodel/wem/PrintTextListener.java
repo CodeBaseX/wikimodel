@@ -293,6 +293,12 @@ public class PrintTextListener implements IWemListener {
     public void onHorizontalLine(WikiParameters params) {
     }
 
+    public void onImage(String ref) {
+        print("<img");
+        print(" src=\"" + ref + "\"");
+        print("/>");
+    }
+
     public void onImage(WikiReference ref) {
         print("<img");
         print(" src=\"" + ref.getLink() + "\"");

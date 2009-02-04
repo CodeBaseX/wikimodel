@@ -26,16 +26,13 @@ public class ImgTagHandler extends ReferenceTagHandler {
 	if (src != null) {
 	    // Remove src and alt parameters for event parameters since it
 	    // already consumed as reference and label
-	    WikiParameters parameters = new WikiParameters(context.getParams());
-	    parameters.remove("src");
+	    WikiParameters parameters = context.getParams().remove("src");
 
 	    if (isFreeStandingReference(context)) {
-		WikiReference reference = new WikiReference(src.getValue());
-
-		context.getScannerContext().onImage(reference);
+		context.getScannerContext().onImage(src.getValue());
 	    } else {
-		WikiParameter alt = context.getParams().getParameter("alt");
-		parameters.remove("alt");
+		WikiParameter alt = parameters.getParameter("alt");
+		parameters = parameters.remove("alt");
 
 		WikiReference reference = new WikiReference(src.getValue(),
 			alt != null ? alt.getValue() : null, parameters);
