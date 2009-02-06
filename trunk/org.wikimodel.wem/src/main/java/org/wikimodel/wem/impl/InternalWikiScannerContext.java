@@ -275,8 +275,9 @@ class InternalWikiScannerContext implements IWikiScannerContext {
                 }
 
                 public void endRow(char treeType, char rowType) {
+                    closeFormat();
                     fListener.endQuotationLine();
-                    fBlockType = IBlockTypes.QUOT_LI;
+                    fBlockType = IBlockTypes.QUOT;
                 }
 
                 public void endTree(char type) {

@@ -519,11 +519,13 @@ public class XWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testQuot() throws WikiParserException {
+        test(">line", "<blockquote>\nline\n</blockquote>");
+        test(">line1\n>line2", "<blockquote>\nline1\nline2\n</blockquote>");
         test("This is a paragraph"
             + "\n"
             + "\n"
             + ">and this is a quotations\n"
-            + "the second line", "<p>This is a paragraph</p>\n"
+            + ">the second line", "<p>This is a paragraph</p>\n"
             + "<blockquote>\n"
             + "and this is a quotations\n"
             + "the second line\n"

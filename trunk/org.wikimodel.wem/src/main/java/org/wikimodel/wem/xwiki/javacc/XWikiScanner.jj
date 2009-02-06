@@ -823,7 +823,7 @@ void quotLine():
         int depth = str.length();
         fContext.beginQuotLine(depth);
     }
-    (LOOKAHEAD(2) lines() )?
+    (LOOKAHEAD(2) line() )?
     {
         fContext.endQuotLine();
     }
