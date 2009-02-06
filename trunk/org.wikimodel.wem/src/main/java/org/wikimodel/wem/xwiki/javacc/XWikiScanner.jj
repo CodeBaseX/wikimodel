@@ -425,7 +425,7 @@ void header():
         int level = t.image.trim().length();
         fContext.beginHeader(level, params);
     }
-    (LOOKAHEAD(2) lines())?
+    ( LOOKAHEAD(2) block() )*
     {
         fContext.endHeader();
     }
@@ -526,7 +526,9 @@ void block():
 {
 }
 {
-    ( embeddedDocument() | macroBlock() | lines() )
+    // Note: the getNL() is there to support the cases where the lines() content
+    // is located on a new line.
+    ( embeddedDocument() | macroBlock() | (getNL() { fContext.onNewLine(); } )? lines() )
 }
 
 void verbatimBlock():
