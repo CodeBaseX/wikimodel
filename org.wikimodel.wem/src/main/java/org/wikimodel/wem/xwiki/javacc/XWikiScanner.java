@@ -1370,7 +1370,7 @@ public class XWikiScanner implements XWikiScannerConstants {
         int depth = str.length();
         fContext.beginQuotLine(depth);
     if (jj_2_26(2)) {
-      lines();
+      line();
     } else {
       ;
     }
@@ -2273,7 +2273,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_33() {
+  final private boolean jj_3R_32() {
     Token xsp;
     if (jj_3_29()) return true;
     while (true) {
@@ -2288,14 +2288,14 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_32() {
+  final private boolean jj_3R_33() {
     if (jj_3R_24()) return true;
     return false;
   }
 
   final private boolean jj_3_28() {
-    if (jj_3R_32()) return true;
     if (jj_3R_33()) return true;
+    if (jj_3R_32()) return true;
     return false;
   }
 
@@ -2305,7 +2305,7 @@ public class XWikiScanner implements XWikiScannerConstants {
   }
 
   final private boolean jj_3R_20() {
-    if (jj_3R_33()) return true;
+    if (jj_3R_32()) return true;
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
@@ -2335,7 +2335,7 @@ public class XWikiScanner implements XWikiScannerConstants {
   }
 
   final private boolean jj_3_26() {
-    if (jj_3R_20()) return true;
+    if (jj_3R_32()) return true;
     return false;
   }
 
