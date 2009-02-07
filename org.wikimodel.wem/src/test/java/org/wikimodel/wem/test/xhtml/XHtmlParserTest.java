@@ -62,21 +62,21 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
             " <tr><td> Line One </td><td> First doc:<div class='doc'>\n" +
             "<p>inside</p>\n" +
             "</div>\n" +
-            " after</td></tr>\n" +
+            "after</td></tr>\n" +
             "   <tr><td>Line Two</td><td>Second doc:<div class='doc'>\n" +
             "<p>lkjlj</p>\n" +
             "</div>\n" +
-            " skdjg</td></tr>\n" +
+            "skdjg</td></tr>\n" +
             "</tbody></table></html>",
             "<table><tbody>\n" +
             "  <tr><td>Line One</td><td>First doc:<div class='doc'>\n" +
             "<p>inside</p>\n" +
             "</div>\n" +
-            " after</td></tr>\n" +
+            "after</td></tr>\n" +
             "  <tr><td>Line Two</td><td>Second doc:<div class='doc'>\n" +
             "<p>lkjlj</p>\n" +
             "</div>\n" +
-            " skdjg</td></tr>\n" +
+            "skdjg</td></tr>\n" +
             "</tbody></table>");
         test("<html><table><tbody>\n" +
             "  <tr><td>This is a table:</td><td><div class='doc'>\n" +
