@@ -54,6 +54,8 @@ public class XHTMLWhitespaceXMLFilterTest extends TestCase {
 	assertCleanedHTML("<p>one two</p>", "<p>\n\r\tone\n\r\ttwo\n\r\t</p>");
 	assertCleanedHTML("<p>one <b>two</b> <b>three</b></p>",
 		"<p>one <b>two</b>  <b>three</b></p>");
+	assertCleanedHTML("<p>one <b>two</b> <em><b>three</b>a</em></p>",
+		"<p>one <b>two</b>  <em><b>three</b>a</em></p>");
 	assertCleanedHTML("<p>one</p>two<p>three</p>",
 		"<p>one</p>  two  <p>three</p>");
 	assertCleanedHTML("<![CDATA[\n  one  \n]]>", "<![CDATA[\n  one  \n]]>");
@@ -71,6 +73,9 @@ public class XHTMLWhitespaceXMLFilterTest extends TestCase {
 		"<!--startmacro:something--><!--nonsemantic--><!--stopmacro-->",
 		"  <!--startmacro:something-->  <!--nonsemantic-->  <!--stopmacro-->  ");
 	assertCleanedHTML(
+		"<p>one <!--startmacro:something--><!--stopmacro--></p>",
+		"<p>one  <!--startmacro:something--><!--stopmacro--></p>");
+	assertCleanedHTML(
 		"<p>one <!--startmacro:something--><!--stopmacro--> two</p>",
 		"<p>one  <!--startmacro:something--><!--stopmacro-->  two</p>");
 	assertCleanedHTML("<!--comment-->one<![CDATA[two]]>",
@@ -82,8 +87,14 @@ public class XHTMLWhitespaceXMLFilterTest extends TestCase {
 		"<p> one  <span>  two </span><!--comment-->  three  <![CDATA[four]]></p>");
 	assertCleanedHTML("<p>This<strong> Spore Cheat Sheet</strong></p>",
 		"<p>This<strong>\nSpore Cheat Sheet</strong></p>");
-	assertCleanedHTML("<table><tbody><tr><td>First doc:<div><p>inside</p></div></td></tr></tbody></table>",
+	assertCleanedHTML(
+		"<table><tbody><tr><td>First doc:<div><p>inside</p></div></td></tr></tbody></table>",
 		"<table><tbody>\n<tr><td>First doc:<div>\n<p>inside</p></div></td></tr></tbody></table>");
+	assertCleanedHTML("<p>one two three<br><br>hello</p>",
+		"<p>one two three<br/><br/>hello</p>");
+	assertCleanedHTML(
+		"<p><strong><span>hello</span></strong><span>world</span></p>",
+		"<p><strong><span>hello</span></strong><span>world</span></p>");
     }
 
     public void testWhiteSpaceStrippingForBlockElements() throws Exception {

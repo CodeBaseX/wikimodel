@@ -87,7 +87,8 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
      */
     private StringBuffer fContent = new StringBuffer();
 
-    private String fPreviousInlineContent = null;
+    private StringBuffer fPreviousInlineContent = new StringBuffer();
+    private String fPreviousContent = null;
 
     private List<String[]> fEndingInlineElements = new ArrayList<String[]>();
 
@@ -118,11 +119,11 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
 	cleanBeforeElement();
 	cleanExtraWhiteSpaces();
 
-	sendCharacters();
+	sendContent();
 
 	if (INLINECONTAINER_ELEMENTS.contains(localName)) {
 	    ++inlineDepth;
-	    fPreviousInlineContent = null;
+	    fPreviousInlineContent.setLength(0);
 	}
 	super.startElement(uri, localName, qName, atts);
 
@@ -140,8 +141,8 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
 
 	if (NONINLINE_ELEMENTS.contains(localName)) {
 	    trimTrailingWhiteSpaces();
-	    sendCharacters();
-	    fPreviousInlineContent = null;
+	    sendContent();
+	    fPreviousInlineContent.setLength(0);
 
 	    fRemoveWhitespaces = true;
 
@@ -151,10 +152,12 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
 	    super.endElement(uri, localName, qName);
 	} else {
 	    if (getContent().length() > 0) {
-		fPreviousInlineContent = getContent().toString();
-		getContent().setLength(0);
+		sendPreviousContent(false);
+		fPreviousInlineContent.append(getContent());
+		fPreviousContent = getContent().toString();
 	    }
 
+	    getContent().setLength(0);
 	    fEndingInlineElements.add(new String[] { uri, localName, qName });
 	}
     }
@@ -163,7 +166,7 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
     public void startCDATA() throws SAXException {
 	cleanInlineContentFirstSpaces();
 	cleanExtraWhiteSpaces();
-	sendCharacters();
+	sendContent();
 
 	// UC5: Do not clean white spaces when in CDATA section
 	fRemoveWhitespaces = false;
@@ -174,7 +177,7 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
     @Override
     public void endCDATA() throws SAXException {
 	if (getContent().length() > 0) {
-	    sendCharacters();
+	    sendContent();
 	}
 	super.endCDATA();
 	fRemoveWhitespaces = true;
@@ -185,10 +188,10 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
 	cleanBeforeElement();
 	cleanExtraWhiteSpaces();
 
-	sendCharacters();
+	sendContent();
 
 	if (isSemanticComment(new String(ch, start, length))) {
-	    fPreviousInlineContent = "semanticcomment";
+	    fPreviousInlineContent.append("semanticcomment");
 	}
 
 	super.comment(ch, start, length);
@@ -198,28 +201,38 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
 	return fRemoveWhitespaces;
     }
 
-    protected void sendCharacters() throws SAXException {
+    protected void sendPreviousContent(boolean trimTrailing)
+	    throws SAXException {
 	if (fEndingInlineElements.size() > 0) {
-	    if (fPreviousInlineContent != null
-		    && fPreviousInlineContent.length() > 0) {
-		if (getContent().length() == 0) {
-		    fPreviousInlineContent = trimTrailingWhiteSpaces(fPreviousInlineContent);
+	    if (fPreviousContent != null && fPreviousContent.length() > 0) {
+		if (trimTrailing) {
+		    fPreviousContent = trimTrailingWhiteSpaces(fPreviousContent);
 		}
 
-		super.characters(fPreviousInlineContent.toCharArray(), 0,
-			fPreviousInlineContent.length());
-	    }
-	    for (String[] element : fEndingInlineElements) {
-		super.endElement(element[0], element[1], element[2]);
+		sendCharacters(fPreviousContent);
+		for (String[] element : fEndingInlineElements) {
+		    super.endElement(element[0], element[1], element[2]);
+		}
 	    }
 	    fEndingInlineElements.clear();
 	}
 
+	fPreviousContent = null;
+    }
+
+    protected void sendContent() throws SAXException {
+	sendPreviousContent(getContent().length() == 0);
+
 	if (getContent().length() > 0) {
-	    fPreviousInlineContent = getContent().toString();
-	    super.characters(fPreviousInlineContent.toCharArray(), 0,
-		    fPreviousInlineContent.length());
+	    fPreviousInlineContent.append(getContent());
+	    sendCharacters(getContent().toString());
 	    getContent().setLength(0);
+	}
+    }
+
+    protected void sendCharacters(String content) throws SAXException {
+	if (content.length() > 0) {
+	    super.characters(content.toCharArray(), 0, content.length());
 	}
     }
 
@@ -234,8 +247,9 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
 
     private void cleanInlineContentFirstSpaces() {
 	if (getContent().length() > 0) {
-	    if (fPreviousInlineContent == null
-		    || fPreviousInlineContent.endsWith(" ")) {
+	    if (fPreviousInlineContent.length() == 0
+		    || fPreviousInlineContent.charAt(fPreviousInlineContent
+			    .length() - 1) == ' ') {
 		trimLeadingWhiteSpaces();
 	    }
 	}
