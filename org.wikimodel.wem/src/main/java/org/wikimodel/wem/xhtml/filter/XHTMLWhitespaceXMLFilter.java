@@ -210,9 +210,9 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
 		}
 
 		sendCharacters(fPreviousContent);
-		for (String[] element : fEndingInlineElements) {
-		    super.endElement(element[0], element[1], element[2]);
-		}
+	    }
+	    for (String[] element : fEndingInlineElements) {
+		super.endElement(element[0], element[1], element[2]);
 	    }
 	    fEndingInlineElements.clear();
 	}
