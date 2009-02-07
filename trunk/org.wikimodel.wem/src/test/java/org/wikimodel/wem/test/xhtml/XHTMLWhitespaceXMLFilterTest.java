@@ -90,7 +90,7 @@ public class XHTMLWhitespaceXMLFilterTest extends TestCase {
 	assertCleanedHTML(
 		"<table><tbody><tr><td>First doc:<div><p>inside</p></div></td></tr></tbody></table>",
 		"<table><tbody>\n<tr><td>First doc:<div>\n<p>inside</p></div></td></tr></tbody></table>");
-	assertCleanedHTML("<p>one two three<br><br>hello</p>",
+	assertCleanedHTML("<p>one two three<br></br><br></br>hello</p>",
 		"<p>one two three<br/><br/>hello</p>");
 	assertCleanedHTML(
 		"<p><strong><span>hello</span></strong><span>world</span></p>",
