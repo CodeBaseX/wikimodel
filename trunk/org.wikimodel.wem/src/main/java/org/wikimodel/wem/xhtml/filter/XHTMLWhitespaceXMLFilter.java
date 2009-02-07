@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.wikimodel.wem.xhtml.filter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -20,242 +21,297 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 /**
- * Removes non-semantic whitespaces in XML elements. See http://www.w3.org/TR/html4/struct/text.html#h-9.1 for more details.
+ * Removes non-semantic whitespaces in XML elements. See
+ * http://www.w3.org/TR/html4/struct/text.html#h-9.1 for more details.
  * 
  * Possible use cases:
  * <p/>
  * <ul>
- *   <li><b>UC1</b>: <code>&lt;tag1&gt;(sp)(sp)one(sp)(sp)two(sp)(sp)&lt;/tag1&gt;</code> becomes <code>&lt;tag1&gt;one(sp)two&lt;/tag1&gt;</code></li>
- *   <li><b>UC2</b>: <code>&lt;tag1&gt;(sp)(sp)one(sp)(sp)two(sp)(sp)&lt;tag2&gt;three&lt;/tag2&gt;&lt;/tag1&gt;</code> becomes <code>&lt;tag1&gt;one(sp)two(sp)&lt;tag2&gt;three&lt;/tag2&gt;&lt;/tag1&gt;</code></li>
- *   <li><b>UC3</b>: <code>&lt;tag1&gt;(\n\r\t)one(\n\r\t)two(\n\r\t)&lt;/tag1&gt;</code> becomes <code>&lt;tag1&gt;one(sp)two&lt;/tag1&gt;</code></li>
- *   <li><b>UC4</b>: <code>&lt;/tag1&gt;(sp)(sp)(\n\r\t)&lt;tag2&gt;</code> (where tag1 and tag2 are not both block elements) becomes <code>&lt;/tag1&gt; &lt;tag2&gt;</code>. If tag1 and tag2 are block elements all spaces are removed</li>
- *   <li><b>UC5</b>: <code>&lt;![CDATA[(\n\r\t)(sp)(sp)one(sp)(sp)(\n\r\t)]]&gt;</code> is left untouched</code></li>
- *   <li><b>UC6</b>: <code>&lt;pre&gt;(\n\r\t)(sp)(sp)one(sp)(sp)(\n\r\t)&lt;/pre&gt;</code> is left untouched</code></li>
- *   <li><b>UC7</b>: <code>&lt;tag1&gt;(sp)(sp)one(sp)(sp)&lt;!--comment--&gt;(sp)(sp)two(sp)(sp)&lt;/tag1&gt;</code> becomes <code>&lt;tag1&gt;one&lt;!--comment--&gt;two&lt;/tag1&gt;</code>
- *   <li><b>UC8</b>: <code>&lt;/tag1&gt;(sp)(sp)one(sp)(sp)&lt;/tag2&gt;</code> becomes <code>&lt;/tag1&gt;(sp)one&lt;/tag2&gt;</code></li>
- *   <li><b>UC9</b>: Comments which have a meaning for the XHTML parser do not have spaces removed in the content preceding them
- * </ul>  
+ * <li><b>UC1</b>:
+ * <code>&lt;tag1&gt;(sp)(sp)one(sp)(sp)two(sp)(sp)&lt;/tag1&gt;</code> becomes
+ * <code>&lt;tag1&gt;one(sp)two&lt;/tag1&gt;</code></li>
+ * <li><b>UC2</b>:
+ * <code>&lt;tag1&gt;(sp)(sp)one(sp)(sp)two(sp)(sp)&lt;tag2&gt;three&lt;/tag2&gt;&lt;/tag1&gt;</code>
+ * becomes
+ * <code>&lt;tag1&gt;one(sp)two(sp)&lt;tag2&gt;three&lt;/tag2&gt;&lt;/tag1&gt;</code>
+ * </li>
+ * <li><b>UC3</b>:
+ * <code>&lt;tag1&gt;(\n\r\t)one(\n\r\t)two(\n\r\t)&lt;/tag1&gt;</code> becomes
+ * <code>&lt;tag1&gt;one(sp)two&lt;/tag1&gt;</code></li>
+ * <li><b>UC4</b>: <code>&lt;/tag1&gt;(sp)(sp)(\n\r\t)&lt;tag2&gt;</code> (where
+ * tag1 and tag2 are not both block elements) becomes
+ * <code>&lt;/tag1&gt; &lt;tag2&gt;</code>. If tag1 and tag2 are block elements
+ * all spaces are removed</li>
+ * <li><b>UC5</b>:
+ * <code>&lt;![CDATA[(\n\r\t)(sp)(sp)one(sp)(sp)(\n\r\t)]]&gt;</code> is left
+ * untouched</code></li>
+ * <li><b>UC6</b>:
+ * <code>&lt;pre&gt;(\n\r\t)(sp)(sp)one(sp)(sp)(\n\r\t)&lt;/pre&gt;</code> is
+ * left untouched</code></li>
+ * <li><b>UC7</b>:
+ * <code>&lt;tag1&gt;(sp)(sp)one(sp)(sp)&lt;!--comment--&gt;(sp)(sp)two(sp)(sp)&lt;/tag1&gt;</code>
+ * becomes <code>&lt;tag1&gt;one&lt;!--comment--&gt;two&lt;/tag1&gt;</code>
+ * <li><b>UC8</b>: <code>&lt;/tag1&gt;(sp)(sp)one(sp)(sp)&lt;/tag2&gt;</code>
+ * becomes <code>&lt;/tag1&gt;(sp)one&lt;/tag2&gt;</code></li>
+ * <li><b>UC9</b>: Comments which have a meaning for the XHTML parser do not
+ * have spaces removed in the content preceding them
+ * </ul>
  * 
  * @author vmassol
  */
-public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter
-{
-    private static final Pattern HTML_WHITESPACE_DUPLICATES_PATTERN = 
-        Pattern.compile("\\s{2,}|[\\t\\n\\x0B\\f\\r]+");
-    
-    private static final Pattern HTML_WHITESPACE_HEAD_PATTERN = Pattern.compile("^\\s+");
-    
-    private static final Pattern HTML_WHITESPACE_TAIL_PATTERN = Pattern.compile("\\s+$");
+public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
+    private static final Pattern HTML_WHITESPACE_DUPLICATES_PATTERN = Pattern
+	    .compile("\\s{2,}|[\\t\\n\\x0B\\f\\r]+");
 
-    private static final List<String> BLOCK_ELEMENTS = Arrays.asList(
-        "p", "table", "ul", "ol", "li", "hr", "td", "tr", "th", "div", "tbody", "thead", 
-        "pre", "h1", "h2", "h3", "h4", "h5", "h6", "dl", "dt", "dd", "blockquote");
-    
+    private static final Pattern HTML_WHITESPACE_HEAD_PATTERN = Pattern
+	    .compile("^\\s+");
+
+    private static final Pattern HTML_WHITESPACE_TAIL_PATTERN = Pattern
+	    .compile("\\s+$");
+
+    private static final List<String> NONINLINE_ELEMENTS = Arrays.asList(
+	    "html", "head", "body", "p", "table", "ul", "ol", "li", "hr", "td",
+	    "tr", "th", "div", "tbody", "thead", "pre", "h1", "h2", "h3", "h4",
+	    "h5", "h6", "dl", "dt", "dd", "blockquote");
+
+    private static final List<String> INLINECONTAINER_ELEMENTS = Arrays.asList(
+	    "p", "li", "hr", "td", "th", "div", "thead", "pre", "h1", "h2",
+	    "h3", "h4", "h5", "h6", "dl", "dt", "dd", "blockquote");
+
     private boolean fRemoveWhitespaces = true;
-    
-    private String fLastClosedElement;
-    
-    private String fStartedElement;
-    
+
+    private int inlineDepth = 0;
+
     /**
      * Content to clean.
      */
     private StringBuffer fContent = new StringBuffer();
 
-    private StringBuffer fContentBeforeComment;
+    private String fPreviousInlineContent = null;
 
-    public XHTMLWhitespaceXMLFilter()
-    {
-        super();
+    private List<String[]> fEndingInlineElements = new ArrayList<String[]>();
+
+    public XHTMLWhitespaceXMLFilter() {
+	super();
     }
-    
-    public XHTMLWhitespaceXMLFilter(XMLReader reader)
-    {
-        super(reader);
-    }
-    
-    @Override
-    public void characters(char[] ch, int start, int length) throws SAXException {
-        getContent().append(ch, start, length);
-    }
-    
-    @Override
-    public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException
-    {
-        cleanWhiteSpacesBeforeElement();
-        cleanExtraWhiteSpaces();
-        
-        // UC4: Remove all spaces between elements only if they are block elements
-        if (getContent().length() == 1 && getContent().charAt(0) == ' ' && fLastClosedElement != null
-            && BLOCK_ELEMENTS.contains(fLastClosedElement) && BLOCK_ELEMENTS.contains(localName)) {
-            getContent().setLength(0);
-        } else {
-            sendCharacters();
-        }
-        
-        fLastClosedElement = null;
-        fContentBeforeComment = null;
-        fStartedElement = localName;
-        super.startElement(uri, localName, qName, atts);
-        
-        // UC6: Do not clean white spaces when in PRE element
-        if ("pre".equalsIgnoreCase(localName)) {
-            fRemoveWhitespaces = false;
-        }
+
+    public XHTMLWhitespaceXMLFilter(XMLReader reader) {
+	super(reader);
     }
 
     @Override
-    public void endElement(String uri, String localName, String qName) throws SAXException {
-
-        cleanWhiteSpacesAfterElement(localName);
-        cleanExtraWhiteSpaces();        
-        sendCharacters();
-        fLastClosedElement = localName;
-        fStartedElement = null;
-        fRemoveWhitespaces = true;
-        fContentBeforeComment = null;
-        super.endElement(uri, localName, qName);
-    }
-    
-    @Override
-    public void startCDATA() throws SAXException
-    {
-        cleanWhiteSpacesBeforeElement();
-        cleanExtraWhiteSpaces();        
-        sendCharacters();
-
-        // UC5: Do not clean white spaces when in CDATA section
-        fRemoveWhitespaces = false;
-        
-        fContentBeforeComment = null;
-        super.startCDATA();
+    public void ignorableWhitespace(char[] ch, int start, int length)
+	    throws SAXException {
+	// TODO Auto-generated method stub
+	super.ignorableWhitespace(ch, start, length);
     }
 
     @Override
-    public void endCDATA() throws SAXException
-    {
-        if (getContent().length() > 0) {
-            sendCharacters();
-        }
-        super.endCDATA();
-        fRemoveWhitespaces = true;
+    public void characters(char[] ch, int start, int length)
+	    throws SAXException {
+	getContent().append(ch, start, length);
     }
 
     @Override
-    public void comment(char[] ch, int start, int length) throws SAXException
-    {
-        // UC7: Clean white spaces when there's a non semantic comment
-        // UC9: Don't clean white spaces for semantic comments
-        if (!isSemanticComment(new String(ch, start, length))) {
-            cleanWhiteSpacesAfterElement(fStartedElement);
-            cleanExtraWhiteSpaces();
-            fContentBeforeComment = new StringBuffer(fContent);
-        } else {
-            fStartedElement = "semanticcomment";
-            cleanExtraWhiteSpaces();
-        }
-        sendCharacters();
-        super.comment(ch, start, length);
+    public void startElement(String uri, String localName, String qName,
+	    Attributes atts) throws SAXException {
+	cleanBeforeElement();
+	cleanExtraWhiteSpaces();
+
+	sendCharacters();
+
+	if (INLINECONTAINER_ELEMENTS.contains(localName)) {
+	    ++inlineDepth;
+	    fPreviousInlineContent = null;
+	}
+	super.startElement(uri, localName, qName, atts);
+
+	// UC6: Do not clean white spaces when in PRE element
+	if ("pre".equalsIgnoreCase(localName)) {
+	    fRemoveWhitespaces = false;
+	}
     }
 
-    protected boolean shouldRemoveWhiteSpaces()
-    {
-        return fRemoveWhitespaces;
-    }
-    
-    protected void sendCharacters() throws SAXException
-    {
-        if (getContent().length() > 0) {
-            super.characters(getContent().toString().toCharArray(), 0, getContent().length());
-            getContent().setLength(0);
-        }
+    @Override
+    public void endElement(String uri, String localName, String qName)
+	    throws SAXException {
+	cleanInlineContentFirstSpaces();
+	cleanExtraWhiteSpaces();
+
+	if (NONINLINE_ELEMENTS.contains(localName)) {
+	    trimTrailingWhiteSpaces();
+	    sendCharacters();
+	    fPreviousInlineContent = null;
+
+	    fRemoveWhitespaces = true;
+
+	    if (INLINECONTAINER_ELEMENTS.contains(localName)) {
+		--inlineDepth;
+	    }
+	    super.endElement(uri, localName, qName);
+	} else {
+	    if (getContent().length() > 0) {
+		fPreviousInlineContent = getContent().toString();
+		getContent().setLength(0);
+	    }
+
+	    fEndingInlineElements.add(new String[] { uri, localName, qName });
+	}
     }
 
-    private void cleanWhiteSpacesBeforeElement() throws SAXException
-    {
-        if (getContent().length() > 0) {
+    @Override
+    public void startCDATA() throws SAXException {
+	cleanInlineContentFirstSpaces();
+	cleanExtraWhiteSpaces();
+	sendCharacters();
 
-            // UC2: A new element is started when the previous one isn't closed yet.
-            // UC7: Remove lead spaces if we're after a non semantic comment and there was no content before the comment
-            if (fStartedElement != null) {
-                // UC7 & UC9: Don't remove lead whitespaces if we're on a semantic comment or if we're on a non semantic 
-                // comment but with an empty text before the comment.
-                if (!fStartedElement.equalsIgnoreCase("semanticcomment") && (fContentBeforeComment == null || fContentBeforeComment.length() == 0)) {  
-                    trimLeadingWhiteSpaces();
-                }
-            } 
-        }
-    }
-    
-    private void cleanWhiteSpacesAfterElement(String tagName) throws SAXException
-    {
-        if (getContent().length() > 0) {
+	// UC5: Do not clean white spaces when in CDATA section
+	fRemoveWhitespaces = false;
 
-            if (fStartedElement == null) {
-                // UC8: Previous tag was closed and we're closing another tag.
-                trimTrailingWhiteSpaces();
-            } else if (fStartedElement.equalsIgnoreCase(tagName)) {
-                // UC1: started element is the same as ending element
-                // UC7
-                if (fContentBeforeComment == null || fContentBeforeComment.length() == 0) {
-                    trimLeadingWhiteSpaces();
-                }
-                trimTrailingWhiteSpaces();
-            } else if (fStartedElement.equalsIgnoreCase("semanticcomment")) {
-                // UC9
-                trimTrailingWhiteSpaces();
-            }
-        }
+	super.startCDATA();
     }
-    
-    protected void cleanExtraWhiteSpaces()
-    {
-        if (getContent().length() > 0) {
-            // UC3: Remove non whitespace chars (/n, /r, /t, etc)
-            if (shouldRemoveWhiteSpaces()) {
-                Matcher matcher = HTML_WHITESPACE_DUPLICATES_PATTERN.matcher(getContent());
-                String result = matcher.replaceAll(" ");
-                getContent().setLength(0);
-                getContent().append(result);
-            }
-        }
-    }    
-    
-    // Trim white spaces and new lines since they are ignored in XHTML (except when
+
+    @Override
+    public void endCDATA() throws SAXException {
+	if (getContent().length() > 0) {
+	    sendCharacters();
+	}
+	super.endCDATA();
+	fRemoveWhitespaces = true;
+    }
+
+    @Override
+    public void comment(char[] ch, int start, int length) throws SAXException {
+	cleanBeforeElement();
+	cleanExtraWhiteSpaces();
+
+	sendCharacters();
+
+	if (isSemanticComment(new String(ch, start, length))) {
+	    fPreviousInlineContent = "semanticcomment";
+	}
+
+	super.comment(ch, start, length);
+    }
+
+    protected boolean shouldRemoveWhiteSpaces() {
+	return fRemoveWhitespaces;
+    }
+
+    protected void sendCharacters() throws SAXException {
+	if (fEndingInlineElements.size() > 0) {
+	    if (fPreviousInlineContent != null
+		    && fPreviousInlineContent.length() > 0) {
+		if (getContent().length() == 0) {
+		    fPreviousInlineContent = trimTrailingWhiteSpaces(fPreviousInlineContent);
+		}
+
+		super.characters(fPreviousInlineContent.toCharArray(), 0,
+			fPreviousInlineContent.length());
+	    }
+	    for (String[] element : fEndingInlineElements) {
+		super.endElement(element[0], element[1], element[2]);
+	    }
+	    fEndingInlineElements.clear();
+	}
+
+	if (getContent().length() > 0) {
+	    fPreviousInlineContent = getContent().toString();
+	    super.characters(fPreviousInlineContent.toCharArray(), 0,
+		    fPreviousInlineContent.length());
+	    getContent().setLength(0);
+	}
+    }
+
+    private void cleanBeforeElement() {
+	if (inlineDepth == 0) {
+	    trimLeadingWhiteSpaces();
+	    trimTrailingWhiteSpaces();
+	} else {
+	    cleanInlineContentFirstSpaces();
+	}
+    }
+
+    private void cleanInlineContentFirstSpaces() {
+	if (getContent().length() > 0) {
+	    if (fPreviousInlineContent == null
+		    || fPreviousInlineContent.endsWith(" ")) {
+		trimLeadingWhiteSpaces();
+	    }
+	}
+    }
+
+    protected void cleanExtraWhiteSpaces() {
+	if (getContent().length() > 0) {
+	    // UC3: Remove non whitespace chars (/n, /r, /t, etc)
+	    if (shouldRemoveWhiteSpaces()) {
+		Matcher matcher = HTML_WHITESPACE_DUPLICATES_PATTERN
+			.matcher(getContent());
+		String result = matcher.replaceAll(" ");
+		getContent().setLength(0);
+		getContent().append(result);
+	    }
+	}
+    }
+
+    // Trim white spaces and new lines since they are ignored in XHTML (except
+    // when
     // in CDATA or PRE elements).
-    protected void trimLeadingWhiteSpaces()
-    {
-        if (shouldRemoveWhiteSpaces()) {
-            Matcher matcher = HTML_WHITESPACE_HEAD_PATTERN.matcher(getContent());
-            String result = matcher.replaceAll("");
-            getContent().setLength(0);
-            getContent().append(result);
-        }
+    protected void trimLeadingWhiteSpaces() {
+	if (shouldRemoveWhiteSpaces() && getContent().length() > 0) {
+	    String result = trimLeadingWhiteSpaces(getContent());
+	    getContent().setLength(0);
+	    getContent().append(result);
+	}
     }
-    
-    protected void trimTrailingWhiteSpaces()
-    {
-        if (shouldRemoveWhiteSpaces()) {
-            Matcher matcher = HTML_WHITESPACE_TAIL_PATTERN.matcher(getContent());
-            String result = matcher.replaceAll("");
-            getContent().setLength(0);
-            getContent().append(result);
-        }
+
+    protected String trimLeadingWhiteSpaces(CharSequence content) {
+	String trimedContent;
+
+	if (shouldRemoveWhiteSpaces() && content.length() > 0) {
+	    Matcher matcher = HTML_WHITESPACE_HEAD_PATTERN.matcher(content);
+	    trimedContent = matcher.replaceAll("");
+	} else {
+	    trimedContent = content.toString();
+	}
+
+	return trimedContent;
     }
-    
-    protected StringBuffer getContent()
-    {
-        return fContent;
+
+    protected void trimTrailingWhiteSpaces() {
+	if (shouldRemoveWhiteSpaces() && getContent().length() > 0) {
+	    String result = trimTrailingWhiteSpaces(getContent());
+	    getContent().setLength(0);
+	    getContent().append(result);
+	}
     }
-    
+
+    protected String trimTrailingWhiteSpaces(CharSequence content) {
+	String trimedContent;
+
+	if (shouldRemoveWhiteSpaces() && getContent().length() > 0) {
+	    Matcher matcher = HTML_WHITESPACE_TAIL_PATTERN.matcher(content);
+	    trimedContent = matcher.replaceAll("");
+	} else {
+	    trimedContent = content.toString();
+	}
+
+	return trimedContent;
+    }
+
+    protected StringBuffer getContent() {
+	return fContent;
+    }
+
     /**
      * We remove spaces around non semantic comments.
      * 
-     * @param comment the comment to evaluate
+     * @param comment
+     *            the comment to evaluate
      * @return true if the comment is a semantic one
      */
-    protected boolean isSemanticComment(String comment)
-    {
-        return comment.startsWith("startmacro:") || comment.startsWith("stopmacro"); 
+    protected boolean isSemanticComment(String comment) {
+	return comment.startsWith("startmacro:")
+		|| comment.startsWith("stopmacro");
     }
 }
