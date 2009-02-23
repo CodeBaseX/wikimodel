@@ -56,7 +56,7 @@ public class WikiReferenceParser implements IWikiReferenceParser {
      * @see org.wikimodel.wem.IWikiReferenceParser#parse(java.lang.String)
      */
     public WikiReference parse(String str) {
-        if (str == null || "".equals(str.trim()))
+        if (str == null)
             return null;
         String[] chunks = splitToChunks(str);
         if (chunks.length == 0)
