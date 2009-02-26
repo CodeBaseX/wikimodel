@@ -11,6 +11,7 @@
 package org.wikimodel.wem.xhtml.handler;
 
 import org.wikimodel.wem.WikiParameter;
+import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 
@@ -48,8 +49,15 @@ public class ReferenceTagHandler extends TagHandler {
                 context.getScannerContext().onReference(ref.getValue());
             } else {
                 String content = context.getContent();
+                
+                // Make sure we remove the HREF and SRC parameters from the list of parameters
+                // since they are already consumed as link reference.
+                WikiParameters parameters = context.getParams();
+                parameters = parameters.remove("src");
+                parameters = parameters.remove("href");
+                
                 WikiReference reference = new WikiReference(ref.getValue(),
-                    content, context.getParams());
+                    content, parameters);
                 context.getScannerContext().onReference(reference);
             }
         }
