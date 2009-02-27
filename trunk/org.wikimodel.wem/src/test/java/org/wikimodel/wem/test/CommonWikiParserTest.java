@@ -826,35 +826,35 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
 
         test("before (((doc-before(=toto=)doc-after))) after", ""
             + "<p>before</p>\n"
-            + "<div class='doc'>\n"
+            + "<div class='wikimodel-document'>\n"
             + "<p>doc-before<a href='toto'>toto</a>doc-after</p>\n"
             + "</div>\n"
             + "<p>after</p>");
         test("before ((((=toto=)))) after", ""
             + "<p>before</p>\n"
-            + "<div class='doc'>\n"
+            + "<div class='wikimodel-document'>\n"
             + "<p><a href='toto'>toto</a></p>\n"
             + "</div>\n"
             + "<p>after</p>");
         test(" ((((=toto=))))", ""
-            + "<div class='doc'>\n"
+            + "<div class='wikimodel-document'>\n"
             + "<p><a href='toto'>toto</a></p>\n"
             + "</div>");
         test("((((=toto=))))", ""
-            + "<div class='doc'>\n"
+            + "<div class='wikimodel-document'>\n"
             + "<p><a href='toto'>toto</a></p>\n"
             + "</div>");
 
         test("((((((toto))))))", ""
-            + "<div class='doc'>\n"
-            + "<div class='doc'>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<div class='wikimodel-document'>\n"
             + "<p>toto</p>\n"
             + "</div>\n"
             + "</div>");
         test("(((a(((toto)))b)))", ""
-            + "<div class='doc'>\n"
+            + "<div class='wikimodel-document'>\n"
             + "<p>a</p>\n"
-            + "<div class='doc'>\n"
+            + "<div class='wikimodel-document'>\n"
             + "<p>toto</p>\n"
             + "</div>\n"
             + "<p>b</p>\n"

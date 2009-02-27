@@ -23,7 +23,6 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  */
 public class DivisionTagHandler extends TagHandler
 {
-
     public DivisionTagHandler()
     {
         super(true, false, true);
@@ -34,7 +33,7 @@ public class DivisionTagHandler extends TagHandler
      */
     protected String getDocumentClass()
     {
-        return "doc";
+        return "wikimodel-document";
     }
 
     @Override

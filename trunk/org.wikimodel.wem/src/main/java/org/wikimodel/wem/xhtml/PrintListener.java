@@ -43,7 +43,7 @@ public class PrintListener extends PrintInlineListener {
 
     @Override
     public void beginDocument() {
-        println("<div class='doc'>");
+        println("<div class='wikimodel-document'>");
     }
 
     @Override

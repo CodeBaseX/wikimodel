@@ -39,47 +39,47 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
      */
     public void testDocuments() throws WikiParserException {
         test("<html><p>before</p>\n" +
-            "<div class='doc'>\n" +
+            "<div class='wikimodel-document'>\n" +
             "<p>inside</p>\n" +
             "</div>\n" +
             "<p>after</p></html>",
             "<p>before</p>\n" +
-            "<div class='doc'>\n" +
+            "<div class='wikimodel-document'>\n" +
             "<p>inside</p>\n" +
             "</div>\n" +
             "<p>after</p>");
         test("<html><p>before</p>\n" +
-            "<div class='doc'>\n" +
+            "<div class='wikimodel-document'>\n" +
             "<p>inside</p>\n" +
             "</div>\n" +
             "<p>after</p></html>",
             "<p>before</p>\n" +
-            "<div class='doc'>\n" +
+            "<div class='wikimodel-document'>\n" +
             "<p>inside</p>\n" +
             "</div>\n" +
             "<p>after</p>");
         test("<html><table><tbody>\n" +
-            " <tr><td> Line One </td><td> First doc:<div class='doc'>\n" +
+            " <tr><td> Line One </td><td> First doc:<div class='wikimodel-document'>\n" +
             "<p>inside</p>\n" +
             "</div>\n" +
             "after</td></tr>\n" +
-            "   <tr><td>Line Two</td><td>Second doc:<div class='doc'>\n" +
+            "   <tr><td>Line Two</td><td>Second doc:<div class='wikimodel-document'>\n" +
             "<p>lkjlj</p>\n" +
             "</div>\n" +
             "skdjg</td></tr>\n" +
             "</tbody></table></html>",
             "<table><tbody>\n" +
-            "  <tr><td>Line One</td><td>First doc:<div class='doc'>\n" +
+            "  <tr><td>Line One</td><td>First doc:<div class='wikimodel-document'>\n" +
             "<p>inside</p>\n" +
             "</div>\n" +
             "after</td></tr>\n" +
-            "  <tr><td>Line Two</td><td>Second doc:<div class='doc'>\n" +
+            "  <tr><td>Line Two</td><td>Second doc:<div class='wikimodel-document'>\n" +
             "<p>lkjlj</p>\n" +
             "</div>\n" +
             "skdjg</td></tr>\n" +
             "</tbody></table>");
         test("<html><table><tbody>\n" +
-            "  <tr><td>This is a table:</td><td><div class='doc'>\n" +
+            "  <tr><td>This is a table:</td><td><div class='wikimodel-document'>\n" +
             "<ul>\n" +
             "  <li>item one</li>\n" +
             "  <li>item two</li>\n" +
@@ -91,7 +91,7 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
             "</td></tr>\n" +
             "</tbody></table></html>",
             "<table><tbody>\n" +
-            "  <tr><td>This is a table:</td><td><div class='doc'>\n" +
+            "  <tr><td>This is a table:</td><td><div class='wikimodel-document'>\n" +
             "<ul>\n" +
             "  <li>item one</li>\n" +
             "  <li>item two</li>\n" +
@@ -104,29 +104,29 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
             "</tbody></table>");
 
         test("<html><p>before</p>\n" +
-            "<div class='doc'>\n" +
+            "<div class='wikimodel-document'>\n" +
             "<p>opened and not closed</p>\n" +
             "</div></html>",
             "<p>before</p>\n" +
-            "<div class='doc'>\n" +
+            "<div class='wikimodel-document'>\n" +
             "<p>opened and not closed</p>\n" +
             "</div>");
         test("<html><p>before</p>\n" +
-            "<div class='doc'>\n" +
+            "<div class='wikimodel-document'>\n" +
             "<p>one</p>\n" +
-            "<div class='doc'>\n" +
+            "<div class='wikimodel-document'>\n" +
             "<p>two</p>\n" +
-            "<div class='doc'>\n" +
+            "<div class='wikimodel-document'>\n" +
             "<p>three</p>\n" +
             "</div>\n" +
             "</div>\n" +
             "</div></html>",
             "<p>before</p>\n" +
-            "<div class='doc'>\n" +
+            "<div class='wikimodel-document'>\n" +
             "<p>one</p>\n" +
-            "<div class='doc'>\n" +
+            "<div class='wikimodel-document'>\n" +
             "<p>two</p>\n" +
-            "<div class='doc'>\n" +
+            "<div class='wikimodel-document'>\n" +
             "<p>three</p>\n" +
             "</div>\n" +
             "</div>\n" +
