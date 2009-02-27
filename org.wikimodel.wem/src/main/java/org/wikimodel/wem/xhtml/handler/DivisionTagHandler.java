@@ -11,6 +11,7 @@
 package org.wikimodel.wem.xhtml.handler;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.wikimodel.wem.WikiParameter;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
@@ -41,15 +42,17 @@ public class DivisionTagHandler extends TagHandler
     {
         WikiParameter param = context.getParams().getParameter("class");
         if (param != null) {
+            List<String> classes = Arrays.asList(param.getValue().split(" "));
+            
             // Check if we have a div meaning an empty line between block
-            if (Arrays.asList(param.getValue().split(" ")).contains("wikimodel-emptyline")) {
+            if (classes.contains("wikimodel-emptyline")) {
                 int value = (Integer) context.getTagStack().getStackParameter("emptyLinesCount");
                 value++;
                 context.getTagStack().setStackParameter("emptyLinesCount", value);
             }
 
             // Check if we have a div meaning start of embedded document
-            if (Arrays.asList(param.getValue().split(" ")).contains(getDocumentClass())) {
+            if (classes.contains(getDocumentClass())) {
                 context.getScannerContext().beginDocument();
             }
         }
