@@ -82,7 +82,7 @@ public abstract class AbstractWikiParserTest extends TestCase {
      */
     protected void checkResults(String control, String test) {
         if (control != null) {
-            control = "<div class='doc'>\n" + control + "\n</div>\n";
+            control = "<div class='wikimodel-document'>\n" + control + "\n</div>\n";
             assertEquals(control, test);
         }
     }

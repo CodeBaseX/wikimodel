@@ -88,24 +88,24 @@ public class XWikiParserTest extends AbstractWikiParserTest {
      */
     public void testDocuments() throws WikiParserException {
         test("before ((( inside ))) after ", "<p>before</p>\n" +
-        		"<div class='doc'>\n" +
+        		"<div class='wikimodel-document'>\n" +
         		"<p>inside</p>\n" +
         		"</div>\n" +
         		"<p>after </p>");
         test("before inside ))) after ", "<p>before inside</p>\n" +
             "<p>after </p>");
         test("before (((\ninside ))) after ", "<p>before</p>\n" +
-            "<div class='doc'>\n" +
+            "<div class='wikimodel-document'>\n" +
             "<p>inside</p>\n" +
             "</div>\n" +
             "<p>after </p>");
         test("| Line One | First doc: (((\n inside ))) after \n"
             + "|Line Two | Second doc: (((lkjlj))) skdjg", "<table><tbody>\n" +
-            "  <tr><td> Line One </td><td> First doc:<div class='doc'>\n" +
+            "  <tr><td> Line One </td><td> First doc:<div class='wikimodel-document'>\n" +
             "<p> inside</p>\n" +
             "</div>\n" +
             "after </td></tr>\n" +
-            "  <tr><td>Line Two </td><td> Second doc:<div class='doc'>\n" +
+            "  <tr><td>Line Two </td><td> Second doc:<div class='wikimodel-document'>\n" +
             "<p>lkjlj</p>\n" +
             "</div>\n" +
             "skdjg</td></tr>\n" +
@@ -115,7 +115,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             + " * subitem 1\n"
             + " * subitem 2\n"
             + "* item three))) ", "<table><tbody>\n" +
-            "  <tr><td> This is a table: </td><td><div class='doc'>\n" +
+            "  <tr><td> This is a table: </td><td><div class='wikimodel-document'>\n" +
             "<ul>\n" +
             "  <li>item one</li>\n" +
             "  <li>item two</li>\n" +
@@ -128,15 +128,15 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             "</tbody></table>");
 
         test("before ((( opened and not closed", "<p>before</p>\n" +
-            "<div class='doc'>\n" +
+            "<div class='wikimodel-document'>\n" +
             "<p>opened and not closed</p>\n" +
             "</div>");
         test("before ((( one ((( two ((( three ", "<p>before</p>\n" +
-            "<div class='doc'>\n" +
+            "<div class='wikimodel-document'>\n" +
             "<p>one</p>\n" +
-            "<div class='doc'>\n" +
+            "<div class='wikimodel-document'>\n" +
             "<p>two</p>\n" +
-            "<div class='doc'>\n" +
+            "<div class='wikimodel-document'>\n" +
             "<p>three </p>\n" +
             "</div>\n" +
             "</div>\n" +
