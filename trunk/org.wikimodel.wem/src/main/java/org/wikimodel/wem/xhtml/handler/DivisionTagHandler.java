@@ -29,7 +29,9 @@ public class DivisionTagHandler extends TagHandler
     }
 
     /**
-     * @return the class used to indicate the division block is an embedded document.
+     * @return the class used to indicate the division block is an embedded document. 
+     *         Note that use a method instead of a static private String field so that 
+     *         user code can override the class name.
      */
     protected String getDocumentClass()
     {
