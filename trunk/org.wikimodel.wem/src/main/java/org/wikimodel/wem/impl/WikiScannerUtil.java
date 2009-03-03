@@ -114,9 +114,14 @@ public class WikiScannerUtil {
             char endChar = array[pos];
             pos++;
             for (; pos < array.length && (escaped || array[pos] != endChar); pos++) {
-                escaped = array[pos] == '\\';
-                if (!escaped)
+                if (escaped) {
                     buf.append(array[pos]);
+                    escaped = false;
+                } else {
+                    escaped = array[pos] == '\\';
+                    if (!escaped)
+                        buf.append(array[pos]);
+                }
             }
             if (pos < array.length)
                 pos++;
@@ -126,9 +131,14 @@ public class WikiScannerUtil {
                     break;
                 if (!escaped && (array[pos] == '\'' || array[pos] == '"'))
                     break;
-                escaped = array[pos] == '\\';
-                if (!escaped)
+                if (escaped) {
                     buf.append(array[pos]);
+                    escaped = false;
+                } else {
+                    escaped = array[pos] == '\\';
+                    if (!escaped)
+                        buf.append(array[pos]);
+                }
             }
         }
         return pos;
@@ -147,7 +157,7 @@ public class WikiScannerUtil {
     public static int removeSpaces(char[] array, int pos, StringBuffer buf) {
         buf.delete(0, buf.length());
         for (; pos < array.length
-            && (array[pos] == '=' || Character.isSpaceChar(array[pos])); pos++) {
+                && (array[pos] == '=' || Character.isSpaceChar(array[pos])); pos++) {
             if (array[pos] == '=')
                 buf.append(array[pos]);
         }
@@ -200,9 +210,8 @@ public class WikiScannerUtil {
         if (str == null)
             return;
         char[] array = str.toCharArray();
-        char[] delimiterArray = delimiter != null
-            ? delimiter.toCharArray()
-            : new char[0];
+        char[] delimiterArray = delimiter != null ? delimiter.toCharArray()
+                : new char[0];
         StringBuffer buf = new StringBuffer();
         for (int i = 0; i < array.length;) {
             String key = null;

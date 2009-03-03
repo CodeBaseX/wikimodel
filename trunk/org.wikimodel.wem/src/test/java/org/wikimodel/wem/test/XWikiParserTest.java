@@ -359,6 +359,9 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             + "<p>before</p>\n"
             + "<pre class='macro' macroName='toto'><![CDATA[a]]></pre>\n"
             + "<p>after</p>");
+        test("{{macro param=\"val\\\"u\\\\e\"/}}{{macro/}}", ""
+                + "<pre class='macro' macroName='macro' param='val&#x22;u\\e'><![CDATA[]]></pre>\n"
+                + "<pre class='macro' macroName='macro'><![CDATA[]]></pre>");
 
         // URIs as macro names
         test(
