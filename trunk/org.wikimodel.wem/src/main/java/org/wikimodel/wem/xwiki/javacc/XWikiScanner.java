@@ -51,852 +51,1029 @@ public class XWikiScanner implements XWikiScannerConstants {
     }
 
   final public Token getINTERNAL_VERBATIM_START() throws ParseException {
+    trace_call("getINTERNAL_VERBATIM_START");
+    try {
                                          Token t=null;
-    t = jj_consume_token(INTERNAL_VERBATIM_START);
+      t = jj_consume_token(INTERNAL_VERBATIM_START);
                                                                                        {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getINTERNAL_VERBATIM_START");
+    }
   }
 
   final public Token getINTERNAL_VERBATIM_END() throws ParseException {
+    trace_call("getINTERNAL_VERBATIM_END");
+    try {
                                        Token t=null;
-    t = jj_consume_token(INTERNAL_VERBATIM_END);
+      t = jj_consume_token(INTERNAL_VERBATIM_END);
                                                                                    {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getINTERNAL_VERBATIM_END");
+    }
   }
 
   final public Token getINTERNAL_VERBATIM_CONTENT() throws ParseException {
+    trace_call("getINTERNAL_VERBATIM_CONTENT");
+    try {
                                            Token t=null;
-    t = jj_consume_token(INTERNAL_VERBATIM_CONTENT);
+      t = jj_consume_token(INTERNAL_VERBATIM_CONTENT);
                                                                                            {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getINTERNAL_VERBATIM_CONTENT");
+    }
   }
 
   final public Token getINTERNAL_MACRO_START() throws ParseException {
+    trace_call("getINTERNAL_MACRO_START");
+    try {
                                       Token t=null;
-    t = jj_consume_token(INTERNAL_MACRO_START);
+      t = jj_consume_token(INTERNAL_MACRO_START);
                                                                                  {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getINTERNAL_MACRO_START");
+    }
   }
 
   final public Token getINTERNAL_MACRO_END() throws ParseException {
+    trace_call("getINTERNAL_MACRO_END");
+    try {
                                     Token t=null;
-    t = jj_consume_token(INTERNAL_MACRO_END);
+      t = jj_consume_token(INTERNAL_MACRO_END);
                                                                              {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getINTERNAL_MACRO_END");
+    }
   }
 
   final public Token getINTERNAL_MACRO_CONTENT() throws ParseException {
+    trace_call("getINTERNAL_MACRO_CONTENT");
+    try {
                                         Token t=null;
-    t = jj_consume_token(INTERNAL_MACRO_CONTENT);
+      t = jj_consume_token(INTERNAL_MACRO_CONTENT);
                                                                                      {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getINTERNAL_MACRO_CONTENT");
+    }
   }
 
 // <getters>
   final public Token getDOC_BEGIN() throws ParseException {
+    trace_call("getDOC_BEGIN");
+    try {
                            Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_DOC_BEGIN:
-      t = jj_consume_token(I_DOC_BEGIN);
-      break;
-    case D_DOC_BEGIN:
-      t = jj_consume_token(D_DOC_BEGIN);
-      break;
-    default:
-      jj_la1[0] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_DOC_BEGIN:
+        t = jj_consume_token(I_DOC_BEGIN);
+        break;
+      case D_DOC_BEGIN:
+        t = jj_consume_token(D_DOC_BEGIN);
+        break;
+      default:
+        jj_la1[0] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
                                                                              {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getDOC_BEGIN");
+    }
   }
 
   final public Token getDOC_END() throws ParseException {
+    trace_call("getDOC_END");
+    try {
                          Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_DOC_END:
-      t = jj_consume_token(I_DOC_END);
-      break;
-    case D_DOC_END:
-      t = jj_consume_token(D_DOC_END);
-      break;
-    default:
-      jj_la1[1] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_DOC_END:
+        t = jj_consume_token(I_DOC_END);
+        break;
+      case D_DOC_END:
+        t = jj_consume_token(D_DOC_END);
+        break;
+      default:
+        jj_la1[1] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
                                                                        {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getDOC_END");
+    }
   }
 
   final public Token getLIST_ITEM() throws ParseException {
+    trace_call("getLIST_ITEM");
+    try {
                            Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_LIST_ITEM:
-      t = jj_consume_token(I_LIST_ITEM);
-      break;
-    case D_LIST_ITEM:
-      t = jj_consume_token(D_LIST_ITEM);
-      break;
-    default:
-      jj_la1[2] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_LIST_ITEM:
+        t = jj_consume_token(I_LIST_ITEM);
+        break;
+      case D_LIST_ITEM:
+        t = jj_consume_token(D_LIST_ITEM);
+        break;
+      default:
+        jj_la1[2] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
                                                                              {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getLIST_ITEM");
+    }
   }
 
   final public Token getHEADER_BEGIN() throws ParseException {
+    trace_call("getHEADER_BEGIN");
+    try {
                               Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_HEADER_BEGIN:
-      t = jj_consume_token(I_HEADER_BEGIN);
-      break;
-    case D_HEADER_BEGIN:
-      t = jj_consume_token(D_HEADER_BEGIN);
-      break;
-    default:
-      jj_la1[3] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_HEADER_BEGIN:
+        t = jj_consume_token(I_HEADER_BEGIN);
+        break;
+      case D_HEADER_BEGIN:
+        t = jj_consume_token(D_HEADER_BEGIN);
+        break;
+      default:
+        jj_la1[3] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
                                                                                       {if (true) return t;}
     throw new Error("Missing return statement in function");
-  }
-
-  final public Token getHEADER_END() throws ParseException {
-                            Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_HEADER_END:
-      t = jj_consume_token(I_HEADER_END);
-      break;
-    case D_HEADER_END:
-      t = jj_consume_token(D_HEADER_END);
-      break;
-    default:
-      jj_la1[4] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
+    } finally {
+      trace_return("getHEADER_BEGIN");
     }
-                                                                                {if (true) return t;}
-    throw new Error("Missing return statement in function");
   }
 
   final public Token getHORLINE() throws ParseException {
+    trace_call("getHORLINE");
+    try {
                          Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_HORLINE:
-      t = jj_consume_token(I_HORLINE);
-      break;
-    case D_HORLINE:
-      t = jj_consume_token(D_HORLINE);
-      break;
-    default:
-      jj_la1[5] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_HORLINE:
+        t = jj_consume_token(I_HORLINE);
+        break;
+      case D_HORLINE:
+        t = jj_consume_token(D_HORLINE);
+        break;
+      default:
+        jj_la1[4] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
                                                                        {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getHORLINE");
+    }
   }
 
   final public Token getTABLE_ROW() throws ParseException {
+    trace_call("getTABLE_ROW");
+    try {
                            Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_TABLE_ROW:
-      t = jj_consume_token(I_TABLE_ROW);
-      break;
-    case D_TABLE_ROW:
-      t = jj_consume_token(D_TABLE_ROW);
-      break;
-    default:
-      jj_la1[6] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_TABLE_ROW:
+        t = jj_consume_token(I_TABLE_ROW);
+        break;
+      case D_TABLE_ROW:
+        t = jj_consume_token(D_TABLE_ROW);
+        break;
+      default:
+        jj_la1[5] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
                                                                              {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getTABLE_ROW");
+    }
   }
 
   final public Token getTABLE_CELL() throws ParseException {
+    trace_call("getTABLE_CELL");
+    try {
                             Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_TABLE_CELL:
-      t = jj_consume_token(I_TABLE_CELL);
-      break;
-    case D_TABLE_CELL:
-      t = jj_consume_token(D_TABLE_CELL);
-      break;
-    default:
-      jj_la1[7] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_TABLE_CELL:
+        t = jj_consume_token(I_TABLE_CELL);
+        break;
+      case D_TABLE_CELL:
+        t = jj_consume_token(D_TABLE_CELL);
+        break;
+      default:
+        jj_la1[6] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
                                                                                 {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getTABLE_CELL");
+    }
   }
 
   final public Token getREFERENCE() throws ParseException {
+    trace_call("getREFERENCE");
+    try {
                            Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_REFERENCE:
-      t = jj_consume_token(I_REFERENCE);
-      break;
-    case D_REFERENCE:
-      t = jj_consume_token(D_REFERENCE);
-      break;
-    default:
-      jj_la1[8] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_REFERENCE:
+        t = jj_consume_token(I_REFERENCE);
+        break;
+      case D_REFERENCE:
+        t = jj_consume_token(D_REFERENCE);
+        break;
+      default:
+        jj_la1[7] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
                                                                              {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getREFERENCE");
+    }
   }
 
   final public Token getVERBATIM_START() throws ParseException {
+    trace_call("getVERBATIM_START");
+    try {
                                 Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_VERBATIM_START:
-      t = jj_consume_token(I_VERBATIM_START);
-      break;
-    case D_VERBATIM_START:
-      t = jj_consume_token(D_VERBATIM_START);
-      break;
-    default:
-      jj_la1[9] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_VERBATIM_START:
+        t = jj_consume_token(I_VERBATIM_START);
+        break;
+      case D_VERBATIM_START:
+        t = jj_consume_token(D_VERBATIM_START);
+        break;
+      default:
+        jj_la1[8] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
                                                                                             {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getVERBATIM_START");
+    }
   }
 
   final public Token getMACRO_EMPTY_BLOCK() throws ParseException {
+    trace_call("getMACRO_EMPTY_BLOCK");
+    try {
                                    Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_MACRO_EMPTY_BLOCK:
-      t = jj_consume_token(I_MACRO_EMPTY_BLOCK);
-      break;
-    case D_MACRO_EMPTY_BLOCK:
-      t = jj_consume_token(D_MACRO_EMPTY_BLOCK);
-      break;
-    default:
-      jj_la1[10] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_MACRO_EMPTY_BLOCK:
+        t = jj_consume_token(I_MACRO_EMPTY_BLOCK);
+        break;
+      case D_MACRO_EMPTY_BLOCK:
+        t = jj_consume_token(D_MACRO_EMPTY_BLOCK);
+        break;
+      default:
+        jj_la1[9] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
                                                                                                      {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getMACRO_EMPTY_BLOCK");
+    }
   }
 
   final public Token getMACRO_BLOCK_START() throws ParseException {
+    trace_call("getMACRO_BLOCK_START");
+    try {
                                    Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_MACRO_BLOCK_START:
-      t = jj_consume_token(I_MACRO_BLOCK_START);
-      break;
-    case D_MACRO_BLOCK_START:
-      t = jj_consume_token(D_MACRO_BLOCK_START);
-      break;
-    default:
-      jj_la1[11] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_MACRO_BLOCK_START:
+        t = jj_consume_token(I_MACRO_BLOCK_START);
+        break;
+      case D_MACRO_BLOCK_START:
+        t = jj_consume_token(D_MACRO_BLOCK_START);
+        break;
+      default:
+        jj_la1[10] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
                                                                                                      {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getMACRO_BLOCK_START");
+    }
   }
 
   final public Token getMACRO_EMPTY_INLINE() throws ParseException {
+    trace_call("getMACRO_EMPTY_INLINE");
+    try {
                                     Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_MACRO_EMPTY_INLINE:
-      t = jj_consume_token(I_MACRO_EMPTY_INLINE);
-      break;
-    case D_MACRO_EMPTY_INLINE:
-      t = jj_consume_token(D_MACRO_EMPTY_INLINE);
-      break;
-    default:
-      jj_la1[12] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_MACRO_EMPTY_INLINE:
+        t = jj_consume_token(I_MACRO_EMPTY_INLINE);
+        break;
+      case D_MACRO_EMPTY_INLINE:
+        t = jj_consume_token(D_MACRO_EMPTY_INLINE);
+        break;
+      default:
+        jj_la1[11] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
                                                                                                         {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getMACRO_EMPTY_INLINE");
+    }
   }
 
   final public Token getMACRO_INLINE_START() throws ParseException {
+    trace_call("getMACRO_INLINE_START");
+    try {
                                     Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_MACRO_INLINE_START:
-      t = jj_consume_token(I_MACRO_INLINE_START);
-      break;
-    case D_MACRO_INLINE_START:
-      t = jj_consume_token(D_MACRO_INLINE_START);
-      break;
-    default:
-      jj_la1[13] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_MACRO_INLINE_START:
+        t = jj_consume_token(I_MACRO_INLINE_START);
+        break;
+      case D_MACRO_INLINE_START:
+        t = jj_consume_token(D_MACRO_INLINE_START);
+        break;
+      default:
+        jj_la1[12] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
                                                                                                         {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getMACRO_INLINE_START");
+    }
   }
 
   final public Token getFORMAT_SYMBOL() throws ParseException {
+    trace_call("getFORMAT_SYMBOL");
+    try {
                                Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_FORMAT_SYMBOL:
-      t = jj_consume_token(I_FORMAT_SYMBOL);
-      break;
-    case D_FORMAT_SYMBOL:
-      t = jj_consume_token(D_FORMAT_SYMBOL);
-      break;
-    default:
-      jj_la1[14] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_FORMAT_SYMBOL:
+        t = jj_consume_token(I_FORMAT_SYMBOL);
+        break;
+      case D_FORMAT_SYMBOL:
+        t = jj_consume_token(D_FORMAT_SYMBOL);
+        break;
+      default:
+        jj_la1[13] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
                                                                                          {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getFORMAT_SYMBOL");
+    }
   }
 
   final public Token getBR() throws ParseException {
+    trace_call("getBR");
+    try {
                     Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_BR:
-      t = jj_consume_token(I_BR);
-      break;
-    case D_BR:
-      t = jj_consume_token(D_BR);
-      break;
-    default:
-      jj_la1[15] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_BR:
+        t = jj_consume_token(I_BR);
+        break;
+      case D_BR:
+        t = jj_consume_token(D_BR);
+        break;
+      default:
+        jj_la1[14] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
                                                         {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getBR");
+    }
   }
 
   final public Token getBLOCK_PARAMS() throws ParseException {
+    trace_call("getBLOCK_PARAMS");
+    try {
                               Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_BLOCK_PARAMS:
-      t = jj_consume_token(I_BLOCK_PARAMS);
-      break;
-    case D_BLOCK_PARAMS:
-      t = jj_consume_token(D_BLOCK_PARAMS);
-      break;
-    default:
-      jj_la1[16] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_BLOCK_PARAMS:
+        t = jj_consume_token(I_BLOCK_PARAMS);
+        break;
+      case D_BLOCK_PARAMS:
+        t = jj_consume_token(D_BLOCK_PARAMS);
+        break;
+      default:
+        jj_la1[15] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
                                                                                       {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getBLOCK_PARAMS");
+    }
   }
 
   final public Token getINLINE_PARAMS() throws ParseException {
+    trace_call("getINLINE_PARAMS");
+    try {
                                Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_INLINE_PARAMS:
-      t = jj_consume_token(I_INLINE_PARAMS);
-      break;
-    case D_INLINE_PARAMS:
-      t = jj_consume_token(D_INLINE_PARAMS);
-      break;
-    default:
-      jj_la1[17] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_INLINE_PARAMS:
+        t = jj_consume_token(I_INLINE_PARAMS);
+        break;
+      case D_INLINE_PARAMS:
+        t = jj_consume_token(D_INLINE_PARAMS);
+        break;
+      default:
+        jj_la1[16] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
                                                                                          {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getINLINE_PARAMS");
+    }
   }
 
   final public Token getQUOT_LINE() throws ParseException {
+    trace_call("getQUOT_LINE");
+    try {
                            Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_QUOT_LINE:
-      t = jj_consume_token(I_QUOT_LINE);
-      break;
-    case D_QUOT_LINE:
-      t = jj_consume_token(D_QUOT_LINE);
-      break;
-    default:
-      jj_la1[18] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_QUOT_LINE:
+        t = jj_consume_token(I_QUOT_LINE);
+        break;
+      case D_QUOT_LINE:
+        t = jj_consume_token(D_QUOT_LINE);
+        break;
+      default:
+        jj_la1[17] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
                                                                              {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getQUOT_LINE");
+    }
   }
 
   final public Token getXWIKI_URI() throws ParseException {
+    trace_call("getXWIKI_URI");
+    try {
                            Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_XWIKI_URI:
-      t = jj_consume_token(I_XWIKI_URI);
-      break;
-    case D_XWIKI_URI:
-      t = jj_consume_token(D_XWIKI_URI);
-      break;
-    default:
-      jj_la1[19] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_XWIKI_URI:
+        t = jj_consume_token(I_XWIKI_URI);
+        break;
+      case D_XWIKI_URI:
+        t = jj_consume_token(D_XWIKI_URI);
+        break;
+      default:
+        jj_la1[18] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
                                                                              {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getXWIKI_URI");
+    }
   }
 
   final public Token getXWIKI_SPACE() throws ParseException {
+    trace_call("getXWIKI_SPACE");
+    try {
                              Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_XWIKI_SPACE:
-      t = jj_consume_token(I_XWIKI_SPACE);
-      break;
-    case D_XWIKI_SPACE:
-      t = jj_consume_token(D_XWIKI_SPACE);
-      break;
-    default:
-      jj_la1[20] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_XWIKI_SPACE:
+        t = jj_consume_token(I_XWIKI_SPACE);
+        break;
+      case D_XWIKI_SPACE:
+        t = jj_consume_token(D_XWIKI_SPACE);
+        break;
+      default:
+        jj_la1[19] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
                                                                                    {if (true) return t;}
     throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getXWIKI_SPACE");
+    }
   }
 
     // "Standard" tokens. They are the same for all wikis.
   final public Token getNL() throws ParseException {
+    trace_call("getNL");
+    try {
                     Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_NL:
-      t = jj_consume_token(I_NL);
-      break;
-    case D_NL:
-      t = jj_consume_token(D_NL);
-      break;
-    default:
-      jj_la1[21] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-                                                        {if (true) return t;}
-    throw new Error("Missing return statement in function");
-  }
-
-  final public Token getWORD() throws ParseException {
-                      Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_WORD:
-      t = jj_consume_token(I_WORD);
-      break;
-    case D_WORD:
-      t = jj_consume_token(D_WORD);
-      break;
-    default:
-      jj_la1[22] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-                                                              {if (true) return t;}
-    throw new Error("Missing return statement in function");
-  }
-
-  final public Token getSPECIAL_SYMBOL() throws ParseException {
-                                Token t=null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_SPECIAL_SYMBOL:
-      t = jj_consume_token(I_SPECIAL_SYMBOL);
-      break;
-    case D_SPECIAL_SYMBOL:
-      t = jj_consume_token(D_SPECIAL_SYMBOL);
-      break;
-    default:
-      jj_la1[23] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-                                                                                            {if (true) return t;}
-    throw new Error("Missing return statement in function");
-  }
-
-// </getters>
-  final public void doParse() throws ParseException {
-    token_source.SwitchTo(token_source.INITIAL_CONTEXT);
-        fContext.beginDocument();
-    label_1:
-    while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case I_DOC_BEGIN:
-      case I_DOC_END:
-      case I_LIST_ITEM:
-      case I_HEADER_BEGIN:
-      case I_HEADER_END:
-      case I_HORLINE:
-      case I_TABLE_ROW:
-      case I_TABLE_CELL:
-      case I_REFERENCE:
-      case I_VERBATIM_START:
-      case I_MACRO_EMPTY_BLOCK:
-      case I_MACRO_BLOCK_START:
-      case I_MACRO_EMPTY_INLINE:
-      case I_MACRO_INLINE_START:
-      case I_FORMAT_SYMBOL:
-      case I_BR:
-      case I_BLOCK_PARAMS:
-      case I_INLINE_PARAMS:
-      case I_QUOT_LINE:
-      case I_XWIKI_URI:
-      case I_XWIKI_SPACE:
       case I_NL:
-      case I_WORD:
-      case I_SPECIAL_SYMBOL:
-      case D_DOC_BEGIN:
-      case D_DOC_END:
-      case D_LIST_ITEM:
-      case D_HEADER_BEGIN:
-      case D_HEADER_END:
-      case D_HORLINE:
-      case D_TABLE_ROW:
-      case D_TABLE_CELL:
-      case D_REFERENCE:
-      case D_VERBATIM_START:
-      case D_MACRO_EMPTY_BLOCK:
-      case D_MACRO_BLOCK_START:
-      case D_MACRO_EMPTY_INLINE:
-      case D_MACRO_INLINE_START:
-      case D_FORMAT_SYMBOL:
-      case D_BR:
-      case D_BLOCK_PARAMS:
-      case D_INLINE_PARAMS:
-      case D_QUOT_LINE:
-      case D_XWIKI_URI:
-      case D_XWIKI_SPACE:
+        t = jj_consume_token(I_NL);
+        break;
       case D_NL:
-      case D_WORD:
-      case D_SPECIAL_SYMBOL:
-        ;
+        t = jj_consume_token(D_NL);
         break;
       default:
-        jj_la1[24] = jj_gen;
-        break label_1;
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case I_DOC_BEGIN:
-      case I_LIST_ITEM:
-      case I_HEADER_BEGIN:
-      case I_HEADER_END:
-      case I_HORLINE:
-      case I_TABLE_ROW:
-      case I_TABLE_CELL:
-      case I_REFERENCE:
-      case I_VERBATIM_START:
-      case I_MACRO_EMPTY_BLOCK:
-      case I_MACRO_BLOCK_START:
-      case I_MACRO_EMPTY_INLINE:
-      case I_MACRO_INLINE_START:
-      case I_FORMAT_SYMBOL:
-      case I_BR:
-      case I_BLOCK_PARAMS:
-      case I_INLINE_PARAMS:
-      case I_QUOT_LINE:
-      case I_XWIKI_URI:
-      case I_XWIKI_SPACE:
-      case I_NL:
-      case I_WORD:
-      case I_SPECIAL_SYMBOL:
-      case D_DOC_BEGIN:
-      case D_LIST_ITEM:
-      case D_HEADER_BEGIN:
-      case D_HEADER_END:
-      case D_HORLINE:
-      case D_TABLE_ROW:
-      case D_TABLE_CELL:
-      case D_REFERENCE:
-      case D_VERBATIM_START:
-      case D_MACRO_EMPTY_BLOCK:
-      case D_MACRO_BLOCK_START:
-      case D_MACRO_EMPTY_INLINE:
-      case D_MACRO_INLINE_START:
-      case D_FORMAT_SYMBOL:
-      case D_BR:
-      case D_BLOCK_PARAMS:
-      case D_INLINE_PARAMS:
-      case D_QUOT_LINE:
-      case D_XWIKI_URI:
-      case D_XWIKI_SPACE:
-      case D_NL:
-      case D_WORD:
-      case D_SPECIAL_SYMBOL:
-        docElements();
-        break;
-      case I_DOC_END:
-      case D_DOC_END:
-        getDOC_END();
-        break;
-      default:
-        jj_la1[25] = jj_gen;
+        jj_la1[20] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
+                                                        {if (true) return t;}
+    throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getNL");
     }
-    jj_consume_token(0);
+  }
+
+  final public Token getWORD() throws ParseException {
+    trace_call("getWORD");
+    try {
+                      Token t=null;
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_WORD:
+        t = jj_consume_token(I_WORD);
+        break;
+      case D_WORD:
+        t = jj_consume_token(D_WORD);
+        break;
+      default:
+        jj_la1[21] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+                                                              {if (true) return t;}
+    throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getWORD");
+    }
+  }
+
+  final public Token getSPECIAL_SYMBOL() throws ParseException {
+    trace_call("getSPECIAL_SYMBOL");
+    try {
+                                Token t=null;
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_SPECIAL_SYMBOL:
+        t = jj_consume_token(I_SPECIAL_SYMBOL);
+        break;
+      case D_SPECIAL_SYMBOL:
+        t = jj_consume_token(D_SPECIAL_SYMBOL);
+        break;
+      default:
+        jj_la1[22] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+                                                                                            {if (true) return t;}
+    throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getSPECIAL_SYMBOL");
+    }
+  }
+
+// </getters>
+  final public Token getHEADER_END() throws ParseException {
+    trace_call("getHEADER_END");
+    try {
+                            Token t=null;
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_HEADER_END:
+        t = jj_consume_token(I_HEADER_END);
+        break;
+      case D_HEADER_END:
+        t = jj_consume_token(D_HEADER_END);
+        break;
+      default:
+        jj_la1[23] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+                                                                                {if (true) return t;}
+    throw new Error("Missing return statement in function");
+    } finally {
+      trace_return("getHEADER_END");
+    }
+  }
+
+  final public void doParse() throws ParseException {
+    trace_call("doParse");
+    try {
+    token_source.SwitchTo(token_source.INITIAL_CONTEXT);
+        fContext.beginDocument();
+      label_1:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case I_DOC_BEGIN:
+        case I_DOC_END:
+        case I_LIST_ITEM:
+        case I_HEADER_BEGIN:
+        case I_HORLINE:
+        case I_TABLE_ROW:
+        case I_TABLE_CELL:
+        case I_REFERENCE:
+        case I_VERBATIM_START:
+        case I_MACRO_EMPTY_BLOCK:
+        case I_MACRO_BLOCK_START:
+        case I_MACRO_EMPTY_INLINE:
+        case I_MACRO_INLINE_START:
+        case I_FORMAT_SYMBOL:
+        case I_BR:
+        case I_BLOCK_PARAMS:
+        case I_INLINE_PARAMS:
+        case I_QUOT_LINE:
+        case I_XWIKI_URI:
+        case I_XWIKI_SPACE:
+        case I_NL:
+        case I_WORD:
+        case I_SPECIAL_SYMBOL:
+        case I_HEADER_END:
+        case D_DOC_BEGIN:
+        case D_DOC_END:
+        case D_LIST_ITEM:
+        case D_HEADER_BEGIN:
+        case D_HORLINE:
+        case D_TABLE_ROW:
+        case D_TABLE_CELL:
+        case D_REFERENCE:
+        case D_VERBATIM_START:
+        case D_MACRO_EMPTY_BLOCK:
+        case D_MACRO_BLOCK_START:
+        case D_MACRO_EMPTY_INLINE:
+        case D_MACRO_INLINE_START:
+        case D_FORMAT_SYMBOL:
+        case D_BR:
+        case D_BLOCK_PARAMS:
+        case D_INLINE_PARAMS:
+        case D_QUOT_LINE:
+        case D_XWIKI_URI:
+        case D_XWIKI_SPACE:
+        case D_NL:
+        case D_WORD:
+        case D_SPECIAL_SYMBOL:
+        case D_HEADER_END:
+          ;
+          break;
+        default:
+          jj_la1[24] = jj_gen;
+          break label_1;
+        }
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case I_DOC_BEGIN:
+        case I_LIST_ITEM:
+        case I_HEADER_BEGIN:
+        case I_HORLINE:
+        case I_TABLE_ROW:
+        case I_TABLE_CELL:
+        case I_REFERENCE:
+        case I_VERBATIM_START:
+        case I_MACRO_EMPTY_BLOCK:
+        case I_MACRO_BLOCK_START:
+        case I_MACRO_EMPTY_INLINE:
+        case I_MACRO_INLINE_START:
+        case I_FORMAT_SYMBOL:
+        case I_BR:
+        case I_BLOCK_PARAMS:
+        case I_INLINE_PARAMS:
+        case I_QUOT_LINE:
+        case I_XWIKI_URI:
+        case I_XWIKI_SPACE:
+        case I_NL:
+        case I_WORD:
+        case I_SPECIAL_SYMBOL:
+        case I_HEADER_END:
+        case D_DOC_BEGIN:
+        case D_LIST_ITEM:
+        case D_HEADER_BEGIN:
+        case D_HORLINE:
+        case D_TABLE_ROW:
+        case D_TABLE_CELL:
+        case D_REFERENCE:
+        case D_VERBATIM_START:
+        case D_MACRO_EMPTY_BLOCK:
+        case D_MACRO_BLOCK_START:
+        case D_MACRO_EMPTY_INLINE:
+        case D_MACRO_INLINE_START:
+        case D_FORMAT_SYMBOL:
+        case D_BR:
+        case D_BLOCK_PARAMS:
+        case D_INLINE_PARAMS:
+        case D_QUOT_LINE:
+        case D_XWIKI_URI:
+        case D_XWIKI_SPACE:
+        case D_NL:
+        case D_WORD:
+        case D_SPECIAL_SYMBOL:
+        case D_HEADER_END:
+          docElements();
+          break;
+        case I_DOC_END:
+        case D_DOC_END:
+          getDOC_END();
+          break;
+        default:
+          jj_la1[25] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+      }
+      jj_consume_token(0);
         sendOnEmptyLinesEvent(true);
         fContext.endDocument();
+    } finally {
+      trace_return("doParse");
+    }
   }
 
   final public void docElements() throws ParseException {
-    if (jj_2_2(2)) {
-      header();
-    } else if (jj_2_3(2)) {
-      table();
-    } else if (jj_2_4(2)) {
-      list();
-    } else {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case I_DOC_BEGIN:
-      case D_DOC_BEGIN:
-        embeddedDocument();
-        break;
-      case I_MACRO_EMPTY_BLOCK:
-      case I_MACRO_BLOCK_START:
-      case D_MACRO_EMPTY_BLOCK:
-      case D_MACRO_BLOCK_START:
-        macroBlock();
-        break;
-      default:
-        jj_la1[27] = jj_gen;
-        if (jj_2_5(3)) {
-          verbatimBlock();
-        } else if (jj_2_6(2)) {
-          horline();
-        } else {
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-          case I_HEADER_END:
-          case I_TABLE_CELL:
-          case I_REFERENCE:
-          case I_VERBATIM_START:
-          case I_MACRO_EMPTY_INLINE:
-          case I_MACRO_INLINE_START:
-          case I_FORMAT_SYMBOL:
-          case I_BR:
-          case I_BLOCK_PARAMS:
-          case I_INLINE_PARAMS:
-          case I_QUOT_LINE:
-          case I_XWIKI_URI:
-          case I_XWIKI_SPACE:
-          case I_WORD:
-          case I_SPECIAL_SYMBOL:
-          case D_HEADER_END:
-          case D_TABLE_CELL:
-          case D_REFERENCE:
-          case D_VERBATIM_START:
-          case D_MACRO_EMPTY_INLINE:
-          case D_MACRO_INLINE_START:
-          case D_FORMAT_SYMBOL:
-          case D_BR:
-          case D_BLOCK_PARAMS:
-          case D_INLINE_PARAMS:
-          case D_QUOT_LINE:
-          case D_XWIKI_URI:
-          case D_XWIKI_SPACE:
-          case D_WORD:
-          case D_SPECIAL_SYMBOL:
-            if (jj_2_1(2)) {
-              quot();
-            } else {
-              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-              case I_HEADER_END:
-              case I_TABLE_CELL:
-              case I_REFERENCE:
-              case I_VERBATIM_START:
-              case I_MACRO_EMPTY_INLINE:
-              case I_MACRO_INLINE_START:
-              case I_FORMAT_SYMBOL:
-              case I_BR:
-              case I_BLOCK_PARAMS:
-              case I_INLINE_PARAMS:
-              case I_XWIKI_URI:
-              case I_XWIKI_SPACE:
-              case I_WORD:
-              case I_SPECIAL_SYMBOL:
-              case D_HEADER_END:
-              case D_TABLE_CELL:
-              case D_REFERENCE:
-              case D_VERBATIM_START:
-              case D_MACRO_EMPTY_INLINE:
-              case D_MACRO_INLINE_START:
-              case D_FORMAT_SYMBOL:
-              case D_BR:
-              case D_BLOCK_PARAMS:
-              case D_INLINE_PARAMS:
-              case D_XWIKI_URI:
-              case D_XWIKI_SPACE:
-              case D_WORD:
-              case D_SPECIAL_SYMBOL:
-                paragraph();
-                break;
-              default:
-                jj_la1[26] = jj_gen;
-                jj_consume_token(-1);
-                throw new ParseException();
+    trace_call("docElements");
+    try {
+      if (jj_2_2(2)) {
+        header();
+      } else if (jj_2_3(2)) {
+        table();
+      } else if (jj_2_4(2)) {
+        list();
+      } else {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case I_DOC_BEGIN:
+        case D_DOC_BEGIN:
+          embeddedDocument();
+          break;
+        case I_MACRO_EMPTY_BLOCK:
+        case I_MACRO_BLOCK_START:
+        case D_MACRO_EMPTY_BLOCK:
+        case D_MACRO_BLOCK_START:
+          macroBlock();
+          break;
+        default:
+          jj_la1[27] = jj_gen;
+          if (jj_2_5(3)) {
+            verbatimBlock();
+          } else if (jj_2_6(2)) {
+            horline();
+          } else {
+            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+            case I_TABLE_CELL:
+            case I_REFERENCE:
+            case I_VERBATIM_START:
+            case I_MACRO_EMPTY_INLINE:
+            case I_MACRO_INLINE_START:
+            case I_FORMAT_SYMBOL:
+            case I_BR:
+            case I_BLOCK_PARAMS:
+            case I_INLINE_PARAMS:
+            case I_QUOT_LINE:
+            case I_XWIKI_URI:
+            case I_XWIKI_SPACE:
+            case I_WORD:
+            case I_SPECIAL_SYMBOL:
+            case I_HEADER_END:
+            case D_TABLE_CELL:
+            case D_REFERENCE:
+            case D_VERBATIM_START:
+            case D_MACRO_EMPTY_INLINE:
+            case D_MACRO_INLINE_START:
+            case D_FORMAT_SYMBOL:
+            case D_BR:
+            case D_BLOCK_PARAMS:
+            case D_INLINE_PARAMS:
+            case D_QUOT_LINE:
+            case D_XWIKI_URI:
+            case D_XWIKI_SPACE:
+            case D_WORD:
+            case D_SPECIAL_SYMBOL:
+            case D_HEADER_END:
+              if (jj_2_1(2)) {
+                quot();
+              } else {
+                switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+                case I_TABLE_CELL:
+                case I_REFERENCE:
+                case I_VERBATIM_START:
+                case I_MACRO_EMPTY_INLINE:
+                case I_MACRO_INLINE_START:
+                case I_FORMAT_SYMBOL:
+                case I_BR:
+                case I_BLOCK_PARAMS:
+                case I_INLINE_PARAMS:
+                case I_XWIKI_URI:
+                case I_XWIKI_SPACE:
+                case I_WORD:
+                case I_SPECIAL_SYMBOL:
+                case I_HEADER_END:
+                case D_TABLE_CELL:
+                case D_REFERENCE:
+                case D_VERBATIM_START:
+                case D_MACRO_EMPTY_INLINE:
+                case D_MACRO_INLINE_START:
+                case D_FORMAT_SYMBOL:
+                case D_BR:
+                case D_BLOCK_PARAMS:
+                case D_INLINE_PARAMS:
+                case D_XWIKI_URI:
+                case D_XWIKI_SPACE:
+                case D_WORD:
+                case D_SPECIAL_SYMBOL:
+                case D_HEADER_END:
+                  paragraph();
+                  break;
+                default:
+                  jj_la1[26] = jj_gen;
+                  jj_consume_token(-1);
+                  throw new ParseException();
+                }
               }
+              break;
+            case I_NL:
+            case D_NL:
+              emptyParagraph();
+              break;
+            default:
+              jj_la1[28] = jj_gen;
+              jj_consume_token(-1);
+              throw new ParseException();
             }
-            break;
-          case I_NL:
-          case D_NL:
-            emptyParagraph();
-            break;
-          default:
-            jj_la1[28] = jj_gen;
-            jj_consume_token(-1);
-            throw new ParseException();
           }
         }
       }
+    } finally {
+      trace_return("docElements");
     }
   }
 
   final public void embeddedDocument() throws ParseException {
+    trace_call("embeddedDocument");
+    try {
     Token t = null;
-    t = getDOC_BEGIN();
+      t = getDOC_BEGIN();
         fContext.beginDocument();
-    label_2:
-    while (true) {
+      label_2:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case I_DOC_BEGIN:
+        case I_LIST_ITEM:
+        case I_HEADER_BEGIN:
+        case I_HORLINE:
+        case I_TABLE_ROW:
+        case I_TABLE_CELL:
+        case I_REFERENCE:
+        case I_VERBATIM_START:
+        case I_MACRO_EMPTY_BLOCK:
+        case I_MACRO_BLOCK_START:
+        case I_MACRO_EMPTY_INLINE:
+        case I_MACRO_INLINE_START:
+        case I_FORMAT_SYMBOL:
+        case I_BR:
+        case I_BLOCK_PARAMS:
+        case I_INLINE_PARAMS:
+        case I_QUOT_LINE:
+        case I_XWIKI_URI:
+        case I_XWIKI_SPACE:
+        case I_NL:
+        case I_WORD:
+        case I_SPECIAL_SYMBOL:
+        case I_HEADER_END:
+        case D_DOC_BEGIN:
+        case D_LIST_ITEM:
+        case D_HEADER_BEGIN:
+        case D_HORLINE:
+        case D_TABLE_ROW:
+        case D_TABLE_CELL:
+        case D_REFERENCE:
+        case D_VERBATIM_START:
+        case D_MACRO_EMPTY_BLOCK:
+        case D_MACRO_BLOCK_START:
+        case D_MACRO_EMPTY_INLINE:
+        case D_MACRO_INLINE_START:
+        case D_FORMAT_SYMBOL:
+        case D_BR:
+        case D_BLOCK_PARAMS:
+        case D_INLINE_PARAMS:
+        case D_QUOT_LINE:
+        case D_XWIKI_URI:
+        case D_XWIKI_SPACE:
+        case D_NL:
+        case D_WORD:
+        case D_SPECIAL_SYMBOL:
+        case D_HEADER_END:
+          ;
+          break;
+        default:
+          jj_la1[29] = jj_gen;
+          break label_2;
+        }
+        docElements();
+      }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case I_DOC_BEGIN:
-      case I_LIST_ITEM:
-      case I_HEADER_BEGIN:
-      case I_HEADER_END:
-      case I_HORLINE:
-      case I_TABLE_ROW:
-      case I_TABLE_CELL:
-      case I_REFERENCE:
-      case I_VERBATIM_START:
-      case I_MACRO_EMPTY_BLOCK:
-      case I_MACRO_BLOCK_START:
-      case I_MACRO_EMPTY_INLINE:
-      case I_MACRO_INLINE_START:
-      case I_FORMAT_SYMBOL:
-      case I_BR:
-      case I_BLOCK_PARAMS:
-      case I_INLINE_PARAMS:
-      case I_QUOT_LINE:
-      case I_XWIKI_URI:
-      case I_XWIKI_SPACE:
-      case I_NL:
-      case I_WORD:
-      case I_SPECIAL_SYMBOL:
-      case D_DOC_BEGIN:
-      case D_LIST_ITEM:
-      case D_HEADER_BEGIN:
-      case D_HEADER_END:
-      case D_HORLINE:
-      case D_TABLE_ROW:
-      case D_TABLE_CELL:
-      case D_REFERENCE:
-      case D_VERBATIM_START:
-      case D_MACRO_EMPTY_BLOCK:
-      case D_MACRO_BLOCK_START:
-      case D_MACRO_EMPTY_INLINE:
-      case D_MACRO_INLINE_START:
-      case D_FORMAT_SYMBOL:
-      case D_BR:
-      case D_BLOCK_PARAMS:
-      case D_INLINE_PARAMS:
-      case D_QUOT_LINE:
-      case D_XWIKI_URI:
-      case D_XWIKI_SPACE:
-      case D_NL:
-      case D_WORD:
-      case D_SPECIAL_SYMBOL:
-        ;
+      case I_DOC_END:
+      case D_DOC_END:
+        getDOC_END();
+        break;
+      case 0:
+        jj_consume_token(0);
         break;
       default:
-        jj_la1[29] = jj_gen;
-        break label_2;
+        jj_la1[30] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
       }
-      docElements();
-    }
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_DOC_END:
-    case D_DOC_END:
-      getDOC_END();
-      break;
-    case 0:
-      jj_consume_token(0);
-      break;
-    default:
-      jj_la1[30] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
         fContext.endDocument();
+    } finally {
+      trace_return("embeddedDocument");
+    }
   }
 
   final public void header() throws ParseException {
+    trace_call("header");
+    try {
     Token t = null;
     String str = "";
     WikiParameters params = WikiParameters.EMPTY;
-    if (jj_2_7(2)) {
-      t = getBLOCK_PARAMS();
+      if (jj_2_7(2)) {
+        t = getBLOCK_PARAMS();
                                            str = t.image.trim();
-    } else {
-      ;
-    }
+      } else {
+        ;
+      }
         params = newWikiParameters(str);
-    t = getHEADER_BEGIN();
+      t = getHEADER_BEGIN();
         sendOnEmptyLinesEvent(true);
         int level = t.image.trim().length();
         fContext.beginHeader(level, params);
-    label_3:
-    while (true) {
-      if (jj_2_8(2)) {
-        ;
-      } else {
-        break label_3;
+      label_3:
+      while (true) {
+        if (jj_2_8(2)) {
+          ;
+        } else {
+          break label_3;
+        }
+        block();
       }
-      block();
-    }
         fContext.endHeader();
+    } finally {
+      trace_return("header");
+    }
   }
 
   final public void table() throws ParseException {
+    trace_call("table");
+    try {
    Token t = null;
    String str = "";
-    if (jj_2_9(2)) {
-      t = getBLOCK_PARAMS();
+      if (jj_2_9(2)) {
+        t = getBLOCK_PARAMS();
                                            str = t.image.trim();
-    } else {
-      ;
-    }
+      } else {
+        ;
+      }
         sendOnEmptyLinesEvent(true);
         WikiParameters params = newWikiParameters(str);
         fContext.beginTable(params);
-    label_4:
-    while (true) {
-      tableRow();
-      if (jj_2_10(2)) {
-        ;
-      } else {
-        break label_4;
+      label_4:
+      while (true) {
+        tableRow();
+        if (jj_2_10(2)) {
+          ;
+        } else {
+          break label_4;
+        }
       }
-    }
         fContext.endTable();
+    } finally {
+      trace_return("table");
+    }
   }
 
   final public void tableRow() throws ParseException {
+    trace_call("tableRow");
+    try {
     Token t = null;
     WikiParameters rowParams = WikiParameters.EMPTY;
     WikiParameters cellParams = WikiParameters.EMPTY;
     boolean head = false;
-    t = getTABLE_ROW();
+      t = getTABLE_ROW();
         String str = t.image.trim();
         if (str.startsWith("(%"))  {
             int idx = str.indexOf("%)");
@@ -915,143 +1092,168 @@ public class XWikiScanner implements XWikiScannerConstants {
             cellParams = newWikiParameters(str);
         }
         fContext.beginTableRow(head, rowParams, cellParams);
-    label_5:
-    while (true) {
-      if (jj_2_11(2)) {
-        ;
-      } else {
-        break label_5;
+      label_5:
+      while (true) {
+        if (jj_2_11(2)) {
+          ;
+        } else {
+          break label_5;
+        }
+        block();
       }
-      block();
-    }
         fContext.endTableRow();
+    } finally {
+      trace_return("tableRow");
+    }
   }
 
   final public void list() throws ParseException {
+    trace_call("list");
+    try {
     String str = "";
     Token t = null;
-    if (jj_2_12(2)) {
-      t = getBLOCK_PARAMS();
+      if (jj_2_12(2)) {
+        t = getBLOCK_PARAMS();
                                            str = t.image.trim();
-    } else {
-      ;
-    }
+      } else {
+        ;
+      }
         WikiParameters params = newWikiParameters(str);
         sendOnEmptyLinesEvent(true);
         fContext.beginList(params);
-    label_6:
-    while (true) {
-      listItem();
-      if (jj_2_13(2)) {
-        ;
-      } else {
-        break label_6;
+      label_6:
+      while (true) {
+        listItem();
+        if (jj_2_13(2)) {
+          ;
+        } else {
+          break label_6;
+        }
       }
-    }
         fContext.endList();
+    } finally {
+      trace_return("list");
+    }
   }
 
   final public void listItem() throws ParseException {
+    trace_call("listItem");
+    try {
     Token t = null;
-    t = getLIST_ITEM();
+      t = getLIST_ITEM();
                 String str = t.image.trim();
                 str = str.replace(".", "");
                 str = str.replace('1', '#');
                 fContext.beginListItem(str);
-    label_7:
-    while (true) {
-      if (jj_2_14(2)) {
-        ;
-      } else {
-        break label_7;
+      label_7:
+      while (true) {
+        if (jj_2_14(2)) {
+          ;
+        } else {
+          break label_7;
+        }
+        block();
       }
-      block();
-    }
             fContext.endListItem();
+    } finally {
+      trace_return("listItem");
+    }
   }
 
   final public void block() throws ParseException {
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_DOC_BEGIN:
-    case D_DOC_BEGIN:
-      embeddedDocument();
-      break;
-    case I_MACRO_EMPTY_BLOCK:
-    case I_MACRO_BLOCK_START:
-    case D_MACRO_EMPTY_BLOCK:
-    case D_MACRO_BLOCK_START:
-      macroBlock();
-      break;
-    case I_HEADER_END:
-    case I_TABLE_CELL:
-    case I_REFERENCE:
-    case I_VERBATIM_START:
-    case I_MACRO_EMPTY_INLINE:
-    case I_MACRO_INLINE_START:
-    case I_FORMAT_SYMBOL:
-    case I_BR:
-    case I_INLINE_PARAMS:
-    case I_XWIKI_URI:
-    case I_XWIKI_SPACE:
-    case I_NL:
-    case I_WORD:
-    case I_SPECIAL_SYMBOL:
-    case D_HEADER_END:
-    case D_TABLE_CELL:
-    case D_REFERENCE:
-    case D_VERBATIM_START:
-    case D_MACRO_EMPTY_INLINE:
-    case D_MACRO_INLINE_START:
-    case D_FORMAT_SYMBOL:
-    case D_BR:
-    case D_INLINE_PARAMS:
-    case D_XWIKI_URI:
-    case D_XWIKI_SPACE:
-    case D_NL:
-    case D_WORD:
-    case D_SPECIAL_SYMBOL:
+    trace_call("block");
+    try {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_DOC_BEGIN:
+      case D_DOC_BEGIN:
+        embeddedDocument();
+        break;
+      case I_MACRO_EMPTY_BLOCK:
+      case I_MACRO_BLOCK_START:
+      case D_MACRO_EMPTY_BLOCK:
+      case D_MACRO_BLOCK_START:
+        macroBlock();
+        break;
+      case I_TABLE_CELL:
+      case I_REFERENCE:
+      case I_VERBATIM_START:
+      case I_MACRO_EMPTY_INLINE:
+      case I_MACRO_INLINE_START:
+      case I_FORMAT_SYMBOL:
+      case I_BR:
+      case I_INLINE_PARAMS:
+      case I_XWIKI_URI:
+      case I_XWIKI_SPACE:
       case I_NL:
+      case I_WORD:
+      case I_SPECIAL_SYMBOL:
+      case I_HEADER_END:
+      case D_TABLE_CELL:
+      case D_REFERENCE:
+      case D_VERBATIM_START:
+      case D_MACRO_EMPTY_INLINE:
+      case D_MACRO_INLINE_START:
+      case D_FORMAT_SYMBOL:
+      case D_BR:
+      case D_INLINE_PARAMS:
+      case D_XWIKI_URI:
+      case D_XWIKI_SPACE:
       case D_NL:
-        getNL();
+      case D_WORD:
+      case D_SPECIAL_SYMBOL:
+      case D_HEADER_END:
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case I_NL:
+        case D_NL:
+          getNL();
                                                      fContext.onNewLine();
+          break;
+        default:
+          jj_la1[31] = jj_gen;
+          ;
+        }
+        lines();
         break;
       default:
-        jj_la1[31] = jj_gen;
-        ;
+        jj_la1[32] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
       }
-      lines();
-      break;
-    default:
-      jj_la1[32] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
+    } finally {
+      trace_return("block");
     }
   }
 
   final public void verbatimBlock() throws ParseException {
+    trace_call("verbatimBlock");
+    try {
     WikiParameters params = WikiParameters.EMPTY;
     Token t = null;
-    if (jj_2_15(2)) {
-      t = getBLOCK_PARAMS();
+      if (jj_2_15(2)) {
+        t = getBLOCK_PARAMS();
                                            params = newWikiParameters(t.image.trim());
-    } else {
-      ;
+      } else {
+        ;
+      }
+
+      if (jj_2_16(2)) {
+        t = getNL();
+
+      } else {
+        ;
+      }
+
+      getVERBATIM_START();
+
+      verbatimBody(false, params);
+    } finally {
+      trace_return("verbatimBlock");
     }
-
-    if (jj_2_16(2)) {
-      t = getNL();
-
-    } else {
-      ;
-    }
-
-    getVERBATIM_START();
-
-    verbatimBody(false, params);
   }
 
   final public void verbatimBody(boolean inline, WikiParameters params) throws ParseException {
+    trace_call("verbatimBody");
+    try {
     Token t = null;
     StringBuffer buf = new StringBuffer();
     // begin of the verbatim block; we need it to make trim() safly
@@ -1059,40 +1261,40 @@ public class XWikiScanner implements XWikiScannerConstants {
     String str = null;
     boolean hasVerbatimEnd = true;
     boolean eof = false;
-    label_8:
-    while (true) {
-      if (jj_2_17(2)) {
-        ;
-      } else {
-        break label_8;
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case INTERNAL_VERBATIM_CONTENT:
-        t = getINTERNAL_VERBATIM_CONTENT();
+      label_8:
+      while (true) {
+        if (jj_2_17(2)) {
+          ;
+        } else {
+          break label_8;
+        }
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case INTERNAL_VERBATIM_CONTENT:
+          t = getINTERNAL_VERBATIM_CONTENT();
                                                     hasVerbatimEnd = false;
-        break;
-      case INTERNAL_VERBATIM_END:
-        t = getINTERNAL_VERBATIM_END();
+          break;
+        case INTERNAL_VERBATIM_END:
+          t = getINTERNAL_VERBATIM_END();
                                                 hasVerbatimEnd = true;
-        break;
-      case INTERNAL_VERBATIM_START:
-        t = getINTERNAL_VERBATIM_START();
+          break;
+        case INTERNAL_VERBATIM_START:
+          t = getINTERNAL_VERBATIM_START();
                                                   hasVerbatimEnd = false;
-        break;
-      default:
-        jj_la1[33] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
+          break;
+        default:
+          jj_la1[33] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
             str = WikiScannerUtil.unescape(t.image, '~');
             buf.append(str);
-    }
-    if (jj_2_18(2)) {
-      t = jj_consume_token(0);
+      }
+      if (jj_2_18(2)) {
+        t = jj_consume_token(0);
                                 eof = true;
-    } else {
-      ;
-    }
+      } else {
+        ;
+      }
         str = buf.toString();
         // If this block does not have a explicit end of the block then we should not trim it and remove
         // last "}}}" characters
@@ -1128,27 +1330,35 @@ public class XWikiScanner implements XWikiScannerConstants {
             lines();
                 fContext.endParagraph();
         }
+    } finally {
+      trace_return("verbatimBody");
+    }
   }
 
   final public void macroBlock() throws ParseException {
+    trace_call("macroBlock");
+    try {
     Token t = null;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_MACRO_EMPTY_BLOCK:
-    case D_MACRO_EMPTY_BLOCK:
-      t = getMACRO_EMPTY_BLOCK();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_MACRO_EMPTY_BLOCK:
+      case D_MACRO_EMPTY_BLOCK:
+        t = getMACRO_EMPTY_BLOCK();
         sendOnEmptyLinesEvent(true);
         emptyMacro(t, true);
-      break;
-    case I_MACRO_BLOCK_START:
-    case D_MACRO_BLOCK_START:
-      t = getMACRO_BLOCK_START();
+        break;
+      case I_MACRO_BLOCK_START:
+      case D_MACRO_BLOCK_START:
+        t = getMACRO_BLOCK_START();
         sendOnEmptyLinesEvent(true);
         macro(t, true);
-      break;
-    default:
-      jj_la1[34] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
+        break;
+      default:
+        jj_la1[34] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    } finally {
+      trace_return("macroBlock");
     }
   }
 
@@ -1159,13 +1369,20 @@ public class XWikiScanner implements XWikiScannerConstants {
  * lexer "eats" a NewLine token to recognize these block elements.
  */
   final public void sendOnEmptyLinesEvent(boolean shouldIncrement) throws ParseException {
+    trace_call("sendOnEmptyLinesEvent");
+    try {
         if (emptyLinesCount > 1) {
             fContext.onEmptyLines(shouldIncrement ? emptyLinesCount : emptyLinesCount - 1);
         }
         emptyLinesCount = 0;
+    } finally {
+      trace_return("sendOnEmptyLinesEvent");
+    }
   }
 
   final public void emptyMacro(Token t, boolean block) throws ParseException {
+    trace_call("emptyMacro");
+    try {
         String str = t.image.trim();
         str = str.substring(2, str.length() - 3);
         String paramStr = "";
@@ -1186,9 +1403,14 @@ public class XWikiScanner implements XWikiScannerConstants {
         } else {
             fContext.onMacroInline(name, params, str);
         }
+    } finally {
+      trace_return("emptyMacro");
+    }
   }
 
   final public void macro(Token t, boolean block) throws ParseException {
+    trace_call("macro");
+    try {
     StringBuffer buf = new StringBuffer();
     String name = "";
     WikiParameters params;
@@ -1207,31 +1429,31 @@ public class XWikiScanner implements XWikiScannerConstants {
             name = str;
         }
         name = name.trim();
-    label_9:
-    while (true) {
-      if (jj_2_19(2)) {
-        ;
-      } else {
-        break label_9;
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case INTERNAL_MACRO_START:
-        t = getINTERNAL_MACRO_START();
+      label_9:
+      while (true) {
+        if (jj_2_19(2)) {
+          ;
+        } else {
+          break label_9;
+        }
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case INTERNAL_MACRO_START:
+          t = getINTERNAL_MACRO_START();
                                               end = false;
-        break;
-      case INTERNAL_MACRO_END:
-        t = getINTERNAL_MACRO_END();
+          break;
+        case INTERNAL_MACRO_END:
+          t = getINTERNAL_MACRO_END();
                                             end = true;
-        break;
-      case INTERNAL_MACRO_CONTENT:
-        t = getINTERNAL_MACRO_CONTENT();
+          break;
+        case INTERNAL_MACRO_CONTENT:
+          t = getINTERNAL_MACRO_CONTENT();
                                                 end = false;
-        break;
-      default:
-        jj_la1[35] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
+          break;
+        default:
+          jj_la1[35] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
             if (prevEnd != null) {
                 buf.append(prevEnd);
             }
@@ -1241,7 +1463,7 @@ public class XWikiScanner implements XWikiScannerConstants {
                 prevEnd = null;
                 buf.append(t.image);
             }
-    }
+      }
         str = buf.toString();
         params = new WikiParameters(paramStr);
         if (block) {
@@ -1249,52 +1471,62 @@ public class XWikiScanner implements XWikiScannerConstants {
         } else {
             fContext.onMacroInline(name, params, str);
         }
+    } finally {
+      trace_return("macro");
+    }
   }
 
   final public void horline() throws ParseException {
+    trace_call("horline");
+    try {
     Token t = null;
     String str = "";
     WikiParameters params = WikiParameters.EMPTY;
-    if (jj_2_20(2)) {
-      t = getBLOCK_PARAMS();
+      if (jj_2_20(2)) {
+        t = getBLOCK_PARAMS();
                                            str = t.image.trim();
-    } else {
-      ;
-    }
+      } else {
+        ;
+      }
         params = newWikiParameters(str);
-    t = getHORLINE();
+      t = getHORLINE();
         sendOnEmptyLinesEvent(true);
         fContext.onHorizontalLine(params);
+    } finally {
+      trace_return("horline");
+    }
   }
 
   final public void paragraph() throws ParseException {
+    trace_call("paragraph");
+    try {
     Token t = null;
     String params1 = "";
     String params2 = "";
     boolean inline = true;
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_BLOCK_PARAMS:
-    case D_BLOCK_PARAMS:
-      if (jj_2_22(2)) {
-        t = getBLOCK_PARAMS();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case I_BLOCK_PARAMS:
+      case D_BLOCK_PARAMS:
+        if (jj_2_22(2)) {
+          t = getBLOCK_PARAMS();
                                       params1 = t.image.trim();
-        t = getBLOCK_PARAMS();
+          t = getBLOCK_PARAMS();
                                       params2 = t.image.trim();
               sendOnEmptyLinesEvent(false);
                   fContext.beginParagraph(newWikiParameters(params1));
                   fContext.onFormat(newWikiParameters(params2));
-      } else {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case I_BLOCK_PARAMS:
-        case D_BLOCK_PARAMS:
-          t = getBLOCK_PARAMS();
+        } else {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case I_BLOCK_PARAMS:
+          case D_BLOCK_PARAMS:
+            t = getBLOCK_PARAMS();
                                       params1 = t.image.trim();
-          if (jj_2_21(2)) {
-            getNL();
+            if (jj_2_21(2)) {
+              getNL();
                                      inline = false;
-          } else {
-            ;
-          }
+            } else {
+              ;
+            }
               sendOnEmptyLinesEvent(false);
               if (inline) {
                   fContext.beginParagraph();
@@ -1302,166 +1534,196 @@ public class XWikiScanner implements XWikiScannerConstants {
               } else {
                   fContext.beginParagraph(newWikiParameters(params1));
               }
-          break;
-        default:
-          jj_la1[36] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
+            break;
+          default:
+            jj_la1[36] = jj_gen;
+            jj_consume_token(-1);
+            throw new ParseException();
+          }
         }
-      }
-      if (jj_2_23(2)) {
-        lines();
-      } else {
-        ;
-      }
+        if (jj_2_23(2)) {
+          lines();
+        } else {
+          ;
+        }
             fContext.endParagraph();
-      break;
-    case I_HEADER_END:
-    case I_TABLE_CELL:
-    case I_REFERENCE:
-    case I_VERBATIM_START:
-    case I_MACRO_EMPTY_INLINE:
-    case I_MACRO_INLINE_START:
-    case I_FORMAT_SYMBOL:
-    case I_BR:
-    case I_INLINE_PARAMS:
-    case I_XWIKI_URI:
-    case I_XWIKI_SPACE:
-    case I_WORD:
-    case I_SPECIAL_SYMBOL:
-    case D_HEADER_END:
-    case D_TABLE_CELL:
-    case D_REFERENCE:
-    case D_VERBATIM_START:
-    case D_MACRO_EMPTY_INLINE:
-    case D_MACRO_INLINE_START:
-    case D_FORMAT_SYMBOL:
-    case D_BR:
-    case D_INLINE_PARAMS:
-    case D_XWIKI_URI:
-    case D_XWIKI_SPACE:
-    case D_WORD:
-    case D_SPECIAL_SYMBOL:
+        break;
+      case I_TABLE_CELL:
+      case I_REFERENCE:
+      case I_VERBATIM_START:
+      case I_MACRO_EMPTY_INLINE:
+      case I_MACRO_INLINE_START:
+      case I_FORMAT_SYMBOL:
+      case I_BR:
+      case I_INLINE_PARAMS:
+      case I_XWIKI_URI:
+      case I_XWIKI_SPACE:
+      case I_WORD:
+      case I_SPECIAL_SYMBOL:
+      case I_HEADER_END:
+      case D_TABLE_CELL:
+      case D_REFERENCE:
+      case D_VERBATIM_START:
+      case D_MACRO_EMPTY_INLINE:
+      case D_MACRO_INLINE_START:
+      case D_FORMAT_SYMBOL:
+      case D_BR:
+      case D_INLINE_PARAMS:
+      case D_XWIKI_URI:
+      case D_XWIKI_SPACE:
+      case D_WORD:
+      case D_SPECIAL_SYMBOL:
+      case D_HEADER_END:
             sendOnEmptyLinesEvent(false);
             fContext.beginParagraph();
-      lines();
+        lines();
             fContext.endParagraph();
-      break;
-    default:
-      jj_la1[37] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
+        break;
+      default:
+        jj_la1[37] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+    } finally {
+      trace_return("paragraph");
     }
   }
 
   final public void quot() throws ParseException {
+    trace_call("quot");
+    try {
     Token t = null;
     String str = "";
-    if (jj_2_24(2)) {
-      t = getBLOCK_PARAMS();
+      if (jj_2_24(2)) {
+        t = getBLOCK_PARAMS();
                                            str = t.image.trim();
-    } else {
-      ;
-    }
+      } else {
+        ;
+      }
         WikiParameters params = newWikiParameters(str);
         sendOnEmptyLinesEvent(true);
         fContext.beginQuot(params);
-    label_10:
-    while (true) {
-      quotLine();
-      if (jj_2_25(2)) {
-        ;
-      } else {
-        break label_10;
+      label_10:
+      while (true) {
+        quotLine();
+        if (jj_2_25(2)) {
+          ;
+        } else {
+          break label_10;
+        }
       }
-    }
         fContext.endQuot();
+    } finally {
+      trace_return("quot");
+    }
   }
 
   final public void quotLine() throws ParseException {
+    trace_call("quotLine");
+    try {
     Token t = null;
     String str = "";
-    t = getQUOT_LINE();
+      t = getQUOT_LINE();
         str = t.image.trim();
         int depth = str.length();
         fContext.beginQuotLine(depth);
-    if (jj_2_26(2)) {
-      line();
-    } else {
-      ;
-    }
+      if (jj_2_26(2)) {
+        line();
+      } else {
+        ;
+      }
         fContext.endQuotLine();
+    } finally {
+      trace_return("quotLine");
+    }
   }
 
   final public void emptyParagraph() throws ParseException {
-    getNL();
-    label_11:
-    while (true) {
-      if (jj_2_27(2)) {
-        ;
-      } else {
-        break label_11;
-      }
+    trace_call("emptyParagraph");
+    try {
       getNL();
+      label_11:
+      while (true) {
+        if (jj_2_27(2)) {
+          ;
+        } else {
+          break label_11;
+        }
+        getNL();
                                      emptyLinesCount++;
-    }
+      }
 
+    } finally {
+      trace_return("emptyParagraph");
+    }
   }
 
   final public void lines() throws ParseException {
-    line();
-    label_12:
-    while (true) {
-      if (jj_2_28(2)) {
-        ;
-      } else {
-        break label_12;
-      }
-      newLine();
+    trace_call("lines");
+    try {
       line();
+      label_12:
+      while (true) {
+        if (jj_2_28(2)) {
+          ;
+        } else {
+          break label_12;
+        }
+        newLine();
+        line();
+      }
+    } finally {
+      trace_return("lines");
     }
   }
 
   final public void newLine() throws ParseException {
-    getNL();
+    trace_call("newLine");
+    try {
+      getNL();
        fContext.onNewLine();
+    } finally {
+      trace_return("newLine");
+    }
   }
 
   final public void line() throws ParseException {
+    trace_call("line");
+    try {
     Token t = null;
     String str = null;
     boolean explicitLink = false;
-    label_13:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case I_INLINE_PARAMS:
-      case D_INLINE_PARAMS:
-        t = getINLINE_PARAMS();
+      label_13:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case I_INLINE_PARAMS:
+        case D_INLINE_PARAMS:
+          t = getINLINE_PARAMS();
                 fContext.onFormat(newWikiParameters(t.image.trim()));
-        break;
-      case I_WORD:
-      case D_WORD:
-        t = getWORD();
+          break;
+        case I_WORD:
+        case D_WORD:
+          t = getWORD();
                 fContext.onWord(t.image.replaceAll("~", ""));
-        break;
-      case I_XWIKI_SPACE:
-      case D_XWIKI_SPACE:
-        t = getXWIKI_SPACE();
+          break;
+        case I_XWIKI_SPACE:
+        case D_XWIKI_SPACE:
+          t = getXWIKI_SPACE();
                 fContext.onSpace(t.image.replaceAll("~", ""));
-        break;
-      case I_SPECIAL_SYMBOL:
-      case D_SPECIAL_SYMBOL:
-        t = getSPECIAL_SYMBOL();
+          break;
+        case I_SPECIAL_SYMBOL:
+        case D_SPECIAL_SYMBOL:
+          t = getSPECIAL_SYMBOL();
                 if (t.image.length() == 2) {
                     // The first char is an escape symbol, only send the second one
                     fContext.onSpecialSymbol("" + t.image.charAt(1));
                 } else {
                         fContext.onSpecialSymbol(t.image);
                 }
-        break;
-      case I_FORMAT_SYMBOL:
-      case D_FORMAT_SYMBOL:
-        t = getFORMAT_SYMBOL();
+          break;
+        case I_FORMAT_SYMBOL:
+        case D_FORMAT_SYMBOL:
+          t = getFORMAT_SYMBOL();
                 str = t.image.trim();
                 WikiStyle style = null;
                 if ("**".equals(str)) {
@@ -1480,16 +1742,16 @@ public class XWikiScanner implements XWikiScannerConstants {
                         style  = IWikiScannerContext.MONO;
                                 }
                 fContext.onFormat(style);
-        break;
-      case I_VERBATIM_START:
-      case D_VERBATIM_START:
-        t = getVERBATIM_START();
+          break;
+        case I_VERBATIM_START:
+        case D_VERBATIM_START:
+          t = getVERBATIM_START();
 
-        verbatimBody(true, WikiParameters.EMPTY);
-        break;
-      case I_HEADER_END:
-      case D_HEADER_END:
-        t = getHEADER_END();
+          verbatimBody(true, WikiParameters.EMPTY);
+          break;
+        case I_HEADER_END:
+        case D_HEADER_END:
+          t = getHEADER_END();
                 if (!fContext.isInHeader()) {
                         int pos = t.image.indexOf('=');
                         if (pos > 0) {
@@ -1503,20 +1765,20 @@ public class XWikiScanner implements XWikiScannerConstants {
                 } else {
                                 fContext.endHeader();
                             }
-        break;
-      case I_BR:
-      case D_BR:
-        t = getBR();
+          break;
+        case I_BR:
+        case D_BR:
+          t = getBR();
                 fContext.onLineBreak();
-        break;
-      case I_XWIKI_URI:
-      case D_XWIKI_URI:
-        t = getXWIKI_URI();
+          break;
+        case I_XWIKI_URI:
+        case D_XWIKI_URI:
+          t = getXWIKI_URI();
                 fContext.onReference(t.image.trim());
-        break;
-      case I_REFERENCE:
-      case D_REFERENCE:
-        t = getREFERENCE();
+          break;
+        case I_REFERENCE:
+        case D_REFERENCE:
+          t = getREFERENCE();
                 str = t.image.trim();
                 if (str.startsWith("[[")) {
                     str = str.substring(2, str.length() - 2);
@@ -1524,10 +1786,10 @@ public class XWikiScanner implements XWikiScannerConstants {
                 }
                 WikiReference ref = fReferenceParser.parse(str);
                 fContext.onReference(ref);
-        break;
-      case I_TABLE_CELL:
-      case D_TABLE_CELL:
-        t = getTABLE_CELL();
+          break;
+        case I_TABLE_CELL:
+        case D_TABLE_CELL:
+          t = getTABLE_CELL();
                 if (fContext.isInTable()) {
                     str = t.image.trim();
                     WikiParameters cellParams = newWikiParameters(str);
@@ -1536,27 +1798,30 @@ public class XWikiScanner implements XWikiScannerConstants {
                 } else {
                     fContext.onSpecialSymbol(t.image);
                 }
-        break;
-      case I_MACRO_EMPTY_INLINE:
-      case D_MACRO_EMPTY_INLINE:
-        t = getMACRO_EMPTY_INLINE();
+          break;
+        case I_MACRO_EMPTY_INLINE:
+        case D_MACRO_EMPTY_INLINE:
+          t = getMACRO_EMPTY_INLINE();
                 emptyMacro(t, false);
-        break;
-      case I_MACRO_INLINE_START:
-      case D_MACRO_INLINE_START:
-        t = getMACRO_INLINE_START();
+          break;
+        case I_MACRO_INLINE_START:
+        case D_MACRO_INLINE_START:
+          t = getMACRO_INLINE_START();
                 macro(t, false);
-        break;
-      default:
-        jj_la1[38] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
+          break;
+        default:
+          jj_la1[38] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        if (jj_2_29(2)) {
+          ;
+        } else {
+          break label_13;
+        }
       }
-      if (jj_2_29(2)) {
-        ;
-      } else {
-        break label_13;
-      }
+    } finally {
+      trace_return("line");
     }
   }
 
@@ -1763,12 +2028,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     finally { jj_save(28, xla); }
   }
 
-  final private boolean jj_3R_89() {
-    if (jj_3R_77()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_87() {
+  final private boolean jj_3R_74() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(75)) {
@@ -1778,33 +2038,18 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_71() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(83)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(107)) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_65() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(86)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(110)) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_20() {
+  final private boolean jj_3R_64() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(80)) {
     jj_scanpos = xsp;
     if (jj_scan_token(104)) return true;
     }
+    return false;
+  }
+
+  final private boolean jj_3R_89() {
+    if (jj_3R_77()) return true;
     return false;
   }
 
@@ -1828,7 +2073,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_86() {
+  final private boolean jj_3R_87() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(74)) {
@@ -1838,17 +2083,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_68() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(78)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(102)) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_63() {
+  final private boolean jj_3R_71() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(82)) {
@@ -1858,8 +2093,58 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3R_65() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(85)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(109)) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_20() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(79)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(103)) return true;
+    }
+    return false;
+  }
+
   final private boolean jj_3R_88() {
     if (jj_3R_76()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_86() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(73)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(97)) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_68() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(77)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(101)) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_63() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(81)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(105)) return true;
+    }
     return false;
   }
 
@@ -1876,16 +2161,6 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_24() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(85)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(109)) return true;
-    }
-    return false;
-  }
-
   final private boolean jj_3R_50() {
     Token xsp;
     while (true) {
@@ -1897,6 +2172,16 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3R_24() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(84)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(108)) return true;
+    }
+    return false;
+  }
+
   final private boolean jj_3_4() {
     if (jj_3R_17()) return true;
     return false;
@@ -1905,9 +2190,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_49() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(73)) {
+    if (jj_scan_token(72)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(97)) return true;
+    if (jj_scan_token(96)) return true;
     }
     return false;
   }
@@ -1966,9 +2251,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_73() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(71)) {
+    if (jj_scan_token(70)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(95)) return true;
+    if (jj_scan_token(94)) return true;
     }
     return false;
   }
@@ -1976,9 +2261,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_72() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(72)) {
+    if (jj_scan_token(71)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(96)) return true;
+    if (jj_scan_token(95)) return true;
     }
     return false;
   }
@@ -1986,9 +2271,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   final private boolean jj_3R_70() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(79)) {
+    if (jj_scan_token(78)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(103)) return true;
+    if (jj_scan_token(102)) return true;
     }
     return false;
   }
@@ -2028,32 +2313,12 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_55() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(70)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(94)) return true;
-    }
-    return false;
-  }
-
   final private boolean jj_3R_41() {
     if (jj_3R_69()) return true;
     return false;
   }
 
-  final private boolean jj_3R_69() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(68)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(92)) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_51() {
+  final private boolean jj_3R_55() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(69)) {
@@ -2069,6 +2334,16 @@ public class XWikiScanner implements XWikiScannerConstants {
     if (jj_scan_token(66)) {
     jj_scanpos = xsp;
     if (jj_scan_token(90)) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_51() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(68)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(92)) return true;
     }
     return false;
   }
@@ -2514,18 +2789,18 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_67() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(87)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(111)) return true;
-    }
+  final private boolean jj_3R_27() {
+    if (jj_3R_59()) return true;
     return false;
   }
 
-  final private boolean jj_3R_27() {
-    if (jj_3R_59()) return true;
+  final private boolean jj_3R_67() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(86)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(110)) return true;
+    }
     return false;
   }
 
@@ -2564,6 +2839,16 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3R_69() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(87)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(111)) return true;
+    }
+    return false;
+  }
+
   final private boolean jj_3_6() {
     if (jj_3R_19()) return true;
     return false;
@@ -2585,26 +2870,6 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_75() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(77)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(101)) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_66() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(84)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(108)) return true;
-    }
-    return false;
-  }
-
   final private boolean jj_3_5() {
     if (jj_3R_18()) return true;
     return false;
@@ -2618,7 +2883,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_74() {
+  final private boolean jj_3R_75() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(76)) {
@@ -2628,12 +2893,12 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_64() {
+  final private boolean jj_3R_66() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(81)) {
+    if (jj_scan_token(83)) {
     jj_scanpos = xsp;
-    if (jj_scan_token(105)) return true;
+    if (jj_scan_token(107)) return true;
     }
     return false;
   }
@@ -2665,10 +2930,10 @@ public class XWikiScanner implements XWikiScannerConstants {
       jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_2() {
-      jj_la1_2 = new int[] {0x1000001,0x2000002,0x4000004,0x8000008,0x10000010,0x20000020,0x40000040,0x80000080,0x100,0x200,0x400,0x800,0x1000,0x2000,0x4000,0x8000,0x10000,0x20000,0x40000,0x80000,0x100000,0x200000,0x400000,0x800000,0xffffffff,0xffffffff,0x90dbf390,0x1000c01,0x90fff390,0xfdfffffd,0x2000002,0x200000,0x91faff91,0x0,0xc00,0x0,0x10000,0x90dbf390,0x90daf390,};
+      jj_la1_2 = new int[] {0x1000001,0x2000002,0x4000004,0x8000008,0x10000010,0x20000020,0x40000040,0x80000080,0x100,0x200,0x400,0x800,0x1000,0x2000,0x4000,0x8000,0x10000,0x20000,0x40000,0x80000,0x100000,0x200000,0x400000,0x800000,0xffffffff,0xffffffff,0xc0edf9c0,0x1000601,0xc0fff9c0,0xfdfffffd,0x2000002,0x100000,0xc1fd7fc1,0x0,0x600,0x0,0x8000,0xc0edf9c0,0xc0ed79c0,};
    }
    private static void jj_la1_3() {
-      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x2,0x4,0x8,0x10,0x20,0x40,0x80,0x100,0x200,0x400,0x800,0x1000,0x2000,0x4000,0x8000,0xffff,0xffff,0xdbf3,0xc,0xfff3,0xffff,0x0,0x2000,0xfaff,0x0,0xc,0x0,0x100,0xdbf3,0xdaf3,};
+      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x2,0x4,0x8,0x10,0x20,0x40,0x80,0x100,0x200,0x400,0x800,0x1000,0x2000,0x4000,0x8000,0xffff,0xffff,0xedf9,0x6,0xfff9,0xffff,0x0,0x1000,0xfd7f,0x0,0x6,0x0,0x80,0xedf9,0xed79,};
    }
   final private JJCalls[] jj_2_rtns = new JJCalls[29];
   private boolean jj_rescan = false;
@@ -2755,6 +3020,7 @@ public class XWikiScanner implements XWikiScannerConstants {
           }
         }
       }
+      trace_token(token, "");
       return token;
     }
     token = oldToken;
@@ -2790,6 +3056,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     else token = token.next = token_source.getNextToken();
     jj_ntk = -1;
     jj_gen++;
+      trace_token(token, " (in getNextToken)");
     return token;
   }
 
@@ -2888,10 +3155,53 @@ public class XWikiScanner implements XWikiScannerConstants {
     return new ParseException(token, exptokseq, tokenImage);
   }
 
+  private int trace_indent = 0;
+  private boolean trace_enabled = true;
+
   final public void enable_tracing() {
+    trace_enabled = true;
   }
 
   final public void disable_tracing() {
+    trace_enabled = false;
+  }
+
+  final private void trace_call(String s) {
+    if (trace_enabled) {
+      for (int i = 0; i < trace_indent; i++) { System.out.print(" "); }
+      System.out.println("Call:   " + s);
+    }
+    trace_indent = trace_indent + 2;
+  }
+
+  final private void trace_return(String s) {
+    trace_indent = trace_indent - 2;
+    if (trace_enabled) {
+      for (int i = 0; i < trace_indent; i++) { System.out.print(" "); }
+      System.out.println("Return: " + s);
+    }
+  }
+
+  final private void trace_token(Token t, String where) {
+    if (trace_enabled) {
+      for (int i = 0; i < trace_indent; i++) { System.out.print(" "); }
+      System.out.print("Consumed token: <" + tokenImage[t.kind]);
+      if (t.kind != 0 && !tokenImage[t.kind].equals("\"" + t.image + "\"")) {
+        System.out.print(": \"" + t.image + "\"");
+      }
+      System.out.println(" at line " + t.beginLine + " column " + t.beginColumn + ">" + where);
+    }
+  }
+
+  final private void trace_scan(Token t1, int t2) {
+    if (trace_enabled) {
+      for (int i = 0; i < trace_indent; i++) { System.out.print(" "); }
+      System.out.print("Visited token: <" + tokenImage[t1.kind]);
+      if (t1.kind != 0 && !tokenImage[t1.kind].equals("\"" + t1.image + "\"")) {
+        System.out.print(": \"" + t1.image + "\"");
+      }
+      System.out.println(" at line " + t1.beginLine + " column " + t1.beginColumn + ">; Expected token: <" + tokenImage[t2] + ">");
+    }
   }
 
   final private void jj_rescan_token() {
