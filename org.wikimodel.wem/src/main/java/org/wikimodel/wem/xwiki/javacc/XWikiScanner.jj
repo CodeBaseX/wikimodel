@@ -3,7 +3,7 @@ options
     STATIC = false;
     UNICODE_INPUT = true;
     // Uncomment below for debugging
-    //DEBUG_PARSER = true;
+    DEBUG_PARSER = true;
     //DEBUG_LOOKAHEAD = true;
     //DEBUG_TOKEN_MANAGER = true;
 }
@@ -250,7 +250,6 @@ TOKEN_MGR_DECLS: {
     | <I_DOC_END: <DOC_END> > : DEFAULT
     | <I_LIST_ITEM: (<NEW_LINE>)? <LI> > : DEFAULT
     | <I_HEADER_BEGIN: (<NEW_LINE>)? <HEADER> (<SPACE>)* > : DEFAULT
-    | <I_HEADER_END: <HEADER> > : DEFAULT
     | <I_HORLINE: (<NEW_LINE>)? <HORLINE> > : DEFAULT
     | <I_TABLE_ROW: (<NEW_LINE>)? ( <PARAMS> )? <CELL> > : DEFAULT
     | <I_TABLE_CELL : <CELL> > : DEFAULT 
@@ -272,7 +271,8 @@ TOKEN_MGR_DECLS: {
     | <I_NL: (<NEW_LINE>)? > : DEFAULT
     | <I_WORD : ( <XWIKI_CHAR> )+ > : DEFAULT
     | <I_SPECIAL_SYMBOL : <XWIKI_SPECIAL_SYMBOL> > : DEFAULT
-// </initial-context>    
+// </initial-context>
+    | <I_HEADER_END: <HEADER> (<NEW_LINE> (<NEW_LINE>)?)? > : DEFAULT
 }
 
 <DEFAULT> TOKEN:
@@ -282,7 +282,6 @@ TOKEN_MGR_DECLS: {
     | <D_DOC_END: <DOC_END> > : DEFAULT
     | <D_LIST_ITEM: <NEW_LINE> <LI> > : DEFAULT
     | <D_HEADER_BEGIN: <NEW_LINE> <HEADER> (<SPACE>)* > : DEFAULT
-    | <D_HEADER_END: <HEADER> > : DEFAULT
     | <D_HORLINE: <NEW_LINE> <HORLINE> > : DEFAULT
     | <D_TABLE_ROW: <NEW_LINE> ( <PARAMS> )? <CELL> > : DEFAULT
     | <D_TABLE_CELL : <CELL> > : DEFAULT 
@@ -305,6 +304,7 @@ TOKEN_MGR_DECLS: {
     | <D_WORD : ( <XWIKI_CHAR> )+ > : DEFAULT
     | <D_SPECIAL_SYMBOL : <XWIKI_SPECIAL_SYMBOL> > : DEFAULT
 // </default-context>
+    | <D_HEADER_END: <HEADER> (<NEW_LINE> (<NEW_LINE>)?)? > : DEFAULT
 }
 
     Token getINTERNAL_VERBATIM_START(): {Token t=null;} {(t=<INTERNAL_VERBATIM_START>){return t;}}
@@ -318,7 +318,6 @@ TOKEN_MGR_DECLS: {
     Token getDOC_END(): {Token t=null;} {(t=<I_DOC_END>|t=<D_DOC_END>){return t;}}
     Token getLIST_ITEM(): {Token t=null;} {(t=<I_LIST_ITEM>|t=<D_LIST_ITEM>){return t;}}
     Token getHEADER_BEGIN(): {Token t=null;} {(t=<I_HEADER_BEGIN>|t=<D_HEADER_BEGIN>){return t;}}
-    Token getHEADER_END(): {Token t=null;} {(t=<I_HEADER_END>|t=<D_HEADER_END>){return t;}}
     Token getHORLINE(): {Token t=null;} {(t=<I_HORLINE>|t=<D_HORLINE>){return t;}}
     Token getTABLE_ROW(): {Token t=null;} {(t=<I_TABLE_ROW>|t=<D_TABLE_ROW>){return t;}}
     Token getTABLE_CELL(): {Token t=null;} {(t=<I_TABLE_CELL>|t=<D_TABLE_CELL>){return t;}}
@@ -341,6 +340,7 @@ TOKEN_MGR_DECLS: {
     Token getWORD(): {Token t=null;} {(t=<I_WORD>|t=<D_WORD>){return t;}}
     Token getSPECIAL_SYMBOL(): {Token t=null;} {(t=<I_SPECIAL_SYMBOL>|t=<D_SPECIAL_SYMBOL>){return t;}}
 // </getters>
+    Token getHEADER_END(): {Token t=null;} {(t=<I_HEADER_END>|t=<D_HEADER_END>){return t;}}
 
 
 void doParse():
