@@ -272,7 +272,7 @@ TOKEN_MGR_DECLS: {
     | <I_WORD : ( <XWIKI_CHAR> )+ > : DEFAULT
     | <I_SPECIAL_SYMBOL : <XWIKI_SPECIAL_SYMBOL> > : DEFAULT
 // </initial-context>
-    | <I_HEADER_END: <HEADER> (<NEW_LINE> (<NEW_LINE>)?)? > : DEFAULT
+    | <I_HEADER_END: <HEADER> (<SPACE>)* (<NEW_LINE> (<NEW_LINE>)?)? > : DEFAULT
 }
 
 <DEFAULT> TOKEN:
@@ -304,7 +304,7 @@ TOKEN_MGR_DECLS: {
     | <D_WORD : ( <XWIKI_CHAR> )+ > : DEFAULT
     | <D_SPECIAL_SYMBOL : <XWIKI_SPECIAL_SYMBOL> > : DEFAULT
 // </default-context>
-    | <D_HEADER_END: <HEADER> (<NEW_LINE> (<NEW_LINE>)?)? > : DEFAULT
+    | <D_HEADER_END: <HEADER> (<SPACE>)* (<NEW_LINE> (<NEW_LINE>)?)? > : DEFAULT
 }
 
     Token getINTERNAL_VERBATIM_START(): {Token t=null;} {(t=<INTERNAL_VERBATIM_START>){return t;}}
