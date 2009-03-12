@@ -246,6 +246,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test("= Heading 1 =some", "<h1>Heading 1</h1>\n<p>some</p>");
         test("= Heading\n1 =", "<h1>Heading\n1</h1>");
         test("= Heading 1 =\nsome text", "<h1>Heading 1</h1>\n<p>some text</p>");
+        test("= Heading 1 = \nsome text", "<h1>Heading 1</h1>\n<p>some text</p>");
     }
 
     /**
