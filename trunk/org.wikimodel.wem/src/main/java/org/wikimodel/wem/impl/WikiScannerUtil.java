@@ -185,14 +185,37 @@ public class WikiScannerUtil {
     }
 
     /**
+     * Indicate if the specified sequence starts from the given position in the
+     * character array.
+     * 
+     * @param array the array of characters
+     * @param arrayPos the position of the first character in the array;
+     *        starting from this position the sequence should be skipped
+     * @param sequence the sequence of characters to match
+     * @return true if the sequence is found, false otherwise
+     */
+    public static boolean matchesSequence(
+        char[] array,
+        int arrayPos,
+        char[] sequence) {
+        int i;
+        int j;
+        for (i = arrayPos, j = 0; i < array.length && j < sequence.length; i++, j++) {
+            if (array[i] != sequence[j])
+                break;
+        }
+        return j == sequence.length;
+    }
+
+    /**
      * Splits the given string into a set of key-value pairs; all extracted
      * values will be added to the given list
      * 
      * @param str the string to split
      * @param list to this list all extracted values will be added
      */
-    public static void splitToPairs(String str, List<WikiParameter> list) {
-        splitToPairs(str, list, null);
+    public static int splitToPairs(String str, List<WikiParameter> list) {
+        return splitToPairs(str, list, null);
     }
 
     /**
@@ -203,17 +226,37 @@ public class WikiScannerUtil {
      * @param list to this list all extracted values will be added
      * @param delimiter a delimiter for individual key/value pairs
      */
-    public static void splitToPairs(
+    public static int splitToPairs(
         String str,
         List<WikiParameter> list,
         String delimiter) {
+        return splitToPairs(str, list, delimiter, null);
+    }
+
+    /**
+     * Splits the given string into a set of key-value pairs; all extracted
+     * values will be added to the given list
+     * 
+     * @param str the string to split
+     * @param list to this list all extracted values will be added
+     * @param delimiter a delimiter for individual key/value pairs
+     * @param end the ending sequence, if null it's not taken into account
+     * @return the index where parser stopped
+     */
+    public static int splitToPairs(
+        String str,
+        List<WikiParameter> list,
+        String delimiter,
+        String end) {
         if (str == null)
-            return;
+            return 0;
         char[] array = str.toCharArray();
         char[] delimiterArray = delimiter != null ? delimiter.toCharArray()
                 : new char[0];
+        char[] endArray = end != null ? end.toCharArray() : new char[0];
         StringBuffer buf = new StringBuffer();
-        for (int i = 0; i < array.length;) {
+        int i = 0;
+        for (; i < array.length;) {
             String key = null;
             String value = null;
             i = removeSpaces(array, i, buf);
@@ -228,6 +271,10 @@ public class WikiScannerUtil {
                 if (i >= array.length)
                     break;
             }
+            // if provided ending sequence is found, we stop parsing
+            if (end != null && matchesSequence(array, i, endArray)) {
+                break;
+            }
 
             i = getNextToken(array, i, buf);
             key = buf.toString();
@@ -237,9 +284,12 @@ public class WikiScannerUtil {
                 i = getNextToken(array, i, buf);
                 value = buf.toString();
             }
+
             WikiParameter entry = new WikiParameter(key, value);
             list.add(entry);
         }
+
+        return i;
     }
 
     /**
