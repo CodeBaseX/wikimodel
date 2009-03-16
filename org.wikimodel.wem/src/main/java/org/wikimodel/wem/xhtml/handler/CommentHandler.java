@@ -10,50 +10,85 @@
  *******************************************************************************/
 package org.wikimodel.wem.xhtml.handler;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.wikimodel.wem.WikiParameter;
 import org.wikimodel.wem.WikiParameters;
+import org.wikimodel.wem.impl.WikiScannerUtil;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack;
 
 /**
- * Handle Macro definitions in comments (we store macro definitions in a comment since it
- * wouldn't be possible at all to reconstruct them from the result of their execution).
+ * Handle Macro definitions in comments (we store macro definitions in a comment
+ * since it wouldn't be possible at all to reconstruct them from the result of
+ * their execution).
  * 
  * @author vmassol
+ * @author tmortagne
  */
 public class CommentHandler {
+    private static final String MACRO_SEPARATOR = "|-|";
 
-    public void onComment(String content, TagStack stack)
-    {
+    public void onComment(String content, TagStack stack) {
         // Format of a macro definition in comment:
-        //   <!--startmacro:velocity|-||-|
-        //   Some **content**
-        //   --><p>Some <strong>content</strong></p><!--stopmacro-->
+        // <!--startmacro:velocity|-||-|
+        // Some **content**
+        // --><p>Some <strong>content</strong></p><!--stopmacro-->
         if (content.startsWith("startmacro:")) {
             stack.setStackParameter("ignoreElements", true);
 
-            // Parse the comment to extract the macro name, parameters and content
-            String[] tokens = content.substring("startmacro:".length()).split("\\|\\-\\|");
-            String macroName = tokens[0];
-            // Tokens will be of length 1 only when there's no content and no parameters defined.
+            String macroName;
             WikiParameters macroParams = WikiParameters.EMPTY;
-            String macroContent = "";
-            if (tokens.length > 1) {
-                macroParams = WikiParameters.newWikiParameters(tokens[1]);
-                if (tokens.length > 2) {
-                    macroContent = tokens[2];
+            String macroContent = null;
+
+            String macroString = content.substring("startmacro:".length());
+
+            int index = macroString.indexOf(MACRO_SEPARATOR);
+
+            if (index != -1) {
+                // Extract macro name
+                macroName = macroString.substring(0, index);
+
+                // Remove macro name part and continue parsing
+                macroString = macroString.substring(index
+                        + MACRO_SEPARATOR.length());
+
+                index = macroString.indexOf(MACRO_SEPARATOR);
+                if (index != -1) {
+                    // Extract macro parameters
+                    List<WikiParameter> parameters = new ArrayList<WikiParameter>();
+                    index = WikiScannerUtil.splitToPairs(macroString,
+                            parameters, null, MACRO_SEPARATOR);
+                    macroParams = new WikiParameters(parameters);
+
+                    // Extract macro content
+                    macroContent = macroString.substring(index
+                            + MACRO_SEPARATOR.length());
+                } else {
+                    // There is only parameters remaining in the string, the
+                    // macro does not have content
+                    // Extract macro parameters
+                    macroParams = WikiParameters.newWikiParameters(macroString);
                 }
-            }
-            
-            // If we're inside a block element then issue an inline macro event otherwise issue a block macro event
-            boolean insideBlockElement = (Boolean) stack.getStackParameter("insideBlockElement");
-            if (insideBlockElement) {
-                stack.getScannerContext().onMacroInline(macroName, macroParams, macroContent);
             } else {
-                stack.getScannerContext().onMacroBlock(macroName, macroParams, macroContent);
+                // There is only macro name, the macro does not have parameters
+                // or content
+                macroName = macroString;
+            }
+
+            // If we're inside a block element then issue an inline macro event
+            // otherwise issue a block macro event
+            boolean insideBlockElement = (Boolean) stack
+                    .getStackParameter("insideBlockElement");
+            if (insideBlockElement) {
+                stack.getScannerContext().onMacroInline(macroName, macroParams,
+                        macroContent);
+            } else {
+                stack.getScannerContext().onMacroBlock(macroName, macroParams,
+                        macroContent);
             }
         } else if (content.startsWith("stopmacro")) {
             stack.setStackParameter("ignoreElements", false);
         }
     }
-    
-    
 }
