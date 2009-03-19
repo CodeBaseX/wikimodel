@@ -34,6 +34,12 @@
 			<artifactId>javacc</artifactId>
 			<version>4.0</version>
 			<scope>compile</scope>
+			<exclusions>
+			  <exclusion>
+			    <groupId>junit</groupId>
+			    <artifactId>junit</artifactId>
+			  </exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- testing dependencies -->
