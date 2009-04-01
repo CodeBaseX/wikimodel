@@ -15,6 +15,7 @@ import org.wikimodel.wem.WikiReferenceParser;
 /**
  * @author kotelnikov
  * @author vmassol
+ * @author tmortagne
  */
 public class XWikiReferenceParser extends WikiReferenceParser {
 
@@ -29,8 +30,7 @@ public class XWikiReferenceParser extends WikiReferenceParser {
     }
 
     @Override
-    protected String getParameters(String[] chunks)
-    {
+    protected String getParameters(String[] chunks) {
         return chunks[2];
     }
 
@@ -38,30 +38,103 @@ public class XWikiReferenceParser extends WikiReferenceParser {
     protected String[] splitToChunks(String str) {
         String[] chunks = new String[3];
 
-        // Note: It's important to use lastIndexOf() since it's possible to 
-        // have ">" characters in the label part. 
-        int labelSeparatorPosition = str.lastIndexOf(">>");
-        if (labelSeparatorPosition > -1) {
-            chunks[0] = str.substring(0, labelSeparatorPosition);
-            String buffer = str.substring(labelSeparatorPosition + 2);
-            int referenceSeparatorPosition = buffer.indexOf("||");
-            if (referenceSeparatorPosition > -1) {
-                chunks[1] = buffer.substring(0, referenceSeparatorPosition);
-                chunks[2] = buffer.substring(referenceSeparatorPosition + 2);                
+        char[] array = str.toCharArray();
+
+        StringBuffer label = new StringBuffer();
+        StringBuffer link = new StringBuffer();
+        StringBuffer parameters = new StringBuffer();
+
+        boolean foundLink = false;
+        int i = 0;
+        int nb;
+        for (boolean escaped = false; i < array.length; ++i) {
+            char c = array[i];
+
+            if (!escaped) {
+                if (array[i] == '~' && !escaped) {
+                    escaped = true;
+                } else if ((nb = countFirstChar(array, i, '>')) >= 2) {
+                    for (; nb > 2; --nb) {
+                        label.append(array[i++]);
+                    }
+                    foundLink = true;
+                    i += 2;
+                    parseLink(array, i, link, parameters);
+                    break;
+                } else if ((nb = countFirstChar(array, i, '|')) >= 2) {
+                    for (; nb > 2; --nb) {
+                        label.append(array[i++]);
+                    }
+                    i += 2;
+                    parameters.append(array, i, array.length - i);
+                    break;
+                } else {
+                    label.append(c);
+                }
             } else {
-                chunks[1] = buffer;
-            }
-        } else {
-            // Same as above we want to allow the link to use the | character
-            int referenceSeparatorPosition = str.lastIndexOf("||");
-            if (referenceSeparatorPosition > -1) {
-                chunks[1] = str.substring(0, referenceSeparatorPosition);
-                chunks[2] = str.substring(referenceSeparatorPosition + 2);
-            } else {
-                chunks[1] = str;
+                label.append(c);
+                escaped = false;
             }
         }
-        
+
+        if (!foundLink) {
+            chunks[1] = label.toString();
+        } else {
+            chunks[0] = label.toString();
+            chunks[1] = link.toString();
+        }
+
+        if (parameters.length() > 0) {
+            chunks[2] = parameters.toString();
+        }
+
         return chunks;
+    }
+
+    /**
+     * Extract the link and the parameters.
+     * 
+     * @param array the array to extract information from
+     * @param i the current position in the array
+     * @param link the link buffer to fill
+     * @param parameters the parameters buffer to fill
+     */
+    private void parseLink(
+        char[] array,
+        int i,
+        StringBuffer link,
+        StringBuffer parameters) {
+        int nb;
+
+        for (boolean escaped = false; i < array.length; ++i) {
+            char c = array[i];
+
+            if (!escaped) {
+                if (array[i] == '~' && !escaped) {
+                    escaped = true;
+                } else if ((nb = countFirstChar(array, i, '|')) >= 2) {
+                    for (; nb > 2; --nb) {
+                        link.append(array[i++]);
+                    }
+                    i += 2;
+                    parameters.append(array, i, array.length - i);
+                    break;
+                } else {
+                    link.append(c);
+                }
+            } else {
+                link.append(c);
+                escaped = false;
+            }
+        }
+    }
+
+    private int countFirstChar(char[] array, int i, char c) {
+        int nb = 0;
+        for (; i < array.length && array[i] == c; ++i) {
+            ++nb;
+        }
+
+        return nb;
     }
 }
