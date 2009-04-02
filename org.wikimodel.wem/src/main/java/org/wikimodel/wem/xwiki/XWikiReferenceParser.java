@@ -41,25 +41,25 @@ public class XWikiReferenceParser extends WikiReferenceParser {
         char[] array = str.toCharArray();
 
         StringBuffer label = new StringBuffer();
-        StringBuffer link = new StringBuffer();
+        StringBuffer reference = new StringBuffer();
         StringBuffer parameters = new StringBuffer();
 
-        boolean foundLink = false;
+        boolean foundReference = false;
         int i = 0;
         int nb;
         for (boolean escaped = false; i < array.length; ++i) {
             char c = array[i];
 
             if (!escaped) {
-                if (array[i] == '~' && !escaped) {
+                if (array[i] == '~') {
                     escaped = true;
                 } else if ((nb = countFirstChar(array, i, '>')) >= 2) {
                     for (; nb > 2; --nb) {
                         label.append(array[i++]);
                     }
-                    foundLink = true;
+                    foundReference = true;
                     i += 2;
-                    parseLink(array, i, link, parameters);
+                    parseReference(array, i, reference, parameters);
                     break;
                 } else if ((nb = countFirstChar(array, i, '|')) >= 2) {
                     for (; nb > 2; --nb) {
@@ -67,6 +67,51 @@ public class XWikiReferenceParser extends WikiReferenceParser {
                     }
                     i += 2;
                     parameters.append(array, i, array.length - i);
+                    break;
+                } else if (c == '[' && i + 1 < array.length
+                        && array[i + 1] == '[') {
+                    // If we find an internal link we skip it
+                    i = skipLink(array, i, label);
+                } else {
+                    label.append(c);
+                }
+            } else {
+                label.append(c);
+                escaped = false;
+            }
+        }
+
+        if (!foundReference) {
+            chunks[1] = label.toString();
+        } else {
+            chunks[0] = label.toString();
+            chunks[1] = reference.toString();
+        }
+
+        if (parameters.length() > 0) {
+            chunks[2] = parameters.toString();
+        }
+
+        return chunks;
+    }
+
+    private int skipLink(char[] array, int i, StringBuffer label) {
+        label.append("[[");
+        i += 2;
+        for (boolean escaped = false; i < array.length; ++i) {
+            char c = array[i];
+
+            if (!escaped) {
+                if (array[i] == '~') {
+                    label.append('~');
+                    escaped = true;
+                } else if (c == '[' && i + 1 < array.length
+                        && array[i + 1] == '[') {
+                    i = skipLink(array, i, label);
+                } else if (c == ']' && i + 1 < array.length
+                        && array[i + 1] == ']') {
+                    label.append("]]");
+                    ++i;
                     break;
                 } else {
                     label.append(c);
@@ -77,18 +122,7 @@ public class XWikiReferenceParser extends WikiReferenceParser {
             }
         }
 
-        if (!foundLink) {
-            chunks[1] = label.toString();
-        } else {
-            chunks[0] = label.toString();
-            chunks[1] = link.toString();
-        }
-
-        if (parameters.length() > 0) {
-            chunks[2] = parameters.toString();
-        }
-
-        return chunks;
+        return i;
     }
 
     /**
@@ -96,13 +130,13 @@ public class XWikiReferenceParser extends WikiReferenceParser {
      * 
      * @param array the array to extract information from
      * @param i the current position in the array
-     * @param link the link buffer to fill
+     * @param reference the link buffer to fill
      * @param parameters the parameters buffer to fill
      */
-    private void parseLink(
+    private void parseReference(
         char[] array,
         int i,
-        StringBuffer link,
+        StringBuffer reference,
         StringBuffer parameters) {
         int nb;
 
@@ -114,16 +148,16 @@ public class XWikiReferenceParser extends WikiReferenceParser {
                     escaped = true;
                 } else if ((nb = countFirstChar(array, i, '|')) >= 2) {
                     for (; nb > 2; --nb) {
-                        link.append(array[i++]);
+                        reference.append(array[i++]);
                     }
                     i += 2;
                     parameters.append(array, i, array.length - i);
                     break;
                 } else {
-                    link.append(c);
+                    reference.append(c);
                 }
             } else {
-                link.append(c);
+                reference.append(c);
                 escaped = false;
             }
         }
