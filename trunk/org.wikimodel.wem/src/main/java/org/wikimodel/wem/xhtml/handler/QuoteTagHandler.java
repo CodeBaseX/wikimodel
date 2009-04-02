@@ -22,10 +22,17 @@ public class QuoteTagHandler extends TagHandler {
 	}
 	
     @Override
+    public boolean isBlockHandler(TagContext context)
+    {
+        // A new blockquote is considered a block element only if the parent is not a blockquote item since blockquotes
+        // are not new block elements
+        return !(context.getParent().getName().equals("blockquote")); 
+    }
+	
+    @Override
     protected void begin(TagContext context) {
     	int quoteDepth = (Integer) context.getTagStack().getStackParameter("quoteDepth");
         if (quoteDepth == 0) {
-            context.getTagStack().setStackParameter("insideBlockElement", true);
         	context.getScannerContext().beginQuot(context.getParams());
         }
         quoteDepth++;
@@ -43,7 +50,6 @@ public class QuoteTagHandler extends TagHandler {
     	context.getScannerContext().endQuotLine();
     	if (quoteDepth == 0) {
     		context.getScannerContext().endQuot();
-            context.getTagStack().setStackParameter("insideBlockElement", false);
     	}
         context.getTagStack().setStackParameter("quoteDepth", quoteDepth);
     }

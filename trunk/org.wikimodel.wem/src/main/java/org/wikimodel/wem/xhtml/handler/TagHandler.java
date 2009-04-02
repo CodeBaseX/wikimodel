@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.wikimodel.wem.xhtml.handler;
 
+import java.util.Stack;
+
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 
@@ -80,6 +82,24 @@ public class TagHandler {
     }
 
     public void beginElement(TagContext context) {
+
+        Stack<Boolean> insideBlockElementsStack = 
+            (Stack<Boolean>) context.getTagStack().getStackParameter("insideBlockElement");
+
+        if (isBlockHandler(context)) {
+
+            // If we're starting a block tag and we're in inline mode (ie inside a block element) then start a nested document 
+            // and save the parent tag, see endElement().
+            if (!insideBlockElementsStack.isEmpty() && insideBlockElementsStack.peek()) {
+                context.getScannerContext().beginDocument();
+                insideBlockElementsStack.push(false);
+                Stack<String> tagNames = (Stack<String>) context.getTagStack().getStackParameter("tagNameBeforeNestedDocument");
+                tagNames.push(context.getParent().getName());
+            }
+            
+            insideBlockElementsStack.push(true);
+        }
+        
         begin(context);
     }
 
@@ -88,6 +108,23 @@ public class TagHandler {
 
     public final void endElement(TagContext context) {
         end(context);
+
+        Stack<Boolean> insideBlockElementsStack = 
+            (Stack<Boolean>) context.getTagStack().getStackParameter("insideBlockElement");
+
+        if (isBlockHandler(context)) {
+            insideBlockElementsStack.pop();
+        }
+
+        // Verify if we need to close a nested document that would have been opened.
+        // To verify this we check the current tag being closed and verify if it's
+        // the one saved when the nested document was opened.
+        Stack<String> tagNames = (Stack<String>) context.getTagStack().getStackParameter("tagNameBeforeNestedDocument");
+        if (!tagNames.isEmpty() && context.getName().equals(tagNames.peek())) {
+            context.getScannerContext().endDocument();
+            tagNames.pop();
+            insideBlockElementsStack.pop();
+        }
     }
 
     public boolean isContentContainer() {
@@ -125,4 +162,10 @@ public class TagHandler {
         // Nothing to do by default. Override in children classes if need be. 
     }
     
+    /**
+     * @return true if the current handler handles block tags (paragraphs, lists, tables, headers, etc) 
+     */
+    public boolean isBlockHandler(TagContext context) {
+        return false;
+    }
 }

@@ -23,18 +23,22 @@ public class HeaderTagHandler extends TagHandler {
 	}
 	
 	@Override
+    public boolean isBlockHandler(TagContext context)
+    {
+        return true;
+    }
+
+    @Override
     protected void begin(TagContext context) {
         String tag = context.getName();
         int level = Integer.parseInt(tag.substring(1, 2));
         sendEmptyLines(context);
-        context.getTagStack().setStackParameter("insideBlockElement", true);
         context.getScannerContext().beginHeader(level, context.getParams());
     }
 
     @Override
     protected void end(TagContext context) {
         context.getScannerContext().endHeader();
-        context.getTagStack().setStackParameter("insideBlockElement", false);
     }
 
 }

@@ -22,17 +22,21 @@ public class TableTagHandler extends TagHandler {
 		super(false, true, false);
 	}
 
+	@Override
+    public boolean isBlockHandler(TagContext context)
+    {
+        return true;
+    }
+
     @Override
     protected void begin(TagContext context) {
         sendEmptyLines(context);
-        context.getTagStack().setStackParameter("insideBlockElement", true);
         context.getScannerContext().beginTable(context.getParams());
     }
 
     @Override
     protected void end(TagContext context) {
         context.getScannerContext().endTable();
-        context.getTagStack().setStackParameter("insideBlockElement", false);
     }
 
 }

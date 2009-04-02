@@ -22,6 +22,12 @@ public class HorizontalLineTagHandler extends TagHandler {
 		super(false, true, false);
 	}
 
+	@Override
+    public boolean isBlockHandler(TagContext context)
+    {
+        return true;
+    }
+
     @Override
     protected void begin(TagContext context) {
         sendEmptyLines(context);
