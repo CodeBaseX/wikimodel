@@ -12,6 +12,7 @@ package org.wikimodel.wem.xhtml.handler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import org.wikimodel.wem.WikiParameter;
 import org.wikimodel.wem.WikiParameters;
@@ -78,9 +79,9 @@ public class CommentHandler {
 
             // If we're inside a block element then issue an inline macro event
             // otherwise issue a block macro event
-            boolean insideBlockElement = (Boolean) stack
-                    .getStackParameter("insideBlockElement");
-            if (insideBlockElement) {
+            Stack<Boolean> insideBlockElementsStack = 
+                (Stack<Boolean>) stack.getStackParameter("insideBlockElement");
+            if (!insideBlockElementsStack.isEmpty() && insideBlockElementsStack.peek()) { 
                 stack.getScannerContext().onMacroInline(macroName, macroParams,
                         macroContent);
             } else {

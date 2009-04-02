@@ -12,6 +12,7 @@ package org.wikimodel.wem.xhtml.handler;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
 
 import org.wikimodel.wem.WikiParameter;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
@@ -55,6 +56,11 @@ public class DivisionTagHandler extends TagHandler
             // Check if we have a div meaning start of embedded document
             if (classes.contains(getDocumentClass())) {
                 context.getScannerContext().beginDocument();
+
+                // Mark that we're not inside a block element since we're starting a new doc
+                Stack<Boolean> insideBlockElementsStack = 
+                    (Stack<Boolean>) context.getTagStack().getStackParameter("insideBlockElement");
+                insideBlockElementsStack.push(false);
             }
         }
     }
@@ -65,6 +71,12 @@ public class DivisionTagHandler extends TagHandler
         WikiParameter param = context.getParams().getParameter("class");
         if (param != null) {
             if (Arrays.asList(param.getValue().split(" ")).contains(getDocumentClass())) {
+
+                // Remove marker
+                Stack<Boolean> insideBlockElementsStack = 
+                    (Stack<Boolean>) context.getTagStack().getStackParameter("insideBlockElement");
+                insideBlockElementsStack.pop();
+
                 context.getScannerContext().endDocument();
             }
         }

@@ -23,12 +23,21 @@ public class ListTagHandler extends TagHandler {
 	}
 
     @Override
+    public boolean isBlockHandler(TagContext context)
+    {
+        // A new list is considered a block element only if the parent is not a list item since nested lists
+        // are not new block elements
+        return !(context.getParent().getName().equals("li") 
+            || context.getParent().getName().equals("dd") 
+            || context.getParent().getName().equals("dt"));
+    }
+	
+    @Override
     protected void begin(TagContext context) {
         sendEmptyLines(context);
         // We only send a new list event if we're not already inside a list.
         StringBuffer listStyles = (StringBuffer) context.getTagStack().getStackParameter("listStyles");
         if (listStyles.length() == 0) {
-            context.getTagStack().setStackParameter("insideBlockElement", true);
             context.getScannerContext().beginList(context.getParams());
         }
     }
@@ -42,7 +51,6 @@ public class ListTagHandler extends TagHandler {
         StringBuffer listStyles = (StringBuffer) context.getTagStack().getStackParameter("listStyles");
         if (listStyles.length() == 0) {
         	context.getScannerContext().endList();
-            context.getTagStack().setStackParameter("insideBlockElement", false);
         }
     }
 
