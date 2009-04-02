@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.wikimodel.wem.xwiki;
 
+import java.util.regex.Pattern;
+
 import org.wikimodel.wem.WikiReferenceParser;
 
 /**
@@ -18,6 +20,10 @@ import org.wikimodel.wem.WikiReferenceParser;
  * @author tmortagne
  */
 public class XWikiReferenceParser extends WikiReferenceParser {
+
+    Pattern BEGINLINK_PATTERN = Pattern.compile("[~]?\\[\\[");
+
+    Pattern ENDLINK_PATTERN = Pattern.compile("[~]?\\]\\]");
 
     @Override
     protected String getLabel(String[] chunks) {
@@ -70,8 +76,15 @@ public class XWikiReferenceParser extends WikiReferenceParser {
                     break;
                 } else if (c == '[' && i + 1 < array.length
                         && array[i + 1] == '[') {
-                    // If we find an internal link we skip it
-                    i = skipLink(array, i, label);
+                    int endLink = findEndLink(array, i + 2);
+                    if (endLink != -1) {
+                        // If we find an internal link we skip it
+                        label.append(array, i, endLink - i);
+                        i += endLink - 1;
+                    } else {
+                        label.append("[[");
+                        ++i;
+                    }
                 } else {
                     label.append(c);
                 }
@@ -95,34 +108,35 @@ public class XWikiReferenceParser extends WikiReferenceParser {
         return chunks;
     }
 
-    private int skipLink(char[] array, int i, StringBuffer label) {
-        label.append("[[");
-        i += 2;
+    private int findEndLink(char[] array, int i) {
+        int linkdepth = 1;
+        int endLink = -1;
+
         for (boolean escaped = false; i < array.length; ++i) {
             char c = array[i];
 
             if (!escaped) {
                 if (array[i] == '~') {
-                    label.append('~');
                     escaped = true;
                 } else if (c == '[' && i + 1 < array.length
                         && array[i + 1] == '[') {
-                    i = skipLink(array, i, label);
+                    ++linkdepth;
+                    ++i;
                 } else if (c == ']' && i + 1 < array.length
                         && array[i + 1] == ']') {
-                    label.append("]]");
+                    --linkdepth;
                     ++i;
-                    break;
-                } else {
-                    label.append(c);
+                    endLink = i + 1;
+                    if (linkdepth == 0) {
+                        break;
+                    }
                 }
             } else {
-                label.append(c);
                 escaped = false;
             }
         }
 
-        return i;
+        return endLink;
     }
 
     /**
