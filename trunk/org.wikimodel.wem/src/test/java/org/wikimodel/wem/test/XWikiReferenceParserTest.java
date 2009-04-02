@@ -85,4 +85,16 @@ public class XWikiReferenceParserTest extends TestCase {
                 .getValue());
         assertEquals("refe||rence", reference.getLink());
     }
+
+    public void testParseReferenceWhenLabelAndParametersSpecifiedWithSomeEscapingAndInternalLink() {
+        XWikiReferenceParser parser = new XWikiReferenceParser();
+        WikiReference reference = parser
+                .parse("[[sub~>>label>>subre~||ference||subparam=subvalue]]la~>>bel>>refe~||rence||param=value");
+        assertEquals(
+                "[[sub~>>label>>subre~||ference||subparam=subvalue]]la>>bel",
+                reference.getLabel());
+        assertEquals("value", reference.getParameters().getParameter("param")
+                .getValue());
+        assertEquals("refe||rence", reference.getLink());
+    }
 }
