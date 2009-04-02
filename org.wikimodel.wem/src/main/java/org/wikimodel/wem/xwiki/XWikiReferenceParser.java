@@ -80,7 +80,7 @@ public class XWikiReferenceParser extends WikiReferenceParser {
                     if (endLink != -1) {
                         // If we find an internal link we skip it
                         label.append(array, i, endLink - i);
-                        i += endLink - 1;
+                        i = endLink - 1;
                     } else {
                         label.append("[[");
                         ++i;
