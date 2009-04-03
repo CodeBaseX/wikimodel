@@ -19,6 +19,10 @@
 		</antcall>
 
 		<antcall target="doBuild">
+			<param name="input.file" value="${src}/org/wikimodel/wem/confluence/javacc/ConfluenceWikiScanner.jj" />
+		</antcall>
+
+		<antcall target="doBuild">
 			<param name="input.file" value="${src}/org/wikimodel/wem/creole/javacc/CreoleWikiScanner.jj" />
 		</antcall>
 
