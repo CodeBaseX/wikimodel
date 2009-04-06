@@ -18,11 +18,12 @@ PARSER_BEGIN(ConfluenceWikiScanner)
 package org.wikimodel.wem.confluence.javacc;
 
 import org.wikimodel.wem.IWikiReferenceParser;
-import org.wikimodel.wem.impl.IWikiScannerContext;
-import org.wikimodel.wem.IWemConstants;
+import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.WikiStyle;
 import org.wikimodel.wem.confluence.ConfluenceWikiReferenceParser;
+import org.wikimodel.wem.impl.IWikiScannerContext;
+import org.wikimodel.wem.impl.InlineState;
 
 /**
  * This is the internal wiki page parser generated from the grammar file.
@@ -52,11 +53,49 @@ PARSER_END(ConfluenceWikiScanner)
     | <#VERBATIM: "{{{" ( "\\" ~[] | <NEW_LINE> " }}}" | ~["}"] | "}" ~["}"] | "}}" ~["}"] )* "}}}" >
     | <#REFERENCE:  ( "[[" (  ~["]"] | "]" ~["]"] | "\\" ~[] )* "]]" ) >
     | <#HORLINE: "---" ("-")+ >
+    | <#ESCAPE: ( "\\" ~["\t", "\n", "\r"]) >
     | <#BR: "\\\\" >
     | <#CELL: "|" ("|") ? >
-    | <#FORMAT_SYMBOL : (
-        "//" | "**" | "##"
+    | <#QUOT_BLOCK: ("bq." | "BQ.") >
+    | <#FORMAT_SYMBOL : ( 
+          "*"   // strong
+        | "_"   // em
+        | "??"  // citation
+        | "^"   // superscript
+        | "~"   // subscript
+        | "-"  // strikethrough
+        | "+"  // underlined
         ) >
+    | <#SPECIAL_SYMBOLS: (
+          " - "
+        | " -- "
+        | ( " --- " | "---" )
+
+        | " * "
+        | " _ "
+        | " - "
+        | " + "
+        | " ^ "
+        | " ~ "
+
+        | "..."  
+        | "(" (<CHAR>|<SPECIAL_SYMBOL>) ")" 
+        | "(tm)" 
+        | "(TM)" 
+        | "&" (<CHAR>)+ ";" 
+
+        | "+/-"
+        | "!="
+        | ("-")* "->"
+        | "<-" ("-")*
+        | "<-" ("-")* ">"
+        | ("=")* "=>"
+        | "<=" ("=")* ">"
+        | "<=" ("=")*
+        | ">="
+        | "!="
+        | "~="        
+        )>
 
 // <common-tokens>
     // =========================================================================
@@ -148,8 +187,11 @@ PARSER_END(ConfluenceWikiScanner)
     | <I_VERBATIM_INLINE: <VERBATIM> > : DEFAULT
     | <I_REFERENCE : <REFERENCE> > : DEFAULT
     | <I_TABLE_CELL : <CELL> > : DEFAULT 
+    | <I_QUOT_BLOCK: (<NEW_LINE>)? <QUOT_BLOCK> > : DEFAULT
     | <I_BR : <BR> > : DEFAULT
+    | <I_ESCAPE: <ESCAPE> > : DEFAULT
     | <I_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
+    | <I_SPECIAL_SYMBOLS: <SPECIAL_SYMBOLS> >: DEFAULT
 
     // "Standard" tokens. They are the same for all wikis.
     | <I_URI : <URI> > : DEFAULT
@@ -171,8 +213,11 @@ PARSER_END(ConfluenceWikiScanner)
     | <D_VERBATIM_INLINE: <VERBATIM> > : DEFAULT
     | <D_REFERENCE : <REFERENCE> > : DEFAULT
     | <D_TABLE_CELL : <CELL> > : DEFAULT 
+    | <D_QUOT_BLOCK: <NEW_LINE> <QUOT_BLOCK> > : DEFAULT
     | <D_BR : <BR> > : DEFAULT
+    | <D_ESCAPE: <ESCAPE> > : DEFAULT
     | <D_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
+    | <D_SPECIAL_SYMBOLS: <SPECIAL_SYMBOLS> >: DEFAULT
 
     // "Standard" tokens. They are the same for all wikis.
     | <D_URI : <URI> > : DEFAULT
@@ -192,8 +237,11 @@ PARSER_END(ConfluenceWikiScanner)
     Token getVERBATIM_INLINE(): {Token t=null;} {(t=<I_VERBATIM_INLINE>|t=<D_VERBATIM_INLINE>){return t;}}
     Token getREFERENCE(): {Token t=null;} {(t=<I_REFERENCE>|t=<D_REFERENCE>){return t;}}
     Token getTABLE_CELL(): {Token t=null;} {(t=<I_TABLE_CELL>|t=<D_TABLE_CELL>){return t;}}
+    Token getQUOT_BLOCK(): {Token t=null;} {(t=<I_QUOT_BLOCK>|t=<D_QUOT_BLOCK>){return t;}}
     Token getBR(): {Token t=null;} {(t=<I_BR>|t=<D_BR>){return t;}}
+    Token getESCAPE(): {Token t=null;} {(t=<I_ESCAPE>|t=<D_ESCAPE>){return t;}}
     Token getFORMAT_SYMBOL(): {Token t=null;} {(t=<I_FORMAT_SYMBOL>|t=<D_FORMAT_SYMBOL>){return t;}}
+    Token getSPECIAL_SYMBOLS(): {Token t=null;} {(t=<I_SPECIAL_SYMBOLS>|t=<D_SPECIAL_SYMBOLS>){return t;}}
 
     // "Standard" tokens. They are the same for all wikis.
     Token getURI(): {Token t=null;} {(t=<I_URI>|t=<D_URI>){return t;}}
@@ -202,7 +250,6 @@ PARSER_END(ConfluenceWikiScanner)
     Token getWORD(): {Token t=null;} {(t=<I_WORD>|t=<D_WORD>){return t;}}
     Token getSPECIAL_SYMBOL(): {Token t=null;} {(t=<I_SPECIAL_SYMBOL>|t=<D_SPECIAL_SYMBOL>){return t;}}
 // </getters>
-
 
 void doParse():
 {
@@ -233,11 +280,10 @@ void docElements():
     |
     horline()
     |
-    (
-    LOOKAHEAD(2) 
+    ( LOOKAHEAD(2) 
         quot()
         |
-          paragraph()
+        paragraph()
     )
     | 
     emptyParagraph()
@@ -372,31 +418,27 @@ void paragraph():
 void quot():
 {
     Token t = null;
-    int depthCounter = 0;
+    String str = "";
+    WikiParameters params = WikiParameters.EMPTY;
 }
 {
+    t = getQUOT_BLOCK()
     {
-        fContext.beginQuot();
+        str = t.image.trim();
+        fContext.beginQuot(params);
     }
-    quotLine()
-    ( LOOKAHEAD(2)
-        getNL()
-        quotLine()
-    )*
+    (LOOKAHEAD(2) 
+        (
+            { fContext.beginQuotLine(1); } line() { fContext.endQuotLine(); }
+            ( LOOKAHEAD(2)
+                newLine()
+                { fContext.beginQuotLine(1); } line() { fContext.endQuotLine(); }
+            )*
+        )
+    )?
     {
         fContext.endQuot();
     }
-}
-void quotLine():
-{
-    Token t = null;
-    int depthCounter = 0;
-}
-{
-    ( LOOKAHEAD(2) t = getSPACE() { depthCounter++; } )+
-    { fContext.beginQuotLine(depthCounter); }
-    line()
-    { fContext.endQuotLine(); }
 }
 
 void emptyParagraph():
@@ -432,6 +474,8 @@ void line():
 {
     Token t = null;
     String str = null;
+    WikiStyle style = null;
+    char ch = 0;
 }
 {
     ( LOOKAHEAD(2)
@@ -439,6 +483,11 @@ void line():
             t = getBR()
             {
                 fContext.onLineBreak();
+            }
+            |
+            t = getESCAPE()
+            {
+                fContext.onEscape("" + t.image.charAt(1));
             }
             |
             t = getWORD()
@@ -451,23 +500,62 @@ void line():
                 fContext.onSpace(t.image);
             }
             |
-            t = getSPECIAL_SYMBOL()
+            t = getSPECIAL_SYMBOLS() // see also getSPECIAL_SYMBOL() below 
             {
                 fContext.onSpecialSymbol(t.image);
-            }
+            }            
             |
             t = getFORMAT_SYMBOL()
             {
-                str = t.image.trim();
-                WikiStyle style = null;
-                if ("**".equals(str)) {
-                    style  = IWemConstants.STRONG;
-                } else if ("//".equals(str)) {
-                    style  = IWemConstants.EM;
-                } else if ("##".equals(str)) {
-                    style = IWemConstants.MONO;
+                str = t.image;
+                ch = str.charAt(0);
+                style = null;
+                boolean checkStyleContext = false;
+                switch (ch) {
+                    case '*': 
+                        style  = IWikiScannerContext.STRONG;
+                        break;
+                    case '_': 
+                        style  = IWikiScannerContext.EM;
+                        break;
+                    case '?': 
+                        style  = IWikiScannerContext.CITE;
+                        break;
+                    case '^': 
+                        style  = IWikiScannerContext.SUP;
+                        break;
+                    case '~': 
+                        style  = IWikiScannerContext.SUB;
+                        break;
+                    case '+': 
+                        // Underlined text was explicitly forbidden. 
+                        // So replace it by TT.
+                        style  = IWikiScannerContext.TT;
+                        checkStyleContext = true;
+                        break;
+                    case '-': 
+                        style  = IWikiScannerContext.STRIKE;
+                        checkStyleContext = true;
+                        break;
                 }
-                fContext.onFormat(style);
+                if (checkStyleContext) {
+                    InlineState inlineState = fContext.getInlineState();
+                    if (fContext.checkFormatStyle(style) 
+                        || inlineState.check(InlineState.BEGIN)
+                        || inlineState.check(InlineState.SPACE)
+                        || inlineState.check(InlineState.NEW_LINE)) {
+                        fContext.onFormat(style);
+                    } else {
+                        fContext.onSpecialSymbol(t.image);
+                    }
+                } else {
+                    fContext.onFormat(style);
+                }
+            }
+            |
+            t = getSPECIAL_SYMBOL()
+            {
+                fContext.onSpecialSymbol(t.image);
             }
             |
             t = getVERBATIM_INLINE()

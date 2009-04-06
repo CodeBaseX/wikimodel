@@ -35,17 +35,63 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testFormats() throws WikiParserException {
-        test("**bold**", "<p><strong>bold</strong></p>");
-        test("//italic//", "<p><em>italic</em></p>");
+        test("a-b", "<p>a-b</p>");
+        test("-a-", "<p><strike>a</strike></p>");
+
+        // STRONG
+        test("*bold*", "<p><strong>bold</strong></p>");
+        test(
+            "*bold* *bold* *bold*",
+            "<p><strong>bold</strong> <strong>bold</strong> <strong>bold</strong></p>");
+        // EM
+        test("_italic_", "<p><em>italic</em></p>");
+        test(
+            "_italic_ _italic_ _italic_",
+            "<p><em>italic</em> <em>italic</em> <em>italic</em></p>");
+        // CITE
+        test("??citation??", "<p><cite>citation</cite></p>");
+        test(
+            "??citation?? ??citation?? ??citation??",
+            "<p><cite>citation</cite> <cite>citation</cite> <cite>citation</cite></p>");
+
+        // STRIKE
+        test("-abc-", "<p><strike>abc</strike></p>");
+        test(" -abc-", "<p> <strike>abc</strike></p>");
+        test("abc -cde- efg", "<p>abc <strike>cde</strike> efg</p>");
+        test(
+            "abc -cde- -efg-",
+            "<p>abc <strike>cde</strike> <strike>efg</strike></p>");
+        // not a STRIKE
+        test("abc - cde", "<p>abc - cde</p>");
+
+        // TT
+        test("+abc+", "<p><tt>abc</tt></p>");
+        test(" +abc+", "<p> <tt>abc</tt></p>");
+        test("abc +cde+ efg", "<p>abc <tt>cde</tt> efg</p>");
+        test("abc +cde+ +efg+", "<p>abc <tt>cde</tt> <tt>efg</tt></p>");
+        // not a TT
+        test("abc + cde", "<p>abc + cde</p>");
+
+        // SUB
+        test("~abc~", "<p><sub>abc</sub></p>");
+        test(" ~abc~", "<p> <sub>abc</sub></p>");
+        test("abc ~cde~ efg", "<p>abc <sub>cde</sub> efg</p>");
+        test("abc ~cde~ ~efg~", "<p>abc <sub>cde</sub> <sub>efg</sub></p>");
+
+        // SUP
+        test("^abc^", "<p><sup>abc</sup></p>");
+        test(" ^abc^", "<p> <sup>abc</sup></p>");
+        test("abc ^cde^ efg", "<p>abc <sup>cde</sup> efg</p>");
+        test("abc ^cde^ ^efg^", "<p>abc <sup>cde</sup> <sup>efg</sup></p>");
+
         test("before{{{inside}}}after", "<p>before<code>inside</code>after</p>");
 
         // Mixed styles
         test(
-            "normal**bold//bold-italic**italic//normal",
+            "normal*bold_bold-italic*italic_normal",
             "<p>normal<strong>bold</strong><strong><em>bold-italic</em></strong><em>italic</em>normal</p>");
 
         // Not formatting
-        test("_nothing special_", "<p>_nothing special_</p>");
         test(
             "http://www.foo.bar",
             "<p><a href='http://www.foo.bar'>http://www.foo.bar</a></p>");
@@ -168,7 +214,7 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
     /**
      */
     public void testQuot() throws WikiParserException {
-        test("This is a paragraph\n\n and this is a quotations\n the second line");
+        test("This is a paragraph\n\nbq.and this is a quotations\n the second line");
     }
 
     /**
@@ -227,24 +273,28 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
     /**
      * @throws WikiParserException
      */
-    public void testTables() throws WikiParserException {
+    public void testTable() throws WikiParserException {
         test(
             "||Header",
             "<table><tbody>\n  <tr><th>Header</th></tr>\n</tbody></table>");
         test(
             "|Cell",
             "<table><tbody>\n  <tr><td>Cell</td></tr>\n</tbody></table>");
-        // test(
-        // "||Header||\n",
-        // "<table><tbody>\n  <tr><th>Header</th></tr>\n</tbody></table>");
-        // test(
-        // "|Cell|\n",
-        // "<table><tbody>\n  <tr><td>Cell</td></tr>\n</tbody></table>");
-
+        test(
+            "||Header||\n",
+            "<table><tbody>\n  <tr><th>Header</th></tr>\n</tbody></table>");
+        test(
+            "|Cell|\n",
+            "<table><tbody>\n  <tr><td>Cell</td></tr>\n</tbody></table>");
         test("||Header1||Header2", ""
             + "<table><tbody>\n"
             + "  <tr><th>Header1</th><th>Header2</th></tr>\n"
             + "</tbody></table>");
+        test("||Header1||Header2||", ""
+            + "<table><tbody>\n"
+            + "  <tr><th>Header1</th><th>Header2</th></tr>\n"
+            + "</tbody></table>");
+
         test("|Cell1|Cell2", ""
             + "<table><tbody>\n"
             + "  <tr><td>Cell1</td><td>Cell2</td></tr>\n"

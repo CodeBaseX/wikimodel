@@ -1907,7 +1907,7 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
                     } else {
                         fContext.onSpecialSymbol(t.image);
                     }
-                } else if (t.image.charAt(0) == ')' && fContext.inInlineProperty()) {
+                } else if (t.image.charAt(0) == ')' && fContext.isInInlineProperty()) {
                     fContext.endPropertyInline();
                 } else {
                     fContext.onSpecialSymbol(t.image);
