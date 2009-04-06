@@ -14,6 +14,7 @@ import java.util.Arrays;
 
 import org.wikimodel.wem.IWemConstants;
 import org.wikimodel.wem.WikiParameter;
+import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 
 /**
@@ -36,6 +37,9 @@ public class TeletypeTagHandler extends TagHandler {
         if ((param != null) && Arrays.asList(param.getValue().split(" ")).contains("wikimodel-verbatim")) {
             setAccumulateContent(true);
         } else {
+            if (context.getParams().getSize() > 0) {
+                context.getScannerContext().onFormat(context.getParams());
+            }
             context.getScannerContext().onFormat(IWemConstants.MONO);
         }
     }
@@ -48,6 +52,9 @@ public class TeletypeTagHandler extends TagHandler {
             context.getScannerContext().onVerbatim(str, true);
         } else {
             context.getScannerContext().onFormat(IWemConstants.MONO);
+            if (context.getParams().getSize() > 0) {
+                context.getScannerContext().onFormat(WikiParameters.EMPTY);
+            }
         }
     }
 
