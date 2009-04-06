@@ -42,9 +42,9 @@ public interface IWikiScannerContext extends IWemConstants {
 
     void beginTable(WikiParameters params);
 
-    void beginTableCell(boolean headCell, WikiParameters params);
-
     void beginTableCell(boolean headCell);
+
+    void beginTableCell(boolean headCell, WikiParameters params);
 
     /**
      * Starts a new table row and adds the first cell to the table.
@@ -71,8 +71,10 @@ public interface IWikiScannerContext extends IWemConstants {
      * Starts a new table row (but doesn't add a cell).
      */
     void beginTableRow(WikiParameters rowParams);
-    
+
     boolean canApplyDefintionSplitter();
+
+    boolean checkFormatStyle(WikiStyle style);
 
     void closeBlock();
 
@@ -104,17 +106,19 @@ public interface IWikiScannerContext extends IWemConstants {
 
     void endTableRow();
 
+    InlineState getInlineState();
+
     int getTableCellCounter();
 
     int getTableRowCounter();
-
-    boolean inInlineProperty();
 
     boolean isInDefinitionList();
 
     boolean isInDefinitionTerm();
 
     boolean isInHeader();
+
+    boolean isInInlineProperty();
 
     boolean isInList();
 
@@ -134,9 +138,9 @@ public interface IWikiScannerContext extends IWemConstants {
 
     void onExtensionInline(String extensionName, WikiParameters params);
 
-    void onFormat(WikiStyle wikiStyle);
-
     void onFormat(WikiParameters params);
+
+    void onFormat(WikiStyle wikiStyle);
 
     /**
      * @see org.wikimodel.wem.impl.WikiScannerContext#onFormat(org.wikimodel.wem.WikiStyle,
@@ -147,6 +151,10 @@ public interface IWikiScannerContext extends IWemConstants {
     void onHorizontalLine();
 
     void onHorizontalLine(WikiParameters params);
+
+    void onImage(String ref);
+
+    void onImage(WikiReference ref);
 
     void onLineBreak();
 
@@ -162,10 +170,6 @@ public interface IWikiScannerContext extends IWemConstants {
 
     void onReference(WikiReference ref);
 
-    void onImage(String ref);
-    
-    void onImage(WikiReference ref);
-    
     void onSpace(String str);
 
     void onSpecialSymbol(String str);

@@ -21,40 +21,42 @@ public interface IWemConstants {
     /**
      * Bigger font
      * 
-     * @see 
-     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_big"
+     * @see "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_big"
      */
     WikiStyle BIG = new WikiStyle("big");
 
     /**
+     * Inline citation.
+     * 
+     * @see "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_cite"
+     */
+    WikiStyle CITE = new WikiStyle("cite");
+
+    /**
      * Program code.
      * 
-     * @see 
-     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_code"
+     * @see "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_code"
      */
     WikiStyle CODE = new WikiStyle("code");
 
     /**
      * Deleted Text
      * 
-     * @see 
-     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_del"
+     * @see "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_del"
      */
     WikiStyle DEL = new WikiStyle("del");
 
     /**
      * Emphasis (should be used as a replacement for the "i" element).
      * 
-     * @see 
-     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_em"
+     * @see "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_em"
      */
     WikiStyle EM = new WikiStyle("em");
 
     /**
      * Inserted Text
      * 
-     * @see 
-     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_ins"
+     * @see "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_ins"
      */
     WikiStyle INS = new WikiStyle("ins");
 
@@ -74,48 +76,42 @@ public interface IWemConstants {
     /**
      *Smaller font.
      * 
-     * @see 
-     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_small"
+     * @see "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_small"
      */
     WikiStyle SMALL = new WikiStyle("small");
 
     /**
      * Strike-through
      * 
-     * @see 
-     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_strike"
+     * @see "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_strike"
      */
     WikiStyle STRIKE = new WikiStyle("strike");
 
     /**
      * Strong emphasis.
      * 
-     * @see 
-     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_strong"
+     * @see "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_strong"
      */
     WikiStyle STRONG = new WikiStyle("strong");
 
     /**
      * Subscript
      * 
-     * @see 
-     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_sub"
+     * @see "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_sub"
      */
     WikiStyle SUB = new WikiStyle("sub");
 
     /**
      * Superscript
      * 
-     * @see 
-     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_sup"
+     * @see "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_sup"
      */
     WikiStyle SUP = new WikiStyle("sup");
 
     /**
      * Fixed pitch font.
      * 
-     * @see 
-     *      "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_tt"
+     * @see "http://www.w3.org/TR/xhtml1/dtds.html#dtdentry_xhtml1-strict.dtd_tt"
      */
     WikiStyle TT = new WikiStyle("tt");
 

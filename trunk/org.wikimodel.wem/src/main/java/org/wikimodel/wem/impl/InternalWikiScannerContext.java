@@ -34,7 +34,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         int PARAGRAPH = 1 << 8;
 
         int QUOT = 1 << 9;
-        
+
         int QUOT_LI = (1 << 10) | QUOT;
 
         int TABLE = 1 << 11;
@@ -58,6 +58,8 @@ class InternalWikiScannerContext implements IWikiScannerContext {
 
     private String fInlineProperty;
 
+    private InlineState fInlineState = new InlineState();
+
     private ListBuilder fListBuilder;
 
     private final IWemListener fListener;
@@ -74,10 +76,10 @@ class InternalWikiScannerContext implements IWikiScannerContext {
 
     private ListBuilder fQuotBuilder;
 
+    private int fQuoteDepth = 0;
+
     private WikiParameters fQuotParams;
 
-    private int fQuoteDepth = 0;
-    
     private int fTableCellCounter = -1;
 
     private WikiParameters fTableCellParams = WikiParameters.EMPTY;
@@ -95,6 +97,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     }
 
     public void beginDocument() {
+        fInlineState.set(InlineState.BEGIN_FORMAT);
         fListener.beginDocument();
     }
 
@@ -114,6 +117,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
             fHeaderParams = params;
             fListener.beginHeader(level, fHeaderParams);
         }
+        beginStyleContainer();
     }
 
     public void beginInfo(char type, WikiParameters params) {
@@ -124,6 +128,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
             fListener.beginInfoBlock(fInfoType, fInfoParams);
             fBlockType = IBlockTypes.INFO;
         }
+        beginStyleContainer();
     }
 
     public void beginList() {
@@ -144,6 +149,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
                         fBlockType = IBlockTypes.LIST_LI;
                         fListener.beginListItem();
                     }
+                    beginStyleContainer();
                 }
 
                 public void beginTree(char type) {
@@ -166,6 +172,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
 
                 public void endRow(char treeType, char rowType) {
                     closeFormat();
+                    endStyleContainer();
                     if (rowType == ':') {
                         fListener.endDefinitionDescription();
                         fBlockType = IBlockTypes.LIST_DL;
@@ -235,6 +242,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
                 fParagraphParams = WikiParameters.EMPTY;
             fListener.beginParagraph(fParagraphParams);
             fBlockType = IBlockTypes.PARAGRAPH;
+            beginStyleContainer();
         }
     }
 
@@ -252,6 +260,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
 
     public void beginPropertyInline(String str) {
         closeFormat();
+        beginStyleContainer();
         fInlineProperty = str;
         fListener.beginPropertyInline(fInlineProperty);
     }
@@ -265,7 +274,8 @@ class InternalWikiScannerContext implements IWikiScannerContext {
 
                 public void beginRow(char treeType, char rowType) {
                     fBlockType = IBlockTypes.QUOT_LI;
-                	fListener.beginQuotationLine();
+                    fListener.beginQuotationLine();
+                    beginStyleContainer();
                 }
 
                 public void beginTree(char type) {
@@ -276,6 +286,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
 
                 public void endRow(char treeType, char rowType) {
                     closeFormat();
+                    endStyleContainer();
                     fListener.endQuotationLine();
                     fBlockType = IBlockTypes.QUOT;
                 }
@@ -310,6 +321,10 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         fQuotBuilder.alignContext(buf.toString());
     }
 
+    private void beginStyleContainer() {
+        fInlineState.set(InlineState.BEGIN);
+    }
+
     public void beginTable() {
         if ((fBlockType & IBlockTypes.TABLE) != IBlockTypes.TABLE) {
             closeBlock();
@@ -337,6 +352,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
             fTableCellParams = params != null ? params : WikiParameters.EMPTY;
             fListener.beginTableCell(fTableHead, fTableCellParams);
             fBlockType = IBlockTypes.TABLE_ROW_CELL;
+            beginStyleContainer();
         }
     }
 
@@ -355,8 +371,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         }
     }
 
-    public void beginTableRow(WikiParameters rowParams)
-    {
+    public void beginTableRow(WikiParameters rowParams) {
         beginTableRowInternal(rowParams);
     }
 
@@ -387,8 +402,12 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         } else if (!isInTableCell() && !isInListItem()) {
             closeBlock();
         } else if (isInQuotation()) {
-        	checkQuotationLine();
+            checkQuotationLine();
         }
+    }
+
+    public boolean checkFormatStyle(WikiStyle style) {
+        return style != null && fFormat != null && fFormat.hasStyle(style);
     }
 
     private void checkListItem() {
@@ -397,15 +416,15 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         }
     }
 
-    private void checkQuotationLine() {
-    	if (!isInQuotationLine()) {
-    		beginQuotLine(fQuoteDepth);
-    	}
-    }
-    
     private void checkParagraph() {
         if (!isInParagraph()) {
             beginParagraph();
+        }
+    }
+
+    private void checkQuotationLine() {
+        if (!isInQuotationLine()) {
+            beginQuotLine(fQuoteDepth);
         }
     }
 
@@ -415,7 +434,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         } else if (isInList()) {
             checkListItem();
         } else if (isInQuotation()) {
-        	checkQuotationLine();
+            checkQuotationLine();
         } else if (isNoBlockElements()) {
             checkParagraph();
         }
@@ -447,7 +466,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
                 } else if ((fBlockType & IBlockTypes.LIST) != 0) {
                     endList();
                 } else if ((fBlockType & IBlockTypes.QUOT) != 0) {
-                	endQuot();
+                    endQuot();
                 }
                 break;
         }
@@ -474,6 +493,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     public void endHeader() {
         if ((fBlockType & IBlockTypes.HEADER) != 0) {
             closeFormat();
+            endStyleContainer();
             fListener.endHeader(fHeaderLevel, fHeaderParams);
             fHeaderLevel = -1;
             fBlockType = IBlockTypes.NONE;
@@ -483,6 +503,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     public void endInfo() {
         if ((fBlockType & IBlockTypes.INFO) != 0) {
             closeFormat();
+            endStyleContainer();
             fListener.endInfoBlock(fInfoType, fInfoParams);
             fInfoType = '\0';
             fInfoParams = null;
@@ -504,6 +525,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     public void endParagraph() {
         if ((fBlockType & IBlockTypes.PARAGRAPH) != 0) {
             closeFormat();
+            endStyleContainer();
             fListener.endParagraph(fParagraphParams);
             fBlockType = IBlockTypes.NONE;
             fParagraphParams = WikiParameters.EMPTY;
@@ -518,6 +540,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
 
     public void endPropertyInline() {
         closeFormat();
+        endStyleContainer();
         fListener.endPropertyInline(fInlineProperty);
         fInlineProperty = null;
     }
@@ -532,11 +555,15 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     }
 
     public void endQuotLine() {
-    	fQuoteDepth--;
-    	if (fQuoteDepth < 0) {
-    		fQuoteDepth = 0;
-    	}
+        fQuoteDepth--;
+        if (fQuoteDepth < 0) {
+            fQuoteDepth = 0;
+        }
         fBlockType = IBlockTypes.QUOT;
+    }
+
+    private void endStyleContainer() {
+        fInlineState.set(InlineState.BEGIN);
     }
 
     public void endTable() {
@@ -551,6 +578,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     public void endTableCell() {
         if ((fBlockType & IBlockTypes.TABLE_ROW_CELL) == IBlockTypes.TABLE_ROW_CELL) {
             closeFormat();
+            endStyleContainer();
             fListener.endTableCell(fTableHead, fTableCellParams);
             fTableCellCounter++;
             fBlockType = IBlockTypes.TABLE_ROW;
@@ -575,6 +603,10 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         }
     }
 
+    public InlineState getInlineState() {
+        return fInlineState;
+    }
+
     /**
      * Returns the tableCellCounter.
      * 
@@ -591,10 +623,6 @@ class InternalWikiScannerContext implements IWikiScannerContext {
      */
     public int getTableRowCounter() {
         return fTableRowCounter;
-    }
-
-    public boolean inInlineProperty() {
-        return fInlineProperty != null;
     }
 
     /**
@@ -619,6 +647,10 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         return fHeaderLevel > 0;
     }
 
+    public boolean isInInlineProperty() {
+        return fInlineProperty != null;
+    }
+
     /**
      * Returns the inList.
      * 
@@ -627,21 +659,21 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     public boolean isInList() {
         return fBlockType == IBlockTypes.LIST;
     }
-    
-    public boolean isInQuotation() {
-    	return fBlockType == IBlockTypes.QUOT;
-    }
 
     private boolean isInListItem() {
         return (fBlockType & IBlockTypes.LIST_LI) == IBlockTypes.LIST_LI;
     }
-    
-    private boolean isInQuotationLine() {
-    	return (fBlockType & IBlockTypes.QUOT_LI) == IBlockTypes.QUOT_LI; 
-    }
 
     private boolean isInParagraph() {
         return fBlockType == IBlockTypes.PARAGRAPH;
+    }
+
+    public boolean isInQuotation() {
+        return fBlockType == IBlockTypes.QUOT;
+    }
+
+    private boolean isInQuotationLine() {
+        return (fBlockType & IBlockTypes.QUOT_LI) == IBlockTypes.QUOT_LI;
     }
 
     public boolean isInTable() {
@@ -662,12 +694,18 @@ class InternalWikiScannerContext implements IWikiScannerContext {
 
     public void onDefinitionListItemSplit() {
         closeFormat();
-        if ((fBlockType & IBlockTypes.LIST_DL_DT) == IBlockTypes.LIST_DL_DT)
+        if ((fBlockType & IBlockTypes.LIST_DL_DT) == IBlockTypes.LIST_DL_DT) {
+            closeFormat();
+            endStyleContainer();
             fListener.endDefinitionTerm();
-        else if ((fBlockType & IBlockTypes.LIST_DL_DD) == IBlockTypes.LIST_DL_DD)
+        } else if ((fBlockType & IBlockTypes.LIST_DL_DD) == IBlockTypes.LIST_DL_DD) {
+            closeFormat();
+            endStyleContainer();
             fListener.endDefinitionDescription();
+        }
         fBlockType = IBlockTypes.LIST_DL_DD;
         fListener.beginDefinitionDescription();
+        beginStyleContainer();
     }
 
     public void onEmptyLines(int count) {
@@ -678,6 +716,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     public void onEscape(String str) {
         checkStyleOpened();
         fListener.onEscape(str);
+        fInlineState.set(InlineState.ESCAPE);
     }
 
     public void onExtensionBlock(String extensionName, WikiParameters params) {
@@ -686,6 +725,13 @@ class InternalWikiScannerContext implements IWikiScannerContext {
 
     public void onExtensionInline(String extensionName, WikiParameters params) {
         fListener.onExtensionInline(extensionName, params);
+        fInlineState.set(InlineState.EXTENSION);
+    }
+
+    public void onFormat(WikiParameters params) {
+        closeFormat(false);
+        fNewFormat = fNewFormat.setParameters(params.toList());
+        fInlineState.set(InlineState.BEGIN_FORMAT);
     }
 
     public void onFormat(WikiStyle wikiStyle) {
@@ -699,15 +745,11 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         } else {
             fNewFormat = fNewFormat.switchStyle(wikiStyle);
         }
+        fInlineState.set(InlineState.BEGIN_FORMAT);
     }
 
-    public void onFormat(WikiParameters params) {
-        closeFormat(false);
-        fNewFormat = fNewFormat.setParameters(params.toList());
-    }
-   
     public void onHorizontalLine() {
-    	onHorizontalLine(WikiParameters.EMPTY);
+        onHorizontalLine(WikiParameters.EMPTY);
     }
 
     public void onHorizontalLine(WikiParameters params) {
@@ -715,9 +757,22 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         fListener.onHorizontalLine(params);
     }
 
+    public void onImage(String ref) {
+        checkStyleOpened();
+        fListener.onImage(ref);
+        fInlineState.set(InlineState.IMAGE);
+    }
+
+    public void onImage(WikiReference ref) {
+        checkStyleOpened();
+        fListener.onImage(ref);
+        fInlineState.set(InlineState.IMAGE);
+    }
+
     public void onLineBreak() {
         checkStyleOpened();
         fListener.onLineBreak();
+        fInlineState.set(InlineState.LINE_BREAK);
     }
 
     public void onMacroBlock(
@@ -734,11 +789,13 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         String content) {
         checkStyleOpened();
         fListener.onMacroInline(macroName, params, content);
+        fInlineState.set(InlineState.MACRO);
     }
 
     public void onNewLine() {
         checkStyleOpened();
         fListener.onNewLine();
+        fInlineState.set(InlineState.NEW_LINE);
     }
 
     public void onQuotLine(int depth) {
@@ -749,31 +806,25 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     public void onReference(String ref) {
         checkStyleOpened();
         fListener.onReference(ref);
+        fInlineState.set(InlineState.REFERENCE);
     }
 
     public void onReference(WikiReference ref) {
         checkStyleOpened();
         fListener.onReference(ref);
-    }
-
-    public void onImage(String ref) {
-        checkStyleOpened();
-        fListener.onImage(ref);
-    }
-    
-    public void onImage(WikiReference ref) {
-        checkStyleOpened();
-        fListener.onImage(ref);
+        fInlineState.set(InlineState.REFERENCE);
     }
 
     public void onSpace(String str) {
         checkStyleOpened();
         fListener.onSpace(str);
+        fInlineState.set(InlineState.SPACE);
     }
 
     public void onSpecialSymbol(String str) {
         checkStyleOpened();
         fListener.onSpecialSymbol(str);
+        fInlineState.set(InlineState.SPECIAL_SYMBOL);
     }
 
     public void onTableCaption(String str) {
@@ -785,9 +836,11 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         onTableCell(headCell, null);
     }
 
-    public void onTableCell(boolean head, WikiParameters cellParams) {
+    public void onTableCell(boolean head, WikiParameters params) {
         endTableCell();
-        beginTableCell(head, cellParams);
+        fTableHead = head;
+        fTableCellParams = params != null ? params : WikiParameters.EMPTY;
+        // beginTableCell(head, params);
     }
 
     public void onTableRow(WikiParameters params) {
@@ -806,12 +859,14 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         } else {
             checkStyleOpened();
             fListener.onVerbatimInline(str);
+            fInlineState.set(InlineState.VERBATIM);
         }
     }
-    
+
     public void onWord(String str) {
         checkStyleOpened();
         fListener.onWord(str);
+        fInlineState.set(InlineState.WORD);
     }
 
     private void openFormat() {
@@ -822,6 +877,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
             fNewFormat = newFormat;
             fListener.beginFormat(fFormat);
         }
+        fInlineState.set(InlineState.BEGIN_FORMAT);
     }
 
     private String replace(String item, String from, String to) {

@@ -116,14 +116,17 @@ public class WikiScannerContext implements IWikiScannerContext {
         WikiParameters cellParams) {
         getContext().beginTableRow(head, rowParams, cellParams);
     }
-    
-    public void beginTableRow(WikiParameters rowParams)
-    {
+
+    public void beginTableRow(WikiParameters rowParams) {
         getContext().beginTableRow(rowParams);
     }
 
     public boolean canApplyDefintionSplitter() {
         return getContext().canApplyDefintionSplitter();
+    }
+
+    public boolean checkFormatStyle(WikiStyle style) {
+        return getContext().checkFormatStyle(style);
     }
 
     public void closeBlock() {
@@ -196,16 +199,16 @@ public class WikiScannerContext implements IWikiScannerContext {
         return context;
     }
 
+    public InlineState getInlineState() {
+        return getContext().getInlineState();
+    }
+
     public int getTableCellCounter() {
         return getContext().getTableCellCounter();
     }
 
     public int getTableRowCounter() {
         return getContext().getTableRowCounter();
-    }
-
-    public boolean inInlineProperty() {
-        return getContext().inInlineProperty();
     }
 
     public boolean isInDefinitionList() {
@@ -218,6 +221,10 @@ public class WikiScannerContext implements IWikiScannerContext {
 
     public boolean isInHeader() {
         return getContext().isInHeader();
+    }
+
+    public boolean isInInlineProperty() {
+        return getContext().isInInlineProperty();
     }
 
     public boolean isInList() {
@@ -256,12 +263,12 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().onExtensionInline(extensionName, params);
     }
 
-    public void onFormat(WikiStyle wikiStyle) {
-        getContext().onFormat(wikiStyle);
-    }
-
     public void onFormat(WikiParameters params) {
         getContext().onFormat(params);
+    }
+
+    public void onFormat(WikiStyle wikiStyle) {
+        getContext().onFormat(wikiStyle);
     }
 
     /**
@@ -279,6 +286,14 @@ public class WikiScannerContext implements IWikiScannerContext {
 
     public void onHorizontalLine(WikiParameters params) {
         getContext().onHorizontalLine(params);
+    }
+
+    public void onImage(String ref) {
+        getContext().onImage(ref);
+    }
+
+    public void onImage(WikiReference ref) {
+        getContext().onImage(ref);
     }
 
     public void onLineBreak() {
@@ -315,14 +330,6 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().onReference(ref);
     }
 
-    public void onImage(String ref) {
-        getContext().onImage(ref);
-    }
-    
-    public void onImage(WikiReference ref) {
-        getContext().onImage(ref);
-    }
-    
     public void onSpace(String str) {
         getContext().onSpace(str);
     }
