@@ -11,6 +11,7 @@
 package org.wikimodel.wem.xhtml.handler;
 
 import org.wikimodel.wem.IWemConstants;
+import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 
 /**
@@ -25,12 +26,18 @@ public class ItalicTagHandler extends TagHandler {
 
     @Override
     protected void begin(TagContext context) {
+        if (context.getParams().getSize() > 0) {
+            context.getScannerContext().onFormat(context.getParams());
+        }
         context.getScannerContext().onFormat(IWemConstants.EM);
     }
 
     @Override
     protected void end(TagContext context) {
         context.getScannerContext().onFormat(IWemConstants.EM);
+        if (context.getParams().getSize() > 0) {
+            context.getScannerContext().onFormat(WikiParameters.EMPTY);
+        }
     }
 
 }
