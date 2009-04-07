@@ -99,20 +99,74 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testDocuments() throws WikiParserException {
-        test("before ((( inside ))) after ");
-        test("before inside ))) after ");
-        test("before (((\ninside ))) after ");
-        test("before (((\n inside ))) after ");
-        test("| Line One | First doc: (((\n inside ))) after \n"
-            + "|Line Two | Second doc: (((lkjlj))) skdjg");
-        test("| This is a table: | (((* item one\n"
-            + "* item two\n"
-            + " * subitem 1\n"
-            + " * subitem 2\n"
-            + "* item three))) ");
-
-        test("before ((( opened and not closed");
-        test("before ((( one ((( two ((( three ");
+        test("before ((( inside ))) after ", "<p>before</p>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<p>inside</p>\n"
+            + "</div>\n"
+            + "<p>after </p>");
+        test("before inside ))) after ", "<p>before inside</p>\n"
+            + "<p>after </p>");
+        test("before (((\ninside ))) after ", "<p>before</p>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<p>inside</p>\n"
+            + "</div>\n"
+            + "<p>after </p>");
+        test("before (((\n inside ))) after ", "<p>before</p>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<p> inside</p>\n"
+            + "</div>\n"
+            + "<p>after </p>");
+        test(
+            "| Line One | First doc: (((\n inside ))) after \n"
+                + "|Line Two | Second doc: (((lkjlj))) skdjg",
+            ""
+                + "<table><tbody>\n"
+                + "  <tr><td> Line One </td><td> First doc:<div class='wikimodel-document'>\n"
+                + "<p> inside</p>\n"
+                + "</div>\n"
+                + "after </td></tr>\n"
+                + "  <tr><td>Line Two </td><td> Second doc:<div class='wikimodel-document'>\n"
+                + "<p>lkjlj</p>\n"
+                + "</div>\n"
+                + "skdjg</td></tr>\n"
+                + "</tbody></table>");
+        test(
+            "| This is a table: | (((* item one\n"
+                + "* item two\n"
+                + " * subitem 1\n"
+                + " * subitem 2\n"
+                + "* item three))) ",
+            ""
+                + "<table><tbody>\n"
+                + "  <tr><td> This is a table: </td><td><div class='wikimodel-document'>\n"
+                + "<ul>\n"
+                + "  <li>item one</li>\n"
+                + "  <li>item two<ul>\n"
+                + "  <li>subitem 1</li>\n"
+                + "  <li>subitem 2</li>\n"
+                + "</ul>\n"
+                + "</li>\n"
+                + "  <li>item three</li>\n"
+                + "</ul>\n"
+                + "</div>\n"
+                + "</td></tr>\n"
+                + "</tbody></table>");
+        test("before ((( opened and not closed", ""
+            + "<p>before</p>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<p>opened and not closed</p>\n"
+            + "</div>");
+        test("before ((( one ((( two ((( three ", ""
+            + "<p>before</p>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<p>one</p>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<p>two</p>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<p>three </p>\n"
+            + "</div>\n"
+            + "</div>\n"
+            + "</div>");
     }
 
     /**
@@ -135,43 +189,49 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
      */
     public void testExtensions() throws WikiParserException {
         // Inline extensions
-        test(" $abc ", "<p> <span class='extension' extension='abc'/> </p>");
+        test(
+            " $abc ",
+            "<p> <span class='wikimodel-extension' extension='abc'/> </p>");
         test(
             "abc $abc after",
-            "<p>abc <span class='extension' extension='abc'/> after</p>");
+            "<p>abc <span class='wikimodel-extension' extension='abc'/> after</p>");
         test(
             "abc $abc() after",
-            "<p>abc <span class='extension' extension='abc'/> after</p>");
+            "<p>abc <span class='wikimodel-extension' extension='abc'/> after</p>");
         test(
             "abc $abc(a=b c=d) after",
-            "<p>abc <span class='extension' extension='abc' a='b' c='d'/> after</p>");
+            "<p>abc <span class='wikimodel-extension' extension='abc' a='b' c='d'/> after</p>");
         test(
             "before$abc(hello)after",
-            "<p>before<span class='extension' extension='abc' hello=''/>after</p>");
+            "<p>before<span class='wikimodel-extension' extension='abc' hello=''/>after</p>");
 
         // Block extensions
-        test("$abc", "<div class='extension' extension='abc'/>");
-        test("$abc()", "<div class='extension' extension='abc'/>");
+        test("$abc", "<div class='wikimodel-extension' extension='abc'/>");
+        test("$abc()", "<div class='wikimodel-extension' extension='abc'/>");
         test(
             "$abc(a=b c=d)",
-            "<div class='extension' extension='abc' a='b' c='d'/>");
-        test("$abc(a)", "<div class='extension' extension='abc' a=''/>");
+            "<div class='wikimodel-extension' extension='abc' a='b' c='d'/>");
+        test(
+            "$abc(a)",
+            "<div class='wikimodel-extension' extension='abc' a=''/>");
 
         test("before\n$abc after", ""
             + "<p>before</p>\n"
-            + "<div class='extension' extension='abc'/>\n"
+            + "<div class='wikimodel-extension' extension='abc'/>\n"
             + "<p> after</p>");
         test("before\n$abc() after", ""
             + "<p>before</p>\n"
-            + "<div class='extension' extension='abc'/>\n"
+            + "<div class='wikimodel-extension' extension='abc'/>\n"
             + "<p> after</p>");
-        test("before\n$abc(a=b c=d) after", ""
-            + "<p>before</p>\n"
-            + "<div class='extension' extension='abc' a='b' c='d'/>\n"
-            + "<p> after</p>");
+        test(
+            "before\n$abc(a=b c=d) after",
+            ""
+                + "<p>before</p>\n"
+                + "<div class='wikimodel-extension' extension='abc' a='b' c='d'/>\n"
+                + "<p> after</p>");
         test("before\n$abc(hello)after", ""
             + "<p>before</p>\n"
-            + "<div class='extension' extension='abc' hello=''/>\n"
+            + "<div class='wikimodel-extension' extension='abc' hello=''/>\n"
             + "<p>after</p>");
     }
 
@@ -329,7 +389,7 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
             "* item {{{formatted block}}} {macro}123{/macro} after",
             "<ul>\n"
                 + "  <li>item <code>formatted block</code>"
-                + " <span class='macro' macroName='macro'><![CDATA[123]]></span> after</li>\n</ul>");
+                + " <span class='wikimodel-macro' macroName='macro'><![CDATA[123]]></span> after</li>\n</ul>");
 
         test("? term:  definition");
         test("?just term");
@@ -337,8 +397,7 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         test(";:just definition");
         test(":just definition");
         test(";:");
-        test(": Indenting is stripped out.\r\n"
-            + " : Includes double indenting");
+        test(": Indenting is stripped out.\n" + " : Includes double indenting");
 
         test(";term one: definition one\n"
             + ";term two: definition two\n"
@@ -362,96 +421,112 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
     public void testMacro() throws WikiParserException {
         test(
             "{toto}a{/toto}",
-            "<pre class='macro' macroName='toto'><![CDATA[a]]></pre>");
+            "<pre class='wikimodel-macro' macroName='toto'><![CDATA[a]]></pre>");
         test(
             "{toto}a{toto}b{/toto}c{/toto}",
-            "<pre class='macro' macroName='toto'><![CDATA[a{toto}b{/toto}c]]></pre>");
-        test("before\n{toto}a{/toto}\nafter", ""
-            + "<p>before</p>\n"
-            + "<pre class='macro' macroName='toto'><![CDATA[a]]></pre>\n"
-            + "<p>after</p>");
-        test("before\n{toto}a{/toto}after", ""
-            + "<p>before</p>\n"
-            + "<pre class='macro' macroName='toto'><![CDATA[a]]></pre>\n"
-            + "<p>after</p>");
+            "<pre class='wikimodel-macro' macroName='toto'><![CDATA[a{toto}b{/toto}c]]></pre>");
+        test(
+            "before\n{toto}a{/toto}\nafter",
+            ""
+                + "<p>before</p>\n"
+                + "<pre class='wikimodel-macro' macroName='toto'><![CDATA[a]]></pre>\n"
+                + "<p>after</p>");
+        test(
+            "before\n{toto}a{/toto}after",
+            ""
+                + "<p>before</p>\n"
+                + "<pre class='wikimodel-macro' macroName='toto'><![CDATA[a]]></pre>\n"
+                + "<p>after</p>");
 
         // URIs as macro names
         test(
             "{x:toto}a{/x:toto}",
-            "<pre class='macro' macroName='x:toto'><![CDATA[a]]></pre>");
+            "<pre class='wikimodel-macro' macroName='x:toto'><![CDATA[a]]></pre>");
         test(
             "{x:toto}a{x:toto}b{/x:toto}c{/x:toto}",
-            "<pre class='macro' macroName='x:toto'><![CDATA[a{x:toto}b{/x:toto}c]]></pre>");
-        test("before\n{x:toto}a{/x:toto}\nafter", ""
-            + "<p>before</p>\n"
-            + "<pre class='macro' macroName='x:toto'><![CDATA[a]]></pre>\n"
-            + "<p>after</p>");
-        test("before\n{x:toto}a{/x:toto}after", ""
-            + "<p>before</p>\n"
-            + "<pre class='macro' macroName='x:toto'><![CDATA[a]]></pre>\n"
-            + "<p>after</p>");
+            "<pre class='wikimodel-macro' macroName='x:toto'><![CDATA[a{x:toto}b{/x:toto}c]]></pre>");
+        test(
+            "before\n{x:toto}a{/x:toto}\nafter",
+            ""
+                + "<p>before</p>\n"
+                + "<pre class='wikimodel-macro' macroName='x:toto'><![CDATA[a]]></pre>\n"
+                + "<p>after</p>");
+        test(
+            "before\n{x:toto}a{/x:toto}after",
+            ""
+                + "<p>before</p>\n"
+                + "<pre class='wikimodel-macro' macroName='x:toto'><![CDATA[a]]></pre>\n"
+                + "<p>after</p>");
 
         // Empty macros
         test(
             "{x:toto /}",
-            "<pre class='macro' macroName='x:toto'><![CDATA[]]></pre>");
+            "<pre class='wikimodel-macro' macroName='x:toto'><![CDATA[]]></pre>");
         test(
             "{x:toto a=b c=d /}",
-            "<pre class='macro' macroName='x:toto' a='b' c='d'><![CDATA[]]></pre>");
+            "<pre class='wikimodel-macro' macroName='x:toto' a='b' c='d'><![CDATA[]]></pre>");
         test(
             "before\n{x:toto  a=b c=d/}\nafter",
             ""
                 + "<p>before</p>\n"
-                + "<pre class='macro' macroName='x:toto' a='b' c='d'><![CDATA[]]></pre>\n"
+                + "<pre class='wikimodel-macro' macroName='x:toto' a='b' c='d'><![CDATA[]]></pre>\n"
                 + "<p>after</p>");
         test(
             "before\n{x:toto  a='b' c='d'/}after",
             ""
                 + "<p>before</p>\n"
-                + "<pre class='macro' macroName='x:toto' a='b' c='d'><![CDATA[]]></pre>\n"
+                + "<pre class='wikimodel-macro' macroName='x:toto' a='b' c='d'><![CDATA[]]></pre>\n"
                 + "<p>after</p>");
         test(
             "before{x:toto /}after",
-            "<p>before<span class='macro' macroName='x:toto'><![CDATA[]]></span>after</p>");
+            "<p>before<span class='wikimodel-macro' macroName='x:toto'><![CDATA[]]></span>after</p>");
 
         // Bad-formed block macros (not-closed)
-        test("{toto}", "<pre class='macro' macroName='toto'><![CDATA[]]></pre>");
+        test(
+            "{toto}",
+            "<pre class='wikimodel-macro' macroName='toto'><![CDATA[]]></pre>");
         test(
             "{toto}a{toto}",
-            "<pre class='macro' macroName='toto'><![CDATA[a{toto}]]></pre>");
+            "<pre class='wikimodel-macro' macroName='toto'><![CDATA[a{toto}]]></pre>");
 
         // 
         test(
             "{toto}a{/toto}",
-            "<pre class='macro' macroName='toto'><![CDATA[a]]></pre>");
+            "<pre class='wikimodel-macro' macroName='toto'><![CDATA[a]]></pre>");
         test(
             "before{toto}macro{/toto}after",
-            "<p>before<span class='macro' macroName='toto'><![CDATA[macro]]></span>after</p>");
+            "<p>before<span class='wikimodel-macro' macroName='toto'><![CDATA[macro]]></span>after</p>");
 
-        test("before{toto a=b c=d}toto macro tata {/toto}after", ""
-            + "<p>before<span class='macro' macroName='toto' a='b' c='d'>"
-            + "<![CDATA[toto macro tata ]]>"
-            + "</span>after</p>");
+        test(
+            "before{toto a=b c=d}toto macro tata {/toto}after",
+            ""
+                + "<p>before<span class='wikimodel-macro' macroName='toto' a='b' c='d'>"
+                + "<![CDATA[toto macro tata ]]>"
+                + "</span>after</p>");
 
         test(
             "before{toto a=b c=d}toto {x qsdk} macro {sd} tata {/toto}after",
             ""
-                + "<p>before<span class='macro' macroName='toto' a='b' c='d'>"
+                + "<p>before<span class='wikimodel-macro' macroName='toto' a='b' c='d'>"
                 + "<![CDATA[toto {x qsdk} macro {sd} tata ]]>"
                 + "</span>after</p>");
 
         // Macros in other block elements (tables and lists)
-        test("- before\n{code a=b c=d}this is a code{/code}after", ""
-            + "<ul>\n"
-            + "  <li>before<pre class='macro' macroName='code' a='b' c='d'>"
-            + "<![CDATA[this is a code]]></pre>\n"
-            + "after</li>\n"
-            + "</ul>");
-        test("- before{code a=b c=d}this is a code{/code}after", ""
-            + "<ul>\n"
-            + "  <li>before<span class='macro' macroName='code' a='b' c='d'>"
-            + "<![CDATA[this is a code]]></span>after</li>\n"
-            + "</ul>");
+        test(
+            "- before\n{code a=b c=d}this is a code{/code}after",
+            ""
+                + "<ul>\n"
+                + "  <li>before<pre class='wikimodel-macro' macroName='code' a='b' c='d'>"
+                + "<![CDATA[this is a code]]></pre>\n"
+                + "after</li>\n"
+                + "</ul>");
+        test(
+            "- before{code a=b c=d}this is a code{/code}after",
+            ""
+                + "<ul>\n"
+                + "  <li>before<span class='wikimodel-macro' macroName='code' a='b' c='d'>"
+                + "<![CDATA[this is a code]]></span>after</li>\n"
+                + "</ul>");
 
         // Not a macro
         test("{ toto a=b c=d}", "<p>{ toto a=b c=d}</p>");
@@ -466,14 +541,14 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
                 + "</table>\n"
                 + "{/toto}\n\n"
                 + "And this is a usage of this macro: $toto(a=x b=y)",
-            "<p>This is a macro: <span class='macro' macroName='toto' x:a='b' x:c='d'><![CDATA[\n"
+            "<p>This is a macro: <span class='wikimodel-macro' macroName='toto' x:a='b' x:c='d'><![CDATA[\n"
                 + "<table>\n"
                 + "#foreach ($x in $table)\n"
                 + "  <tr>hello, $x</tr>\n"
                 + "#end\n"
                 + "</table>\n"
                 + "]]></span></p>\n"
-                + "<p>And this is a usage of this macro: <span class='extension' extension='toto' a='x' b='y'/></p>");
+                + "<p>And this is a usage of this macro: <span class='wikimodel-extension' extension='toto' a='x' b='y'/></p>");
 
         test(
             "!!Header:: Cell with a macro: \n"
@@ -482,7 +557,7 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
             ""
                 + "<table><tbody>\n"
                 + "  <tr><th>Header</th><td> Cell with a macro: "
-                + "<pre class='macro' macroName='code'><![CDATA[this is a code]]></pre>\n \n"
+                + "<pre class='wikimodel-macro' macroName='code'><![CDATA[this is a code]]></pre>\n \n"
                 + " this is afer the code&hellip;</td></tr>\n"
                 + "</tbody></table>");
         test(
@@ -499,7 +574,7 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
                 + "  <li>item one</li>\n"
                 + "  <li>item two<ul>\n"
                 + "  <li>subitem with a macro:\n"
-                + "  <span class='macro' macroName='code'><![CDATA[ this is a code]]></span> \n"
+                + "  <span class='wikimodel-macro' macroName='code'><![CDATA[ this is a code]]></span> \n"
                 + "  the same item (continuation)</li>\n"
                 + "  <li>subitem two</li>\n"
                 + "</ul>\n"
@@ -510,42 +585,42 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         // Macros with URIs as names
         test(
             "{x:y a=b c=d}",
-            "<pre class='macro' macroName='x:y' a='b' c='d'><![CDATA[]]></pre>");
+            "<pre class='wikimodel-macro' macroName='x:y' a='b' c='d'><![CDATA[]]></pre>");
         test(
             "before{x:y a=b c=d}macro content",
-            "<p>before<span class='macro' macroName='x:y' a='b' c='d'><![CDATA[macro content]]></span></p>");
+            "<p>before<span class='wikimodel-macro' macroName='x:y' a='b' c='d'><![CDATA[macro content]]></span></p>");
         test(
             "before\n{x:y a=b c=d}macro content",
             ""
                 + "<p>before</p>\n"
-                + "<pre class='macro' macroName='x:y' a='b' c='d'><![CDATA[macro content]]></pre>");
+                + "<pre class='wikimodel-macro' macroName='x:y' a='b' c='d'><![CDATA[macro content]]></pre>");
         test(
             "before\n{x:y a=b c=d/}\nafter",
             ""
                 + "<p>before</p>\n"
-                + "<pre class='macro' macroName='x:y' a='b' c='d'><![CDATA[]]></pre>\n"
+                + "<pre class='wikimodel-macro' macroName='x:y' a='b' c='d'><![CDATA[]]></pre>\n"
                 + "<p>after</p>");
 
         // Not closed and bad-formed macros
         test(
             "a{a}{b}",
-            "<p>a<span class='macro' macroName='a'><![CDATA[{b}]]></span></p>");
+            "<p>a<span class='wikimodel-macro' macroName='a'><![CDATA[{b}]]></span></p>");
         test(
             "a{a}{b}{",
-            "<p>a<span class='macro' macroName='a'><![CDATA[{b}{]]></span></p>");
+            "<p>a<span class='wikimodel-macro' macroName='a'><![CDATA[{b}{]]></span></p>");
         test(
             "a {{x:}} b",
-            "<p>a {<span class='macro' macroName='x:'><![CDATA[} b]]></span></p>");
+            "<p>a {<span class='wikimodel-macro' macroName='x:'><![CDATA[} b]]></span></p>");
         test(
             "a {{x:}} }b",
-            "<p>a {<span class='macro' macroName='x:'><![CDATA[} }b]]></span></p>");
+            "<p>a {<span class='wikimodel-macro' macroName='x:'><![CDATA[} }b]]></span></p>");
 
         test(
             "a {{x:}} {}b",
-            "<p>a {<span class='macro' macroName='x:'><![CDATA[} {}b]]></span></p>");
+            "<p>a {<span class='wikimodel-macro' macroName='x:'><![CDATA[} {}b]]></span></p>");
         test(
             "a {{x:}}, {{y:}} b",
-            "<p>a {<span class='macro' macroName='x:'><![CDATA[}, {{y:}} b]]></span></p>");
+            "<p>a {<span class='wikimodel-macro' macroName='x:'><![CDATA[}, {{y:}} b]]></span></p>");
 
     }
 
@@ -578,15 +653,15 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
 
         test("{{background='blue'}}hello", "<p background='blue'>hello</p>");
         test("{{background='blue'}}\n"
-            + "First paragraph\r\n"
-            + "\r\n"
-            + "\r\n"
-            + "\r\n"
+            + "First paragraph\n"
+            + "\n"
+            + "\n"
+            + "\n"
             + "", ""
             + "<p background='blue'>First paragraph</p>\n"
             + "<div style='height:3em;'></div>");
 
-        test("First paragraph\r\n" + "\r\n" + "\r\n" + "\r\n" + "");
+        test("First paragraph\n" + "\n" + "\n" + "\n" + "");
         test("First paragraph.\n"
             + "Second line of the same paragraph.\n"
             + "\n"
@@ -602,26 +677,30 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
     public void testPropertiesBlock() throws WikiParserException {
         test(
             "%toto hello  world\n123",
-            "<div class='property' url='toto'><p>hello  world</p>\n</div>\n<p>123</p>");
-        test("%prop1 value1\n%prop2 value2", ""
-            + "<div class='property' url='prop1'><p>value1</p>\n</div>\n"
-            + "<div class='property' url='prop2'><p>value2</p>\n</div>");
-        test("%prop1 value1\nparagraph\n%prop2 value2", ""
-            + "<div class='property' url='prop1'><p>value1</p>\n</div>\n"
-            + "<p>paragraph</p>\n"
-            + "<div class='property' url='prop2'><p>value2</p>\n</div>");
+            "<div class='wikimodel-property' url='toto'><p>hello  world</p>\n</div>\n<p>123</p>");
+        test(
+            "%prop1 value1\n%prop2 value2",
+            ""
+                + "<div class='wikimodel-property' url='prop1'><p>value1</p>\n</div>\n"
+                + "<div class='wikimodel-property' url='prop2'><p>value2</p>\n</div>");
+        test(
+            "%prop1 value1\nparagraph\n%prop2 value2",
+            ""
+                + "<div class='wikimodel-property' url='prop1'><p>value1</p>\n</div>\n"
+                + "<p>paragraph</p>\n"
+                + "<div class='wikimodel-property' url='prop2'><p>value2</p>\n</div>");
 
         test("%prop1 (((embedded)))next paragraph\n%prop2 value2", ""
-            + "<div class='property' url='prop1'>\n"
+            + "<div class='wikimodel-property' url='prop1'>\n"
             + "<p>embedded</p>\n"
             + "</div>\n"
             + "<p>next paragraph</p>\n"
-            + "<div class='property' url='prop2'><p>value2</p>\n"
+            + "<div class='wikimodel-property' url='prop2'><p>value2</p>\n"
             + "</div>");
         test(
             "%prop1 (((=Header\n- item 1\n- item 2)))next paragraph\n%prop2 value2",
             ""
-                + "<div class='property' url='prop1'>\n"
+                + "<div class='wikimodel-property' url='prop1'>\n"
                 + "<h1>Header</h1>\n"
                 + "<ul>\n"
                 + "  <li>item 1</li>\n"
@@ -629,34 +708,34 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
                 + "</ul>\n"
                 + "</div>\n"
                 + "<p>next paragraph</p>\n"
-                + "<div class='property' url='prop2'><p>value2</p>\n"
+                + "<div class='wikimodel-property' url='prop2'><p>value2</p>\n"
                 + "</div>");
 
         test(
-            "before\r\n"
-                + "\r\n"
-                + "%company (((\r\n"
-                + "    %name Cognium Systems\r\n"
-                + "    %addr (((\r\n"
-                + "        %country [France]\r\n"
-                + "        %city [Paris]\r\n"
-                + "        %street Cité Nollez\r\n"
-                + "        This is just a description...\r\n"
-                + "    )))\r\n"
-                + ")))\r\n"
-                + "\r\n"
+            "before\n"
+                + "\n"
+                + "%company (((\n"
+                + "    %name Cognium Systems\n"
+                + "    %addr (((\n"
+                + "        %country [France]\n"
+                + "        %city [Paris]\n"
+                + "        %street Cité Nollez\n"
+                + "        This is just a description...\n"
+                + "    )))\n"
+                + ")))\n"
+                + "\n"
                 + "after",
             ""
                 + "<p>before</p>\n"
-                + "<div class='property' url='company'>\n"
-                + "<div class='property' url='name'><p>Cognium Systems</p>\n"
+                + "<div class='wikimodel-property' url='company'>\n"
+                + "<div class='wikimodel-property' url='name'><p>Cognium Systems</p>\n"
                 + "</div>\n"
-                + "<div class='property' url='addr'>\n"
-                + "<div class='property' url='country'><p><a href='France'>France</a></p>\n"
+                + "<div class='wikimodel-property' url='addr'>\n"
+                + "<div class='wikimodel-property' url='country'><p><a href='France'>France</a></p>\n"
                 + "</div>\n"
-                + "<div class='property' url='city'><p><a href='Paris'>Paris</a></p>\n"
+                + "<div class='wikimodel-property' url='city'><p><a href='Paris'>Paris</a></p>\n"
                 + "</div>\n"
-                + "<div class='property' url='street'><p>Cité Nollez</p>\n"
+                + "<div class='wikimodel-property' url='street'><p>Cité Nollez</p>\n"
                 + "</div>\n"
                 + "<p>        This is just a description&hellip;</p>\n"
                 + "</div>\n"
@@ -666,26 +745,26 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
 
         // No closing brackets
         test(
-            "before\r\n"
-                + "\r\n"
-                + "%company (((\r\n"
-                + "    %name Cognium Systems\r\n"
-                + "    %addr (((\r\n"
-                + "        %country [France]\r\n"
-                + "        %city Paris\r\n"
-                + "        %street Cité Nollez\r\n"
-                + "        This is just a description...\r\n"
+            "before\n"
+                + "\n"
+                + "%company (((\n"
+                + "    %name Cognium Systems\n"
+                + "    %addr (((\n"
+                + "        %country [France]\n"
+                + "        %city Paris\n"
+                + "        %street Cité Nollez\n"
+                + "        This is just a description...\n"
                 + "after",
             "<p>before</p>\n"
-                + "<div class='property' url='company'>\n"
-                + "<div class='property' url='name'><p>Cognium Systems</p>\n"
+                + "<div class='wikimodel-property' url='company'>\n"
+                + "<div class='wikimodel-property' url='name'><p>Cognium Systems</p>\n"
                 + "</div>\n"
-                + "<div class='property' url='addr'>\n"
-                + "<div class='property' url='country'><p><a href='France'>France</a></p>\n"
+                + "<div class='wikimodel-property' url='addr'>\n"
+                + "<div class='wikimodel-property' url='country'><p><a href='France'>France</a></p>\n"
                 + "</div>\n"
-                + "<div class='property' url='city'><p>Paris</p>\n"
+                + "<div class='wikimodel-property' url='city'><p>Paris</p>\n"
                 + "</div>\n"
-                + "<div class='property' url='street'><p>Cité Nollez</p>\n"
+                + "<div class='wikimodel-property' url='street'><p>Cité Nollez</p>\n"
                 + "</div>\n"
                 + "<p>        This is just a description&hellip;\n"
                 + "after</p>\n"
@@ -696,13 +775,13 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
     public void testPropertiesInline() throws WikiParserException {
         test(
             "before %prop(value) after",
-            "<p>before <span class='property' url='prop'>value</span> after</p>");
+            "<p>before <span class='wikimodel-property' url='prop'>value</span> after</p>");
         test(
             "before %foo:bar:toto.com/titi/tata?query=x#ancor(value) after",
-            "<p>before <span class='property' url='foo:bar:toto.com/titi/tata?query=x#ancor'>value</span> after</p>");
+            "<p>before <span class='wikimodel-property' url='foo:bar:toto.com/titi/tata?query=x#ancor'>value</span> after</p>");
         test(
             "before %prop(before*bold*__italic__^^superscript^^~~subscript~~value) after",
-            "<p>before <span class='property' url='prop'>before<strong>bold</strong><em>italic</em><sup>superscript</sup><sub>subscript</sub>value</span> after</p>");
+            "<p>before <span class='wikimodel-property' url='prop'>before<strong>bold</strong><em>italic</em><sup>superscript</sup><sub>subscript</sub>value</span> after</p>");
     }
 
     /**
@@ -732,10 +811,7 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
             + " the second line\n"
             + "</blockquote>");
 
-        test("        This is just a description...\r\n"
-            + "    \r\n"
-            + "\r\n"
-            + "\r\n");
+        test("        This is just a description...\n" + "    \n" + "\n" + "\n");
         test("> first\n"
             + ">> second\n"
             + ">> third\n"
@@ -804,7 +880,7 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         // Escaped reference
         test(
             "before wiki\\:Hello after",
-            "<p>before wiki<span class='escaped'>:</span>Hello after</p>");
+            "<p>before wiki<span class='wikimodel-escaped'>:</span>Hello after</p>");
 
         // Not references
         test("download::MyDoc.pdf", "<p>download::MyDoc.pdf</p>");
