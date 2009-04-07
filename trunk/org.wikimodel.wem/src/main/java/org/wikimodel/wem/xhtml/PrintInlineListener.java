@@ -43,7 +43,7 @@ public class PrintInlineListener extends PrintTextListener {
      */
     @Override
     public void beginPropertyInline(String str) {
-        print("<span class='property' url='"
+        print("<span class='wikimodel-property' url='"
             + WikiPageUtil.escapeXmlAttribute(str)
             + "'>");
     }
@@ -137,14 +137,14 @@ public class PrintInlineListener extends PrintTextListener {
      */
     @Override
     public void onEscape(String str) {
-        print("<span class='escaped'>"
+        print("<span class='wikimodel-escaped'>"
             + WikiPageUtil.escapeXmlString(str)
             + "</span>");
     }
 
     @Override
     public void onExtensionInline(String extensionName, WikiParameters params) {
-        print("<span class='extension' extension='"
+        print("<span class='wikimodel-extension' extension='"
             + extensionName
             + "'"
             + params
