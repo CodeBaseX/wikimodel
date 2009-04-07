@@ -98,14 +98,18 @@ public class GWikiParserTest extends AbstractWikiParserTest {
     public void testProperties() throws WikiParserException {
         test(
             "#toto hello  world\n123",
-            "<div class='property' url='toto'><p>hello  world</p>\n</div>\n<p>123</p>");
-        test("#prop1 value1\n#prop2 value2", ""
-            + "<div class='property' url='prop1'><p>value1</p>\n</div>\n"
-            + "<div class='property' url='prop2'><p>value2</p>\n</div>");
-        test("#prop1 value1\nparagraph\n#prop2 value2", ""
-            + "<div class='property' url='prop1'><p>value1</p>\n</div>\n"
-            + "<p>paragraph</p>\n"
-            + "<div class='property' url='prop2'><p>value2</p>\n</div>");
+            "<div class='wikimodel-property' url='toto'><p>hello  world</p>\n</div>\n<p>123</p>");
+        test(
+            "#prop1 value1\n#prop2 value2",
+            ""
+                + "<div class='wikimodel-property' url='prop1'><p>value1</p>\n</div>\n"
+                + "<div class='wikimodel-property' url='prop2'><p>value2</p>\n</div>");
+        test(
+            "#prop1 value1\nparagraph\n#prop2 value2",
+            ""
+                + "<div class='wikimodel-property' url='prop1'><p>value1</p>\n</div>\n"
+                + "<p>paragraph</p>\n"
+                + "<div class='wikimodel-property' url='prop2'><p>value2</p>\n</div>");
     }
 
     /**
