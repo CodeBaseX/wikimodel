@@ -29,7 +29,7 @@ public interface XWikiScannerConstants {
   int VERBATIM_END = 13;
   int VERBATIM_CONTENT = 14;
   int MACRO_NAME = 15;
-  int MACRO_DEF = 16;
+  int MACRO_PARAMS = 16;
   int MACRO_EMPTY = 17;
   int MACRO_START = 18;
   int MACRO_END = 19;
@@ -148,7 +148,7 @@ public interface XWikiScannerConstants {
     "<VERBATIM_END>",
     "<VERBATIM_CONTENT>",
     "<MACRO_NAME>",
-    "<MACRO_DEF>",
+    "<MACRO_PARAMS>",
     "<MACRO_EMPTY>",
     "<MACRO_START>",
     "<MACRO_END>",

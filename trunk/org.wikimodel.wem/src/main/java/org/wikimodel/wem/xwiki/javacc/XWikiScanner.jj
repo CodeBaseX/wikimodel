@@ -140,10 +140,10 @@ TOKEN_MGR_DECLS: {
         | "}" ~["}"] | "}}" ~["}"]
         | "{" ~["{"] | "{{" ~["{"]
       )+ >
-    | <#MACRO_NAME: ( <URI> | (<XWIKI_CHAR>)+ ) >
-    | <#MACRO_DEF: ( "~" ~[] | ~["}"] | "}" ~["}"] )* >
-    | <#MACRO_EMPTY: "{{" <MACRO_NAME> <MACRO_DEF> "/}}" >
-    | <#MACRO_START: "{{" <MACRO_NAME> <MACRO_DEF> "}}" >
+    | <#MACRO_NAME: (<XWIKI_CHAR>)+ (["-", "_", ".", ":"] (<XWIKI_CHAR>)+)* >
+    | <#MACRO_PARAMS: ( "~" ~[] | ~["}"] | "}" ~["}"] )* >
+    | <#MACRO_EMPTY: "{{" <MACRO_NAME> ((<SPACE>) <MACRO_PARAMS>)? "/}}" >
+    | <#MACRO_START: "{{" <MACRO_NAME> ((<SPACE>) <MACRO_PARAMS>)? "}}" >
     | <#MACRO_END: "{{/" <MACRO_NAME> (<SPACE>)* "}}" > 
     | <#MACRO_CONTENT: ( <XWIKI_CHAR> | <SPACE> |<NEW_LINE> | <XWIKI_SPECIAL_SYMBOL> ) >
     | <#REFERENCE_IMAGE: "[[image:" ("~" ~[] | ~["]"] | "]" ~["]"] )* "]]" >
@@ -161,7 +161,7 @@ TOKEN_MGR_DECLS: {
 	| <#XWIKI_SPACE: <SPACE> | "~" <SPACE> >
 // <common-tokens>
     // =========================================================================
-    // New lines, spaces, special symbols and characters definitions
+    // New lines, spaces, special symbols and character definitions
     // =========================================================================
     | <#NEW_LINE : "\r\n" | "\r" | "\n" >
     | <#SPACE : [" ", "\t"] >
