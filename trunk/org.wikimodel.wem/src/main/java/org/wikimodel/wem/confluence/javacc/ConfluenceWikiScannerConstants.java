@@ -24,75 +24,78 @@ public interface ConfluenceWikiScannerConstants {
   int BR = 8;
   int CELL = 9;
   int QUOT_BLOCK = 10;
-  int FORMAT_SYMBOL = 11;
-  int SPECIAL_SYMBOLS = 12;
-  int NEW_LINE = 13;
-  int SPACE = 14;
-  int SPECIAL_SYMBOL = 15;
-  int CHAR = 16;
-  int URI = 17;
-  int ALPHA = 18;
-  int DIGIT = 19;
-  int HEXDIG = 20;
-  int URI_GEN_DELIMS = 21;
-  int URI_SUB_DELIMS = 22;
-  int URI_UNRESERVED = 23;
-  int URI_RESERVED = 24;
-  int URI_SCHEME = 25;
-  int URI_SCHEME_COMPOSITE = 26;
-  int URI_PCT_ENCODED = 27;
-  int URI_PCHAR_FIRST = 28;
-  int URI_PCHAR = 29;
-  int URI_QUERY = 30;
-  int URI_FRAGMENT = 31;
-  int URI_HIER_PART = 32;
-  int URI_AUTHORITY = 33;
-  int URI_USERINFO = 34;
-  int URI_PATH_ABEMPTY = 35;
-  int URI_PATH_ABSOLUTE = 36;
-  int URI_PATH_ROOTLESS = 37;
-  int URI_SEGMENT = 38;
-  int URI_SEGMENT_NZ = 39;
-  int URI_SEGMENT_NZ_NC = 40;
-  int URI_PORT = 41;
-  int URI_HOST = 42;
-  int URI_REG_NAME = 43;
-  int I_LIST_ITEM = 44;
-  int I_TABLE_ROW = 45;
-  int I_HEADER = 46;
-  int I_VERBATIM_BLOCK = 47;
-  int I_HORLINE = 48;
-  int I_VERBATIM_INLINE = 49;
-  int I_REFERENCE = 50;
-  int I_TABLE_CELL = 51;
-  int I_QUOT_BLOCK = 52;
-  int I_BR = 53;
-  int I_ESCAPE = 54;
-  int I_FORMAT_SYMBOL = 55;
-  int I_SPECIAL_SYMBOLS = 56;
-  int I_URI = 57;
-  int I_NL = 58;
-  int I_SPACE = 59;
-  int I_WORD = 60;
-  int I_SPECIAL_SYMBOL = 61;
-  int D_LIST_ITEM = 62;
-  int D_TABLE_ROW = 63;
-  int D_HEADER = 64;
-  int D_VERBATIM_BLOCK = 65;
-  int D_HORLINE = 66;
-  int D_VERBATIM_INLINE = 67;
-  int D_REFERENCE = 68;
-  int D_TABLE_CELL = 69;
-  int D_QUOT_BLOCK = 70;
-  int D_BR = 71;
-  int D_ESCAPE = 72;
-  int D_FORMAT_SYMBOL = 73;
-  int D_SPECIAL_SYMBOLS = 74;
-  int D_URI = 75;
-  int D_NL = 76;
-  int D_SPACE = 77;
-  int D_WORD = 78;
-  int D_SPECIAL_SYMBOL = 79;
+  int QUOT_BLOCK1 = 11;
+  int FORMAT_SYMBOL = 12;
+  int SPECIAL_SYMBOLS = 13;
+  int NEW_LINE = 14;
+  int SPACE = 15;
+  int SPECIAL_SYMBOL = 16;
+  int CHAR = 17;
+  int URI = 18;
+  int ALPHA = 19;
+  int DIGIT = 20;
+  int HEXDIG = 21;
+  int URI_GEN_DELIMS = 22;
+  int URI_SUB_DELIMS = 23;
+  int URI_UNRESERVED = 24;
+  int URI_RESERVED = 25;
+  int URI_SCHEME = 26;
+  int URI_SCHEME_COMPOSITE = 27;
+  int URI_PCT_ENCODED = 28;
+  int URI_PCHAR_FIRST = 29;
+  int URI_PCHAR = 30;
+  int URI_QUERY = 31;
+  int URI_FRAGMENT = 32;
+  int URI_HIER_PART = 33;
+  int URI_AUTHORITY = 34;
+  int URI_USERINFO = 35;
+  int URI_PATH_ABEMPTY = 36;
+  int URI_PATH_ABSOLUTE = 37;
+  int URI_PATH_ROOTLESS = 38;
+  int URI_SEGMENT = 39;
+  int URI_SEGMENT_NZ = 40;
+  int URI_SEGMENT_NZ_NC = 41;
+  int URI_PORT = 42;
+  int URI_HOST = 43;
+  int URI_REG_NAME = 44;
+  int I_LIST_ITEM = 45;
+  int I_TABLE_ROW = 46;
+  int I_HEADER = 47;
+  int I_VERBATIM_BLOCK = 48;
+  int I_HORLINE = 49;
+  int I_VERBATIM_INLINE = 50;
+  int I_REFERENCE = 51;
+  int I_TABLE_CELL = 52;
+  int I_QUOT_BLOCK = 53;
+  int I_QUOT_BLOCK1 = 54;
+  int I_BR = 55;
+  int I_ESCAPE = 56;
+  int I_FORMAT_SYMBOL = 57;
+  int I_SPECIAL_SYMBOLS = 58;
+  int I_URI = 59;
+  int I_NL = 60;
+  int I_SPACE = 61;
+  int I_WORD = 62;
+  int I_SPECIAL_SYMBOL = 63;
+  int D_LIST_ITEM = 64;
+  int D_TABLE_ROW = 65;
+  int D_HEADER = 66;
+  int D_VERBATIM_BLOCK = 67;
+  int D_HORLINE = 68;
+  int D_VERBATIM_INLINE = 69;
+  int D_REFERENCE = 70;
+  int D_TABLE_CELL = 71;
+  int D_QUOT_BLOCK = 72;
+  int D_QUOT_BLOCK1 = 73;
+  int D_BR = 74;
+  int D_ESCAPE = 75;
+  int D_FORMAT_SYMBOL = 76;
+  int D_SPECIAL_SYMBOLS = 77;
+  int D_URI = 78;
+  int D_NL = 79;
+  int D_SPACE = 80;
+  int D_WORD = 81;
+  int D_SPECIAL_SYMBOL = 82;
 
   int DEFAULT = 0;
   int INITIAL_CONTEXT = 1;
@@ -109,6 +112,7 @@ public interface ConfluenceWikiScannerConstants {
     "\"\\\\\\\\\"",
     "<CELL>",
     "<QUOT_BLOCK>",
+    "\"{quote}\"",
     "<FORMAT_SYMBOL>",
     "<SPECIAL_SYMBOLS>",
     "<NEW_LINE>",
@@ -151,6 +155,7 @@ public interface ConfluenceWikiScannerConstants {
     "<I_REFERENCE>",
     "<I_TABLE_CELL>",
     "<I_QUOT_BLOCK>",
+    "<I_QUOT_BLOCK1>",
     "<I_BR>",
     "<I_ESCAPE>",
     "<I_FORMAT_SYMBOL>",
@@ -169,6 +174,7 @@ public interface ConfluenceWikiScannerConstants {
     "<D_REFERENCE>",
     "<D_TABLE_CELL>",
     "<D_QUOT_BLOCK>",
+    "<D_QUOT_BLOCK1>",
     "<D_BR>",
     "<D_ESCAPE>",
     "<D_FORMAT_SYMBOL>",

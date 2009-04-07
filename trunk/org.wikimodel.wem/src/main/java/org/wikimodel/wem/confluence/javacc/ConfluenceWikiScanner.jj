@@ -57,14 +57,17 @@ PARSER_END(ConfluenceWikiScanner)
     | <#BR: "\\\\" >
     | <#CELL: "|" ("|") ? >
     | <#QUOT_BLOCK: ("bq." | "BQ.") >
+    | <#QUOT_BLOCK1: "{quote}" >
     | <#FORMAT_SYMBOL : ( 
           "*"   // strong
         | "_"   // em
         | "??"  // citation
         | "^"   // superscript
         | "~"   // subscript
-        | "-"  // strikethrough
-        | "+"  // underlined
+        | "-"   // strikethrough
+        | "+"   // underlined
+        | "{{"  // code
+        | "}}"  // code
         ) >
     | <#SPECIAL_SYMBOLS: (
           " - "
@@ -188,6 +191,7 @@ PARSER_END(ConfluenceWikiScanner)
     | <I_REFERENCE : <REFERENCE> > : DEFAULT
     | <I_TABLE_CELL : <CELL> > : DEFAULT 
     | <I_QUOT_BLOCK: (<NEW_LINE>)? <QUOT_BLOCK> > : DEFAULT
+    | <I_QUOT_BLOCK1: (<NEW_LINE>)? <QUOT_BLOCK1> > : DEFAULT
     | <I_BR : <BR> > : DEFAULT
     | <I_ESCAPE: <ESCAPE> > : DEFAULT
     | <I_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
@@ -214,6 +218,7 @@ PARSER_END(ConfluenceWikiScanner)
     | <D_REFERENCE : <REFERENCE> > : DEFAULT
     | <D_TABLE_CELL : <CELL> > : DEFAULT 
     | <D_QUOT_BLOCK: <NEW_LINE> <QUOT_BLOCK> > : DEFAULT
+    | <D_QUOT_BLOCK1: <NEW_LINE> <QUOT_BLOCK1> > : DEFAULT
     | <D_BR : <BR> > : DEFAULT
     | <D_ESCAPE: <ESCAPE> > : DEFAULT
     | <D_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
@@ -238,6 +243,7 @@ PARSER_END(ConfluenceWikiScanner)
     Token getREFERENCE(): {Token t=null;} {(t=<I_REFERENCE>|t=<D_REFERENCE>){return t;}}
     Token getTABLE_CELL(): {Token t=null;} {(t=<I_TABLE_CELL>|t=<D_TABLE_CELL>){return t;}}
     Token getQUOT_BLOCK(): {Token t=null;} {(t=<I_QUOT_BLOCK>|t=<D_QUOT_BLOCK>){return t;}}
+    Token getQUOT_BLOCK1(): {Token t=null;} {(t=<I_QUOT_BLOCK1>|t=<D_QUOT_BLOCK1>){return t;}}
     Token getBR(): {Token t=null;} {(t=<I_BR>|t=<D_BR>){return t;}}
     Token getESCAPE(): {Token t=null;} {(t=<I_ESCAPE>|t=<D_ESCAPE>){return t;}}
     Token getFORMAT_SYMBOL(): {Token t=null;} {(t=<I_FORMAT_SYMBOL>|t=<D_FORMAT_SYMBOL>){return t;}}
@@ -282,6 +288,8 @@ void docElements():
     |
     ( LOOKAHEAD(2) 
         quot()
+        |
+        quot1()
         |
         paragraph()
     )
@@ -427,6 +435,35 @@ void quot():
         str = t.image.trim();
         fContext.beginQuot(params);
     }
+    quotLines()
+    {
+        fContext.endQuot();
+    }
+}
+
+void quot1():
+{
+    Token t = null;
+    String str = "";
+    WikiParameters params = WikiParameters.EMPTY;
+}
+{
+    t = getQUOT_BLOCK1()
+    {
+        str = t.image.trim();
+        fContext.beginQuot(params);
+    }
+    quotLines()
+    ( LOOKAHEAD(2) getQUOT_BLOCK1() )?
+    {
+        fContext.endQuot();
+    }
+}
+
+void quotLines():
+{
+}
+{
     (LOOKAHEAD(2) 
         (
             { fContext.beginQuotLine(1); } line() { fContext.endQuotLine(); }
@@ -436,9 +473,6 @@ void quot():
             )*
         )
     )?
-    {
-        fContext.endQuot();
-    }
 }
 
 void emptyParagraph():
@@ -512,6 +546,10 @@ void line():
                 style = null;
                 boolean checkStyleContext = false;
                 switch (ch) {
+                    case '{': 
+                    case '}': 
+                        style  = IWikiScannerContext.CODE;
+                        break;
                     case '*': 
                         style  = IWikiScannerContext.STRONG;
                         break;

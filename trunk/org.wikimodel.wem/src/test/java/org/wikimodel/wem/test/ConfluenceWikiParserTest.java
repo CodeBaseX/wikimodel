@@ -31,6 +31,82 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
         return new ConfluenceWikiParser();
     }
 
+    public void testConfluenceHeadings() throws WikiParserException {
+        test("h1. Biggest heading", "<h1>Biggest heading</h1>");
+        test("h2. Bigger heading", "<h2>Bigger heading</h2>");
+        test("h3. Big Heading", "<h3>Big Heading</h3>");
+        test("h4. Normal Heading", "<h4>Normal Heading</h4>");
+        test("h5. Small Heading", "<h5>Small Heading</h5>");
+        test("h6. Smallest Heading", "<h6>Smallest Heading</h6>");
+    }
+
+    /**
+     * http://confluence.atlassian.com/renderer/notationhelp.action?section=
+     * breaks
+     * 
+     * @throws WikiParserException
+     */
+    public void testConfluenceTextBreaks() throws WikiParserException {
+        test("first\n\nsecond", "<p>first</p>\n<p>second</p>");
+        test("first\\\\second", "<p>first<br />second</p>");
+        test("first\n----second", "<p>first</p>\n<hr />\n<p>second</p>");
+        test("first --- second", "<p>first&#160;&mdash; second</p>");
+        test("first -- second", "<p>first&#160;&ndash; second</p>");
+    }
+
+    public void testConfluenceTextEffects() throws WikiParserException {
+        test(
+            "Makes text *strong*.",
+            "<p>Makes text <strong>strong</strong>.</p>");
+        test("Makes text _emphasis_.", "<p>Makes text <em>emphasis</em>.</p>");
+        test(
+            "Makes text ??citation??.",
+            "<p>Makes text <cite>citation</cite>.</p>");
+        test(
+            "Makes text -strikethrough-.",
+            "<p>Makes text <strike>strikethrough</strike>.</p>");
+
+        // Underlined was replaced by "tt": I consider the underline formatting
+        // harmful - this pure visual tag mocks up a very important logical tag
+        // - "a". So it is not a "bug", it is a "feature".
+        // (mkotelnikov)
+        test(
+            "Makes text +underlined+.",
+            "<p>Makes text <tt>underlined</tt>.</p>");
+        test(
+            "Makes text ^superscript^.",
+            "<p>Makes text <sup>superscript</sup>.</p>");
+        test(
+            "Makes text ~subscript~.",
+            "<p>Makes text <sub>subscript</sub>.</p>");
+        test(
+            "Makes text as {{code text}}.",
+            "<p>Makes text as <code>code text</code>.</p>");
+        test(
+            "bq. Some block quoted text.",
+            "<blockquote>\n Some block quoted text.\n</blockquote>");
+        test(
+            "{quote}Some block quoted text.\n{quote}",
+            "<blockquote>\nSome block quoted text.\n</blockquote>");
+
+        // {color:red}
+        // look ma, red text!
+        // {color} Changes the color of a block of text.
+        //
+        // Example: look ma, red text!
+    }
+
+    /**
+     * @throws WikiParserException
+     */
+    public void testEscape() throws WikiParserException {
+        // "a" and "b" symbols are just escaped
+        test("not\\a\\break", "<p>not"
+            + "<span class='wikimodel-escaped'>a</span>"
+            + "<span class='wikimodel-escaped'>b</span>"
+            + "reak</p>");
+    }
+
     /**
      * @throws WikiParserException
      */
@@ -131,8 +207,11 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testLineBreaks() throws WikiParserException {
-        test("line\\\\break");
-        test("not\\a\\break");
+        test("line\\\\break", "<p>line<br />break</p>");
+        test("not\\a\\break", "<p>not"
+            + "<span class='wikimodel-escaped'>a</span>"
+            + "<span class='wikimodel-escaped'>b</span>"
+            + "reak</p>");
     }
 
     /**
@@ -214,7 +293,18 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
     /**
      */
     public void testQuot() throws WikiParserException {
-        test("This is a paragraph\n\nbq.and this is a quotations\n the second line");
+        test(
+            "first\nbq.second\n\nthird",
+            "<p>first</p>\n<blockquote>\nsecond\n</blockquote>\n<p>third</p>");
+        test(
+            "bq. Some block quoted text.",
+            "<blockquote>\n Some block quoted text.\n</blockquote>");
+        test(
+            "first\n{quote}second\n{quote}\nthird",
+            "<p>first</p>\n<blockquote>\nsecond\n</blockquote>\n<p>third</p>");
+        test(
+            "{quote}Some block quoted text.\n{quote}",
+            "<blockquote>\nSome block quoted text.\n</blockquote>");
     }
 
     /**
