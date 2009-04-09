@@ -14,7 +14,7 @@ public class InlineState {
 
     public final static int ESCAPE = inc();
 
-    public static final int EXTENSION = inc();
+    public final static int EXTENSION = inc();
 
     private static int fCounter;
 
@@ -22,7 +22,7 @@ public class InlineState {
 
     public final static int LINE_BREAK = inc();
 
-    public static final int MACRO = inc();
+    public final static int MACRO = inc();
 
     public final static int NEW_LINE = inc();
 

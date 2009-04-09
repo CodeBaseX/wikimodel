@@ -67,7 +67,7 @@ PARSER_END(CreoleWikiScanner)
 
 // <common-tokens>
     // =========================================================================
-    // New lines, spaces, special symbols and characters definitions
+    // New lines, spaces, special symbols and character definitions
     // =========================================================================
     | <#NEW_LINE : "\r\n" | "\r" | "\n" >
     | <#SPACE : [" ", "\t"] >

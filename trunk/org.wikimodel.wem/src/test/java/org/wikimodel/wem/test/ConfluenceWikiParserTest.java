@@ -270,6 +270,40 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
             + "</ol>\n"
             + "</li>\n"
             + "</ul>");
+        test("# Item 1\n"
+            + "## Item 2\n"
+            + "##* Item 3\n"
+            + "## Item 4\n"
+            + "# Item 5\n"
+            + "* Item 1\n"
+            + "** Item 2\n"
+            + "*** Item 3\n"
+            + "** Item 4\n"
+            + "* Item 5\n"
+            + "* Item 6", ""
+            + "<ol>\n"
+            + "  <li>Item 1<ol>\n"
+            + "  <li>Item 2<ul>\n"
+            + "  <li>Item 3</li>\n"
+            + "</ul>\n"
+            + "</li>\n"
+            + "  <li>Item 4</li>\n"
+            + "</ol>\n"
+            + "</li>\n"
+            + "  <li>Item 5</li>\n"
+            + "</ol>\n"
+            + "<ul>\n"
+            + "  <li>Item 1<ul>\n"
+            + "  <li>Item 2<ul>\n"
+            + "  <li>Item 3</li>\n"
+            + "</ul>\n"
+            + "</li>\n"
+            + "  <li>Item 4</li>\n"
+            + "</ul>\n"
+            + "</li>\n"
+            + "  <li>Item 5</li>\n"
+            + "  <li>Item 6</li>\n"
+            + "</ul>");
     }
 
     /**
@@ -413,8 +447,8 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
             + "  <tr><td> Cell 3.1 </td><th> Head 3.2</th></tr>\n"
             + "</tbody></table>");
 
-        test("||heading 1||heading 2||heading 3||\r\n"
-            + "|col A1|col A2|col A3|\r\n"
+        test("||heading 1||heading 2||heading 3||\n"
+            + "|col A1|col A2|col A3|\n"
             + "|col B1|col B2|col B3| ");
         // Not a table
         test("abc || cde", "<p>abc || cde</p>");
