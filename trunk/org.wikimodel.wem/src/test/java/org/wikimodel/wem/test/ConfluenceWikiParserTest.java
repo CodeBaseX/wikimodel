@@ -218,6 +218,22 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testLists() throws WikiParserException {
+        test("# Item 1\n"
+            + "## Item 2\n"
+            + "##* Item 3\n"
+            + "## Item 4\n"
+            + "# Item 5\n", ""
+            + "<ol>\n"
+            + "  <li>Item 1<ol>\n"
+            + "  <li>Item 2<ul>\n"
+            + "  <li>Item 3</li>\n"
+            + "</ul>\n"
+            + "</li>\n"
+            + "  <li>Item 4</li>\n"
+            + "</ol>\n"
+            + "</li>\n"
+            + "  <li>Item 5</li>\n"
+            + "</ol>");
         test("* item one", "<ul>\n  <li>item one</li>\n</ul>");
         test("* item one\n** item two", ""
             + "<ul>\n"
