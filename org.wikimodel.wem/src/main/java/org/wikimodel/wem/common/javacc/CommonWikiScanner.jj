@@ -218,7 +218,7 @@ TOKEN_MGR_DECLS: {
 
 // <common-tokens>
     // =========================================================================
-    // New lines, spaces, special symbols and characters definitions
+    // New lines, spaces, special symbols and character definitions
     // =========================================================================
     | <#NEW_LINE : "\r\n" | "\r" | "\n" >
     | <#SPACE : [" ", "\t"] >
@@ -1114,7 +1114,7 @@ void line():
                     } else {
                         fContext.onSpecialSymbol(t.image);
                     }
-                } else if (t.image.charAt(0) == ')' && fContext.inInlineProperty()) {
+                } else if (t.image.charAt(0) == ')' && fContext.isInInlineProperty()) {
                     fContext.endPropertyInline();
                 } else {
                     fContext.onSpecialSymbol(t.image);
