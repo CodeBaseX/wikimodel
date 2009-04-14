@@ -23,7 +23,7 @@ import org.wikimodel.wem.impl.WikiScannerContext;
  * <pre>
  * http://confluence.atlassian.com/renderer/notationhelp.action?section=all
  *  + Headings
- *  - Text Effects
+ *  + Text Effects
  *  - Text Breaks
  *  - Links
  *  + Lists - except 
