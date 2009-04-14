@@ -102,7 +102,7 @@ TOKEN_MGR_DECLS: {
     | <#VERBATIM: "{{{" ( "\\" ~[] | <NEW_LINE> " }}}" | ~["}"] | "}" ~["}"] | "}}" ~["}"] )* "}}}" >
     | <#REFERENCE: 
         (
-              "[[" (  ~["]"] | "]" ~["]"] | "\\" ~[] )* "]]"
+              "[" (  ~["]"] | "\\" ~[] )* "]"
             | "!" ( "\\" ~["\n", "\r"] | ~["!", "\n", "\r", " ", "\t"])+ "!" 
         ) 
       >
@@ -251,6 +251,28 @@ TOKEN_MGR_DECLS: {
         | " + "
         | " ^ "
         | " ~ "
+
+        | ":)"
+        | ":("
+        | ":P"
+        | ":D"
+        | ";)"
+        | "(y)"
+        | "(n)"
+        | "(i)"
+        | "(/)"
+        | "(x)"
+        | "(!)"
+        | "(+)"
+        | "(-)"
+        | "(?)"
+        | "(on)"
+        | "(off)"
+        | "(*)"
+        | "(*r)"
+        | "(*g)"
+        | "(*b)"
+        | "(*y)"
 
         | "..."  
         | "(" (<CHAR>|<SPECIAL_SYMBOL>) ")" 
@@ -886,7 +908,8 @@ void line():
                 if (str.startsWith("!")) {
                    str = str.substring(1, str.length() - 1); 
                 } else {
-                    str = str.substring(2, str.length() - 2);
+                    // TODO: split references to parts
+                    str = str.substring(1, str.length() - 1);
                 }
                 WikiReference ref = fReferenceParser.parse(str);
                 fContext.onReference(ref);
