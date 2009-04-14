@@ -24,6 +24,7 @@ import org.wikimodel.wem.WikiStyle;
 import org.wikimodel.wem.confluence.ConfluenceWikiReferenceParser;
 import org.wikimodel.wem.impl.IWikiScannerContext;
 import org.wikimodel.wem.impl.InlineState;
+import org.wikimodel.wem.impl.WikiScannerUtil;
 
 /**
  * This is the internal wiki page parser generated from the grammar file.
@@ -41,9 +42,57 @@ public class ConfluenceWikiScanner {
         doParse();
     }
     
+    private String[] splitMacroParams(String str) {
+        str = str.trim();
+        str = str.substring(1, str.length() - 1);
+        String paramStr = "";
+        int paramStrPos = str.indexOf(":");
+        String name = "";
+        if (paramStrPos > 0) {
+            paramStr = str.substring(paramStrPos);
+            name = str.substring(0, paramStrPos);
+        } else {
+            name = str;
+        }
+        name = name.trim();
+        return new String[] { name, paramStr };
+    }
+    
 }
 
 PARSER_END(ConfluenceWikiScanner)
+
+TOKEN_MGR_DECLS: {
+    String macroName = "";
+    void initMacro(StringBuffer buf) {
+        macroName = getMacroName(buf);
+    }
+    String getMacroName(StringBuffer buf) {
+        String str = buf.toString();
+        str = str.trim();
+        str = str.substring(1, str.length() - 1);
+        int idx = str.indexOf(":");
+        if (idx > 0) {
+            str = str.substring(0, idx);
+        }
+        return str;
+    }
+}
+
+<MACRO_CONTEXT> TOKEN:
+{
+    <INTERNAL_MACRO: <MACRO> > {
+        {
+            String name = getMacroName(image); 
+            int context = MACRO_CONTEXT;
+            if (name.equals(macroName)) {
+                context = DEFAULT;
+            }
+            SwitchTo(context);
+        }
+    }
+    | <INTERNAL_MACRO_CONTENT: <MACRO_CONTENT> > : MACRO_CONTEXT
+}
 
 <DEFAULT, INITIAL_CONTEXT> TOKEN:
 {
@@ -51,13 +100,135 @@ PARSER_END(ConfluenceWikiScanner)
     | <#LIST_ITEM: (<LI>)+ (<SPACE>)+ >
     | <#HEADER:  ("h1." | "h2." | "h3." | "h4." | "h5." | "h6.") (<SPACE>)* >
     | <#VERBATIM: "{{{" ( "\\" ~[] | <NEW_LINE> " }}}" | ~["}"] | "}" ~["}"] | "}}" ~["}"] )* "}}}" >
-    | <#REFERENCE:  ( "[[" (  ~["]"] | "]" ~["]"] | "\\" ~[] )* "]]" ) >
+    | <#REFERENCE: 
+        (
+              "[[" (  ~["]"] | "]" ~["]"] | "\\" ~[] )* "]]"
+            | "!" ( "\\" ~["\n", "\r"] | ~["!", "\n", "\r", " ", "\t"])+ "!" 
+        ) 
+      >
     | <#HORLINE: "---" ("-")+ >
-    | <#ESCAPE: ( "\\" ~["\t", "\n", "\r"]) >
+    | <#ESCAPED: ( "\\" ~["\t", "\n", "\r"]) >
     | <#BR: "\\\\" >
     | <#CELL: "|" ("|") ? >
     | <#QUOT_BLOCK: ("bq." | "BQ.") >
-    | <#QUOT_BLOCK1: "{quote}" >
+    | <#QUOT_BLOCK_MACRO: "{quote}" >
+
+    | <#MACRO: "{" <CHAR> ( <ESCAPED> | ~["}"]  )* "}" >
+    | <#MACRO_CONTENT: ( <ESCAPED> | <CHAR> | <SPACE> |<NEW_LINE> | <SPECIAL_SYMBOL> ) >
+
+    // EmptyMacro: anchor
+    // EmptyMacro: dynamictasklist
+    // EmptyMacro: gliffy
+    // EmptyMacro: gallery
+    // EmptyMacro: calendar
+    // EmptyMacro: toggle-cloak TODO: transform to "h1. {toggle-cloak:id=Cloaked Content} Cloaked Content" 
+    // EmptyMacro: rsvp
+    // EmptyMacro: widget
+    // EmptyMacro: content-by-user
+    // EmptyMacro: index
+    // EmptyMacro: include 
+    // EmptyMacro: privacy-mark
+    // EmptyMacro: img
+    // EmptyMacro: bookmarks
+    // EmptyMacro: pagetree
+    // EmptyMacro: pagetreesearch
+    // EmptyMacro: toc
+    // EmptyMacro: livesearch
+    // EmptyMacro: viewfile
+    // EmptyMacro: children
+    // EmptyMacro: search
+    // EmptyMacro: blog-posts
+    // EmptyMacro: excerpt-include
+    // EmptyMacro: popular-labels
+    // EmptyMacro: contentbylabel
+    // EmptyMacro: related-labels
+    // EmptyMacro: recently-updated
+    // EmptyMacro: recently-used-labels
+    // EmptyMacro: navmap
+    // EmptyMacro: listlabels
+    // EmptyMacro: spaces
+    // EmptyMacro: recently-updated-dashboard
+    // EmptyMacro: global-reports
+    // EmptyMacro: welcome-message
+    // EmptyMacro: create-space-button
+    // EmptyMacro: jiraissue
+    // EmptyMacro: jiraportlet
+    // EmptyMacro: plugins-supported
+    // EmptyMacro: plugin-compatibility-matrix
+    // EmptyMacro: im
+    // EmptyMacro: collapsablerss
+    // EmptyMacro: rss
+     
+    // TODO: !http://www.host.com/image.gif! (see Images) 
+    // TODO: !quicktime.mov! (see Confluence Content)
+    
+//    | <#MACRO_BLOCK: <MACRO> >
+    | <#MACRO_BLOCK: "{" 
+        ( 
+            //"quote"               // DONE - {quote} quoted block {quote}
+              "color"               // TODO: {color:xx} paragraph {color}
+            | "section" 
+            | "column"
+            | "csv"
+            | "table-plus"          // TODO: {table-plus:width=100..} table {table-plus}
+            | "code"                // TODO: should be transformed in a verbatim block
+            | "composition-setup"
+            | "float"               // TODO: {float:xx} paragraph {float}
+            | "cloak" 
+            | "deck"
+            | "card"
+            | "show-card"
+            | "chart"               // TODO: {chart: params} table {charŧ}
+            | "slideshow"
+            | "slide"
+            | "note"                // TODO: {note} paragraph {note}
+            | "warning"             // TODO: {warning} paragraph {warning}
+            | "info"                // TODO: {info} paragraph {info}
+            | "tip"                 // TODO: {tip} paragraph {tip}
+            | "cache"
+            | "sql"
+            | "noformat"            // TODO: noformat - report as a verbatim block
+            | "panel"
+            | "sub-section" 
+            | "clickable"
+            
+            | "tm"                  // TODO: {tm} inline text {tm}
+            | "sm"                  // TODO: {sm} inline text {sm}
+            | "reg-tm"              // TODO: {reg-tm} inline text {reg-tm}
+            | "copyright"           // TODO: {copyright} inline text {copyright}
+            | "span"                // TODO: {span} inline text {span}
+
+            | "lozenge" 
+            | "style"
+            | "div"
+            | "bgcolor"
+            | "center"
+            | "strike"
+            | "privacy-policy"
+            | "roundrect"
+            | "align"
+            | "iframe"
+            
+            | "table"
+            | "table-row"
+            | "table-cell"
+            | "th"
+            | "tbody" 
+            | "thead"
+            
+            | "ul"
+            | "li"
+            
+            | "rollover"
+            | "fancy-bullets"
+            | "contentformattingtest"
+            | "toc-zone"
+            | "excerpt"
+         )
+        ( <ESCAPED> | ~["}"]  )* 
+        "}"
+      >
+    
     | <#FORMAT_SYMBOL : ( 
           "*"   // strong
         | "_"   // em
@@ -191,9 +362,15 @@ PARSER_END(ConfluenceWikiScanner)
     | <I_REFERENCE : <REFERENCE> > : DEFAULT
     | <I_TABLE_CELL : <CELL> > : DEFAULT 
     | <I_QUOT_BLOCK: (<NEW_LINE>)? <QUOT_BLOCK> > : DEFAULT
-    | <I_QUOT_BLOCK1: (<NEW_LINE>)? <QUOT_BLOCK1> > : DEFAULT
+    | <I_QUOT_BLOCK_MACRO: (<NEW_LINE>)? <QUOT_BLOCK_MACRO> > : DEFAULT
     | <I_BR : <BR> > : DEFAULT
-    | <I_ESCAPE: <ESCAPE> > : DEFAULT
+
+    | <I_MACRO_BLOCK_START: (<NEW_LINE>)? <MACRO_BLOCK> > { initMacro(image); } : MACRO_CONTEXT
+    | <I_MACRO_EMPTY_BLOCK: (<NEW_LINE>)? <MACRO> > : DEFAULT
+    | <I_MACRO_INLINE_START: <MACRO> > { initMacro(image); } : MACRO_CONTEXT
+    | <I_MACRO_EMPTY_INLINE: <MACRO> > : DEFAULT
+    
+    | <I_ESCAPED: <ESCAPED> > : DEFAULT
     | <I_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
     | <I_SPECIAL_SYMBOLS: <SPECIAL_SYMBOLS> >: DEFAULT
 
@@ -218,9 +395,15 @@ PARSER_END(ConfluenceWikiScanner)
     | <D_REFERENCE : <REFERENCE> > : DEFAULT
     | <D_TABLE_CELL : <CELL> > : DEFAULT 
     | <D_QUOT_BLOCK: <NEW_LINE> <QUOT_BLOCK> > : DEFAULT
-    | <D_QUOT_BLOCK1: <NEW_LINE> <QUOT_BLOCK1> > : DEFAULT
+    | <D_QUOT_BLOCK_MACRO: <NEW_LINE> <QUOT_BLOCK_MACRO> > : DEFAULT
     | <D_BR : <BR> > : DEFAULT
-    | <D_ESCAPE: <ESCAPE> > : DEFAULT
+
+    | <D_MACRO_BLOCK_START: <NEW_LINE> <MACRO_BLOCK> > { initMacro(image); } : MACRO_CONTEXT
+    | <D_MACRO_EMPTY_BLOCK: <NEW_LINE> <MACRO> > : DEFAULT
+    | <D_MACRO_INLINE_START: <MACRO> > { initMacro(image); } : MACRO_CONTEXT
+    | <D_MACRO_EMPTY_INLINE: <MACRO> > : DEFAULT
+    
+    | <D_ESCAPED: <ESCAPED> > : DEFAULT
     | <D_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
     | <D_SPECIAL_SYMBOLS: <SPECIAL_SYMBOLS> >: DEFAULT
 
@@ -233,6 +416,8 @@ PARSER_END(ConfluenceWikiScanner)
 // </default-context>
 }
 
+    Token getINTERNAL_MACRO(): {Token t=null;} {(t=<INTERNAL_MACRO>){return t;}}
+    Token getINTERNAL_MACRO_CONTENT(): {Token t=null;} {(t=<INTERNAL_MACRO_CONTENT>){return t;}}
 // <getters>
     Token getLIST_ITEM(): {Token t=null;} {(t=<I_LIST_ITEM>|t=<D_LIST_ITEM>){return t;}}
     Token getTABLE_ROW(): {Token t=null;} {(t=<I_TABLE_ROW>|t=<D_TABLE_ROW>){return t;}}
@@ -243,9 +428,15 @@ PARSER_END(ConfluenceWikiScanner)
     Token getREFERENCE(): {Token t=null;} {(t=<I_REFERENCE>|t=<D_REFERENCE>){return t;}}
     Token getTABLE_CELL(): {Token t=null;} {(t=<I_TABLE_CELL>|t=<D_TABLE_CELL>){return t;}}
     Token getQUOT_BLOCK(): {Token t=null;} {(t=<I_QUOT_BLOCK>|t=<D_QUOT_BLOCK>){return t;}}
-    Token getQUOT_BLOCK1(): {Token t=null;} {(t=<I_QUOT_BLOCK1>|t=<D_QUOT_BLOCK1>){return t;}}
+    Token getQUOT_BLOCK_MACRO(): {Token t=null;} {(t=<I_QUOT_BLOCK_MACRO>|t=<D_QUOT_BLOCK_MACRO>){return t;}}
     Token getBR(): {Token t=null;} {(t=<I_BR>|t=<D_BR>){return t;}}
-    Token getESCAPE(): {Token t=null;} {(t=<I_ESCAPE>|t=<D_ESCAPE>){return t;}}
+
+    Token getMACRO_BLOCK_START(): {Token t=null;} {(t=<I_MACRO_BLOCK_START>|t=<D_MACRO_BLOCK_START>){return t;}}
+    Token getMACRO_EMPTY_BLOCK(): {Token t=null;} {(t=<I_MACRO_EMPTY_BLOCK>|t=<D_MACRO_EMPTY_BLOCK>){return t;}}
+    Token getMACRO_INLINE_START(): {Token t=null;} {(t=<I_MACRO_INLINE_START>|t=<D_MACRO_INLINE_START>){return t;}}
+    Token getMACRO_EMPTY_INLINE(): {Token t=null;} {(t=<I_MACRO_EMPTY_INLINE>|t=<D_MACRO_EMPTY_INLINE>){return t;}}
+    
+    Token getESCAPED(): {Token t=null;} {(t=<I_ESCAPED>|t=<D_ESCAPED>){return t;}}
     Token getFORMAT_SYMBOL(): {Token t=null;} {(t=<I_FORMAT_SYMBOL>|t=<D_FORMAT_SYMBOL>){return t;}}
     Token getSPECIAL_SYMBOLS(): {Token t=null;} {(t=<I_SPECIAL_SYMBOLS>|t=<D_SPECIAL_SYMBOLS>){return t;}}
 
@@ -284,12 +475,14 @@ void docElements():
     |
     verbatimBlock()
     |
+    macroBlock()
+    |
     horline()
     |
     ( LOOKAHEAD(2) 
         quot()
         |
-        quot1()
+        quotMacro()
         |
         paragraph()
     )
@@ -381,7 +574,7 @@ void block():
 {
 }
 {
-    ( lines() | verbatimBlock() )
+    ( lines() | verbatimBlock() | macroBlock() )
 }
 
 void verbatimBlock():
@@ -394,6 +587,85 @@ void verbatimBlock():
         String str = t.image.trim();
         str = str.substring(3, str.length() - 3);
         fContext.onVerbatim(str,  false);
+    }
+}
+
+void macroBlock():
+{
+    Token t = null;
+}
+{
+    t = getMACRO_EMPTY_BLOCK()
+    {
+        emptyMacro(t, true);
+    }
+    |
+    t = getMACRO_BLOCK_START()
+    {
+        macro(t, true);
+    }
+}
+void emptyMacro(Token t, boolean block):
+{
+}
+{
+    {
+        String[] array = splitMacroParams(t.image);
+        String name = array[0];
+        String paramStr = array[1];
+        String str = "";
+        WikiParameters params = new WikiParameters(paramStr);
+        if (block) {
+            fContext.onMacroBlock(name, params, str);
+        } else {
+            fContext.onMacroInline(name, params, str);
+        }        
+    }
+}
+void macro(Token t, boolean block):
+{
+    StringBuffer buf = new StringBuffer();
+    String name = "";
+    WikiParameters params;
+    String paramStr = "";
+    int paramStrPos = -1;
+    String str = null;
+    boolean macro = false;
+    String prevEnd = null;
+}
+{
+    {
+        String[] array = splitMacroParams(t.image);
+        name = array[0];
+        paramStr = array[1];
+        str = "";
+    }
+    (LOOKAHEAD(2)
+        (
+              t = getINTERNAL_MACRO() { macro = true; }
+            | t = getINTERNAL_MACRO_CONTENT() { macro = false; }
+        )
+        {
+            if (prevEnd != null) {
+                buf.append(prevEnd);
+            }
+            if (macro) {
+                prevEnd = t.image;
+            } else {
+                prevEnd = null;
+                str = WikiScannerUtil.unescape(t.image, '\\');
+                buf.append(str);        
+            }
+        }
+    )*
+    {
+        str = buf.toString();
+        params = new WikiParameters(paramStr);
+        if (block) {
+            fContext.onMacroBlock(name, params, str);
+        } else {
+            fContext.onMacroInline(name, params, str);
+        }
     }
 }
 
@@ -441,20 +713,20 @@ void quot():
     }
 }
 
-void quot1():
+void quotMacro():
 {
     Token t = null;
     String str = "";
     WikiParameters params = WikiParameters.EMPTY;
 }
 {
-    t = getQUOT_BLOCK1()
+    t = getQUOT_BLOCK_MACRO()
     {
         str = t.image.trim();
         fContext.beginQuot(params);
     }
     quotLines()
-    ( LOOKAHEAD(2) getQUOT_BLOCK1() )?
+    ( LOOKAHEAD(2) getQUOT_BLOCK_MACRO() )?
     {
         fContext.endQuot();
     }
@@ -519,7 +791,7 @@ void line():
                 fContext.onLineBreak();
             }
             |
-            t = getESCAPE()
+            t = getESCAPED()
             {
                 fContext.onEscape("" + t.image.charAt(1));
             }
@@ -611,7 +883,11 @@ void line():
             t = getREFERENCE() 
             {
                 str = t.image.trim();
-                str = str.substring(2, str.length() - 2);
+                if (str.startsWith("!")) {
+                   str = str.substring(1, str.length() - 1); 
+                } else {
+                    str = str.substring(2, str.length() - 2);
+                }
                 WikiReference ref = fReferenceParser.parse(str);
                 fContext.onReference(ref);
             }
@@ -624,6 +900,16 @@ void line():
                 } else {
                     fContext.onSpecialSymbol(t.image);
                 }
+            }
+            |
+            t = getMACRO_EMPTY_INLINE()
+            {
+                emptyMacro(t, false);
+            }
+            |
+            t = getMACRO_INLINE_START() 
+            {
+                macro(t, false);
             }
         ) 
     )+
