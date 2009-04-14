@@ -14,105 +14,124 @@ package org.wikimodel.wem.confluence.javacc;
 public interface ConfluenceWikiScannerConstants {
 
   int EOF = 0;
-  int LI = 1;
-  int LIST_ITEM = 2;
-  int HEADER = 3;
-  int VERBATIM = 4;
-  int REFERENCE = 5;
-  int HORLINE = 6;
-  int ESCAPE = 7;
-  int BR = 8;
-  int CELL = 9;
-  int QUOT_BLOCK = 10;
-  int QUOT_BLOCK1 = 11;
-  int FORMAT_SYMBOL = 12;
-  int SPECIAL_SYMBOLS = 13;
-  int NEW_LINE = 14;
-  int SPACE = 15;
-  int SPECIAL_SYMBOL = 16;
-  int CHAR = 17;
-  int URI = 18;
-  int ALPHA = 19;
-  int DIGIT = 20;
-  int HEXDIG = 21;
-  int URI_GEN_DELIMS = 22;
-  int URI_SUB_DELIMS = 23;
-  int URI_UNRESERVED = 24;
-  int URI_RESERVED = 25;
-  int URI_SCHEME = 26;
-  int URI_SCHEME_COMPOSITE = 27;
-  int URI_PCT_ENCODED = 28;
-  int URI_PCHAR_FIRST = 29;
-  int URI_PCHAR = 30;
-  int URI_QUERY = 31;
-  int URI_FRAGMENT = 32;
-  int URI_HIER_PART = 33;
-  int URI_AUTHORITY = 34;
-  int URI_USERINFO = 35;
-  int URI_PATH_ABEMPTY = 36;
-  int URI_PATH_ABSOLUTE = 37;
-  int URI_PATH_ROOTLESS = 38;
-  int URI_SEGMENT = 39;
-  int URI_SEGMENT_NZ = 40;
-  int URI_SEGMENT_NZ_NC = 41;
-  int URI_PORT = 42;
-  int URI_HOST = 43;
-  int URI_REG_NAME = 44;
-  int I_LIST_ITEM = 45;
-  int I_TABLE_ROW = 46;
-  int I_HEADER = 47;
-  int I_VERBATIM_BLOCK = 48;
-  int I_HORLINE = 49;
-  int I_VERBATIM_INLINE = 50;
-  int I_REFERENCE = 51;
-  int I_TABLE_CELL = 52;
-  int I_QUOT_BLOCK = 53;
-  int I_QUOT_BLOCK1 = 54;
-  int I_BR = 55;
-  int I_ESCAPE = 56;
-  int I_FORMAT_SYMBOL = 57;
-  int I_SPECIAL_SYMBOLS = 58;
-  int I_URI = 59;
-  int I_NL = 60;
-  int I_SPACE = 61;
-  int I_WORD = 62;
-  int I_SPECIAL_SYMBOL = 63;
-  int D_LIST_ITEM = 64;
-  int D_TABLE_ROW = 65;
-  int D_HEADER = 66;
-  int D_VERBATIM_BLOCK = 67;
-  int D_HORLINE = 68;
-  int D_VERBATIM_INLINE = 69;
-  int D_REFERENCE = 70;
-  int D_TABLE_CELL = 71;
-  int D_QUOT_BLOCK = 72;
-  int D_QUOT_BLOCK1 = 73;
-  int D_BR = 74;
-  int D_ESCAPE = 75;
-  int D_FORMAT_SYMBOL = 76;
-  int D_SPECIAL_SYMBOLS = 77;
-  int D_URI = 78;
-  int D_NL = 79;
-  int D_SPACE = 80;
-  int D_WORD = 81;
-  int D_SPECIAL_SYMBOL = 82;
+  int INTERNAL_MACRO = 1;
+  int INTERNAL_MACRO_CONTENT = 2;
+  int LI = 3;
+  int LIST_ITEM = 4;
+  int HEADER = 5;
+  int VERBATIM = 6;
+  int REFERENCE = 7;
+  int HORLINE = 8;
+  int ESCAPED = 9;
+  int BR = 10;
+  int CELL = 11;
+  int QUOT_BLOCK = 12;
+  int QUOT_BLOCK_MACRO = 13;
+  int MACRO = 14;
+  int MACRO_CONTENT = 15;
+  int MACRO_BLOCK = 16;
+  int FORMAT_SYMBOL = 17;
+  int SPECIAL_SYMBOLS = 18;
+  int NEW_LINE = 19;
+  int SPACE = 20;
+  int SPECIAL_SYMBOL = 21;
+  int CHAR = 22;
+  int URI = 23;
+  int ALPHA = 24;
+  int DIGIT = 25;
+  int HEXDIG = 26;
+  int URI_GEN_DELIMS = 27;
+  int URI_SUB_DELIMS = 28;
+  int URI_UNRESERVED = 29;
+  int URI_RESERVED = 30;
+  int URI_SCHEME = 31;
+  int URI_SCHEME_COMPOSITE = 32;
+  int URI_PCT_ENCODED = 33;
+  int URI_PCHAR_FIRST = 34;
+  int URI_PCHAR = 35;
+  int URI_QUERY = 36;
+  int URI_FRAGMENT = 37;
+  int URI_HIER_PART = 38;
+  int URI_AUTHORITY = 39;
+  int URI_USERINFO = 40;
+  int URI_PATH_ABEMPTY = 41;
+  int URI_PATH_ABSOLUTE = 42;
+  int URI_PATH_ROOTLESS = 43;
+  int URI_SEGMENT = 44;
+  int URI_SEGMENT_NZ = 45;
+  int URI_SEGMENT_NZ_NC = 46;
+  int URI_PORT = 47;
+  int URI_HOST = 48;
+  int URI_REG_NAME = 49;
+  int I_LIST_ITEM = 50;
+  int I_TABLE_ROW = 51;
+  int I_HEADER = 52;
+  int I_VERBATIM_BLOCK = 53;
+  int I_HORLINE = 54;
+  int I_VERBATIM_INLINE = 55;
+  int I_REFERENCE = 56;
+  int I_TABLE_CELL = 57;
+  int I_QUOT_BLOCK = 58;
+  int I_QUOT_BLOCK_MACRO = 59;
+  int I_BR = 60;
+  int I_MACRO_BLOCK_START = 61;
+  int I_MACRO_EMPTY_BLOCK = 62;
+  int I_MACRO_INLINE_START = 63;
+  int I_MACRO_EMPTY_INLINE = 64;
+  int I_ESCAPED = 65;
+  int I_FORMAT_SYMBOL = 66;
+  int I_SPECIAL_SYMBOLS = 67;
+  int I_URI = 68;
+  int I_NL = 69;
+  int I_SPACE = 70;
+  int I_WORD = 71;
+  int I_SPECIAL_SYMBOL = 72;
+  int D_LIST_ITEM = 73;
+  int D_TABLE_ROW = 74;
+  int D_HEADER = 75;
+  int D_VERBATIM_BLOCK = 76;
+  int D_HORLINE = 77;
+  int D_VERBATIM_INLINE = 78;
+  int D_REFERENCE = 79;
+  int D_TABLE_CELL = 80;
+  int D_QUOT_BLOCK = 81;
+  int D_QUOT_BLOCK_MACRO = 82;
+  int D_BR = 83;
+  int D_MACRO_BLOCK_START = 84;
+  int D_MACRO_EMPTY_BLOCK = 85;
+  int D_MACRO_INLINE_START = 86;
+  int D_MACRO_EMPTY_INLINE = 87;
+  int D_ESCAPED = 88;
+  int D_FORMAT_SYMBOL = 89;
+  int D_SPECIAL_SYMBOLS = 90;
+  int D_URI = 91;
+  int D_NL = 92;
+  int D_SPACE = 93;
+  int D_WORD = 94;
+  int D_SPECIAL_SYMBOL = 95;
 
-  int DEFAULT = 0;
-  int INITIAL_CONTEXT = 1;
+  int MACRO_CONTEXT = 0;
+  int DEFAULT = 1;
+  int INITIAL_CONTEXT = 2;
 
   String[] tokenImage = {
     "<EOF>",
+    "<INTERNAL_MACRO>",
+    "<INTERNAL_MACRO_CONTENT>",
     "<LI>",
     "<LIST_ITEM>",
     "<HEADER>",
     "<VERBATIM>",
     "<REFERENCE>",
     "<HORLINE>",
-    "<ESCAPE>",
+    "<ESCAPED>",
     "\"\\\\\\\\\"",
     "<CELL>",
     "<QUOT_BLOCK>",
     "\"{quote}\"",
+    "<MACRO>",
+    "<MACRO_CONTENT>",
+    "<MACRO_BLOCK>",
     "<FORMAT_SYMBOL>",
     "<SPECIAL_SYMBOLS>",
     "<NEW_LINE>",
@@ -155,9 +174,13 @@ public interface ConfluenceWikiScannerConstants {
     "<I_REFERENCE>",
     "<I_TABLE_CELL>",
     "<I_QUOT_BLOCK>",
-    "<I_QUOT_BLOCK1>",
+    "<I_QUOT_BLOCK_MACRO>",
     "<I_BR>",
-    "<I_ESCAPE>",
+    "<I_MACRO_BLOCK_START>",
+    "<I_MACRO_EMPTY_BLOCK>",
+    "<I_MACRO_INLINE_START>",
+    "<I_MACRO_EMPTY_INLINE>",
+    "<I_ESCAPED>",
     "<I_FORMAT_SYMBOL>",
     "<I_SPECIAL_SYMBOLS>",
     "<I_URI>",
@@ -174,9 +197,13 @@ public interface ConfluenceWikiScannerConstants {
     "<D_REFERENCE>",
     "<D_TABLE_CELL>",
     "<D_QUOT_BLOCK>",
-    "<D_QUOT_BLOCK1>",
+    "<D_QUOT_BLOCK_MACRO>",
     "<D_BR>",
-    "<D_ESCAPE>",
+    "<D_MACRO_BLOCK_START>",
+    "<D_MACRO_EMPTY_BLOCK>",
+    "<D_MACRO_INLINE_START>",
+    "<D_MACRO_EMPTY_INLINE>",
+    "<D_ESCAPED>",
     "<D_FORMAT_SYMBOL>",
     "<D_SPECIAL_SYMBOLS>",
     "<D_URI>",

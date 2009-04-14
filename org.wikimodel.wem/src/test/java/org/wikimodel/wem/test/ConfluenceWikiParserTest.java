@@ -322,6 +322,122 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
             + "</ul>");
     }
 
+    public void testMacro() throws WikiParserException {
+        testMacro(
+        // "quote" // DONE - {quote} quoted block {quote}
+            // TODO: {color:xx} paragraph {color}
+            "color",
+            "section",
+            "column",
+            "csv",
+            // TODO: {table-plus:width=100..} table {table-plus}
+            "table-plus",
+            // TODO: should be transformed in a verbatim block
+            "code",
+            "composition-setup",
+            // TODO: {float:xx} paragraph {float}
+            "float",
+            "cloak",
+            "deck",
+            "card",
+            "show-card",
+            // TODO: {chart: params} table {charŧ}
+            "chart",
+            "slideshow",
+            "slide",
+            // TODO: {note} paragraph {note}
+            "note",
+            // TODO: {warning} paragraph {warning}
+            "warning",
+            // TODO: {info} paragraph {info}
+            "info",
+            // TODO: {tip} paragraph {tip}
+            "tip",
+            "cache",
+            "sql",
+            // TODO: noformat - report as a verbatim block
+            "noformat",
+            "panel",
+            "sub-section",
+            "clickable",
+            // TODO: {tm} inline text {tm}
+            "tm",
+            // TODO: {sm} inline text {sm}
+            "sm",
+            // TODO: {reg-tm} inline text {reg-tm}
+            "reg-tm",
+            // TODO: {copyright} inline text {copyright}
+            "copyright",
+            // TODO: {span} inline text {span}
+            "span",
+            "lozenge",
+            "style",
+            "div",
+            "bgcolor",
+            "center",
+            "strike",
+            "privacy-policy",
+            "roundrect",
+            "align",
+            "iframe",
+            "table",
+            "table-row",
+            "table-cell",
+            "th",
+            "tbody",
+            "thead",
+            "ul",
+            "li",
+            "rollover",
+            "fancy-bullets",
+            "contentformattingtest",
+            "toc-zone",
+            "excerpt");
+
+        test(
+            ""
+                + "{section}\n"
+                + "{column:width=30%}\n"
+                + "Column one text goes here\n"
+                + "{column}\n"
+                + "{column:width=70%}\n"
+                + "Column two text goes here\n"
+                + "{column}\n"
+                + "{section}\n",
+            "<pre class='wikimodel-macro' macroName='section'><![CDATA[\n"
+                + "{column:width=30%}\n"
+                + "Column one text goes here\n"
+                + "{column}\n"
+                + "{column:width=70%}\n"
+                + "Column two text goes here\n"
+                + "{column}\n"
+                + "]]></pre>");
+    }
+
+    private void testMacro(String... names) throws WikiParserException {
+        for (String name : names) {
+            test(
+                "{" + name + "}a{" + name + "}",
+                "<pre class='wikimodel-macro' macroName='"
+                    + name
+                    + "'><![CDATA[a]]></pre>");
+            test("before\n{" + name + "}a{" + name + "}\nafter", ""
+                + "<p>before</p>\n"
+                + "<pre class='wikimodel-macro' macroName='"
+                + name
+                + "'><![CDATA[a]]></pre>\n"
+                + "<p>after</p>");
+        }
+    }
+
+    public void testMacroEmpty() throws WikiParserException {
+        test(
+            "{toto}a{toto}b",
+            ""
+                + "<pre class='wikimodel-macro' macroName='toto'><![CDATA[]]></pre>\n"
+                + "<p>a<span class='wikimodel-macro' macroName='toto'><![CDATA[b]]></span></p>");
+    }
+
     /**
      * @throws WikiParserException
      */
