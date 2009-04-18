@@ -47,7 +47,10 @@ public class ListTagHandler extends TagHandler {
         // next element to close it
         // since the next element could be an implicit paragraph.
         // For example: <html><ul><li>item</li></ul>a</html>
-        context.getScannerContext().endList();
+        StringBuffer listStyles = (StringBuffer) context.getTagStack().getStackParameter("listStyles");
+        if (listStyles.length() == 0) {
+            context.getScannerContext().endList();
+        }
     }
 
 }

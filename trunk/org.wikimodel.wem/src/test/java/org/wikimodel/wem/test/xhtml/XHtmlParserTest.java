@@ -264,6 +264,13 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
             + "3</li></ul></li><li>Item 4</li></ul></li><li>Item 5</li><li>Item\r\n"
             + "6</li></ul></html>\r\n"
             + "");
+        
+        test("<html><ol><li>item one<ul><li>item two</li></ul></li></ol></html>", "<ol>\n"
+            + "  <li>item one<ul>\n"
+            + "  <li>item two</li>\n"
+            + "</ul>\n"
+            + "</li>\n"
+            + "</ol>");
     }
 
     /**

@@ -17,7 +17,7 @@ import org.wikimodel.wem.WikiReferenceParser;
 /**
  * @author kotelnikov
  * @author vmassol
- * @author tmortagne
+ * @author thomas.mortagne
  */
 public class XWikiReferenceParser extends WikiReferenceParser {
 
