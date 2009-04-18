@@ -29,6 +29,8 @@ import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.impl.WikiScannerUtil;
 import org.wikimodel.wem.xwiki.XWikiReferenceParser;
 
+import org.wikimodel.wem.xwiki.XWikiScannerUtil;
+
 /**
  * This is the internal wiki page parser generated from the grammar file.
  * 
@@ -567,8 +569,8 @@ void verbatimBody(boolean inline, WikiParameters params):
             | t = getINTERNAL_VERBATIM_START() {  hasVerbatimEnd = false; }
         )
         {
-            str = WikiScannerUtil.unescape(t.image, '~');
-            buf.append(str);        
+            str = XWikiScannerUtil.unescapeVerbatim(t.image);
+            buf.append(str);
         }
     )*
     (LOOKAHEAD(2) ( t = <EOF> { eof = true; }) )?
@@ -585,7 +587,9 @@ void verbatimBody(boolean inline, WikiParameters params):
                 beginParagraph = inline |= !endingNewLine && !eof;
             }
             str = str.trim();
-            str = str.substring(0, str.length() - "}}}".length());
+            if (str.endsWith("}}}")) {
+            	str = str.substring(0, str.length() - "}}}".length());
+            }
         }
         str = str.substring("{{{".length());
         
