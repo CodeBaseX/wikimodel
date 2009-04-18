@@ -369,7 +369,7 @@ void docElements():
     |
     LOOKAHEAD(2) table() 
     |
-    LOOKAHEAD(2) list()
+    LOOKAHEAD(3) list()
     |
     // Embedded documents
     embeddedDocument()
