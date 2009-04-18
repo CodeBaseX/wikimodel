@@ -1,5 +1,7 @@
 package org.wikimodel.wem.impl;
 
+import java.util.Stack;
+
 import org.wikimodel.wem.IWemListener;
 import org.wikimodel.wem.WikiFormat;
 import org.wikimodel.wem.WikiParameters;
@@ -10,6 +12,7 @@ import org.wikimodel.wem.util.ListBuilder;
 
 /**
  * @author MikhailKotelnikov
+ * @author tmortagne
  */
 class InternalWikiScannerContext implements IWikiScannerContext {
 
@@ -137,6 +140,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
             if (fListParams == null)
                 fListParams = WikiParameters.EMPTY;
             IListListener listener = new IListListener() {
+                private Stack<WikiParameters> fListParamsStack = new Stack<WikiParameters>();
 
                 public void beginRow(char treeType, char rowType) {
                     if (rowType == ':') {
@@ -153,21 +157,25 @@ class InternalWikiScannerContext implements IWikiScannerContext {
                 }
 
                 public void beginTree(char type) {
+                    fListParamsStack.push(fListParams);
+
                     closeFormat();
                     switch (type) {
-                        case '#':
-                            fListener.beginList(fListParams, true);
-                            fBlockType = IBlockTypes.LIST;
-                            break;
-                        case 'd':
-                            fListener.beginDefinitionList(fListParams);
-                            fBlockType = IBlockTypes.LIST_DL;
-                            break;
-                        default:
-                            fListener.beginList(fListParams, false);
-                            fBlockType = IBlockTypes.LIST;
-                            break;
+                    case '#':
+                        fListener.beginList(fListParams, true);
+                        fBlockType = IBlockTypes.LIST;
+                        break;
+                    case 'd':
+                        fListener.beginDefinitionList(fListParams);
+                        fBlockType = IBlockTypes.LIST_DL;
+                        break;
+                    default:
+                        fListener.beginList(fListParams, false);
+                        fBlockType = IBlockTypes.LIST;
+                        break;
                     }
+
+                    fListParams = WikiParameters.EMPTY;
                 }
 
                 public void endRow(char treeType, char rowType) {
@@ -190,19 +198,21 @@ class InternalWikiScannerContext implements IWikiScannerContext {
 
                 public void endTree(char type) {
                     switch (type) {
-                        case '#':
-                            fListener.endList(fListParams, true);
-                            fBlockType = IBlockTypes.LIST;
-                            break;
-                        case 'd':
-                            fListener.endDefinitionList(fListParams);
-                            fBlockType = IBlockTypes.LIST;
-                            break;
-                        default:
-                            fListener.endList(fListParams, false);
-                            fBlockType = IBlockTypes.LIST;
-                            break;
+                    case '#':
+                        fListener.endList(fListParamsStack.peek(), true);
+                        fBlockType = IBlockTypes.LIST;
+                        break;
+                    case 'd':
+                        fListener.endDefinitionList(fListParamsStack.peek());
+                        fBlockType = IBlockTypes.LIST;
+                        break;
+                    default:
+                        fListener.endList(fListParamsStack.peek(), false);
+                        fBlockType = IBlockTypes.LIST;
+                        break;
                     }
+
+                    fListParamsStack.pop();
                 }
 
             };
@@ -227,14 +237,14 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     public void beginListItem(String item) {
         beginListItem(item, WikiParameters.EMPTY);
     }
-    
+
     public void beginListItem(String item, WikiParameters params) {
         beginList();
-        
+
         if (fListParams == WikiParameters.EMPTY) {
             fListParams = params;
         }
-        
+
         item = trimLineBreaks(item);
         item = replace(item, ";:", ":");
         // Definitions can not have subitems...
@@ -242,7 +252,6 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         if (idx >= 0)
             item = item.substring(0, idx + 1);
         fListBuilder.alignContext(item);
-        fListParams = WikiParameters.EMPTY;
     }
 
     public void beginParagraph() {
@@ -391,9 +400,8 @@ class InternalWikiScannerContext implements IWikiScannerContext {
             beginTable();
             fBlockType = IBlockTypes.TABLE_ROW;
             fTableCellCounter = 0;
-            fTableRowParams = rowParams != null
-                ? rowParams
-                : WikiParameters.EMPTY;
+            fTableRowParams = rowParams != null ? rowParams
+                    : WikiParameters.EMPTY;
             fListener.beginTableRow(fTableRowParams);
             result = true;
         }
@@ -459,26 +467,26 @@ class InternalWikiScannerContext implements IWikiScannerContext {
 
     public void closeBlock() {
         switch (fBlockType) {
-            case IBlockTypes.NONE:
-                break;
-            case IBlockTypes.HEADER:
-                endHeader();
-                break;
-            case IBlockTypes.PARAGRAPH:
-                endParagraph();
-                break;
-            case IBlockTypes.INFO:
-                endInfo();
-                break;
-            default:
-                if ((fBlockType & IBlockTypes.TABLE) != 0) {
-                    endTable();
-                } else if ((fBlockType & IBlockTypes.LIST) != 0) {
-                    endList();
-                } else if ((fBlockType & IBlockTypes.QUOT) != 0) {
-                    endQuot();
-                }
-                break;
+        case IBlockTypes.NONE:
+            break;
+        case IBlockTypes.HEADER:
+            endHeader();
+            break;
+        case IBlockTypes.PARAGRAPH:
+            endParagraph();
+            break;
+        case IBlockTypes.INFO:
+            endInfo();
+            break;
+        default:
+            if ((fBlockType & IBlockTypes.TABLE) != 0) {
+                endTable();
+            } else if ((fBlockType & IBlockTypes.LIST) != 0) {
+                endList();
+            } else if ((fBlockType & IBlockTypes.QUOT) != 0) {
+                endQuot();
+            }
+            break;
         }
     }
 
@@ -526,7 +534,6 @@ class InternalWikiScannerContext implements IWikiScannerContext {
             fListBuilder.alignContext("");
             fListBuilder = null;
             fBlockType = IBlockTypes.NONE;
-            fListParams =  WikiParameters.EMPTY;
         }
     }
 

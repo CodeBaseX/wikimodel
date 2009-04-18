@@ -658,7 +658,7 @@ public class XWikiScanner implements XWikiScannerConstants {
       header();
     } else if (jj_2_3(2)) {
       table();
-    } else if (jj_2_4(2)) {
+    } else if (jj_2_4(3)) {
       list();
     } else {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
