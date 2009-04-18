@@ -17,6 +17,7 @@ import org.wikimodel.wem.impl.IWikiScannerContext;
 import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.impl.WikiScannerUtil;
 import org.wikimodel.wem.xwiki.XWikiReferenceParser;
+import org.wikimodel.wem.xwiki.XWikiScannerUtil;
 
 public class XWikiScannerTokenManager implements XWikiScannerConstants
 {
