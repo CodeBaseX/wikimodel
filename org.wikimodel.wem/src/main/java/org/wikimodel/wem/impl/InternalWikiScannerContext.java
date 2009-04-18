@@ -12,7 +12,7 @@ import org.wikimodel.wem.util.ListBuilder;
 
 /**
  * @author MikhailKotelnikov
- * @author tmortagne
+ * @author thomas.mortagne
  */
 class InternalWikiScannerContext implements IWikiScannerContext {
 

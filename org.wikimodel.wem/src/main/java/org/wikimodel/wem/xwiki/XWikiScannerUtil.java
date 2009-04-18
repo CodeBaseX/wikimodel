@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.wikimodel.wem.xwiki;
 
+/**
+ * @author thomas.mortagne
+ */
 public class XWikiScannerUtil {
     public static String unescapeVerbatim(String content) {
         StringBuffer unescapedContent = new StringBuffer();
