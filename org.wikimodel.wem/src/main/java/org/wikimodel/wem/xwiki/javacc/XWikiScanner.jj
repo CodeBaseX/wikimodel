@@ -506,16 +506,22 @@ void list():
 
 void listItem():
 {
+	String str = "";
     Token t = null;
+    WikiParameters params = WikiParameters.EMPTY;
 }
 {
     (
+    	( LOOKAHEAD(2) t = getBLOCK_PARAMS() { str = t.image.trim(); } )?
+    	{
+	        params = newWikiParameters(str);
+    	}
         t = getLIST_ITEM()
         {
-	        String str = t.image.trim();
+	        str = t.image.trim();
 	        str = str.replace(".", "");
 	        str = str.replace('1', '#');
-	        fContext.beginListItem(str);
+	        fContext.beginListItem(str, params);
         }
         ( LOOKAHEAD(2) block() )*
         {

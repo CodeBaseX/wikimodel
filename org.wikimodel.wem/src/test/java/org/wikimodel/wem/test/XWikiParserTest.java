@@ -261,7 +261,20 @@ public class XWikiParserTest extends AbstractWikiParserTest {
 
         test("* item one", "<ul>\n  <li>item one</li>\n</ul>");
         test("*item one", "<p>*item one</p>");
-
+        test("(%param=\"value\"%)\n* item one\n" + "** item two",
+                "<ul param='value'>\n" + "  <li>item one<ul>\n"
+                        + "  <li>item two</li>\n" + "</ul>\n" + "</li>\n"
+                        + "</ul>");
+        test("(%param=\"value\"%)\n* item one\n"
+                + "(%param2=\"value2\"%)\n** item two", "<ul param='value'>\n"
+                + "  <li>item one<ul param2='value2'>\n"
+                + "  <li>item two</li>\n" + "</ul>\n" + "</li>\n" + "</ul>");
+        test("(%param=\"value\"%)\n* item one\n"
+                + "(%param2=\"value2\"%)\n** item two"
+                + "(%param3=\"value3\"%)\n** item three",
+                "<ul param='value'>\n" + "  <li>item one<ul param2='value2'>\n"
+                        + "  <li>item two</li>\n" + "  <li>item three</li>\n"
+                        + "</ul>\n" + "</li>\n" + "</ul>");
     }
 
     public void testMacro() throws WikiParserException {
