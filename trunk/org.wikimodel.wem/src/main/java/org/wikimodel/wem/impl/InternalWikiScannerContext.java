@@ -225,7 +225,16 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     }
 
     public void beginListItem(String item) {
+        beginListItem(item, WikiParameters.EMPTY);
+    }
+    
+    public void beginListItem(String item, WikiParameters params) {
         beginList();
+        
+        if (fListParams == WikiParameters.EMPTY) {
+            fListParams = params;
+        }
+        
         item = trimLineBreaks(item);
         item = replace(item, ";:", ":");
         // Definitions can not have subitems...
@@ -233,6 +242,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         if (idx >= 0)
             item = item.substring(0, idx + 1);
         fListBuilder.alignContext(item);
+        fListParams = WikiParameters.EMPTY;
     }
 
     public void beginParagraph() {
@@ -516,6 +526,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
             fListBuilder.alignContext("");
             fListBuilder = null;
             fBlockType = IBlockTypes.NONE;
+            fListParams =  WikiParameters.EMPTY;
         }
     }
 
