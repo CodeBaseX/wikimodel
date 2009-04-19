@@ -945,7 +945,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     case D_PROPERTY:
       t = getPROPERTY();
             str = t.image.trim();
-            str = str.substring(1);
+            str = str.substring(2);
             fContext.beginPropertyBlock(str, false);
       if (jj_2_7(2)) {
         line();
@@ -958,7 +958,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     case D_PROPERTY_DOC:
       t = getPROPERTY_DOC();
             str = t.image.trim();
-            str = str.substring(1, str.length() - 3);
+            str = str.substring(2, str.length() - 3);
             str = str.trim();
             fContext.beginPropertyBlock(str, true);
       label_3:
@@ -1659,7 +1659,7 @@ public class XWikiScanner implements XWikiScannerConstants {
       case D_PROPERTY_INLINE:
         t = getPROPERTY_INLINE();
                 str = t.image.trim();
-                str = str.substring(1, str.length() - 1);
+                str = str.substring(2, str.length() - 1);
                 str = str.trim();
                 fContext.beginPropertyInline(str);
         break;

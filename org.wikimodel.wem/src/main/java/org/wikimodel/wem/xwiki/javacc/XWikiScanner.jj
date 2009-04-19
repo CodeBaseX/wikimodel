@@ -132,7 +132,7 @@ TOKEN_MGR_DECLS: {
       <#LI: (<SPACE>)* ( ("*")+ (":" | ";")* | ( "1" | "*" )+ "." (":" | ";")* | (":" | ";")+ ) (<SPACE>) >
     | <#HEADER: (<SPACE>)* ("=")+ >
     | <#BR: "\\\\" >
-    | <#PROPERTY: "%" ( (<CHAR>)+ | <URI> )>
+    | <#PROPERTY: "%%" ( (<CHAR>)+ | <URI> )>
     | <#PROPERTY_DOC: <PROPERTY> <DOC_BEGIN> >
     | <#DOC_BEGIN: (<SPACE>)* "(((" (<SPACE>)* >
     | <#DOC_END:   (<SPACE>)* ")))" (<SPACE>)* >
@@ -432,7 +432,7 @@ void properties():
         t = getPROPERTY()
         {
             str = t.image.trim();
-            str = str.substring(1);
+            str = str.substring(2);
             fContext.beginPropertyBlock(str, false);
         }
         (
@@ -447,7 +447,7 @@ void properties():
         t = getPROPERTY_DOC()
         {
             str = t.image.trim();
-            str = str.substring(1, str.length() - 3);
+            str = str.substring(2, str.length() - 3);
             str = str.trim();
             fContext.beginPropertyBlock(str, true);
         }
@@ -934,7 +934,7 @@ void line():
             t = getPROPERTY_INLINE()
             {
                 str = t.image.trim();
-                str = str.substring(1, str.length() - 1);
+                str = str.substring(2, str.length() - 1);
                 str = str.trim();
                 fContext.beginPropertyInline(str);
             }
