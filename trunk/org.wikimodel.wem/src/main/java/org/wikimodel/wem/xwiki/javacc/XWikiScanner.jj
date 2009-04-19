@@ -132,6 +132,8 @@ TOKEN_MGR_DECLS: {
       <#LI: (<SPACE>)* ( ("*")+ (":" | ";")* | ( "1" | "*" )+ "." (":" | ";")* | (":" | ";")+ ) (<SPACE>) >
     | <#HEADER: (<SPACE>)* ("=")+ >
     | <#BR: "\\\\" >
+    | <#PROPERTY: "%" ( (<CHAR>)+ | <URI> )>
+    | <#PROPERTY_DOC: <PROPERTY> <DOC_BEGIN> >
     | <#DOC_BEGIN: (<SPACE>)* "(((" (<SPACE>)* >
     | <#DOC_END:   (<SPACE>)* ")))" (<SPACE>)* >
     | <#VERBATIM_START: "{{{" >
@@ -269,6 +271,9 @@ TOKEN_MGR_DECLS: {
     | <I_QUOT_LINE: (<NEW_LINE>)? <QUOT_LINE> > : DEFAULT
     | <I_XWIKI_URI: <XWIKI_URI> > : DEFAULT
     | <I_XWIKI_SPACE : ( <XWIKI_SPACE> )+ > : DEFAULT
+    | <I_PROPERTY: (<NEW_LINE>)? (<SPACE>)* <PROPERTY> (<SPACE>)* > : DEFAULT
+    | <I_PROPERTY_DOC: (<NEW_LINE>)? (<SPACE>)* <PROPERTY_DOC> > : INITIAL_CONTEXT
+    | <I_PROPERTY_INLINE: <PROPERTY> "(" > : DEFAULT
     
     // "Standard" tokens. They are the same for all wikis.
     | <I_NL: (<NEW_LINE>)? > : DEFAULT
@@ -301,6 +306,9 @@ TOKEN_MGR_DECLS: {
     | <D_QUOT_LINE: <NEW_LINE> <QUOT_LINE> > : DEFAULT
     | <D_XWIKI_URI: <XWIKI_URI> > : DEFAULT
     | <D_XWIKI_SPACE : ( <XWIKI_SPACE> )+ > : DEFAULT
+    | <D_PROPERTY: <NEW_LINE> (<SPACE>)* <PROPERTY> (<SPACE>)* > : DEFAULT
+    | <D_PROPERTY_DOC: <NEW_LINE> (<SPACE>)* <PROPERTY_DOC> > : INITIAL_CONTEXT
+    | <D_PROPERTY_INLINE: <PROPERTY> "(" > : DEFAULT
     
     // "Standard" tokens. They are the same for all wikis.
     | <D_NL: <NEW_LINE> > : DEFAULT
@@ -337,6 +345,9 @@ TOKEN_MGR_DECLS: {
     Token getQUOT_LINE(): {Token t=null;} {(t=<I_QUOT_LINE>|t=<D_QUOT_LINE>){return t;}}
     Token getXWIKI_URI(): {Token t=null;} {(t=<I_XWIKI_URI>|t=<D_XWIKI_URI>){return t;}}
     Token getXWIKI_SPACE(): {Token t=null;} {(t=<I_XWIKI_SPACE>|t=<D_XWIKI_SPACE>){return t;}}
+    Token getPROPERTY(): {Token t=null;} {(t=<I_PROPERTY>|t=<D_PROPERTY>){return t;}}
+    Token getPROPERTY_DOC(): {Token t=null;} {(t=<I_PROPERTY_DOC>|t=<D_PROPERTY_DOC>){return t;}}
+    Token getPROPERTY_INLINE(): {Token t=null;} {(t=<I_PROPERTY_INLINE>|t=<D_PROPERTY_INLINE>){return t;}}
     
     // "Standard" tokens. They are the same for all wikis.
     Token getNL(): {Token t=null;} {(t=<I_NL>|t=<D_NL>){return t;}}
@@ -370,9 +381,10 @@ void docElements():
     LOOKAHEAD(2) table() 
     |
     LOOKAHEAD(3) list()
-    |
-    // Embedded documents
-    embeddedDocument()
+
+    // Semantic blocks and embedded documents.
+    | ( properties() | embeddedDocument() )     
+
     |
     macroBlock()
     |
@@ -408,6 +420,45 @@ void embeddedDocument():
     {
         fContext.endDocument();
     }
+}
+
+void properties():
+{
+    Token t = null;
+    String str = null;
+}
+{
+    ( 
+        t = getPROPERTY()
+        {
+            str = t.image.trim();
+            str = str.substring(1);
+            fContext.beginPropertyBlock(str, false);
+        }
+        (
+            ( LOOKAHEAD(2) line() )?
+        )
+        {
+            fContext.endPropertyBlock();
+        }
+    )
+    |
+    (
+        t = getPROPERTY_DOC()
+        {
+            str = t.image.trim();
+            str = str.substring(1, str.length() - 3);
+            str = str.trim();
+            fContext.beginPropertyBlock(str, true);
+        }
+        ( docElements() )*
+        (
+            getDOC_END() | <EOF>
+        )
+        {
+            fContext.endPropertyBlock();
+        }
+    ) 
 }
 
 void header():
@@ -880,6 +931,14 @@ void line():
 {
     ( LOOKAHEAD(2)
         (
+            t = getPROPERTY_INLINE()
+            {
+                str = t.image.trim();
+                str = str.substring(1, str.length() - 1);
+                str = str.trim();
+                fContext.beginPropertyInline(str);
+            }
+            |
             t = getINLINE_PARAMS()
             {
             	fContext.onFormat(newWikiParameters(t.image.trim()));
