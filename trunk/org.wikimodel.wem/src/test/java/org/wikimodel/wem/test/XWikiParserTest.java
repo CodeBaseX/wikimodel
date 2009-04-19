@@ -623,21 +623,21 @@ public class XWikiParserTest extends AbstractWikiParserTest {
     
     public void testPropertiesBlock() throws WikiParserException {
         test(
-            "%toto hello  world\n123",
+            "%%toto hello  world\n123",
             "<div class='wikimodel-property' url='toto'><p>hello  world</p>\n</div>\n<p>123</p>");
         test(
-            "%prop1 value1\n%prop2 value2",
+            "%%prop1 value1\n%%prop2 value2",
             ""
                 + "<div class='wikimodel-property' url='prop1'><p>value1</p>\n</div>\n"
                 + "<div class='wikimodel-property' url='prop2'><p>value2</p>\n</div>");
         test(
-            "%prop1 value1\nparagraph\n%prop2 value2",
+            "%%prop1 value1\nparagraph\n%%prop2 value2",
             ""
                 + "<div class='wikimodel-property' url='prop1'><p>value1</p>\n</div>\n"
                 + "<p>paragraph</p>\n"
                 + "<div class='wikimodel-property' url='prop2'><p>value2</p>\n</div>");
 
-        test("%prop1 (((embedded)))next paragraph\n%prop2 value2", ""
+        test("%%prop1 (((embedded)))next paragraph\n%%prop2 value2", ""
             + "<div class='wikimodel-property' url='prop1'>\n"
             + "<p>embedded</p>\n"
             + "</div>\n"
@@ -645,7 +645,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             + "<div class='wikimodel-property' url='prop2'><p>value2</p>\n"
             + "</div>");
         test(
-            "%prop1 (((=Header\n* item 1\n* item 2)))next paragraph\n%prop2 value2",
+            "%%prop1 (((=Header\n* item 1\n* item 2)))next paragraph\n%%prop2 value2",
             ""
                 + "<div class='wikimodel-property' url='prop1'>\n"
                 + "<h1>Header</h1>\n"
@@ -661,12 +661,12 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test(
             "before\n"
                 + "\n"
-                + "%company (((\n"
-                + "    %name Cognium Systems\n"
-                + "    %addr (((\n"
-                + "        %country [[France]]\n"
-                + "        %city [[Paris]]\n"
-                + "        %street Cite Nollez\n"
+                + "%%company (((\n"
+                + "    %%name Cognium Systems\n"
+                + "    %%addr (((\n"
+                + "        %%country [[France]]\n"
+                + "        %%city [[Paris]]\n"
+                + "        %%street Cite Nollez\n"
                 + "        This is just a description\n"
                 + "    )))\n"
                 + ")))\n"
@@ -694,12 +694,12 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test(
             "before\n"
                 + "\n"
-                + "%company (((\n"
-                + "    %name Cognium Systems\n"
-                + "    %addr (((\n"
-                + "        %country [[France]]\n"
-                + "        %city Paris\n"
-                + "        %street Cite Nollez\n"
+                + "%%company (((\n"
+                + "    %%name Cognium Systems\n"
+                + "    %%addr (((\n"
+                + "        %%country [[France]]\n"
+                + "        %%city Paris\n"
+                + "        %%street Cite Nollez\n"
                 + "        This is just a description\n"
                 + "after",
             "<p>before</p>\n"
