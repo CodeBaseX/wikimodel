@@ -42,6 +42,11 @@ public class JspWikiSerializer implements IWemListener {
 
     }
 
+    public void beginDocument(WikiParameters params) {
+        // TODO Auto-generated method stub
+
+    }
+
     public void beginFormat(WikiFormat format) {
         // TODO Auto-generated method stub
 
@@ -126,6 +131,11 @@ public class JspWikiSerializer implements IWemListener {
     }
 
     public void endDocument() {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void endDocument(WikiParameters params) {
         // TODO Auto-generated method stub
 
     }
@@ -226,9 +236,9 @@ public class JspWikiSerializer implements IWemListener {
 
     public void onImage(String ref) {
         // TODO Auto-generated method stub
-        
+
     }
-    
+
     public void onImage(WikiReference ref) {
         // TODO Auto-generated method stub
 

@@ -42,6 +42,13 @@ public class PrintTextListener implements IWemListener {
     }
 
     /**
+     * @see org.wikimodel.wem.IWemListenerDocument#beginDocument(org.wikimodel.wem.WikiParameters)
+     */
+    public void beginDocument(WikiParameters params) {
+        beginDocument();
+    }
+
+    /**
      * @see org.wikimodel.wem.IWemListener#beginFormat(org.wikimodel.wem.WikiFormat)
      */
     public void beginFormat(WikiFormat format) {
@@ -158,6 +165,13 @@ public class PrintTextListener implements IWemListener {
      */
     public void endDocument() {
         endBlock();
+    }
+
+    /**
+     * @see org.wikimodel.wem.IWemListenerDocument#endDocument(org.wikimodel.wem.WikiParameters)
+     */
+    public void endDocument(WikiParameters params) {
+        endDocument();
     }
 
     /**

@@ -376,15 +376,17 @@ void docElements():
 {
 }
 {
-    LOOKAHEAD(2) header() 
+    LOOKAHEAD(2) header()
     |
-    LOOKAHEAD(2) table() 
+    LOOKAHEAD(2) table()
     |
     LOOKAHEAD(3) list()
-
-    // Semantic blocks and embedded documents.
-    | ( properties() | embeddedDocument() )     
-
+    |
+    // Semantic blocks
+    properties()
+    |
+    // Embedded documents
+    LOOKAHEAD(2) embeddedDocument()
     |
     macroBlock()
     |
@@ -407,11 +409,17 @@ void docElements():
 void embeddedDocument():
 {
     Token t = null;
+    String str = "";
+    WikiParameters params = WikiParameters.EMPTY;
 }
 {
+	( LOOKAHEAD(2) t = getBLOCK_PARAMS() { str = t.image.trim(); } )?
+    {
+	    params = newWikiParameters(str);
+    }
     t = getDOC_BEGIN()
     {
-        fContext.beginDocument();
+        fContext.beginDocument(params);
     }
     ( docElements() )*
     (

@@ -47,6 +47,8 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         int TABLE_ROW_CELL = (1 << 13) | TABLE_ROW;
     }
 
+    private WikiParameters fDocumentParams = null;
+
     private int fBlockType = IBlockTypes.NONE;
 
     private WikiFormat fFormat;
@@ -102,6 +104,12 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     public void beginDocument() {
         fInlineState.set(InlineState.BEGIN_FORMAT);
         fListener.beginDocument();
+    }
+
+    public void beginDocument(WikiParameters params) {
+        fDocumentParams = params;
+        fInlineState.set(InlineState.BEGIN_FORMAT);
+        fListener.beginDocument(fDocumentParams);
     }
 
     public void beginHeader(int level) {
@@ -505,7 +513,12 @@ class InternalWikiScannerContext implements IWikiScannerContext {
 
     public void endDocument() {
         closeBlock();
-        fListener.endDocument();
+
+        if (fDocumentParams == null) {
+            fListener.endDocument();
+        } else {
+            fListener.endDocument(fDocumentParams);
+        }
     }
 
     public void endHeader() {

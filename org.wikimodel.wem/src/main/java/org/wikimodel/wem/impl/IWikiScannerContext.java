@@ -11,6 +11,8 @@ import org.wikimodel.wem.WikiStyle;
 public interface IWikiScannerContext extends IWemConstants {
 
     void beginDocument();
+    
+    void beginDocument(WikiParameters params);
 
     void beginHeader(int level);
 

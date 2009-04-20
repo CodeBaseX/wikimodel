@@ -17,6 +17,13 @@ public interface IWemListenerDocument {
     void beginDocument();
 
     /**
+     * This method is called to notify about the beginning of the top-level
+     * parsed document or about the beginning of an embedded document (contained
+     * in the main one).
+     */
+    void beginDocument(WikiParameters params);
+
+    /**
      * This method is called to notify about a new section header found in the
      * document.
      * 
@@ -30,6 +37,12 @@ public interface IWemListenerDocument {
      * document.
      */
     void endDocument();
+
+    /**
+     * This method is used to notify about the end of a top-level or an internal
+     * document.
+     */
+    void endDocument(WikiParameters params);
 
     /**
      * This method is called to notify about the end of a section-level header.
