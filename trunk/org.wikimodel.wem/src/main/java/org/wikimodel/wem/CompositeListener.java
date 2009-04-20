@@ -59,6 +59,15 @@ public class CompositeListener implements IWemListener {
     }
 
     /**
+     * @see org.wikimodel.wem.IWemListenerDocument#beginDocument(org.wikimodel.wem.WikiParameters)
+     */
+    public void beginDocument(WikiParameters params) {
+        for (IWemListener listener : fListeners) {
+            listener.beginDocument(params);
+        }
+    }
+
+    /**
      * @see org.wikimodel.wem.IWemListener#beginFormat(org.wikimodel.wem.WikiFormat)
      */
     public void beginFormat(WikiFormat format) {
@@ -212,6 +221,15 @@ public class CompositeListener implements IWemListener {
     public void endDocument() {
         for (IWemListener listener : fListeners) {
             listener.endDocument();
+        }
+    }
+
+    /**
+     * @see org.wikimodel.wem.IWemListenerDocument#endDocument(org.wikimodel.wem.WikiParameters)
+     */
+    public void endDocument(WikiParameters params) {
+        for (IWemListener listener : fListeners) {
+            listener.endDocument(params);
         }
     }
 
@@ -384,11 +402,11 @@ public class CompositeListener implements IWemListener {
      * @see org.wikimodel.wem.IWemListenerInline#onImage(java.lang.String)
      */
     public void onImage(String ref) {
-	for (IWemListener listener : fListeners) {
+        for (IWemListener listener : fListeners) {
             listener.onImage(ref);
         }
     }
-    
+
     /**
      * @see org.wikimodel.wem.IWemListenerInline#onImage(org.wikimodel.wem.WikiReference)
      */

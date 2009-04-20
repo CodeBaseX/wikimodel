@@ -27,7 +27,7 @@ public class WikiScannerContext implements IWikiScannerContext {
         fListener = listener;
     }
 
-    public void beginDocument() {
+    private InternalWikiScannerContext pushContext() {
         InternalWikiScannerContext context = (InternalWikiScannerContext) getContext();
         if (context != null) {
             context.checkBlockContainer();
@@ -35,7 +35,18 @@ public class WikiScannerContext implements IWikiScannerContext {
         }
         context = new InternalWikiScannerContext(fListener);
         fStack.push(context);
+
+        return context;
+    }
+
+    public void beginDocument() {
+        InternalWikiScannerContext context = pushContext();
         context.beginDocument();
+    }
+
+    public void beginDocument(WikiParameters params) {
+        InternalWikiScannerContext context = pushContext();
+        context.beginDocument(params);
     }
 
     public void beginHeader(int level) {
@@ -61,7 +72,7 @@ public class WikiScannerContext implements IWikiScannerContext {
     public void beginListItem(String item) {
         getContext().beginListItem(item);
     }
-    
+
     public void beginListItem(String item, WikiParameters params) {
         getContext().beginListItem(item, params);
     }
@@ -198,7 +209,7 @@ public class WikiScannerContext implements IWikiScannerContext {
         if (!fStack.isEmpty())
             return fStack.peek();
         InternalWikiScannerContext context = new InternalWikiScannerContext(
-            fListener);
+                fListener);
         fStack.push(context);
         return context;
     }

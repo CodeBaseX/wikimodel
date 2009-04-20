@@ -55,7 +55,7 @@ public class DivisionTagHandler extends TagHandler
 
             // Check if we have a div meaning start of embedded document
             if (classes.contains(getDocumentClass())) {
-                context.getScannerContext().beginDocument();
+                context.getScannerContext().beginDocument(context.getParams().remove("class"));
 
                 // Mark that we're not inside a block element since we're starting a new doc
                 Stack<Boolean> insideBlockElementsStack = 

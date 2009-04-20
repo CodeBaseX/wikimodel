@@ -151,6 +151,16 @@ public class XWikiParserTest extends AbstractWikiParserTest {
                 + "<div class='wikimodel-document'>\n" + "<p>two</p>\n"
                 + "<div class='wikimodel-document'>\n" + "<p>three </p>\n"
                 + "</div>\n" + "</div>\n" + "</div>");
+        test("before\n(% param=\"value\" %)((( inside ))) after ", "<p>before</p>\n"
+                + "<div class='wikimodel-document' param='value'>\n" + "<p>inside</p>\n"
+                + "</div>\n" + "<p>after </p>");
+        test("before\n|(% param=\"value\" %)((( inside ))) after ", "<p>before</p>\n"
+                + "<table><tbody>\n"
+                + "  <tr><td param='value'><div class='wikimodel-document'>\n"
+                + "<p>inside</p>\n"
+                + "</div>\n"
+                + "after </td></tr>\n"
+                + "</tbody></table>");
     }
 
     /**

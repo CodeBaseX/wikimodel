@@ -45,6 +45,12 @@ public class EventDumpListener extends PrintTextListener {
     }
 
     @Override
+    public void beginDocument(WikiParameters params) {
+        println("beginDocument([" + params + "])");
+        inc();
+    }
+
+    @Override
     public void beginFormat(WikiFormat format) {
         println("beginFormat(" + format + ")");
         inc();
@@ -154,6 +160,12 @@ public class EventDumpListener extends PrintTextListener {
     public void endDocument() {
         dec();
         println("endDocument()");
+    }
+
+    @Override
+    public void endDocument(WikiParameters params) {
+        dec();
+        println("endDocument([" + params + "])");
     }
 
     @Override
@@ -273,13 +285,8 @@ public class EventDumpListener extends PrintTextListener {
         String macroName,
         WikiParameters params,
         String content) {
-        println("onMacroBlock('"
-            + macroName
-            + "', "
-            + params
-            + ", '"
-            + content
-            + "')");
+        println("onMacroBlock('" + macroName + "', " + params + ", '" + content
+                + "')");
     }
 
     @Override
@@ -287,13 +294,8 @@ public class EventDumpListener extends PrintTextListener {
         String macroName,
         WikiParameters params,
         String content) {
-        println("onMacroInline('"
-            + macroName
-            + "', "
-            + params
-            + ", '"
-            + content
-            + "')");
+        println("onMacroInline('" + macroName + "', " + params + ", '"
+                + content + "')");
     }
 
     @Override

@@ -47,6 +47,11 @@ public class PrintListener extends PrintInlineListener {
     }
 
     @Override
+    public void beginDocument(WikiParameters params) {
+        println("<div class='wikimodel-document'" + params + ">");
+    }
+
+    @Override
     public void beginHeader(int level, WikiParameters params) {
         print("<h" + level + params + ">");
     }
@@ -77,8 +82,7 @@ public class PrintListener extends PrintInlineListener {
     @Override
     public void beginPropertyBlock(String propertyUri, boolean doc) {
         print("<div class='wikimodel-property' url='"
-            + WikiPageUtil.escapeXmlAttribute(propertyUri)
-            + "'>");
+                + WikiPageUtil.escapeXmlAttribute(propertyUri) + "'>");
         if (doc)
             println("");
     }
@@ -201,11 +205,8 @@ public class PrintListener extends PrintInlineListener {
      */
     @Override
     public void onExtensionBlock(String extensionName, WikiParameters params) {
-        println("<div class='wikimodel-extension' extension='"
-            + extensionName
-            + "'"
-            + params
-            + "/>");
+        println("<div class='wikimodel-extension' extension='" + extensionName
+                + "'" + params + "/>");
     }
 
     @Override
@@ -218,13 +219,8 @@ public class PrintListener extends PrintInlineListener {
         String macroName,
         WikiParameters params,
         String content) {
-        println("<pre class='wikimodel-macro' macroName='"
-            + macroName
-            + "'"
-            + params
-            + "><![CDATA["
-            + content
-            + "]]></pre>");
+        println("<pre class='wikimodel-macro' macroName='" + macroName + "'"
+                + params + "><![CDATA[" + content + "]]></pre>");
     }
 
     @Override
@@ -232,13 +228,8 @@ public class PrintListener extends PrintInlineListener {
         String macroName,
         WikiParameters params,
         String content) {
-        print("<span class='wikimodel-macro' macroName='"
-            + macroName
-            + "'"
-            + params
-            + "><![CDATA["
-            + content
-            + "]]></span>");
+        print("<span class='wikimodel-macro' macroName='" + macroName + "'"
+                + params + "><![CDATA[" + content + "]]></span>");
     }
 
     @Override
@@ -247,11 +238,8 @@ public class PrintListener extends PrintInlineListener {
 
     @Override
     public void onVerbatimBlock(String str, WikiParameters params) {
-        println("<pre"
-            + params
-            + ">"
-            + WikiPageUtil.escapeXmlString(str)
-            + "</pre>");
+        println("<pre" + params + ">" + WikiPageUtil.escapeXmlString(str)
+                + "</pre>");
     }
 
 }
