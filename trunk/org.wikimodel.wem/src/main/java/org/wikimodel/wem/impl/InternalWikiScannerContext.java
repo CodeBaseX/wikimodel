@@ -75,9 +75,9 @@ class InternalWikiScannerContext implements IWikiScannerContext {
 
     private WikiParameters fParagraphParams;
 
-    private String fProperty;
+    private Stack<String> fPropertyStack = new Stack<String>();
 
-    private boolean fPropertyDoc;
+    private Stack<Boolean> fPropertyDocStack = new Stack<Boolean>();
 
     private ListBuilder fQuotBuilder;
 
@@ -280,9 +280,9 @@ class InternalWikiScannerContext implements IWikiScannerContext {
 
     public void beginPropertyBlock(String property, boolean doc) {
         closeBlock();
-        fProperty = property;
-        fPropertyDoc = doc;
-        fListener.beginPropertyBlock(fProperty, fPropertyDoc);
+        fPropertyStack.push(property);
+        fPropertyDocStack.push(doc);
+        fListener.beginPropertyBlock(property, doc);
     }
 
     public void beginPropertyInline(String str) {
@@ -565,8 +565,9 @@ class InternalWikiScannerContext implements IWikiScannerContext {
 
     public void endPropertyBlock() {
         closeBlock();
-        fListener.endPropertyBlock(fProperty, fPropertyDoc);
-        fProperty = null;
+        String property = fPropertyStack.pop();
+        boolean doc = fPropertyDocStack.pop();
+        fListener.endPropertyBlock(property, doc);
     }
 
     public void endPropertyInline() {
