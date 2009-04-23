@@ -405,6 +405,7 @@ void embeddedDocument():
     }
     t = getDOC_BEGIN()
     {
+    	sendOnEmptyLinesEvent(false);
         fContext.beginDocument(params);
     }
     ( docElements() )*
