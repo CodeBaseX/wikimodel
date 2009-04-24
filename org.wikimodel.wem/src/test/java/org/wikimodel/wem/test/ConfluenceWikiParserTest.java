@@ -412,6 +412,26 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
                 + "Column two text goes here\n"
                 + "{column}\n"
                 + "]]></pre>");
+
+        // Macro parameters
+        test(
+            "{float}x{float}",
+            "<pre class='wikimodel-macro' macroName='float'><![CDATA[x]]></pre>");
+        test(
+            "{float:left}align to left{float}",
+            "<pre class='wikimodel-macro' macroName='float' left=''><![CDATA[align to left]]></pre>");
+        test(
+            "{column:width=50%}\n" + "Text in this column.\n" + "{column}",
+            "<pre class='wikimodel-macro' macroName='column' width='50%'><![CDATA[\nText in this column.\n]]></pre>");
+        test(
+            "{csv:output=wiki|width=900|border=15|delimiter=whitespace}\n"
+                + "Month Max Min Average\n"
+                + "January 25.5 *6.3* 15.9\n{csv}",
+            "<pre class='wikimodel-macro' macroName='csv' output='wiki' width='900' border='15' delimiter='whitespace'>"
+                + "<![CDATA[\n"
+                + "Month Max Min Average\n"
+                + "January 25.5 *6.3* 15.9\n]]></pre>");
+
     }
 
     private void testMacro(String... names) throws WikiParserException {
@@ -435,6 +455,13 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
             "{toto}a{toto}b",
             ""
                 + "<pre class='wikimodel-macro' macroName='toto'><![CDATA[]]></pre>\n"
+                + "<p>a<span class='wikimodel-macro' macroName='toto'><![CDATA[b]]></span></p>");
+
+        // Empty macros with parameters
+        test(
+            "{toto:x=X|y=Y}a{toto}b",
+            ""
+                + "<pre class='wikimodel-macro' macroName='toto' x='X' y='Y'><![CDATA[]]></pre>\n"
                 + "<p>a<span class='wikimodel-macro' macroName='toto'><![CDATA[b]]></span></p>");
     }
 
@@ -486,7 +513,7 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
         // LinksInternalExternalAndInterwiki
         test("[link]", "<p><a href='link'>link</a></p>");
         test(
-            "[MyBigPage|Go to my page]",
+            "[Go to my page|MyBigPage]",
             "<p><a href='MyBigPage'>Go to my page</a></p>");
         test(
             "[http://www.wikicreole.org/]",
@@ -495,12 +522,105 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
             "http://www.rawlink.org/, http://www.another.rawlink.org",
             "<p><a href='http://www.rawlink.org/'>http://www.rawlink.org/</a>, <a href='http://www.another.rawlink.org'>http://www.another.rawlink.org</a></p>");
         test(
-            "[http://www.wikicreole.org/|Visit the WikiCreole website]",
+            "[ Visit the WikiCreole website | http://www.wikicreole.org/ ]",
             "<p><a href='http://www.wikicreole.org/'>Visit the WikiCreole website</a></p>");
         test(
             "[Ohana:WikiFamily]",
             "<p><a href='Ohana:WikiFamily'>Ohana:WikiFamily</a></p>");
 
+        test("[#anchor]", "<p><a href='#anchor'>#anchor</a></p>");
+        test(
+            "[^attachment.ext]",
+            "<p><a href='^attachment.ext'>^attachment.ext</a></p>");
+        test("[pagetitle]", "<p><a href='pagetitle'>pagetitle</a></p>");
+        test(
+            "[pagetitle#anchor]",
+            "<p><a href='pagetitle#anchor'>pagetitle#anchor</a></p>");
+        test(
+            "[pagetitle^attachment.ext]",
+            "<p><a href='pagetitle^attachment.ext'>pagetitle^attachment.ext</a></p>");
+        test(
+            "[spacekey:pagetitle]",
+            "<p><a href='spacekey:pagetitle'>spacekey:pagetitle</a></p>");
+        test(
+            "[spacekey:pagetitle#anchor]",
+            "<p><a href='spacekey:pagetitle#anchor'>spacekey:pagetitle#anchor</a></p>");
+        test(
+            "[spacekey:pagetitle^attachment.ext]",
+            "<p><a href='spacekey:pagetitle^attachment.ext'>spacekey:pagetitle^attachment.ext</a></p>");
+        test(
+            "[link alias|#anchor|link tip]",
+            "<p><a href='#anchor' title='link tip'>link alias</a></p>");
+        test(
+            "[link alias|^attachment.ext|link tip]",
+            "<p><a href='^attachment.ext' title='link tip'>link alias</a></p>");
+        test(
+            "[link alias|pagetitle|link tip]",
+            "<p><a href='pagetitle' title='link tip'>link alias</a></p>");
+        test(
+            "[link alias|pagetitle#anchor|link tip]",
+            "<p><a href='pagetitle#anchor' title='link tip'>link alias</a></p>");
+        test(
+            "[link alias|pagetitle^attachment.ext|link tip]",
+            "<p><a href='pagetitle^attachment.ext' title='link tip'>link alias</a></p>");
+        test(
+            "[link alias|spacekey:pagetitle|link tip]",
+            "<p><a href='spacekey:pagetitle' title='link tip'>link alias</a></p>");
+        test(
+            "[link alias|spacekey:pagetitle#anchor|link tip]",
+            "<p><a href='spacekey:pagetitle#anchor' title='link tip'>link alias</a></p>");
+        test(
+            "[link alias|spacekey:pagetitle^attachment.ext|link tip]",
+            "<p><a href='spacekey:pagetitle^attachment.ext' title='link tip'>link alias</a></p>");
+        test(
+            "[/2004/01/12/My Blog Post]",
+            "<p><a href='/2004/01/12/My Blog Post'>/2004/01/12/My Blog Post</a></p>");
+        test(
+            "[spacekey:/2004/01/12/My Blog Post]",
+            "<p><a href='spacekey:/2004/01/12/My Blog Post'>spacekey:/2004/01/12/My Blog Post</a></p>");
+        test("[/2004/01/12]", "<p><a href='/2004/01/12'>/2004/01/12</a></p>");
+        test(
+            "[spacekey:/2004/01/12]",
+            "<p><a href='spacekey:/2004/01/12'>spacekey:/2004/01/12</a></p>");
+        test(
+            "[my link name|/2004/01/12]",
+            "<p><a href='/2004/01/12'>my link name</a></p>");
+        test(
+            "[my link name|spacekey:/2004/01/12]",
+            "<p><a href='spacekey:/2004/01/12'>my link name</a></p>");
+        test("[$12345]", "<p><a href='$12345'>$12345</a></p>");
+        test(
+            "[my link name|$12345]",
+            "<p><a href='$12345'>my link name</a></p>");
+        test("[spacekey:]", "<p><a href='spacekey:'>spacekey:</a></p>");
+        test(
+            "[custom link title|spacekey:]",
+            "<p><a href='spacekey:'>custom link title</a></p>");
+        test("[~username]", "<p><a href='~username'>~username</a></p>");
+        test(
+            "[custom link title|~username]",
+            "<p><a href='~username'>custom link title</a></p>");
+        test(
+            "[phrase@shortcut]",
+            "<p><a href='phrase@shortcut'>phrase@shortcut</a></p>");
+        test(
+            "[custom link text|phrase@shortcut]",
+            "<p><a href='phrase@shortcut'>custom link text</a></p>");
+        test(
+            "[http://confluence.atlassian.com]",
+            "<p><a href='http://confluence.atlassian.com'>http://confluence.atlassian.com</a></p>");
+        test(
+            "[Atlassian|http://atlassian.com]",
+            "<p><a href='http://atlassian.com'>Atlassian</a></p>");
+        test(
+            "[mailto:legendaryservice@atlassian.com]",
+            "<p><a href='mailto:legendaryservice@atlassian.com'>mailto:legendaryservice@atlassian.com</a></p>");
+        test(
+            "[file://c:/temp/foo.txt]",
+            "<p><a href='file://c:/temp/foo.txt'>file://c:/temp/foo.txt</a></p>");
+        test(
+            "[file://z:/file/on/network/share.txt]",
+            "<p><a href='file://z:/file/on/network/share.txt'>file://z:/file/on/network/share.txt</a></p>");
         // Not a reference
         test(
             "before \\[toto] after",
@@ -565,6 +685,14 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
             + "|col B1|col B2|col B3| ");
         // Not a table
         test("abc || cde", "<p>abc || cde</p>");
+
+        // Check that the table accept only single lines
+        test("before\n|cell1|cell2\nafter", ""
+            + "<p>before</p>\n"
+            + "<table><tbody>\n"
+            + "  <tr><td>cell1</td><td>cell2</td></tr>\n"
+            + "</tbody></table>\n"
+            + "<p>after</p>");
     }
 
     /**

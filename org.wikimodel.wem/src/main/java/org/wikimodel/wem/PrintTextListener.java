@@ -268,13 +268,18 @@ public class PrintTextListener implements IWemListener {
         return new ReferenceHandler() {
 
             @Override
-            protected void handleImage(String ref, String label) {
-
-                handleReference(ref, label);
+            protected void handleImage(
+                String ref,
+                String label,
+                WikiParameters params) {
+                handleReference(ref, label, params);
             }
 
             @Override
-            protected void handleReference(String ref, String label) {
+            protected void handleReference(
+                String ref,
+                String label,
+                WikiParameters params) {
                 print(label);
                 print("<" + ref + ">");
             }
@@ -352,9 +357,9 @@ public class PrintTextListener implements IWemListener {
     /**
      * @see org.wikimodel.wem.IWemListener#onReference(java.lang.String)
      */
-
     public void onReference(String ref) {
-        fRefHandler.handle(ref);
+        WikiReference reference = new WikiReference(ref);
+        onReference(reference);
     }
 
     public void onReference(WikiReference ref) {
