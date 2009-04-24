@@ -63,7 +63,7 @@ public class EventDumpListener extends PrintTextListener {
     }
 
     @Override
-    public void beginInfoBlock(char infoType, WikiParameters params) {
+    public void beginInfoBlock(String infoType, WikiParameters params) {
         println("beginInfoBlock(" + infoType + ",[" + params + "])");
         inc();
     }
@@ -181,7 +181,7 @@ public class EventDumpListener extends PrintTextListener {
     }
 
     @Override
-    public void endInfoBlock(char infoType, WikiParameters params) {
+    public void endInfoBlock(String infoType, WikiParameters params) {
         dec();
         println("endInfoBlock(" + infoType + ", [" + params + "])");
     }
@@ -329,7 +329,7 @@ public class EventDumpListener extends PrintTextListener {
     }
 
     @Override
-    public void onVerbatimInline(String str) {
+    public void onVerbatimInline(String str, WikiParameters params) {
         println("onVerbatimInline('" + str + "')");
     }
 

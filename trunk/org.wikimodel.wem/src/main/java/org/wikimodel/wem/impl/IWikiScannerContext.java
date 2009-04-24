@@ -18,7 +18,7 @@ public interface IWikiScannerContext extends IWemConstants {
 
     void beginHeader(int level, WikiParameters params);
 
-    void beginInfo(char type, WikiParameters params);
+    void beginInfo(String type, WikiParameters params);
 
     void beginList();
 

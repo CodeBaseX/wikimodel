@@ -314,7 +314,7 @@ TOKEN_MGR_DECLS: {
     | <I_MACRO_INLINE_START: <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
     | <I_QUOT_BLOCK: (<NEW_LINE>)? <QUOT_BLOCK> > : DEFAULT
     | <I_QUOT_LINE: (<NEW_LINE>)? <QUOT_LINE> > : DEFAULT
-    | <I_INFO: (<NEW_LINE>)? <INFO> > : DEFAULT
+    | <I_INFO: <INFO> > : DEFAULT
     | <I_EXTENSION_BLOCK:  (<NEW_LINE>)? <EXTENSION> > : DEFAULT
     | <I_EXTENSION_INLINE:  <EXTENSION> > : DEFAULT
     | <I_PROPERTY: (<NEW_LINE>)? (<SPACE>)* <PROPERTY> (<SPACE>)* > : DEFAULT
@@ -356,7 +356,7 @@ TOKEN_MGR_DECLS: {
     | <D_MACRO_INLINE_START: <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
     | <D_QUOT_BLOCK: <NEW_LINE> <QUOT_BLOCK> > : DEFAULT
     | <D_QUOT_LINE: <NEW_LINE> <QUOT_LINE> > : DEFAULT
-    | <D_INFO: <NEW_LINE> <INFO> > : DEFAULT
+    | <D_INFO: <INFO> > : DEFAULT
     | <D_EXTENSION_BLOCK:  <NEW_LINE> <EXTENSION> > : DEFAULT
     | <D_EXTENSION_INLINE:  <EXTENSION> > : DEFAULT
     | <D_PROPERTY: <NEW_LINE> (<SPACE>)* <PROPERTY> (<SPACE>)* > : DEFAULT
@@ -669,7 +669,8 @@ void info():
     t = getINFO()
     {
         str = t.image.trim();
-        fContext.beginInfo(str.charAt(1), params);
+        str = str.substring(1, str.length() - 1);
+        fContext.beginInfo(str, params);
     }
     ( LOOKAHEAD(2) block() )*
     {

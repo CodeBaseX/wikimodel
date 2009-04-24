@@ -1,195 +1,163 @@
-Hi!
++ References are properly recognized
++ Macro parameters are properly parsed 
++ "code" and "noformat" macros are notified using the onVerbatimBlock(..) 
+  or onVerbatimInline(...) method calls.
+  Wiki parameters of the called method have the "type" property defining which
+  macro is called (type="code" OR type="noformat")
++ tables can contain only single lines; multi-line tables (implemented initially)
+  are not supported by confluence
 
-In general I consider that all main elements of the Confluence syntax are
-recognized and properly notified. The following critical features have not been
-implemented yet:
-* References are not split properly in link/label/parameters
-* Macro parameters are ignored
-In the list below you can find all details.
-
-So far I have spent 3 full days on this work. I am not sure that I'll find the
-time this week, but I plan to spend 2 more days next week and finish the
-- Hide quoted text -
-
-work. Please note that some points marked with "TODO" in the list below would be
-quite difficult to implement, so I am not sure that they will be implemented
-in the near future.
-
-You can find the unit tests for the parser here:
-http://wikimodel.googlecode.com/svn/trunk/org.wikimodel.wem/src/test/java/org/wikimodel/wem/test/ConfluenceWikiParserTest.java
-
-Please let me know if you have some specific requirements or comments.
-
-Best regards,
-Mikhail
-
---------------------------------------------------------------------------------
-In the implementation I used the syntax description defined here:
-http://confluence.atlassian.com/renderer/notationhelp.action?section=all
-
++ References are not split properly in link/label/parameters
++ Macro parameters are ignored
 # Headers - done
 # Text Effects
-   * basic formatting - done;
-   * {color:red}xxx{color} syntax is notified as a non-interpreted macro;
-     TODO: it should be notified as a paragraph with parameters
+ * basic formatting - done;
+
+ * {color:red}xxx{color} syntax is notified as a non-interpreted macro;
+   TODO: it should be notified as a paragraph with parameters
 # Text Breaks - done
 # Links - done;
-   * TODO: I don't parse the link itself. Splitting to
-link/label/parameters should be added.
 # Lists - done;
-   * The "{dynamictasklist:thingsToDo}" is notified as a macro
-# Images
-   * TODO: images are notified as references; it should be changed to
-notify them using specific method calls.
-   * {gliffy...} and {gallery} are notified as an empty non-interpreted macro
+ * The "{dynamictasklist:thingsToDo}" is notified as a macro
+# Images - done;
+ * {gliffy...} and {gallery} are notified as an empty non-interpreted macro
 #  Tables
-   * Basic syntax ("||" and "|") - done
-   * {section}/{column}, {csv} - are notified as non-interpreted
+ * Basic syntax ("||" and "|") - done
+ * {section}/{column}, {csv} - are notified as non-interpreted
 macros with the content
-   * {table-plus}...{table-plus} - is notified as a non-interpreted macro;
-     TODO: it should be changed to notify as a table with parameters
+ * {table-plus}...{table-plus} - is notified as a non-interpreted macro;
+   TODO: it should be changed to notify as a table with parameters
 # Advanced Formatting - done; all elements are recognized and notified
-as macros
- with or without content (see below).
- In the list below - only macros for which I plan some modifications:
-   * {code}...{code} - macro with the content;
-     TODO: should be notified as a verbatim block
-   * {float} - macro with the content
-     TODO: it should be notified as a paragraph with specific parameters.
-   * {note}/{warning}/{info}/{tip} - macros with the content.
-     TODO: Should be notified as typed paragraphs
-   * {noformat} - macro with the content;
-     TODO: should be notified as a verbatim block
-   * {tm}/{sm}/{reg-tm}/{copyright} - macros with the content;
-     TODO (?): Should be notified as paragraphs with a specific parameter
-   * {div} - macro with the content
-     TODO: should be notified as a paragraph with styles
-   * {span} - macro with the content
-     TODO: should be notified as a specific text style inside of the
+as macros with or without content (see below).
+In the list below - only macros for which I plan some modifications:
+ * {float} - macro with the content
+   TODO: it should be notified as a paragraph with specific parameters.
+ * {note}/{warning}/{info}/{tip} - macros with the content.
+   TODO: Should be notified as typed paragraphs
+ * {tm}/{sm}/{reg-tm}/{copyright} - macros with the content;
+   TODO (?): Should be notified as paragraphs with a specific parameter
+ * {div} - macro with the content
+   TODO: should be notified as a paragraph with styles
+ * {span} - macro with the content
+   TODO: should be notified as a specific text style inside of the
 respective content block
-   * {bgcolor}/{highlight}/{center}/{strike} - macros with the content
-     TODO: should be notified as text blocks with specific text styles
-   * {align} - macro with the content
-     TODO: should be notified as a paragraph with a specific parameter
-   * {fancy-bullets} - macro with the content
-     TODO: should be notified as a list with parameters
+ * {bgcolor}/{highlight}/{center}/{strike} - macros with the content
+   TODO: should be notified as text blocks with specific text styles
+ * {align} - macro with the content
+   TODO: should be notified as a paragraph with a specific parameter
+ * {fancy-bullets} - macro with the content
+   TODO: should be notified as a list with parameters
 # Confluence Content  - done;
-   * !quicktime.mov! - are notified as references
-     TODO: references should be splitted to link/label parts
-   * All other elements are notified as macros
 # External Content - done; all content is notified as empty macros
 # Misc - done;
- * Escaped elements are notified using the onEscaped
- * All symbols (like smiley) are notified using onSpecialSymbol
-
-== Macros == 
-
-Note: 
-  Example of macros with the content: {code}xxx{code}
-  Example of macro without content: {calendar}
-
-TODO: macro parameters should be parsed and notified using the onMacroXxx methods.
-Now all macro parameters just ignored.
+* Escaped elements are notified using the onEscaped
+* All symbols (like smiley) are notified using onSpecialSymbol
+>
+== Macros ==
+>
+Note:
+ Example of macros with the content: {code}xxx{code}
+ Example of macro without content: {calendar}
 
 == Recognized Confluence Macros ==
 
 By default - all patterns like "{.*}" are recognized as empty macros.
 The full list of empty macros defined in Confluence:
-    * anchor
-    * dynamictasklist
-    * gliffy
-    * gallery
-    * calendar
-    * toggle-cloak 
-    * rsvp
-    * widget
-    * content-by-user
-    * index
-    * include 
-    * privacy-mark
-    * img
-    * bookmarks
-    * pagetree
-    * pagetreesearch
-    * toc
-    * livesearch
-    * viewfile
-    * children
-    * search
-    * blog-posts
-    * excerpt-include
-    * popular-labels
-    * contentbylabel
-    * related-labels
-    * recently-updated
-    * recently-used-labels
-    * navmap
-    * listlabels
-    * spaces
-    * recently-updated-dashboard
-    * global-reports
-    * welcome-message
-    * create-space-button
-    * jiraissue
-    * jiraportlet
-    * plugins-supported
-    * plugin-compatibility-matrix
-    * im
-    * collapsablerss
-    * rss
-    
+  * anchor
+  * dynamictasklist
+  * gliffy
+  * gallery
+  * calendar
+  * toggle-cloak
+  * rsvp
+  * widget
+  * content-by-user
+  * index
+  * include
+  * privacy-mark
+  * img
+  * bookmarks
+  * pagetree
+  * pagetreesearch
+  * toc
+  * livesearch
+  * viewfile
+  * children
+  * search
+  * blog-posts
+  * excerpt-include
+  * popular-labels
+  * contentbylabel
+  * related-labels
+  * recently-updated
+  * recently-used-labels
+  * navmap
+  * listlabels
+  * spaces
+  * recently-updated-dashboard
+  * global-reports
+  * welcome-message
+  * create-space-button
+  * jiraissue
+  * jiraportlet
+  * plugins-supported
+  * plugin-compatibility-matrix
+  * im
+  * collapsablerss
+  * rss
+
 Full list of macros with the content:
-    * quote
-    * color
-    * section
-    * column
-    * csv
-    * table-plus
-    * code
-    * composition-setup
-    * float
-    * cloak
-    * deck
-    * card
-    * show-card
-    * chart
-    * slideshow
-    * slide
-    * note
-    * warning
-    * info
-    * tip
-    * cache
-    * sql
-    * noformat
-    * panel
-    * sub-section
-    * clickable
-    * tm
-    * sm
-    * reg-tm
-    * copyright
-    * span
-    * lozenge
-    * style
-    * div
-    * bgcolor
-    * center
-    * strike
-    * privacy-policy
-    * roundrect
-    * align
-    * iframe
-    * table
-    * table-row
-    * table-cell
-    * th
-    * tbody
-    * thead
-    * ul
-    * li
-    * rollover
-    * fancy-bullets
-    * contentformattingtest
-    * toc-zone
-    * excerpt
+  * quote
+  * color
+  * section
+  * column
+  * csv
+  * table-plus
+  * code
+  * composition-setup
+  * float
+  * cloak
+  * deck
+  * card
+  * show-card
+  * chart
+  * slideshow
+  * slide
+  * note
+  * warning
+  * info
+  * tip
+  * cache
+  * sql
+  * noformat
+  * panel
+  * sub-section
+  * clickable
+  * tm
+  * sm
+  * reg-tm
+  * copyright
+  * span
+  * lozenge
+  * style
+  * div
+  * bgcolor
+  * center
+  * strike
+  * privacy-policy
+  * roundrect
+  * align
+  * iframe
+  * table
+  * table-row
+  * table-cell
+  * th
+  * tbody
+  * thead
+  * ul
+  * li
+  * rollover
+  * fancy-bullets
+  * contentformattingtest
+  * toc-zone
+  * excerpt

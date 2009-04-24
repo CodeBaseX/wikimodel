@@ -42,6 +42,14 @@ public class ConfluenceWikiScanner {
         doParse();
     }
     
+    private boolean isImage(WikiReference ref) {
+        String str = ref.getLink().toLowerCase();
+        return str.endsWith(".gif") ||
+            str.endsWith(".jpg") ||
+            str.endsWith(".jpeg") ||
+            str.endsWith(".png");
+    }
+    
     private WikiParameters newMacroParameters(String paramStr) {
         return new WikiParameters(paramStr, "|");
     }
@@ -107,7 +115,7 @@ TOKEN_MGR_DECLS: {
     | <#REFERENCE: 
         (
               "[" (  ~["]"] | "\\" ~[] )* "]"
-            | "!" ( "\\" ~["\n", "\r"] | ~["!", "\n", "\r", " ", "\t"])+ "!" 
+            | "!" ~["!", "\n", "\r", " ", "\t"]  ( "\\" ~["\n", "\r"] | ~["!", "\n", "\r"]  )* "!" 
         ) 
       >
     | <#HORLINE: "---" ("-")+ >
@@ -115,9 +123,11 @@ TOKEN_MGR_DECLS: {
     | <#BR: "\\\\" >
     | <#CELL: "|" ("|") ? >
     | <#QUOT_BLOCK: ("bq." | "BQ.") >
-    | <#QUOT_BLOCK_MACRO: "{quote}" >
-
-    | <#MACRO: "{" <CHAR> ( <ESCAPED> | ~["}"]  )* "}" >
+    
+    | <#MACRO_PARAMS: ( <ESCAPED> | ~["}"]  )* >
+    | <#QUOT_BLOCK_MACRO: "{quote" <MACRO_PARAMS> "}" >
+    // ------------------------------------------------------------------------
+    | <#MACRO: "{" <CHAR> <MACRO_PARAMS> "}" >
     | <#MACRO_CONTENT: ( <ESCAPED> | <CHAR> | <SPACE> |<NEW_LINE> | <SPECIAL_SYMBOL> ) >
 
     // EmptyMacro: anchor
@@ -162,20 +172,17 @@ TOKEN_MGR_DECLS: {
     // EmptyMacro: im
     // EmptyMacro: collapsablerss
     // EmptyMacro: rss
-     
-    // TODO: !http://www.host.com/image.gif! (see Images) 
-    // TODO: !quicktime.mov! (see Confluence Content)
+
+    // ------------------------------------------------------------------------
     
-//    | <#MACRO_BLOCK: <MACRO> >
     | <#MACRO_BLOCK: "{" 
         ( 
-            //"quote"               // DONE - {quote} quoted block {quote}
               "color"               // TODO: {color:xx} paragraph {color}
             | "section" 
             | "column"
             | "csv"
             | "table-plus"          // TODO: {table-plus:width=100..} table {table-plus}
-            | "code"                // TODO: should be transformed in a verbatim block
+            | "code"
             | "composition-setup"
             | "float"               // TODO: {float:xx} paragraph {float}
             | "cloak" 
@@ -185,17 +192,17 @@ TOKEN_MGR_DECLS: {
             | "chart"               // TODO: {chart: params} table {charŧ}
             | "slideshow"
             | "slide"
-            | "note"                // TODO: {note} paragraph {note}
-            | "warning"             // TODO: {warning} paragraph {warning}
-            | "info"                // TODO: {info} paragraph {info}
-            | "tip"                 // TODO: {tip} paragraph {tip}
+            | "note"
+            | "warning"
+            | "info"
+            | "tip"
             | "cache"
             | "sql"
-            | "noformat"            // TODO: noformat - report as a verbatim block
+            | "noformat"
             | "panel"
             | "sub-section" 
             | "clickable"
-            
+
             | "tm"                  // TODO: {tm} inline text {tm}
             | "sm"                  // TODO: {sm} inline text {sm}
             | "reg-tm"              // TODO: {reg-tm} inline text {reg-tm}
@@ -229,7 +236,7 @@ TOKEN_MGR_DECLS: {
             | "toc-zone"
             | "excerpt"
          )
-        ( <ESCAPED> | ~["}"]  )* 
+         <MACRO_PARAMS>
         "}"
       >
     
@@ -602,6 +609,12 @@ void block():
 {
     ( line() | verbatimBlock() | macroBlock() )
 }
+void multilineBlock():
+{
+}
+{
+    ( lines() | verbatimBlock() | macroBlock() )
+}
 
 void verbatimBlock():
 {
@@ -687,7 +700,10 @@ void macro(Token t, boolean block):
     {
         str = buf.toString();
         params = newMacroParameters(paramStr);
-        if (block) {
+        if ("noformat".equals(name) || "code".equals(name)) {
+            params = params.addParameter("type", name);
+            fContext.onVerbatim(str, !block, params);
+        } else if (block) {
             fContext.onMacroBlock(name, params, str);
         } else {
             fContext.onMacroInline(name, params, str);
@@ -742,13 +758,13 @@ void quot():
 void quotMacro():
 {
     Token t = null;
-    String str = "";
-    WikiParameters params = WikiParameters.EMPTY;
 }
 {
     t = getQUOT_BLOCK_MACRO()
     {
-        str = t.image.trim();
+        String[] array = splitMacroParams(t.image);
+        String paramStr = array[1];
+        WikiParameters params = newMacroParameters(paramStr);
         fContext.beginQuot(params);
     }
     quotLines()
@@ -912,11 +928,14 @@ void line():
                 if (str.startsWith("!")) {
                    str = str.substring(1, str.length() - 1); 
                 } else {
-                    // TODO: split references to parts
                     str = str.substring(1, str.length() - 1);
                 }
                 WikiReference ref = fReferenceParser.parse(str);
-                fContext.onReference(ref);
+                if (isImage(ref)) {
+                    fContext.onImage(ref);
+                } else {
+                    fContext.onReference(ref);
+                }
             }
             |
             t = getTABLE_CELL() 

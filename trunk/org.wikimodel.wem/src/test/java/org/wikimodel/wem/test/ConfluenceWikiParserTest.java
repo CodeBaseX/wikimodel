@@ -203,6 +203,19 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
             "<p>before</p>\n<h3>Header </h3>\n<p>after</p>");
     }
 
+    public void testImages() throws WikiParserException {
+        test(
+            "before !http://www.host.com/image.gif! after",
+            "<p>before <img src='http://www.host.com/image.gif'/> after</p>");
+        test(
+            "!spaceKey:pageTitle^image.gif!",
+            "<p><img src='spaceKey:pageTitle^image.gif'/></p>");
+        test(
+            "!/2007/05/23/My Blog Post^image.gif!",
+            "<p><img src='/2007/05/23/My Blog Post^image.gif'/></p>");
+
+    }
+
     /**
      * @throws WikiParserException
      */
@@ -325,38 +338,29 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
     public void testMacro() throws WikiParserException {
         testMacro(
         // "quote" // DONE - {quote} quoted block {quote}
-            // TODO: {color:xx} paragraph {color}
-            "color",
             "section",
             "column",
             "csv",
             // TODO: {table-plus:width=100..} table {table-plus}
             "table-plus",
-            // TODO: should be transformed in a verbatim block
-            "code",
             "composition-setup",
             // TODO: {float:xx} paragraph {float}
             "float",
             "cloak",
             "deck",
             "card",
+            "color",
             "show-card",
             // TODO: {chart: params} table {charŧ}
             "chart",
             "slideshow",
             "slide",
-            // TODO: {note} paragraph {note}
             "note",
-            // TODO: {warning} paragraph {warning}
             "warning",
-            // TODO: {info} paragraph {info}
             "info",
-            // TODO: {tip} paragraph {tip}
             "tip",
             "cache",
             "sql",
-            // TODO: noformat - report as a verbatim block
-            "noformat",
             "panel",
             "sub-section",
             "clickable",
@@ -693,6 +697,77 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
             + "  <tr><td>cell1</td><td>cell2</td></tr>\n"
             + "</tbody></table>\n"
             + "<p>after</p>");
+    }
+
+    public void testVerbatimBlock() throws WikiParserException {
+        test("{code}xxx{code}", "<pre type='code'>xxx</pre>");
+        test(
+            "before\n{code}xxx{code}after",
+            "<p>before</p>\n<pre type='code'>xxx</pre>\n<p>after</p>");
+        test(
+            "{code:title=Bar.java|borderStyle=solid}\n"
+                + "// Some comments here\n"
+                + "public String getFoo()\n"
+                + "{\n"
+                + "    return foo;\n"
+                + "}\n"
+                + "{code}\n"
+                + "\n"
+                + "{code:xml}\n"
+                + "<test>\n"
+                + "  <another tag=\"attribute\"/>\n"
+                + "</test>\n"
+                + "{code}",
+            "<pre title='Bar.java' borderStyle='solid' type='code'>\n"
+                + "// Some comments here\n"
+                + "public String getFoo()\n"
+                + "{\n"
+                + "    return foo;\n"
+                + "}\n"
+                + "</pre>\n"
+                + "<pre xml='' type='code'>\n"
+                + "&#x3c;test&#x3e;\n"
+                + "  &#x3c;another tag=\"attribute\"/&#x3e;\n"
+                + "&#x3c;/test&#x3e;\n"
+                + "</pre>");
+        test("{noformat}\n"
+            + "h1. xxx\n"
+            + "* item\n"
+            + "* item\n"
+            + "{noformat}", ""
+            + "<pre type='noformat'>\n"
+            + "h1. xxx\n"
+            + "* item\n"
+            + "* item\n"
+            + "</pre>");
+        test("before\n{noformat}\n"
+            + "h1. xxx\n"
+            + "* item\n"
+            + "* item\n"
+            + "{noformat}after", ""
+            + "<p>before</p>\n"
+            + "<pre type='noformat'>\n"
+            + "h1. xxx\n"
+            + "* item\n"
+            + "* item\n"
+            + "</pre>\n"
+            + "<p>after</p>");
+
+        // Inline verbatim blocks
+        test(
+            "before{code}xxx{code}after",
+            "<p>before<code type='code'>xxx</code>after</p>");
+        test("before{noformat}\n"
+            + "h1. xxx\n"
+            + "* item\n"
+            + "* item\n"
+            + "{noformat}after", ""
+            + "<p>before<code type='noformat'>\n"
+            + "h1. xxx\n"
+            + "* item\n"
+            + "* item\n"
+            + "</code>after</p>");
+
     }
 
     /**

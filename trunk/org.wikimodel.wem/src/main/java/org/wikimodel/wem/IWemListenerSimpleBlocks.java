@@ -17,9 +17,9 @@ public interface IWemListenerSimpleBlocks {
      * 
      * @param infoType the "type" of the special block
      * @param params parameters of this block
-     * @see #endInfoBlock(char, WikiParameters)
+     * @see #endInfoBlock(String, WikiParameters)
      */
-    void beginInfoBlock(char infoType, WikiParameters params);
+    void beginInfoBlock(String infoType, WikiParameters params);
 
     /**
      * Begin of a simple paragraph. Paragraphs can contain only formatted inline
@@ -35,9 +35,9 @@ public interface IWemListenerSimpleBlocks {
      * 
      * @param infoType the "type" of the special block
      * @param params parameters of this block
-     * @see #beginInfoBlock(char, WikiParameters)
+     * @see #beginInfoBlock(String, WikiParameters)
      */
-    void endInfoBlock(char infoType, WikiParameters params);
+    void endInfoBlock(String infoType, WikiParameters params);
 
     /**
      * End of a simple paragraph.
