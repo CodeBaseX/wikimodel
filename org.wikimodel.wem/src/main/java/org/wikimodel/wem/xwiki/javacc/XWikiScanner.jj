@@ -552,9 +552,11 @@ void verbatimBlock():
     Token t = null;
 }
 {
+	// match potential parameters for the verbatim block
     ( LOOKAHEAD(2) t = getBLOCK_PARAMS() { params = newWikiParameters(t.image.trim()); } )?
     {
     }
+    // getVERBATIM_STARTd does not consume the new line before it when in standalone
     (LOOKAHEAD(2) ( t = getNL() { }) )?
     {
     }
@@ -575,6 +577,7 @@ void verbatimBody(boolean inline, WikiParameters params):
     boolean eof = false;
 }
 {
+	// "render" the verbatim block in a string
     (LOOKAHEAD(2)
         (
               t = getINTERNAL_VERBATIM_CONTENT() {  hasVerbatimEnd = false; }
@@ -595,7 +598,7 @@ void verbatimBody(boolean inline, WikiParameters params):
         char ch = str.charAt(str.length() - 1);
         boolean endingNewLine = ch == '\r' || ch == '\n';
         if (hasVerbatimEnd) { 
-            // If we did not found a new line at the end of a block then it should be an inline element
+            // If we did not found a new line at the end of a block and it's not the end of the file, it should be an inline element
             if (inline == false) {
                 beginParagraph = inline |= !endingNewLine && !eof;
             }
@@ -608,7 +611,9 @@ void verbatimBody(boolean inline, WikiParameters params):
         
         if (beginParagraph) {
         	sendOnEmptyLinesEvent(false);
+        	// If the verbatim block is inline, take care of generating the beginParagraph event in case its the first block of the paragraph
             fContext.beginParagraph();
+            // If it's an inline mode the matched parameters are format like for any inline text and not verbatim block custom parameters
             if (params.getSize() > 0) {
                 fContext.onFormat(params);
             }
@@ -618,10 +623,12 @@ void verbatimBody(boolean inline, WikiParameters params):
 
 		fContext.onVerbatim(str, inline, params);
         if (endingNewLine && inline) {
+        	// We consumed the potential new line following the verbatim block to test if the block is inline so take care of generating the vent for it
         	fContext.onLineBreak();
         }
 
         if (beginParagraph) {
+        	// If the verbatim block is inline continue to parse the inline paragraph
             lines();
         	fContext.endParagraph();
         }        	
