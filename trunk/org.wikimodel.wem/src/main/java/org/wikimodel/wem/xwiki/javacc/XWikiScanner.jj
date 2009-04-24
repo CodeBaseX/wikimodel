@@ -353,6 +353,13 @@ void doParse():
     {
         fContext.beginDocument();
     }
+
+    // Note: We need to match DOC_END here for the use case where we have ")))" without opening "(((".
+    //       These won't be matched by line() as special symbols since there's a token for matching ")))" and the lexer
+    //       will match it. In addition it's hard to move the getDOC_END() matching in line() since it'll conflict with
+    //       embeddedDocument() matching. Also note that this means that "a)))b" will generate 2 paragraphs (one for "a"
+    //       and one for "b"). I guess this could be improved to generate only a single paragraph and by printing
+    //       ")))" but it's not trivial and I'm leaving it for later... 
     ( docElements() | getDOC_END() )*
     <EOF>
     {
