@@ -107,7 +107,11 @@ public class WikiScannerUtil {
      * @param buf to this buffer the extracted token value will be appended
      * @return the new position in the array after extracting of a new token
      */
-    public static int getNextToken(char[] array, int pos, StringBuffer buf) {
+    private static int getNextToken(
+        char[] array,
+        int pos,
+        char[] delimiter,
+        StringBuffer buf) {
         buf.delete(0, buf.length());
         boolean escaped = false;
         if (pos < array.length && (array[pos] == '\'' || array[pos] == '"')) {
@@ -127,7 +131,8 @@ public class WikiScannerUtil {
                 pos++;
         } else {
             for (; pos < array.length; pos++) {
-                if (array[pos] == '=' || Character.isSpaceChar(array[pos]))
+                if (array[pos] == '='
+                    || skipSequence(array, pos, delimiter) > pos)
                     break;
                 if (!escaped && (array[pos] == '\'' || array[pos] == '"'))
                     break;
@@ -145,6 +150,29 @@ public class WikiScannerUtil {
     }
 
     /**
+     * Indicate if the specified sequence starts from the given position in the
+     * character array.
+     * 
+     * @param array the array of characters
+     * @param arrayPos the position of the first character in the array;
+     *        starting from this position the sequence should be skipped
+     * @param sequence the sequence of characters to match
+     * @return true if the sequence is found, false otherwise
+     */
+    public static boolean matchesSequence(
+        char[] array,
+        int arrayPos,
+        char[] sequence) {
+        int i;
+        int j;
+        for (i = arrayPos, j = 0; i < array.length && j < sequence.length; i++, j++) {
+            if (array[i] != sequence[j])
+                break;
+        }
+        return j == sequence.length;
+    }
+
+    /**
      * Moves forward the current position in the array until the first not empty
      * character is found.
      * 
@@ -154,10 +182,10 @@ public class WikiScannerUtil {
      * @param buf to this buffer all not empty characters will be added
      * @return the new position int the array of characters
      */
-    public static int removeSpaces(char[] array, int pos, StringBuffer buf) {
+    private static int removeSpaces(char[] array, int pos, StringBuffer buf) {
         buf.delete(0, buf.length());
         for (; pos < array.length
-                && (array[pos] == '=' || Character.isSpaceChar(array[pos])); pos++) {
+            && (array[pos] == '=' || Character.isSpaceChar(array[pos])); pos++) {
             if (array[pos] == '=')
                 buf.append(array[pos]);
         }
@@ -182,29 +210,6 @@ public class WikiScannerUtil {
                 break;
         }
         return j == sequence.length ? i : arrayPos;
-    }
-
-    /**
-     * Indicate if the specified sequence starts from the given position in the
-     * character array.
-     * 
-     * @param array the array of characters
-     * @param arrayPos the position of the first character in the array;
-     *        starting from this position the sequence should be skipped
-     * @param sequence the sequence of characters to match
-     * @return true if the sequence is found, false otherwise
-     */
-    public static boolean matchesSequence(
-        char[] array,
-        int arrayPos,
-        char[] sequence) {
-        int i;
-        int j;
-        for (i = arrayPos, j = 0; i < array.length && j < sequence.length; i++, j++) {
-            if (array[i] != sequence[j])
-                break;
-        }
-        return j == sequence.length;
     }
 
     /**
@@ -251,8 +256,9 @@ public class WikiScannerUtil {
         if (str == null)
             return 0;
         char[] array = str.toCharArray();
-        char[] delimiterArray = delimiter != null ? delimiter.toCharArray()
-                : new char[0];
+        if (delimiter == null)
+            delimiter = " ";
+        char[] delimiterArray = delimiter.toCharArray();
         char[] endArray = end != null ? end.toCharArray() : new char[0];
         StringBuffer buf = new StringBuffer();
         int i = 0;
@@ -276,13 +282,13 @@ public class WikiScannerUtil {
                 break;
             }
 
-            i = getNextToken(array, i, buf);
-            key = buf.toString();
+            i = getNextToken(array, i, delimiterArray, buf);
+            key = buf.toString().trim();
 
             i = removeSpaces(array, i, buf);
             if (buf.indexOf("=") >= 0) {
-                i = getNextToken(array, i, buf);
-                value = buf.toString();
+                i = getNextToken(array, i, delimiterArray, buf);
+                value = buf.toString().trim();
             }
 
             WikiParameter entry = new WikiParameter(key, value);

@@ -18,6 +18,7 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("Test for WikiModel grammars");
         // $JUnit-BEGIN$
+        suite.addTestSuite(WikiScannerUtilTest.class);
         suite.addTestSuite(CreoleWikiParserTest.class);
         suite.addTestSuite(ConfluenceWikiParserTest.class);
         suite.addTestSuite(GWikiParserTest.class);

@@ -42,6 +42,10 @@ public class ConfluenceWikiScanner {
         doParse();
     }
     
+    private WikiParameters newMacroParameters(String paramStr) {
+        return new WikiParameters(paramStr, "|");
+    }
+
     private String[] splitMacroParams(String str) {
         str = str.trim();
         str = str.substring(1, str.length() - 1);
@@ -49,7 +53,7 @@ public class ConfluenceWikiScanner {
         int paramStrPos = str.indexOf(":");
         String name = "";
         if (paramStrPos > 0) {
-            paramStr = str.substring(paramStrPos);
+            paramStr = str.substring(paramStrPos + 1);
             name = str.substring(0, paramStrPos);
         } else {
             name = str;
@@ -596,7 +600,7 @@ void block():
 {
 }
 {
-    ( lines() | verbatimBlock() | macroBlock() )
+    ( line() | verbatimBlock() | macroBlock() )
 }
 
 void verbatimBlock():
@@ -636,7 +640,7 @@ void emptyMacro(Token t, boolean block):
         String name = array[0];
         String paramStr = array[1];
         String str = "";
-        WikiParameters params = new WikiParameters(paramStr);
+        WikiParameters params = newMacroParameters(paramStr);
         if (block) {
             fContext.onMacroBlock(name, params, str);
         } else {
@@ -682,7 +686,7 @@ void macro(Token t, boolean block):
     )*
     {
         str = buf.toString();
-        params = new WikiParameters(paramStr);
+        params = newMacroParameters(paramStr);
         if (block) {
             fContext.onMacroBlock(name, params, str);
         } else {

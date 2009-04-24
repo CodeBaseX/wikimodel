@@ -56,11 +56,6 @@ public class WikiParameters {
         this((String) null);
     }
 
-    public WikiParameters(WikiParameters parameters) {
-        super();
-        fList.addAll(parameters.fList);
-    }
-
     /**
      * @param list
      */
@@ -75,6 +70,20 @@ public class WikiParameters {
     public WikiParameters(String str) {
         super();
         WikiScannerUtil.splitToPairs(str, fList);
+    }
+
+    /**
+     * @param str
+     * @param delimiter
+     */
+    public WikiParameters(String str, String delimiter) {
+        super();
+        WikiScannerUtil.splitToPairs(str, fList, delimiter);
+    }
+
+    public WikiParameters(WikiParameters parameters) {
+        super();
+        fList.addAll(parameters.fList);
     }
 
     /**

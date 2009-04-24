@@ -868,7 +868,7 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         // "Magic" references (starting with "image:", "download:", ...)
         test(
             "before image:http://www.foo.com/bar.gif after",
-            "<p>before <img src='http://www.foo.com/bar.gif' title='http://www.foo.com/bar.gif'/> after</p>");
+            "<p>before <img src='http://www.foo.com/bar.gif'/> after</p>");
         test(
             "before download:http://www.foo.com/bar.zip after",
             "<p>before <a href='http://www.foo.com/bar.zip'>http://www.foo.com/bar.zip</a> after</p>");

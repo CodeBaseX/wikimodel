@@ -112,19 +112,27 @@ public class PrintInlineListener extends PrintTextListener {
         return new ReferenceHandler() {
 
             @Override
-            protected void handleImage(String ref, String label) {
+            protected void handleImage(
+                String ref,
+                String label,
+                WikiParameters params) {
                 print("<img src='"
                     + WikiPageUtil.escapeXmlAttribute(ref)
-                    + "' title='"
-                    + WikiPageUtil.escapeXmlAttribute(label)
-                    + "'/>");
+                    + "'"
+                    + params
+                    + "/>");
             }
 
             @Override
-            protected void handleReference(String ref, String label) {
+            protected void handleReference(
+                String ref,
+                String label,
+                WikiParameters params) {
                 print("<a href='"
                     + WikiPageUtil.escapeXmlAttribute(ref)
-                    + "'>"
+                    + "'"
+                    + params
+                    + ">"
                     + WikiPageUtil.escapeXmlString(label)
                     + "</a>");
             }

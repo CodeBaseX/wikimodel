@@ -274,7 +274,7 @@ public class TexSerializer extends PrintTextListener {
             Map<String, int[]> fImageSizes = new HashMap<String, int[]>();
 
             @Override
-            protected void handleImage(String ref, String label) {
+            protected void handleImage(String ref, String label, WikiParameters params) {
 
                 String caption = "";
                 int idx = ref.indexOf("===caption===");
@@ -324,7 +324,7 @@ public class TexSerializer extends PrintTextListener {
             }
 
             @Override
-            protected void handleReference(String ref, String label) {
+            protected void handleReference(String ref, String label, WikiParameters params) {
                 // String s = ref + " " + label;
                 int idx1 = ref.indexOf('>');
 

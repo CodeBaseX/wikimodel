@@ -36,6 +36,10 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
         doParse();
     }
 
+    private WikiParameters newMacroParameters(String paramStr) {
+        return new WikiParameters(paramStr, "|");
+    }
+
     private String[] splitMacroParams(String str) {
         str = str.trim();
         str = str.substring(1, str.length() - 1);
@@ -43,7 +47,7 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
         int paramStrPos = str.indexOf(":");
         String name = "";
         if (paramStrPos > 0) {
-            paramStr = str.substring(paramStrPos);
+            paramStr = str.substring(paramStrPos + 1);
             name = str.substring(0, paramStrPos);
         } else {
             name = str;
@@ -761,7 +765,7 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     case D_SPACE:
     case D_WORD:
     case D_SPECIAL_SYMBOL:
-      lines();
+      line();
       break;
     case I_VERBATIM_BLOCK:
     case D_VERBATIM_BLOCK:
@@ -813,7 +817,7 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
         String name = array[0];
         String paramStr = array[1];
         String str = "";
-        WikiParameters params = new WikiParameters(paramStr);
+        WikiParameters params = newMacroParameters(paramStr);
         if (block) {
             fContext.onMacroBlock(name, params, str);
         } else {
@@ -867,7 +871,7 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
             }
     }
         str = buf.toString();
-        params = new WikiParameters(paramStr);
+        params = newMacroParameters(paramStr);
         if (block) {
             fContext.onMacroBlock(name, params, str);
         } else {
@@ -1209,21 +1213,6 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     finally { jj_save(12, xla); }
   }
 
-  final private boolean jj_3_8() {
-    if (jj_3R_17()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_32() {
-    if (jj_3R_54()) return true;
-    return false;
-  }
-
-  final private boolean jj_3_4() {
-    if (jj_3R_13()) return true;
-    return false;
-  }
-
   final private boolean jj_3R_25() {
     if (jj_3R_47()) return true;
     return false;
@@ -1280,13 +1269,13 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_38() {
-    if (jj_3R_57()) return true;
+  final private boolean jj_3R_20() {
+    if (jj_3R_42()) return true;
     return false;
   }
 
-  final private boolean jj_3R_20() {
-    if (jj_3R_42()) return true;
+  final private boolean jj_3R_38() {
+    if (jj_3R_56()) return true;
     return false;
   }
 
@@ -1295,8 +1284,8 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_60() {
-    if (jj_3R_62()) return true;
+  final private boolean jj_3R_59() {
+    if (jj_3R_61()) return true;
     return false;
   }
 
@@ -1353,17 +1342,17 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_59() {
-    if (jj_3R_61()) return true;
+  final private boolean jj_3R_58() {
+    if (jj_3R_60()) return true;
     return false;
   }
 
-  final private boolean jj_3R_57() {
+  final private boolean jj_3R_56() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_59()) {
+    if (jj_3R_58()) {
     jj_scanpos = xsp;
-    if (jj_3R_60()) return true;
+    if (jj_3R_59()) return true;
     }
     return false;
   }
@@ -1383,13 +1372,13 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_37() {
-    if (jj_3R_56()) return true;
+  final private boolean jj_3R_26() {
+    if (jj_3R_48()) return true;
     return false;
   }
 
-  final private boolean jj_3R_26() {
-    if (jj_3R_48()) return true;
+  final private boolean jj_3R_37() {
+    if (jj_3R_55()) return true;
     return false;
   }
 
@@ -1403,8 +1392,8 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_56() {
-    if (jj_3R_58()) return true;
+  final private boolean jj_3R_55() {
+    if (jj_3R_57()) return true;
     return false;
   }
 
@@ -1444,7 +1433,7 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
   }
 
   final private boolean jj_3R_36() {
-    if (jj_3R_55()) return true;
+    if (jj_3R_11()) return true;
     return false;
   }
 
@@ -1463,7 +1452,7 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_61() {
+  final private boolean jj_3R_60() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(62)) {
@@ -1486,7 +1475,7 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_62() {
+  final private boolean jj_3R_61() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(61)) {
@@ -1524,16 +1513,6 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
 
   final private boolean jj_3_11() {
     if (jj_3R_19()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_55() {
-    if (jj_3R_11()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_12()) { jj_scanpos = xsp; break; }
-    }
     return false;
   }
 
@@ -1607,7 +1586,7 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_58() {
+  final private boolean jj_3R_57() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(53)) {
@@ -1725,6 +1704,21 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     jj_scanpos = xsp;
     if (jj_3R_16()) return true;
     }
+    return false;
+  }
+
+  final private boolean jj_3_8() {
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_32() {
+    if (jj_3R_54()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_4() {
+    if (jj_3R_13()) return true;
     return false;
   }
 
