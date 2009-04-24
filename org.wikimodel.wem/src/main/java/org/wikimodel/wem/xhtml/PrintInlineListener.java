@@ -181,11 +181,16 @@ public class PrintInlineListener extends PrintTextListener {
     }
 
     /**
-     * @see org.wikimodel.wem.IWemListener#onVerbatimInline(java.lang.String)
+     * @see org.wikimodel.wem.IWemListener#onVerbatimInline(java.lang.String,
+     *      WikiParameters)
      */
     @Override
-    public void onVerbatimInline(String str) {
-        print("<code>" + WikiPageUtil.escapeXmlString(str) + "</code>");
+    public void onVerbatimInline(String str, WikiParameters params) {
+        print("<code"
+            + params
+            + ">"
+            + WikiPageUtil.escapeXmlString(str)
+            + "</code>");
     }
 
 }

@@ -66,10 +66,10 @@ public class EmptyWemListener implements IWemListener {
     }
 
     /**
-     * @see org.wikimodel.wem.IWemListener#beginInfoBlock(char,
+     * @see org.wikimodel.wem.IWemListener#beginInfoBlock(String,
      *      org.wikimodel.wem.WikiParameters)
      */
-    public void beginInfoBlock(char infoType, WikiParameters params) {
+    public void beginInfoBlock(String infoType, WikiParameters params) {
         //
     }
 
@@ -197,10 +197,10 @@ public class EmptyWemListener implements IWemListener {
     }
 
     /**
-     * @see org.wikimodel.wem.IWemListener#endInfoBlock(char,
+     * @see org.wikimodel.wem.IWemListener#endInfoBlock(String,
      *      org.wikimodel.wem.WikiParameters)
      */
-    public void endInfoBlock(char infoType, WikiParameters params) {
+    public void endInfoBlock(String infoType, WikiParameters params) {
         //
     }
 
@@ -406,9 +406,9 @@ public class EmptyWemListener implements IWemListener {
     }
 
     /**
-     * @see org.wikimodel.wem.IWemListener#onVerbatimInline(java.lang.String)
+     * @see org.wikimodel.wem.IWemListener#onVerbatimInline(java.lang.String, WikiParameters)
      */
-    public void onVerbatimInline(String str) {
+    public void onVerbatimInline(String str, WikiParameters params) {
         //
     }
 

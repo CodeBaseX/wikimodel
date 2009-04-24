@@ -61,7 +61,7 @@ public class JspWikiSerializer implements IWemListener {
 
     }
 
-    public void beginInfoBlock(char infoType, WikiParameters params) {
+    public void beginInfoBlock(String infoType, WikiParameters params) {
         // TODO Auto-generated method stub
 
     }
@@ -151,7 +151,7 @@ public class JspWikiSerializer implements IWemListener {
 
     }
 
-    public void endInfoBlock(char infoType, WikiParameters params) {
+    public void endInfoBlock(String infoType, WikiParameters params) {
         // TODO Auto-generated method stub
 
     }
@@ -316,7 +316,7 @@ public class JspWikiSerializer implements IWemListener {
         print("{{{" + str + "}}}");
     }
 
-    public void onVerbatimInline(String str) {
+    public void onVerbatimInline(String str, WikiParameters params) {
         println("{{{" + str + "}}}");
     }
 

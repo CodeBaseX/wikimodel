@@ -57,7 +57,7 @@ public class PrintListener extends PrintInlineListener {
     }
 
     @Override
-    public void beginInfoBlock(char infoType, WikiParameters params) {
+    public void beginInfoBlock(String infoType, WikiParameters params) {
         print("<table" + params + "><tr><th>" + infoType + "</th><td>");
     }
 
@@ -139,7 +139,7 @@ public class PrintListener extends PrintInlineListener {
     }
 
     @Override
-    public void endInfoBlock(char infoType, WikiParameters params) {
+    public void endInfoBlock(String infoType, WikiParameters params) {
         println("</td></tr></table>");
     }
 

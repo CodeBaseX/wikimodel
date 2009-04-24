@@ -57,7 +57,7 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().beginHeader(level, params);
     }
 
-    public void beginInfo(char type, WikiParameters params) {
+    public void beginInfo(String type, WikiParameters params) {
         getContext().beginInfo(type, params);
     }
 

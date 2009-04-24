@@ -1329,7 +1329,8 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
         params = newWikiParameters(str);
     t = getINFO();
         str = t.image.trim();
-        fContext.beginInfo(str.charAt(1), params);
+        str = str.substring(1, str.length() - 1);
+        fContext.beginInfo(str, params);
     label_8:
     while (true) {
       if (jj_2_19(2)) {
@@ -2332,6 +2333,19 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3_20() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_30()) {
+    jj_scanpos = xsp;
+    if (jj_3R_31()) {
+    jj_scanpos = xsp;
+    if (jj_3R_32()) return true;
+    }
+    }
+    return false;
+  }
+
   final private boolean jj_3R_120() {
     if (jj_3R_122()) return true;
     return false;
@@ -2343,19 +2357,6 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
     if (jj_3R_120()) {
     jj_scanpos = xsp;
     if (jj_3R_121()) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3_20() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_30()) {
-    jj_scanpos = xsp;
-    if (jj_3R_31()) {
-    jj_scanpos = xsp;
-    if (jj_3R_32()) return true;
-    }
     }
     return false;
   }
@@ -2408,11 +2409,6 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_20() {
-    if (jj_3R_60()) return true;
-    return false;
-  }
-
   final private boolean jj_3R_51() {
     if (jj_3R_90()) return true;
     return false;
@@ -2423,8 +2419,8 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_104() {
-    if (jj_3R_109()) return true;
+  final private boolean jj_3R_20() {
+    if (jj_3R_60()) return true;
     return false;
   }
 
@@ -2444,6 +2440,11 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
     }
     }
     }
+    return false;
+  }
+
+  final private boolean jj_3R_104() {
+    if (jj_3R_109()) return true;
     return false;
   }
 
@@ -2470,6 +2471,11 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3R_49() {
+    if (jj_3R_88()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_99() {
     if (jj_3R_102()) return true;
     Token xsp;
@@ -2485,24 +2491,19 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3R_49() {
-    if (jj_3R_88()) return true;
-    return false;
-  }
-
   final private boolean jj_3R_19() {
     if (jj_3R_59()) return true;
-    return false;
-  }
-
-  final private boolean jj_3_18() {
-    if (jj_3R_26()) return true;
     return false;
   }
 
   final private boolean jj_3R_48() {
     if (jj_3R_86()) return true;
     if (jj_3R_87()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_18() {
+    if (jj_3R_26()) return true;
     return false;
   }
 
@@ -2516,6 +2517,11 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3_25() {
+    if (jj_3R_38()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_18() {
     Token xsp;
     xsp = jj_scanpos;
@@ -2525,11 +2531,6 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
       xsp = jj_scanpos;
       if (jj_3_19()) { jj_scanpos = xsp; break; }
     }
-    return false;
-  }
-
-  final private boolean jj_3_25() {
-    if (jj_3R_38()) return true;
     return false;
   }
 
@@ -2568,16 +2569,6 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3_4() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_19()) {
-    jj_scanpos = xsp;
-    if (jj_3R_20()) return true;
-    }
-    return false;
-  }
-
   final private boolean jj_3R_63() {
     if (jj_3R_26()) return true;
     Token xsp;
@@ -2588,8 +2579,13 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3_17() {
-    if (jj_3R_28()) return true;
+  final private boolean jj_3_4() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_19()) {
+    jj_scanpos = xsp;
+    if (jj_3R_20()) return true;
+    }
     return false;
   }
 
@@ -2600,6 +2596,11 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
     jj_scanpos = xsp;
     if (jj_3R_64()) return true;
     }
+    return false;
+  }
+
+  final private boolean jj_3_17() {
+    if (jj_3R_28()) return true;
     return false;
   }
 
@@ -2813,13 +2814,13 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3_2() {
-    if (jj_3R_17()) return true;
+  final private boolean jj_3_23() {
+    if (jj_3R_26()) return true;
     return false;
   }
 
-  final private boolean jj_3_23() {
-    if (jj_3R_26()) return true;
+  final private boolean jj_3_2() {
+    if (jj_3R_17()) return true;
     return false;
   }
 
@@ -2830,6 +2831,14 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
     jj_scanpos = xsp;
     if (jj_scan_token(114)) return true;
     }
+    return false;
+  }
+
+  final private boolean jj_3R_60() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_23()) jj_scanpos = xsp;
+    if (jj_3R_98()) return true;
     return false;
   }
 
@@ -2890,14 +2899,6 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
     }
     }
     }
-    return false;
-  }
-
-  final private boolean jj_3R_60() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_23()) jj_scanpos = xsp;
-    if (jj_3R_98()) return true;
     return false;
   }
 
@@ -3108,6 +3109,11 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3R_35() {
+    if (jj_3R_76()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_79() {
     Token xsp;
     xsp = jj_scanpos;
@@ -3115,11 +3121,6 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
     jj_scanpos = xsp;
     if (jj_scan_token(104)) return true;
     }
-    return false;
-  }
-
-  final private boolean jj_3R_35() {
-    if (jj_3R_76()) return true;
     return false;
   }
 
@@ -3241,6 +3242,11 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
     return false;
   }
 
+  final private boolean jj_3R_39() {
+    if (jj_3R_37()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_16() {
     Token xsp;
     xsp = jj_scanpos;
@@ -3250,11 +3256,6 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
       xsp = jj_scanpos;
       if (jj_3_13()) { jj_scanpos = xsp; break; }
     }
-    return false;
-  }
-
-  final private boolean jj_3R_39() {
-    if (jj_3R_37()) return true;
     return false;
   }
 

@@ -35,7 +35,7 @@ package org.wikimodel.wem;
  * <dd>These elements require interpretation of some syntax-specific formatting
  * and are notified using the following methods: {@link #onEscape(String)},
  * {@link #onLineBreak()}, {@link #onReference(String)}/
- * {@link #onReference(WikiReference)}, {@link #onVerbatimInline(String)}</dd>
+ * {@link #onReference(WikiReference)}, {@link #onVerbatimInline(String, WikiParameters)}</dd>
  * </dl>
  * 
  * @author kotelnikov
@@ -161,8 +161,9 @@ public interface IWemListenerInline {
      * characters which should be represented in the final text "as is".
      * 
      * @param str the sequence of non-interpreted characters
+     * @param params TODO
      */
-    void onVerbatimInline(String str);
+    void onVerbatimInline(String str, WikiParameters params);
 
     /**
      * This method is called to notify about a "word" found in the document.

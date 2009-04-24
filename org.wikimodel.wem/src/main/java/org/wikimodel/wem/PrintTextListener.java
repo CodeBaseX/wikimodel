@@ -61,10 +61,10 @@ public class PrintTextListener implements IWemListener {
     }
 
     /**
-     * @see org.wikimodel.wem.IWemListener#beginInfoBlock(char,
+     * @see org.wikimodel.wem.IWemListener#beginInfoBlock(String,
      *      org.wikimodel.wem.WikiParameters)
      */
-    public void beginInfoBlock(char infoType, WikiParameters params) {
+    public void beginInfoBlock(String infoType, WikiParameters params) {
         //
     }
 
@@ -188,10 +188,10 @@ public class PrintTextListener implements IWemListener {
     }
 
     /**
-     * @see org.wikimodel.wem.IWemListener#endInfoBlock(char,
+     * @see org.wikimodel.wem.IWemListener#endInfoBlock(String,
      *      org.wikimodel.wem.WikiParameters)
      */
-    public void endInfoBlock(char infoType, WikiParameters params) {
+    public void endInfoBlock(String infoType, WikiParameters params) {
         endBlock();
     }
 
@@ -313,18 +313,23 @@ public class PrintTextListener implements IWemListener {
     }
 
     public void onImage(String ref) {
-        print("<img");
-        print(" src=\"" + ref + "\"");
-        print("/>");
+        WikiReference reference = new WikiReference(ref);
+        onImage(reference);
     }
 
     public void onImage(WikiReference ref) {
         print("<img");
-        print(" src=\"" + ref.getLink() + "\"");
-        if (ref.getLabel() != null) {
-            print(" alt=\"" + ref.getLabel() + "\"");
+        String link = ref.getLink();
+        link = WikiPageUtil.escapeXmlAttribute(link);
+        print(" src='" + link + "'");
+        WikiParameters params = ref.getParameters();
+        String label = ref.getLabel();
+        if (label != null) {
+            if (params.getParameter("title") == null) {
+                params = params.addParameter("title", label);
+            }
         }
-        print("/>");
+        print(params + "/>");
     }
 
     /**
@@ -395,9 +400,9 @@ public class PrintTextListener implements IWemListener {
     }
 
     /**
-     * @see org.wikimodel.wem.IWemListener#onVerbatimInline(java.lang.String)
+     * @see org.wikimodel.wem.IWemListener#onVerbatimInline(java.lang.String, WikiParameters)
      */
-    public void onVerbatimInline(String str) {
+    public void onVerbatimInline(String str, WikiParameters params) {
         print(str);
     }
 

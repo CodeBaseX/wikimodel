@@ -109,7 +109,7 @@ public class XWikiSerializer extends PrintTextListener {
         println(str);
     }
 
-    public void onVerbatimInline(String str) {
+    public void onVerbatimInline(String str, WikiParameters params) {
         println("{code}");
         println(str);
         println("{code}");
