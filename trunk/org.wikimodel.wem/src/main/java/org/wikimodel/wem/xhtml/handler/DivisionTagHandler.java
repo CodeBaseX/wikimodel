@@ -51,18 +51,13 @@ public class DivisionTagHandler extends TagHandler
                 int value = (Integer) context.getTagStack().getStackParameter("emptyLinesCount");
                 value++;
                 context.getTagStack().setStackParameter("emptyLinesCount", value);
+            } else {
+                // Consider that we're inside an embedded document
+                beginDocument(context);
             }
-
-            // Check if we have a div meaning start of embedded document
-            if (classes.contains(getDocumentClass())) {
-                sendEmptyLines(context);
-                context.getScannerContext().beginDocument(context.getParams().remove("class"));
-
-                // Mark that we're not inside a block element since we're starting a new doc
-                Stack<Boolean> insideBlockElementsStack = 
-                    (Stack<Boolean>) context.getTagStack().getStackParameter("insideBlockElement");
-                insideBlockElementsStack.push(false);
-            }
+        } else {
+            // Consider that we're inside an embedded document
+            beginDocument(context);
         }
     }
 
@@ -71,15 +66,33 @@ public class DivisionTagHandler extends TagHandler
     {
         WikiParameter param = context.getParams().getParameter("class");
         if (param != null) {
-            if (Arrays.asList(param.getValue().split(" ")).contains(getDocumentClass())) {
+            List<String> classes = Arrays.asList(param.getValue().split(" "));
 
-                // Remove marker
-                Stack<Boolean> insideBlockElementsStack = 
-                    (Stack<Boolean>) context.getTagStack().getStackParameter("insideBlockElement");
-                insideBlockElementsStack.pop();
-
-                context.getScannerContext().endDocument();
+            if (!classes.contains("wikimodel-emptyline")) {
+                endDocument(context);
             }
+        } else {
+            endDocument(context);
         }
+    }
+    
+    private void beginDocument(TagContext context)
+    {
+        sendEmptyLines(context);
+        context.getScannerContext().beginDocument(context.getParams().remove("class"));
+
+        // Mark that we're not inside a block element since we're starting a new doc
+        Stack<Boolean> insideBlockElementsStack = 
+            (Stack<Boolean>) context.getTagStack().getStackParameter("insideBlockElement");
+        insideBlockElementsStack.push(false);
+    }
+
+    private void endDocument(TagContext context)
+    {
+        Stack<Boolean> insideBlockElementsStack = 
+            (Stack<Boolean>) context.getTagStack().getStackParameter("insideBlockElement");
+        insideBlockElementsStack.pop();
+
+        context.getScannerContext().endDocument();
     }
 }
