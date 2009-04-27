@@ -37,105 +37,6 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
     /**
      * @throws WikiParserException
      */
-    public void testDocuments() throws WikiParserException {
-        test("<html><p>before</p>\n" +
-            "<div class='wikimodel-document'>\n" +
-            "<p>inside</p>\n" +
-            "</div>\n" +
-            "<p>after</p></html>",
-            "<p>before</p>\n" +
-            "<div class='wikimodel-document'>\n" +
-            "<p>inside</p>\n" +
-            "</div>\n" +
-            "<p>after</p>");
-        test("<html><p>before</p>\n" +
-            "<div class='wikimodel-document'>\n" +
-            "<p>inside</p>\n" +
-            "</div>\n" +
-            "<p>after</p></html>",
-            "<p>before</p>\n" +
-            "<div class='wikimodel-document'>\n" +
-            "<p>inside</p>\n" +
-            "</div>\n" +
-            "<p>after</p>");
-        test("<html><table><tbody>\n" +
-            " <tr><td> Line One </td><td> First doc:<div class='wikimodel-document'>\n" +
-            "<p>inside</p>\n" +
-            "</div>\n" +
-            "after</td></tr>\n" +
-            "   <tr><td>Line Two</td><td>Second doc:<div class='wikimodel-document'>\n" +
-            "<p>lkjlj</p>\n" +
-            "</div>\n" +
-            "skdjg</td></tr>\n" +
-            "</tbody></table></html>",
-            "<table><tbody>\n" +
-            "  <tr><td>Line One</td><td>First doc:<div class='wikimodel-document'>\n" +
-            "<p>inside</p>\n" +
-            "</div>\n" +
-            "after</td></tr>\n" +
-            "  <tr><td>Line Two</td><td>Second doc:<div class='wikimodel-document'>\n" +
-            "<p>lkjlj</p>\n" +
-            "</div>\n" +
-            "skdjg</td></tr>\n" +
-            "</tbody></table>");
-        test("<html><table><tbody>\n" +
-            "  <tr><td>This is a table:</td><td><div class='wikimodel-document'>\n" +
-            "<ul>\n" +
-            "  <li>item one</li>\n" +
-            "  <li>item two</li>\n" +
-            "  <li>subitem 1</li>\n" +
-            "  <li>subitem 2</li>\n" +
-            "  <li>item three</li>\n" +
-            "</ul>\n" +
-            "</div>\n" +
-            "</td></tr>\n" +
-            "</tbody></table></html>",
-            "<table><tbody>\n" +
-            "  <tr><td>This is a table:</td><td><div class='wikimodel-document'>\n" +
-            "<ul>\n" +
-            "  <li>item one</li>\n" +
-            "  <li>item two</li>\n" +
-            "  <li>subitem 1</li>\n" +
-            "  <li>subitem 2</li>\n" +
-            "  <li>item three</li>\n" +
-            "</ul>\n" +
-            "</div>\n" +
-            "</td></tr>\n" +
-            "</tbody></table>");
-
-        test("<html><p>before</p>\n" +
-            "<div class='wikimodel-document'>\n" +
-            "<p>opened and not closed</p>\n" +
-            "</div></html>",
-            "<p>before</p>\n" +
-            "<div class='wikimodel-document'>\n" +
-            "<p>opened and not closed</p>\n" +
-            "</div>");
-        test("<html><p>before</p>\n" +
-            "<div class='wikimodel-document'>\n" +
-            "<p>one</p>\n" +
-            "<div class='wikimodel-document'>\n" +
-            "<p>two</p>\n" +
-            "<div class='wikimodel-document'>\n" +
-            "<p>three</p>\n" +
-            "</div>\n" +
-            "</div>\n" +
-            "</div></html>",
-            "<p>before</p>\n" +
-            "<div class='wikimodel-document'>\n" +
-            "<p>one</p>\n" +
-            "<div class='wikimodel-document'>\n" +
-            "<p>two</p>\n" +
-            "<div class='wikimodel-document'>\n" +
-            "<p>three</p>\n" +
-            "</div>\n" +
-            "</div>\n" +
-            "</div>");
-    }
-    
-    /**
-     * @throws WikiParserException
-     */
     public void testDefinitionLists() throws WikiParserException {
         test("<html><dl><dt>term</dt><dd>definition</dd></dl></html>", ""
             + "<dl>\n"
@@ -167,6 +68,103 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
     /**
      * @throws WikiParserException
      */
+    public void testDocuments() throws WikiParserException {
+        test("<html><p>before</p>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<p>inside</p>\n"
+            + "</div>\n"
+            + "<p>after</p></html>", "<p>before</p>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<p>inside</p>\n"
+            + "</div>\n"
+            + "<p>after</p>");
+        test("<html><p>before</p>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<p>inside</p>\n"
+            + "</div>\n"
+            + "<p>after</p></html>", "<p>before</p>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<p>inside</p>\n"
+            + "</div>\n"
+            + "<p>after</p>");
+        test(
+            "<html><table><tbody>\n"
+                + " <tr><td> Line One </td><td> First doc:<div class='wikimodel-document'>\n"
+                + "<p>inside</p>\n"
+                + "</div>\n"
+                + "after</td></tr>\n"
+                + "   <tr><td>Line Two</td><td>Second doc:<div class='wikimodel-document'>\n"
+                + "<p>lkjlj</p>\n"
+                + "</div>\n"
+                + "skdjg</td></tr>\n"
+                + "</tbody></table></html>",
+            "<table><tbody>\n"
+                + "  <tr><td>Line One</td><td>First doc:<div class='wikimodel-document'>\n"
+                + "<p>inside</p>\n"
+                + "</div>\n"
+                + "after</td></tr>\n"
+                + "  <tr><td>Line Two</td><td>Second doc:<div class='wikimodel-document'>\n"
+                + "<p>lkjlj</p>\n"
+                + "</div>\n"
+                + "skdjg</td></tr>\n"
+                + "</tbody></table>");
+        test(
+            "<html><table><tbody>\n"
+                + "  <tr><td>This is a table:</td><td><div class='wikimodel-document'>\n"
+                + "<ul>\n"
+                + "  <li>item one</li>\n"
+                + "  <li>item two</li>\n"
+                + "  <li>subitem 1</li>\n"
+                + "  <li>subitem 2</li>\n"
+                + "  <li>item three</li>\n"
+                + "</ul>\n"
+                + "</div>\n"
+                + "</td></tr>\n"
+                + "</tbody></table></html>",
+            "<table><tbody>\n"
+                + "  <tr><td>This is a table:</td><td><div class='wikimodel-document'>\n"
+                + "<ul>\n"
+                + "  <li>item one</li>\n"
+                + "  <li>item two</li>\n"
+                + "  <li>subitem 1</li>\n"
+                + "  <li>subitem 2</li>\n"
+                + "  <li>item three</li>\n"
+                + "</ul>\n"
+                + "</div>\n"
+                + "</td></tr>\n"
+                + "</tbody></table>");
+
+        test("<html><p>before</p>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<p>opened and not closed</p>\n"
+            + "</div></html>", "<p>before</p>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<p>opened and not closed</p>\n"
+            + "</div>");
+        test("<html><p>before</p>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<p>one</p>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<p>two</p>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<p>three</p>\n"
+            + "</div>\n"
+            + "</div>\n"
+            + "</div></html>", "<p>before</p>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<p>one</p>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<p>two</p>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<p>three</p>\n"
+            + "</div>\n"
+            + "</div>\n"
+            + "</div>");
+    }
+
+    /**
+     * @throws WikiParserException
+     */
     public void testEscape() throws WikiParserException {
     }
 
@@ -175,28 +173,25 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
      */
     public void testFormats() throws WikiParserException {
         test("<html><b>bold</b></html>", "<p><strong>bold</strong></p>");
-        test("<html><strong>bold</strong></html>", "<p><strong>bold</strong></p>");
-        
+        test(
+            "<html><strong>bold</strong></html>",
+            "<p><strong>bold</strong></p>");
+
         test("<html><s>strike</s></html>", "<p><strike>strike</strike></p>");
-        test("<html><strike>strike</strike></html>", "<p><strike>strike</strike></p>");
+        test(
+            "<html><strike>strike</strike></html>",
+            "<p><strike>strike</strike></p>");
         test("<html><del>strike</del></html>", "<p><strike>strike</strike></p>");
-        
+
         test("<html><em>italic</em></html>", "<p><em>italic</em></p>");
-        
+
         test("<html><u>underline</u></html>", "<p><ins>underline</ins></p>");
         test("<html><ins>underline</ins></html>", "<p><ins>underline</ins></p>");
-        
+
         test("<html><sup>sup</sup></html>", "<p><sup>sup</sup></p>");
         test("<html><sub>sub</sub></html>", "<p><sub>sub</sub></p>");
-        
-        test("<html><tt>mono</tt></html>", "<p><mono>mono</mono></p>");
-    }
 
-    /**
-     * @throws WikiParserException
-     */
-    public void testVerbatimInline() throws WikiParserException {
-        test("<html><p><tt class=\"wikimodel-verbatim\">verbatim</tt></p></html>", "<p><code>verbatim</code></p>");
+        test("<html><tt>mono</tt></html>", "<p><mono>mono</mono></p>");
     }
 
     /**
@@ -224,6 +219,12 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
         test("<html><hr a='b' /></html>", "<hr a='b' />");
     }
 
+    public void testImages() throws WikiParserException {
+        test(
+            "<html><img src=\"target\" alt=\"some description\"/></html>",
+            "<p><img src='target' title='some description'/></p>");
+    }
+
     /**
      * @throws WikiParserException
      */
@@ -236,14 +237,16 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
      */
     public void testLists() throws WikiParserException {
         // TODO: add management of embedded block elements.
-        test("<html><ul><li>a<ul><li>b</li></ul></li><li>c</li></ul></html>", ""
-            + "<ul>\n"
-            + "  <li>a<ul>\n"
-            + "  <li>b</li>\n"
-            + "</ul>\n"
-            + "</li>\n"
-            + "  <li>c</li>\n"
-            + "</ul>");
+        test(
+            "<html><ul><li>a<ul><li>b</li></ul></li><li>c</li></ul></html>",
+            ""
+                + "<ul>\n"
+                + "  <li>a<ul>\n"
+                + "  <li>b</li>\n"
+                + "</ul>\n"
+                + "</li>\n"
+                + "  <li>c</li>\n"
+                + "</ul>");
 
         test("<html><ul>"
             + "<li>item one</li>"
@@ -264,13 +267,15 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
             + "3</li></ul></li><li>Item 4</li></ul></li><li>Item 5</li><li>Item\r\n"
             + "6</li></ul></html>\r\n"
             + "");
-        
-        test("<html><ol><li>item one<ul><li>item two</li></ul></li></ol></html>", "<ol>\n"
-            + "  <li>item one<ul>\n"
-            + "  <li>item two</li>\n"
-            + "</ul>\n"
-            + "</li>\n"
-            + "</ol>");
+
+        test(
+            "<html><ol><li>item one<ul><li>item two</li></ul></li></ol></html>",
+            "<ol>\n"
+                + "  <li>item one<ul>\n"
+                + "  <li>item two</li>\n"
+                + "</ul>\n"
+                + "</li>\n"
+                + "</ol>");
     }
 
     /**
@@ -288,12 +293,14 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testQuot() throws WikiParserException {
-    	test("<html><blockquote>quote</blockquote></html>", 
-    		"<blockquote>\nquote\n</blockquote>");
-    	test("<html><blockquote>line1<blockquote>line2<blockquote>line3</blockquote>"
-    	    + "line4</blockquote></blockquote></html>", 
-    	    "<blockquote>\nline1<blockquote>\nline2<blockquote>\nline3\n</blockquote>"
-    	    + "\n\nline4\n</blockquote>\n\n</blockquote>");
+        test(
+            "<html><blockquote>quote</blockquote></html>",
+            "<blockquote>\nquote\n</blockquote>");
+        test(
+            "<html><blockquote>line1<blockquote>line2<blockquote>line3</blockquote>"
+                + "line4</blockquote></blockquote></html>",
+            "<blockquote>\nline1<blockquote>\nline2<blockquote>\nline3\n</blockquote>"
+                + "\n\nline4\n</blockquote>\n\n</blockquote>");
     }
 
     /**
@@ -302,10 +309,6 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
     public void testReferences() throws WikiParserException {
     }
 
-    public void testImages() throws WikiParserException {
-        test("<html><img src=\"target\" alt=\"some description\"/></html>","<p><img src=\"target\" alt=\"some description\"/></p>");
-    }
-    
     /**
      * @throws WikiParserException
      */
@@ -344,5 +347,14 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testVerbatimeInline() throws WikiParserException {
+    }
+
+    /**
+     * @throws WikiParserException
+     */
+    public void testVerbatimInline() throws WikiParserException {
+        test(
+            "<html><p><tt class=\"wikimodel-verbatim\">verbatim</tt></p></html>",
+            "<p><code>verbatim</code></p>");
     }
 }
