@@ -105,16 +105,20 @@ public class WikiScannerUtil {
      * @param array from this array of bytes the next token will be returned
      * @param pos the current position in the array of bytes
      * @param buf to this buffer the extracted token value will be appended
+     * @param trim this array is used to return the boolean flag specifying if
+     *        the value collected in the buffer should be trimmed or not
      * @return the new position in the array after extracting of a new token
      */
     private static int getNextToken(
         char[] array,
         int pos,
         char[] delimiter,
-        StringBuffer buf) {
+        StringBuffer buf,
+        boolean[] trim) {
         buf.delete(0, buf.length());
         boolean escaped = false;
         if (pos < array.length && (array[pos] == '\'' || array[pos] == '"')) {
+            trim[0] = false;
             char endChar = array[pos];
             pos++;
             for (; pos < array.length && (escaped || array[pos] != endChar); pos++) {
@@ -130,6 +134,7 @@ public class WikiScannerUtil {
             if (pos < array.length)
                 pos++;
         } else {
+            trim[0] = true;
             for (; pos < array.length; pos++) {
                 if (array[pos] == '='
                     || skipSequence(array, pos, delimiter) > pos)
@@ -262,6 +267,7 @@ public class WikiScannerUtil {
         char[] endArray = end != null ? end.toCharArray() : new char[0];
         StringBuffer buf = new StringBuffer();
         int i = 0;
+        boolean[] trim = { false };
         for (; i < array.length;) {
             String key = null;
             String value = null;
@@ -282,13 +288,16 @@ public class WikiScannerUtil {
                 break;
             }
 
-            i = getNextToken(array, i, delimiterArray, buf);
+            i = getNextToken(array, i, delimiterArray, buf, trim);
             key = buf.toString().trim();
 
             i = removeSpaces(array, i, buf);
             if (buf.indexOf("=") >= 0) {
-                i = getNextToken(array, i, delimiterArray, buf);
-                value = buf.toString().trim();
+                i = getNextToken(array, i, delimiterArray, buf, trim);
+                value = buf.toString();
+                if (trim[0]) {
+                    value = value.trim();
+                }
             }
 
             WikiParameter entry = new WikiParameter(key, value);
