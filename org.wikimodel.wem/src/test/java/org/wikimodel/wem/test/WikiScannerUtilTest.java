@@ -28,6 +28,20 @@ public class WikiScannerUtilTest extends TestCase {
         testParams("a b c d", "|", "a b c d", null);
         testParams("x=b d e | y= f g h ", "|", "x", "b d e", "y", "f g h");
         testParams(" x = b d e | y = f g h ", "|", "x", "b d e", "y", "f g h");
+        testParams(
+            " x = ' b d e ' | y = ' f g h ' ",
+            "|",
+            "x",
+            " b d e ",
+            "y",
+            " f g h ");
+        testParams(
+            "   x    =    ' b d e '     y =    ' f g h '    ",
+            " ",
+            "x",
+            " b d e ",
+            "y",
+            " f g h ");
     }
 
     private void testParams(String str, String delim, String... pairs) {
