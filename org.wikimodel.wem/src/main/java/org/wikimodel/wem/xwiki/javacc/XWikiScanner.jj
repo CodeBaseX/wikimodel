@@ -132,7 +132,7 @@ TOKEN_MGR_DECLS: {
       <#LI: (<SPACE>)* ( ("*")+ (":" | ";")* | ( "1" | "*" )+ "." (":" | ";")* | (":" | ";")+ ) (<SPACE>) >
     | <#HEADER: (<SPACE>)* ("=")+ >
     | <#BR: "\\\\" >
-    | <#DOC_BEGIN: (<SPACE>)* "(((" (<SPACE>)* >
+    | <#DOC_BEGIN: (<NEW_LINE>)? (<SPACE>)* "(((" (<SPACE>)* >
     | <#DOC_END:   (<SPACE>)* ")))" (<SPACE>)* >
     | <#VERBATIM_START: "{{{" >
     | <#VERBATIM_END: "}}}" (<NEW_LINE>)? > 

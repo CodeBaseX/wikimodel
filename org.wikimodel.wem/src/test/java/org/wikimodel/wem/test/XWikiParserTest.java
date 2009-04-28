@@ -115,6 +115,9 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test("before ((( inside ))) after ", "<p>before</p>\n"
                 + "<div class='wikimodel-document'>\n" + "<p>inside</p>\n"
                 + "</div>\n" + "<p>after </p>");
+        test("before\n((( inside ))) after ", "<p>before</p>\n"
+                + "<div class='wikimodel-document'>\n" + "<p>inside</p>\n"
+                + "</div>\n" + "<p>after </p>");
         test("before inside ))) after ", "<p>before inside</p>\n"
                 + "<p>after </p>");
         test("before (((\ninside ))) after ", "<p>before</p>\n"
@@ -161,6 +164,8 @@ public class XWikiParserTest extends AbstractWikiParserTest {
                 + "</div>\n"
                 + "after </td></tr>\n"
                 + "</tbody></table>");
+        test("(% param=\"value\" %)\n ((( inside ))) after ", "<div class='wikimodel-document' param='value'>\n" + "<p>inside</p>\n"
+                + "</div>\n" + "<p>after </p>");
     }
 
     /**
