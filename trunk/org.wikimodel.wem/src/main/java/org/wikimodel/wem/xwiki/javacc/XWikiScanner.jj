@@ -132,7 +132,7 @@ TOKEN_MGR_DECLS: {
       <#LI: (<SPACE>)* ( ("*")+ (":" | ";")* | ( "1" | "*" )+ "." (":" | ";")* | (":" | ";")+ ) (<SPACE>) >
     | <#HEADER: (<SPACE>)* ("=")+ >
     | <#BR: "\\\\" >
-    | <#DOC_BEGIN: (<NEW_LINE>)? (<SPACE>)* "(((" (<SPACE>)* >
+    | <#DOC_BEGIN: (<SPACE>)* "(((" (<SPACE>)* >
     | <#DOC_END:   (<SPACE>)* ")))" (<SPACE>)* >
     | <#VERBATIM_START: "{{{" >
     | <#VERBATIM_END: "}}}" (<NEW_LINE>)? > 
@@ -379,7 +379,7 @@ void docElements():
     LOOKAHEAD(3) list()
     |
     // Embedded documents
-    LOOKAHEAD(2) embeddedDocument()
+    LOOKAHEAD(3) embeddedDocument()
     |
     macroBlock()
     |
@@ -406,7 +406,12 @@ void embeddedDocument():
     WikiParameters params = WikiParameters.EMPTY;
 }
 {
-	( LOOKAHEAD(2) t = getBLOCK_PARAMS() { str = t.image.trim(); } )?
+	// match potential parameters for the embedded document block
+	( LOOKAHEAD(2)
+	  (t = getBLOCK_PARAMS() { str = t.image.trim(); } )
+	  // there can be a new line between parameters and embedded document block itself
+	  (t = getNL() { })?
+	)?
     {
 	    params = newWikiParameters(str);
     }
@@ -441,7 +446,7 @@ void header():
         int level = t.image.trim().length();
         fContext.beginHeader(level, params);
     }
-    ( LOOKAHEAD(2) block() )*
+    ( LOOKAHEAD(3) block() )*
     {
         fContext.endHeader();
     }
@@ -494,7 +499,7 @@ void tableRow():
         }
         fContext.beginTableRow(head, rowParams, cellParams);
     }
-    ( LOOKAHEAD(2) block() )*
+    ( LOOKAHEAD(3) block() )*
     {
         fContext.endTableRow();
     }
@@ -537,7 +542,7 @@ void listItem():
 	        str = str.replace('1', '#');
 	        fContext.beginListItem(str, params);
         }
-        ( LOOKAHEAD(2) block() )*
+        ( LOOKAHEAD(3) block() )*
         {
             fContext.endListItem();
         }
@@ -560,11 +565,11 @@ void verbatimBlock():
 }
 {
 	// match potential parameters for the verbatim block
-    ( LOOKAHEAD(2) t = getBLOCK_PARAMS() { params = newWikiParameters(t.image.trim()); } )?
-    {
-    }
-    // getVERBATIM_STARTd does not consume the new line before it when in standalone
-    (LOOKAHEAD(2) ( t = getNL() { }) )?
+    ( LOOKAHEAD(2)
+      (t = getBLOCK_PARAMS() { params = newWikiParameters(t.image.trim()); })
+      // there can be a new line between parameters and verbatim block itself
+      (t = getNL() { })?
+    )?
     {
     }
     getVERBATIM_START()
@@ -788,7 +793,7 @@ void paragraph():
         ( LOOKAHEAD(2)
           ( ( t = getBLOCK_PARAMS() { params1 = t.image.trim(); } )
             ( t = getBLOCK_PARAMS() { params2 = t.image.trim(); } )
-          ) 
+          )
           {
               sendOnEmptyLinesEvent(false);
         	  fContext.beginParagraph(newWikiParameters(params1));
