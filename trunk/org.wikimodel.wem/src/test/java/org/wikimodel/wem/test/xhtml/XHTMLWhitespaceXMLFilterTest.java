@@ -24,8 +24,10 @@ import junit.framework.TestCase;
  * @author vmassol
  * @author thomas.mortagne
  */
-public class XHTMLWhitespaceXMLFilterTest extends TestCase {
+public class XHTMLWhitespaceXMLFilterTest extends TestCase
+{
     private XMLWriter writerFilter;
+
     private XHTMLWhitespaceXMLFilter whitespaceFilter;
 
     /**
@@ -34,82 +36,65 @@ public class XHTMLWhitespaceXMLFilterTest extends TestCase {
      * @see junit.framework.TestCase#setUp()
      */
     @Override
-    protected void setUp() throws Exception {
-	XMLReader xmlReader = SAXParserFactory.newInstance().newSAXParser()
-		.getXMLReader();
-	whitespaceFilter = new XHTMLWhitespaceXMLFilter(xmlReader);
-	writerFilter = new XMLWriter();
+    protected void setUp() throws Exception
+    {
+        XMLReader xmlReader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
+        whitespaceFilter = new XHTMLWhitespaceXMLFilter(xmlReader);
+        writerFilter = new XMLWriter();
 
-	whitespaceFilter.setFeature("http://xml.org/sax/features/namespaces",
-		true);
-	whitespaceFilter.setContentHandler(writerFilter);
-	whitespaceFilter.setProperty(
-		"http://xml.org/sax/properties/lexical-handler", writerFilter);
+        whitespaceFilter.setFeature("http://xml.org/sax/features/namespaces", true);
+        whitespaceFilter.setContentHandler(writerFilter);
+        whitespaceFilter.setProperty("http://xml.org/sax/properties/lexical-handler", writerFilter);
     }
 
-    public void testWhiteSpaceStripping() throws Exception {
-	assertCleanedHTML("<p>one two</p>", "<p>  one  two  </p>");
-	assertCleanedHTML("<p>one two <b>three</b></p>",
-		"<p>  one  two  <b>three</b></p>");
-	assertCleanedHTML("<p>one two</p>", "<p>\n\r\tone\n\r\ttwo\n\r\t</p>");
-	assertCleanedHTML("<p>one <b>two</b> <b>three</b></p>",
-		"<p>one <b>two</b>  <b>three</b></p>");
-	assertCleanedHTML("<p>one <b>two</b> <em><b>three</b>a</em></p>",
-		"<p>one <b>two</b>  <em><b>three</b>a</em></p>");
-	assertCleanedHTML("<p>one</p>two<p>three</p>",
-		"<p>one</p>  two  <p>three</p>");
-	assertCleanedHTML("<![CDATA[\n  one  \n]]>", "<![CDATA[\n  one  \n]]>");
-	assertCleanedHTML("<pre>\n  one  \n</pre>", "<pre>\n  one  \n</pre>");
-	assertCleanedHTML("<p>one <!--comment-->two</p>",
-		"<p>  one  <!--comment-->  two  </p>");
-	assertCleanedHTML("<p><!--comment-->one <b>two</b></p>",
-		"<p><!--comment-->  one  <b>two</b></p>");
-	assertCleanedHTML("<p>one <b>two</b> three</p>",
-		"<p>one <b>two</b>  three  </p>");
-	assertCleanedHTML("<!--comment-->one <![CDATA[two]]>",
-		"<!--comment-->  one  <![CDATA[two]]>");
-	assertCleanedHTML("<p></p>", "<p>  </p>");
-	assertCleanedHTML(
-		"<!--startmacro:something--><!--nonsemantic--><!--stopmacro-->",
-		"  <!--startmacro:something-->  <!--nonsemantic-->  <!--stopmacro-->  ");
-	assertCleanedHTML(
-		"<p>one <!--startmacro:something--><!--stopmacro--></p>",
-		"<p>one  <!--startmacro:something--><!--stopmacro--></p>");
-	assertCleanedHTML(
-		"<p>one <!--startmacro:something--><!--stopmacro--> two</p>",
-		"<p>one  <!--startmacro:something--><!--stopmacro-->  two</p>");
-	assertCleanedHTML("<!--comment-->one<![CDATA[two]]>",
-		"<!--comment-->  one<![CDATA[two]]>");
-	assertCleanedHTML("<p>one <!--comment-->two<![CDATA[three]]></p>",
-		"<p>one <!--comment-->  two<![CDATA[three]]></p>");
-	assertCleanedHTML(
-		"<p>one <span>two </span><!--comment-->three <![CDATA[four]]></p>",
-		"<p> one  <span>  two </span><!--comment-->  three  <![CDATA[four]]></p>");
-	assertCleanedHTML("<p>This<strong> Spore Cheat Sheet</strong></p>",
-		"<p>This<strong>\nSpore Cheat Sheet</strong></p>");
-	assertCleanedHTML(
-		"<table><tbody><tr><td>First doc:<div><p>inside</p></div></td></tr></tbody></table>",
-		"<table><tbody>\n<tr><td>First doc:<div>\n<p>inside</p></div></td></tr></tbody></table>");
-	assertCleanedHTML("<p>one two three<br></br><br></br>hello</p>",
-		"<p>one two three<br/><br/>hello</p>");
-	assertCleanedHTML(
-		"<p><strong><span>hello</span></strong><span>world</span></p>",
-		"<p><strong><span>hello</span></strong><span>world</span></p>");
+    public void testWhiteSpaceStripping() throws Exception
+    {
+        assertCleanedHTML("<p>one two</p>", "<p>  one  two  </p>");
+        assertCleanedHTML("<p>one two <b>three</b></p>", "<p>  one  two  <b>three</b></p>");
+        assertCleanedHTML("<p>one two</p>", "<p>\n\r\tone\n\r\ttwo\n\r\t</p>");
+        assertCleanedHTML("<p>one <b>two</b> <b>three</b></p>", "<p>one <b>two</b>  <b>three</b></p>");
+        assertCleanedHTML("<p>one <b>two</b> <em><b>three</b>a</em></p>",
+            "<p>one <b>two</b>  <em><b>three</b>a</em></p>");
+        assertCleanedHTML("<p>one</p>two<p>three</p>", "<p>one</p>  two  <p>three</p>");
+        assertCleanedHTML("<![CDATA[\n  one  \n]]>", "<![CDATA[\n  one  \n]]>");
+        assertCleanedHTML("<pre>\n  one  \n</pre>", "<pre>\n  one  \n</pre>");
+        assertCleanedHTML("<p>one <!--comment-->two</p>", "<p>  one  <!--comment-->  two  </p>");
+        assertCleanedHTML("<p><!--comment-->one <b>two</b></p>", "<p><!--comment-->  one  <b>two</b></p>");
+        assertCleanedHTML("<p>one <b>two</b> three</p>", "<p>one <b>two</b>  three  </p>");
+        assertCleanedHTML("<!--comment-->one <![CDATA[two]]>", "<!--comment-->  one  <![CDATA[two]]>");
+        assertCleanedHTML("<p></p>", "<p>  </p>");
+        assertCleanedHTML("<!--startmacro:something--><!--nonsemantic--><!--stopmacro-->",
+            "  <!--startmacro:something-->  <!--nonsemantic-->  <!--stopmacro-->  ");
+        assertCleanedHTML("<p>one <!--startmacro:something--><!--stopmacro--></p>",
+            "<p>one  <!--startmacro:something--><!--stopmacro--></p>");
+        assertCleanedHTML("<p>one <!--startmacro:something--><!--stopmacro--> two</p>",
+            "<p>one  <!--startmacro:something--><!--stopmacro-->  two</p>");
+        assertCleanedHTML("<!--comment-->one<![CDATA[two]]>", "<!--comment-->  one<![CDATA[two]]>");
+        assertCleanedHTML("<p>one <!--comment-->two<![CDATA[three]]></p>",
+            "<p>one <!--comment-->  two<![CDATA[three]]></p>");
+        assertCleanedHTML("<p>one <span>two </span><!--comment-->three <![CDATA[four]]></p>",
+            "<p> one  <span>  two </span><!--comment-->  three  <![CDATA[four]]></p>");
+        assertCleanedHTML("<p>This<strong> Spore Cheat Sheet</strong></p>",
+            "<p>This<strong>\nSpore Cheat Sheet</strong></p>");
+        assertCleanedHTML("<table><tbody><tr><td>First doc:<div><p>inside</p></div></td></tr></tbody></table>",
+            "<table><tbody>\n<tr><td>First doc:<div>\n<p>inside</p></div></td></tr></tbody></table>");
+        assertCleanedHTML("<p>one two three<br></br><br></br>hello</p>", "<p>one two three<br/><br/>hello</p>");
+        assertCleanedHTML("<p><strong><span>hello</span></strong><span>world</span></p>",
+            "<p><strong><span>hello</span></strong><span>world</span></p>");
     }
 
-    public void testWhiteSpaceStrippingForBlockElements() throws Exception {
-	assertCleanedHTML("<p></p><p></p>", "<p></p>  \n\r\t<p></p>");
-	assertCleanedHTML("<ul><li></li><li></li></ul>",
-		"<ul>  <li></li>  <li></li>  </ul>");
-	assertCleanedHTML("<table></table><p></p>", "<table></table> <p></p>");
+    public void testWhiteSpaceStrippingForBlockElements() throws Exception
+    {
+        assertCleanedHTML("<p></p><p></p>", "<p></p>  \n\r\t<p></p>");
+        assertCleanedHTML("<ul><li></li><li></li></ul>", "<ul>  <li></li>  <li></li>  </ul>");
+        assertCleanedHTML("<table></table><p></p>", "<table></table> <p></p>");
     }
 
-    private void assertCleanedHTML(String expected, String originalContent)
-	    throws Exception {
-	InputSource source = new InputSource(new StringReader("<html>"
-		+ originalContent + "</html>"));
-	whitespaceFilter.parse(source);
-	assertEquals("<html>" + expected + "</html>", writerFilter.getBuffer());
-	writerFilter.reset();
+    private void assertCleanedHTML(String expected, String originalContent) throws Exception
+    {
+        InputSource source = new InputSource(new StringReader("<html>" + originalContent + "</html>"));
+        whitespaceFilter.parse(source);
+        assertEquals("<html>" + expected + "</html>", writerFilter.getBuffer());
+        writerFilter.reset();
     }
 }
