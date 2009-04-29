@@ -21,50 +21,68 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 /**
- * Removes non-semantic whitespaces in XML elements. See http://www.w3.org/TR/html4/struct/text.html#h-9.1 for more
- * details. Possible use cases:
+ * Removes non-semantic whitespaces in XML elements. See
+ * http://www.w3.org/TR/html4/struct/text.html#h-9.1 for more details.
+ * 
+ * Possible use cases:
  * <p/>
  * <ul>
- * <li><b>UC1</b>: <code>&lt;tag1&gt;(sp)(sp)one(sp)(sp)two(sp)(sp)&lt;/tag1&gt;</code> becomes
+ * <li><b>UC1</b>:
+ * <code>&lt;tag1&gt;(sp)(sp)one(sp)(sp)two(sp)(sp)&lt;/tag1&gt;</code> becomes
  * <code>&lt;tag1&gt;one(sp)two&lt;/tag1&gt;</code></li>
- * <li><b>UC2</b>: <code>&lt;tag1&gt;(sp)(sp)one(sp)(sp)two(sp)(sp)&lt;tag2&gt;three&lt;/tag2&gt;&lt;/tag1&gt;</code>
- * becomes <code>&lt;tag1&gt;one(sp)two(sp)&lt;tag2&gt;three&lt;/tag2&gt;&lt;/tag1&gt;</code></li>
- * <li><b>UC3</b>: <code>&lt;tag1&gt;(\n\r\t)one(\n\r\t)two(\n\r\t)&lt;/tag1&gt;</code> becomes
- * <code>&lt;tag1&gt;one(sp)two&lt;/tag1&gt;</code></li>
- * <li><b>UC4</b>: <code>&lt;/tag1&gt;(sp)(sp)(\n\r\t)&lt;tag2&gt;</code> (where tag1 and tag2 are not both block
- * elements) becomes <code>&lt;/tag1&gt; &lt;tag2&gt;</code>. If tag1 and tag2 are block elements all spaces are removed
+ * <li><b>UC2</b>:
+ * <code>&lt;tag1&gt;(sp)(sp)one(sp)(sp)two(sp)(sp)&lt;tag2&gt;three&lt;/tag2&gt;&lt;/tag1&gt;</code>
+ * becomes
+ * <code>&lt;tag1&gt;one(sp)two(sp)&lt;tag2&gt;three&lt;/tag2&gt;&lt;/tag1&gt;</code>
  * </li>
- * <li><b>UC5</b>: <code>&lt;![CDATA[(\n\r\t)(sp)(sp)one(sp)(sp)(\n\r\t)]]&gt;</code> is left untouched</code></li>
- * <li><b>UC6</b>: <code>&lt;pre&gt;(\n\r\t)(sp)(sp)one(sp)(sp)(\n\r\t)&lt;/pre&gt;</code> is left untouched</code></li>
- * <li><b>UC7</b>: <code>&lt;tag1&gt;(sp)(sp)one(sp)(sp)&lt;!--comment--&gt;(sp)(sp)two(sp)(sp)&lt;/tag1&gt;</code>
+ * <li><b>UC3</b>:
+ * <code>&lt;tag1&gt;(\n\r\t)one(\n\r\t)two(\n\r\t)&lt;/tag1&gt;</code> becomes
+ * <code>&lt;tag1&gt;one(sp)two&lt;/tag1&gt;</code></li>
+ * <li><b>UC4</b>: <code>&lt;/tag1&gt;(sp)(sp)(\n\r\t)&lt;tag2&gt;</code> (where
+ * tag1 and tag2 are not both block elements) becomes
+ * <code>&lt;/tag1&gt; &lt;tag2&gt;</code>. If tag1 and tag2 are block elements
+ * all spaces are removed</li>
+ * <li><b>UC5</b>:
+ * <code>&lt;![CDATA[(\n\r\t)(sp)(sp)one(sp)(sp)(\n\r\t)]]&gt;</code> is left
+ * untouched</code></li>
+ * <li><b>UC6</b>:
+ * <code>&lt;pre&gt;(\n\r\t)(sp)(sp)one(sp)(sp)(\n\r\t)&lt;/pre&gt;</code> is
+ * left untouched</code></li>
+ * <li><b>UC7</b>:
+ * <code>&lt;tag1&gt;(sp)(sp)one(sp)(sp)&lt;!--comment--&gt;(sp)(sp)two(sp)(sp)&lt;/tag1&gt;</code>
  * becomes <code>&lt;tag1&gt;one&lt;!--comment--&gt;two&lt;/tag1&gt;</code>
- * <li><b>UC8</b>: <code>&lt;/tag1&gt;(sp)(sp)one(sp)(sp)&lt;/tag2&gt;</code> becomes
- * <code>&lt;/tag1&gt;(sp)one&lt;/tag2&gt;</code></li>
- * <li><b>UC9</b>: Comments which have a meaning for the XHTML parser do not have spaces removed in the content
- * preceding them
+ * <li><b>UC8</b>: <code>&lt;/tag1&gt;(sp)(sp)one(sp)(sp)&lt;/tag2&gt;</code>
+ * becomes <code>&lt;/tag1&gt;(sp)one&lt;/tag2&gt;</code></li>
+ * <li><b>UC9</b>: Comments which have a meaning for the XHTML parser do not
+ * have spaces removed in the content preceding them
  * </ul>
  * 
  * @author vmassol
  */
-public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter
-{
-    private static final Pattern HTML_WHITESPACE_DUPLICATES_PATTERN = Pattern.compile("\\s{2,}|[\\t\\n\\x0B\\f\\r]+");
+public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
+    private static final Pattern HTML_WHITESPACE_DUPLICATES_PATTERN = Pattern
+            .compile("\\s{2,}|[\\t\\n\\x0B\\f\\r]+");
 
-    private static final Pattern HTML_WHITESPACE_HEAD_PATTERN = Pattern.compile("^\\s+");
+    private static final Pattern HTML_WHITESPACE_HEAD_PATTERN = Pattern
+            .compile("^\\s+");
 
-    private static final Pattern HTML_WHITESPACE_TAIL_PATTERN = Pattern.compile("\\s+$");
+    private static final Pattern HTML_WHITESPACE_TAIL_PATTERN = Pattern
+            .compile("\\s+$");
 
-    private static final List<String> NONINLINE_ELEMENTS =
-        Arrays.asList("html", "head", "body", "p", "table", "ul", "ol", "li", "hr", "td", "tr", "th", "div", "tbody",
-            "thead", "pre", "h1", "h2", "h3", "h4", "h5", "h6", "dl", "dt", "dd", "blockquote");
+    /*
+     * private static final List<String> NONINLINE_ELEMENTS = Arrays.asList(
+     * "html", "head", "body", "p", "table", "ul", "ol", "li", "hr", "td", "tr",
+     * "th", "div", "tbody", "thead", "pre", "h1", "h2", "h3", "h4", "h5", "h6",
+     * "dl", "dt", "dd", "blockquote");
+     */
 
-    private static final List<String> INLINECONTAINER_ELEMENTS =
-        Arrays.asList("p", "li", "hr", "td", "th", "div", "thead", "pre", "h1", "h2", "h3", "h4", "h5", "h6", "dl",
-            "dt", "dd", "blockquote");
+    private static final List<String> INLINECONTAINER_ELEMENTS = Arrays.asList(
+            "p", "li", "hr", "td", "th", "div", "thead", "pre", "h1", "h2",
+            "h3", "h4", "h5", "h6", "dl", "dt", "dd", "blockquote");
 
     private boolean fRemoveWhitespaces = true;
 
-    private int inlineDepth = 0;
+    private int fInlineDepth = 0;
 
     /**
      * Content to clean.
@@ -72,44 +90,37 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter
     private StringBuffer fContent = new StringBuffer();
 
     private StringBuffer fPreviousInlineContent = new StringBuffer();
-
     private String fPreviousContent = null;
 
     private List<String[]> fEndingInlineElements = new ArrayList<String[]>();
 
-    public XHTMLWhitespaceXMLFilter()
-    {
-        super();
+    public XHTMLWhitespaceXMLFilter() {
+
     }
 
-    public XHTMLWhitespaceXMLFilter(XMLReader reader)
-    {
+    public XHTMLWhitespaceXMLFilter(XMLReader reader) {
         super(reader);
     }
 
     @Override
-    public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException
-    {
-        // TODO Auto-generated method stub
-        super.ignorableWhitespace(ch, start, length);
-    }
-
-    @Override
-    public void characters(char[] ch, int start, int length) throws SAXException
-    {
+    public void characters(char[] ch, int start, int length)
+            throws SAXException {
         getContent().append(ch, start, length);
     }
 
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException
-    {
+    public void startElement(
+        String uri,
+        String localName,
+        String qName,
+        Attributes atts) throws SAXException {
         cleanBeforeElement();
         cleanExtraWhiteSpaces();
 
         sendContent();
 
         if (INLINECONTAINER_ELEMENTS.contains(localName)) {
-            ++inlineDepth;
+            ++fInlineDepth;
             fPreviousInlineContent.setLength(0);
         }
         super.startElement(uri, localName, qName, atts);
@@ -121,21 +132,22 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter
     }
 
     @Override
-    public void endElement(String uri, String localName, String qName) throws SAXException
-    {
+    public void endElement(String uri, String localName, String qName)
+            throws SAXException {
         cleanInlineContentFirstSpaces();
         cleanExtraWhiteSpaces();
 
-        if (NONINLINE_ELEMENTS.contains(localName)) {
+        if (INLINECONTAINER_ELEMENTS.contains(localName)) {
+            --fInlineDepth;
+        }
+
+        if (fInlineDepth == 0) {
             trimTrailingWhiteSpaces();
             sendContent();
             fPreviousInlineContent.setLength(0);
 
             fRemoveWhitespaces = true;
 
-            if (INLINECONTAINER_ELEMENTS.contains(localName)) {
-                --inlineDepth;
-            }
             super.endElement(uri, localName, qName);
         } else {
             if (getContent().length() > 0) {
@@ -145,13 +157,12 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter
             }
 
             getContent().setLength(0);
-            fEndingInlineElements.add(new String[] {uri, localName, qName});
+            fEndingInlineElements.add(new String[] { uri, localName, qName });
         }
     }
 
     @Override
-    public void startCDATA() throws SAXException
-    {
+    public void startCDATA() throws SAXException {
         cleanInlineContentFirstSpaces();
         cleanExtraWhiteSpaces();
         sendContent();
@@ -163,8 +174,7 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter
     }
 
     @Override
-    public void endCDATA() throws SAXException
-    {
+    public void endCDATA() throws SAXException {
         if (getContent().length() > 0) {
             sendContent();
         }
@@ -173,8 +183,7 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter
     }
 
     @Override
-    public void comment(char[] ch, int start, int length) throws SAXException
-    {
+    public void comment(char[] ch, int start, int length) throws SAXException {
         cleanBeforeElement();
         cleanExtraWhiteSpaces();
 
@@ -187,13 +196,12 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter
         super.comment(ch, start, length);
     }
 
-    protected boolean shouldRemoveWhiteSpaces()
-    {
+    protected boolean shouldRemoveWhiteSpaces() {
         return fRemoveWhitespaces;
     }
 
-    protected void sendPreviousContent(boolean trimTrailing) throws SAXException
-    {
+    protected void sendPreviousContent(boolean trimTrailing)
+            throws SAXException {
         if (fEndingInlineElements.size() > 0) {
             if (fPreviousContent != null && fPreviousContent.length() > 0) {
                 if (trimTrailing) {
@@ -211,8 +219,7 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter
         fPreviousContent = null;
     }
 
-    protected void sendContent() throws SAXException
-    {
+    protected void sendContent() throws SAXException {
         sendPreviousContent(getContent().length() == 0);
 
         if (getContent().length() > 0) {
@@ -222,16 +229,14 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter
         }
     }
 
-    protected void sendCharacters(String content) throws SAXException
-    {
+    protected void sendCharacters(String content) throws SAXException {
         if (content.length() > 0) {
             super.characters(content.toCharArray(), 0, content.length());
         }
     }
 
-    private void cleanBeforeElement()
-    {
-        if (inlineDepth == 0) {
+    private void cleanBeforeElement() {
+        if (fInlineDepth == 0) {
             trimLeadingWhiteSpaces();
             trimTrailingWhiteSpaces();
         } else {
@@ -239,22 +244,22 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter
         }
     }
 
-    private void cleanInlineContentFirstSpaces()
-    {
+    private void cleanInlineContentFirstSpaces() {
         if (getContent().length() > 0) {
             if (fPreviousInlineContent.length() == 0
-                || fPreviousInlineContent.charAt(fPreviousInlineContent.length() - 1) == ' ') {
+                    || fPreviousInlineContent.charAt(fPreviousInlineContent
+                            .length() - 1) == ' ') {
                 trimLeadingWhiteSpaces();
             }
         }
     }
 
-    protected void cleanExtraWhiteSpaces()
-    {
+    protected void cleanExtraWhiteSpaces() {
         if (getContent().length() > 0) {
             // UC3: Remove non whitespace chars (/n, /r, /t, etc)
             if (shouldRemoveWhiteSpaces()) {
-                Matcher matcher = HTML_WHITESPACE_DUPLICATES_PATTERN.matcher(getContent());
+                Matcher matcher = HTML_WHITESPACE_DUPLICATES_PATTERN
+                        .matcher(getContent());
                 String result = matcher.replaceAll(" ");
                 getContent().setLength(0);
                 getContent().append(result);
@@ -265,8 +270,7 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter
     // Trim white spaces and new lines since they are ignored in XHTML (except
     // when
     // in CDATA or PRE elements).
-    protected void trimLeadingWhiteSpaces()
-    {
+    protected void trimLeadingWhiteSpaces() {
         if (shouldRemoveWhiteSpaces() && getContent().length() > 0) {
             String result = trimLeadingWhiteSpaces(getContent());
             getContent().setLength(0);
@@ -274,8 +278,7 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter
         }
     }
 
-    protected String trimLeadingWhiteSpaces(CharSequence content)
-    {
+    protected String trimLeadingWhiteSpaces(CharSequence content) {
         String trimedContent;
 
         if (shouldRemoveWhiteSpaces() && content.length() > 0) {
@@ -288,8 +291,7 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter
         return trimedContent;
     }
 
-    protected void trimTrailingWhiteSpaces()
-    {
+    protected void trimTrailingWhiteSpaces() {
         if (shouldRemoveWhiteSpaces() && getContent().length() > 0) {
             String result = trimTrailingWhiteSpaces(getContent());
             getContent().setLength(0);
@@ -297,8 +299,7 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter
         }
     }
 
-    protected String trimTrailingWhiteSpaces(CharSequence content)
-    {
+    protected String trimTrailingWhiteSpaces(CharSequence content) {
         String trimedContent;
 
         if (shouldRemoveWhiteSpaces() && getContent().length() > 0) {
@@ -311,8 +312,7 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter
         return trimedContent;
     }
 
-    protected StringBuffer getContent()
-    {
+    protected StringBuffer getContent() {
         return fContent;
     }
 
@@ -322,8 +322,8 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter
      * @param comment the comment to evaluate
      * @return true if the comment is a semantic one
      */
-    protected boolean isSemanticComment(String comment)
-    {
-        return comment.startsWith("startmacro:") || comment.startsWith("stopmacro");
+    protected boolean isSemanticComment(String comment) {
+        return comment.startsWith("startmacro:")
+                || comment.startsWith("stopmacro");
     }
 }
