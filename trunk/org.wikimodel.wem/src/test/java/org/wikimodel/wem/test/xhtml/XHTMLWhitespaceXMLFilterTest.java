@@ -48,7 +48,7 @@ public class XHTMLWhitespaceXMLFilterTest extends TestCase {
     }
 
     public void testWhiteSpaceStripping() throws Exception {
-        /*assertCleanedHTML("<p>one two</p>", "<p>  one  two  </p>");
+        assertCleanedHTML("<p>one two</p>", "<p>  one  two  </p>");
         assertCleanedHTML("<p>one two <b>three</b></p>",
                 "<p>  one  two  <b>three</b></p>");
         assertCleanedHTML("<p>one two</p>", "<p>\n\r\tone\n\r\ttwo\n\r\t</p>");
@@ -71,13 +71,13 @@ public class XHTMLWhitespaceXMLFilterTest extends TestCase {
         assertCleanedHTML("<p></p>", "<p>  </p>");
         assertCleanedHTML("<p><b>text</b></p>", "<p> <b> text </b> </p>");
         assertCleanedHTML(
-                "<!--startmacro:something--><!--nonsemantic--><!--stopmacro-->",
+                "<!--startmacro:something--> <!--nonsemantic--><!--stopmacro-->",
                 "  <!--startmacro:something-->  <!--nonsemantic-->  <!--stopmacro-->  ");
         assertCleanedHTML(
-                "<p>one<!--startmacro:something--><!--stopmacro--></p>",
+                "<p>one <!--startmacro:something--><!--stopmacro--></p>",
                 "<p>one  <!--startmacro:something--><!--stopmacro--></p>");
         assertCleanedHTML(
-                "<p>one <!--startmacro:something--><!--stopmacro-->two</p>",
+                "<p>one <!--startmacro:something--><!--stopmacro--> two</p>",
                 "<p>one  <!--startmacro:something--><!--stopmacro-->  two</p>");
         assertCleanedHTML("<!--comment-->one<![CDATA[two]]>",
                 "<!--comment-->  one<![CDATA[two]]>");
@@ -101,10 +101,17 @@ public class XHTMLWhitespaceXMLFilterTest extends TestCase {
         assertCleanedHTML("<unknow>hello word</unknow>",
                 " <unknow> hello  word </unknow> ");
         assertCleanedHTML("<p><unknow>hello word </unknow>text</p>",
-                "<p> <unknow> hello  word </unknow> text</p>");*/
+                "<p> <unknow> hello  word </unknow> text</p>");
         assertCleanedHTML("one<script> one  two </script> two",
                 "one <script> one  two </script> two");
-        assertCleanedHTML("<span>one two</span>", "<span> one  two </span>", false);
+        assertCleanedHTML("<span>one two</span>", "<span> one  two </span>",
+                false);
+        assertCleanedHTML("one<script> one  two </script>",
+                "one <script> one  two </script>");
+        assertCleanedHTML(
+                "one<script>//<![CDATA[\nsome script\n//]]></script>",
+                "one<script>//<![CDATA[\nsome script\n//]]></script>");
+        assertCleanedHTML("one <img></img> two", "one <img/> two");
     }
 
     public void testWhiteSpaceStrippingForBlockElements() throws Exception {

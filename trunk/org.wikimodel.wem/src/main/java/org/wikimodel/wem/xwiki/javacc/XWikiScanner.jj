@@ -135,7 +135,7 @@ TOKEN_MGR_DECLS: {
     | <#DOC_BEGIN: (<SPACE>)* "(((" (<SPACE>)* >
     | <#DOC_END:   (<SPACE>)* ")))" (<SPACE>)* >
     | <#VERBATIM_START: "{{{" >
-    | <#VERBATIM_END: "}}}" (<NEW_LINE>)? > 
+    | <#VERBATIM_END: "}}}" > 
     | <#VERBATIM_CONTENT: ( 
           "~" ~[]
         | ~["}", "{", "~"] 
@@ -144,9 +144,9 @@ TOKEN_MGR_DECLS: {
       )+ >
     | <#MACRO_NAME: (<XWIKI_CHAR>)+ (["-", "_", ".", ":"] (<XWIKI_CHAR>)+)* >
     | <#MACRO_PARAMS: ( "~" ~[] | ~["}"] | "}" ~["}"] )* >
-    | <#MACRO_EMPTY: "{{" <MACRO_NAME> ((<SPACE>) <MACRO_PARAMS>)? "/}}" (<NEW_LINE>)? >
+    | <#MACRO_EMPTY: "{{" <MACRO_NAME> ((<SPACE>) <MACRO_PARAMS>)? "/}}" >
     | <#MACRO_START: "{{" <MACRO_NAME> ((<SPACE>) <MACRO_PARAMS>)? "}}" >
-    | <#MACRO_END: "{{/" <MACRO_NAME> (<SPACE>)* "}}" (<NEW_LINE>)? > 
+    | <#MACRO_END: "{{/" <MACRO_NAME> (<SPACE>)* "}}" > 
     | <#MACRO_CONTENT: ( <XWIKI_CHAR> | <SPACE> |<NEW_LINE> | <XWIKI_SPECIAL_SYMBOL> ) >
     | <#REFERENCE_IMAGE: "[[image:" ("~" ~[] | ~["]"] | "]" ~["]"] )* "]]" >
     | <#REFERENCE:  ( "[[" ( <REFERENCE_IMAGE> | "~" ~[] | ~["]"] | "]" ~["]"] )* "]]" ) >
@@ -568,8 +568,9 @@ void verbatimBlock():
     }
     getVERBATIM_START()
     {
+    	sendOnEmptyLinesEvent(false);
+    	verbatimBody(false, params);
     }
-	verbatimBody(false, params)
 }
 
 void verbatimBody(boolean inline, WikiParameters params):
@@ -598,47 +599,32 @@ void verbatimBody(boolean inline, WikiParameters params):
     (LOOKAHEAD(2) ( t = <EOF> { eof = true; }) )?
     {
         str = buf.toString();
-        // If this block does not have a explicit end of the block then we should not trim it and remove
-        // last "}}}" characters
-        boolean beginParagraph = false;
-        char ch = str.charAt(str.length() - 1);
-        boolean endingNewLine = ch == '\r' || ch == '\n';
         if (hasVerbatimEnd) { 
-            // If we did not found a new line at the end of a block and it's not the end of the file, it should be an inline element
-            if (inline == false) {
-                beginParagraph = inline = !endingNewLine && !eof;
-            }
             str = str.trim();
             if (str.endsWith("}}}")) {
             	str = str.substring(0, str.length() - "}}}".length());
             }
         }
         str = str.substring("{{{".length());
-        
-        if (beginParagraph) {
+
+        if (inline || eof) {
         	sendOnEmptyLinesEvent(false);
-        	// If the verbatim block is inline, take care of generating the beginParagraph event in case its the first block of the paragraph
-            fContext.beginParagraph();
-            // If it's an inline mode the matched parameters are format like for any inline text and not verbatim block custom parameters
-            if (params.getSize() > 0) {
-                fContext.onFormat(params);
-            }
+        	fContext.onVerbatim(str, inline, params);
         } else {
-        	sendOnEmptyLinesEvent(true);
-        }
-
-		fContext.onVerbatim(str, inline, params);
-        if (endingNewLine && inline) {
-        	// We consumed the potential new line following the verbatim block to test if the block is inline so take care of generating the vent for it
-        	fContext.onLineBreak();
-        }
-
-        if (beginParagraph) {
-        	// If the verbatim block is inline continue to parse the inline paragraph
-            lines();
-        	fContext.endParagraph();
+        	fContext.onVerbatim(str, params);
+        	
+        	if (!inline) {
+        		followVerbatimBlock();
+        	}
         }
     }
+}
+
+void followVerbatimBlock():
+{
+}
+{
+	(lines() {fContext.endParagraph();})?
 }
 
 void macroBlock():
@@ -648,20 +634,19 @@ void macroBlock():
 {
     t = getMACRO_EMPTY()
     {
-        //sendOnEmptyLinesEvent(true);
+        sendOnEmptyLinesEvent(false);
         emptyMacro(t, false);
     }
     |
     t = getMACRO_START()
     {
-        //sendOnEmptyLinesEvent(true);
+        sendOnEmptyLinesEvent(false);
         macro(t, false);
     }
 }
 
 void emptyMacro(Token t, boolean inline):
 {
-	boolean endingNewLine = false;
 	String beginMacroToken;
 	String name = "";
     String paramStr = "";
@@ -680,14 +665,7 @@ void emptyMacro(Token t, boolean inline):
         }
         name = name.trim();
 	}
-
-	// Find if the macro ends with a new line
-	{
-		char ch = t.image.charAt(t.image.length() - 1);
-        endingNewLine = ch == '\r' || ch == '\n';
-        
-	}
-    macroBody(name, paramStr, inline, null, endingNewLine)
+    macroBody(name, paramStr, inline, null)
 }
 
 void macro(Token t, boolean inline):
@@ -695,7 +673,6 @@ void macro(Token t, boolean inline):
     StringBuffer buf = new StringBuffer();
     boolean end = false;
     String prevEnd = null;
-    boolean endingNewLine = false;
     String beginMacroToken;
     String name = "";
     String paramStr = "";
@@ -734,18 +711,10 @@ void macro(Token t, boolean inline):
             }
         }
     )*
-    
-    // Find if the macro ends with a new line
-    {
-    	if (prevEnd != null) {
-          char ch = prevEnd.charAt(prevEnd.length() - 1);
-          endingNewLine = ch == '\r' || ch == '\n';
-    	}
-    }
-    macroBody(name, paramStr, inline, buf.toString(), endingNewLine)
+    macroBody(name, paramStr, inline, buf.toString())
 }
 
-void macroBody(String name, String paramStr, boolean inline, String content, boolean endingNewLine):
+void macroBody(String name, String paramStr, boolean inline, String content):
 {
     boolean eof = false;
     boolean beginParagraph = false;
@@ -754,37 +723,24 @@ void macroBody(String name, String paramStr, boolean inline, String content, boo
 {
 	(LOOKAHEAD(2) ( t = <EOF> { eof = true; }) )?
     {
-      {
-          if (inline == false) {
-              beginParagraph = inline = !endingNewLine && !eof;
-          }
-      }
-      {
-      	  if (beginParagraph) {
-        	  sendOnEmptyLinesEvent(false);
-        	  // If the macro block is inline, take care of generating the beginParagraph event in case its the first block of the paragraph
-              fContext.beginParagraph();
-          } else {
-        	  sendOnEmptyLinesEvent(true);
-          }
-      }
-	  {
-          WikiParameters params = new WikiParameters(paramStr);
-          fContext.onMacro(name, params, content, inline);
-      }
-      {
-      	  if (endingNewLine && inline) {
-        	  // We consumed the potential new line following the verbatim block to test if the block is inline so take care of generating the vent for it
-        	  fContext.onLineBreak();
-          }
-          
-          if (beginParagraph) {
-        	  // If the verbatim block is inline continue to parse the inline paragraph
-              lines();
-        	  fContext.endParagraph();
-          }
-      }
+    	WikiParameters params = new WikiParameters(paramStr);
+        if (inline || eof) {
+        	fContext.onMacro(name, params, content, inline);
+        } else {
+        	fContext.onMacro(name, params, content);
+        	
+        	if (!inline) {
+        		followMacroBlock();
+        	}
+        }
     }
+}
+
+void followMacroBlock():
+{
+}
+{
+	(lines() {fContext.endParagraph();})?
 }
 
 /**

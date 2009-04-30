@@ -141,7 +141,7 @@ public interface XWikiScannerConstants {
     "<DOC_BEGIN>",
     "<DOC_END>",
     "\"{{{\"",
-    "<VERBATIM_END>",
+    "\"}}}\"",
     "<VERBATIM_CONTENT>",
     "<MACRO_NAME>",
     "<MACRO_PARAMS>",
