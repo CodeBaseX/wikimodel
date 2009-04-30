@@ -162,7 +162,13 @@ public interface IWikiScannerContext extends IWemConstants {
 
     void onLineBreak();
 
-    void onMacro(String macroName, WikiParameters params, String content, boolean inline);
+    void onMacro(String name, WikiParameters params, String content);
+
+    void onMacro(
+        String macroName,
+        WikiParameters params,
+        String content,
+        boolean inline);
 
     void onMacroBlock(String macroName, WikiParameters params, String content);
 
@@ -196,6 +202,8 @@ public interface IWikiScannerContext extends IWemConstants {
      * @param rowParameters
      */
     void onTableRow(WikiParameters params);
+
+    void onVerbatim(String str, WikiParameters params);
 
     /**
      * @see org.wikimodel.wem.impl.WikiScannerContext#onVerbatim(java.lang.String,

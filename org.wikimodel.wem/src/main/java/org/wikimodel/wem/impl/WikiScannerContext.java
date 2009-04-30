@@ -315,6 +315,10 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().onLineBreak();
     }
 
+    public void onMacro(String name, WikiParameters params, String content) {
+        getContext().onMacro(name, params, content);
+    }
+
     public void onMacro(
         String macroName,
         WikiParameters params,
@@ -326,7 +330,7 @@ public class WikiScannerContext implements IWikiScannerContext {
             onMacroBlock(macroName, params, content);
         }
     }
-    
+
     public void onMacroBlock(
         String macroName,
         WikiParameters params,
@@ -385,11 +389,14 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().onTableRow(params);
     }
 
+    public void onVerbatim(String str, WikiParameters params) {
+        getContext().onVerbatim(str, params);
+    }
+
     /**
      * @see org.wikimodel.wem.impl.WikiScannerContext#onVerbatim(java.lang.String,
      *      boolean)
      */
-
     public void onVerbatim(String str, boolean inline) {
         getContext().onVerbatim(str, inline);
     }

@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Removes non-semantic whitespaces in XML elements. See
@@ -39,6 +40,9 @@ import org.xml.sax.XMLReader;
  * are invisibles and does not cut a white space group.
  * <code>text(sp)<!--comment-->(sp)text</code> becomes
  * <code>text(sp)<!--comment-->text</code></li>
+ * <li><b>UC5</b>: Visible empty element like img count as text when grouping
+ * white spaces</li>
+ * <li><b>UC6</b>: Semantic comment count as text when grouping white spaces</li>
  * 
  * @author vmassol
  */
@@ -53,13 +57,12 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
             .compile("\\s+$");
 
     private static final Set<String> NONINLINE_ELEMENTS = new HashSet<String>(
-            Arrays.asList("address", "blockquote", "del", "div", "dl", "dt",
-                    "dd", "fieldset", "form", "h1", "h2", "h3", "h4", "h5",
-                    "h6", "hr", "ins", "noscript", "ol", "p", "pre", "script",
-                    "table", "ul", "html", "body", "td", "tr", "th", "tbody",
-                    "head", "li", "thead", "tfoot", "caption", "col",
-                    "colgroup", "legend", "base", "link", "meta", "style",
-                    "title"));
+            Arrays.asList("address", "blockquote", "div", "dl", "dt", "dd",
+                    "fieldset", "form", "h1", "h2", "h3", "h4", "h5", "h6",
+                    "hr", "noscript", "ol", "p", "pre", "script", "table",
+                    "ul", "html", "body", "td", "tr", "th", "tbody", "head",
+                    "li", "thead", "tfoot", "caption", "col", "colgroup",
+                    "legend", "base", "link", "meta", "style", "title"));
 
     /**
      * Non visible elements behave like CDATA and comments: it's part of the
@@ -67,6 +70,13 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
      */
     private static final Set<String> NONVISIBLE_ELEMENTS = new HashSet<String>(
             Arrays.asList("script"));
+
+    /**
+     * Visible elements like images count in the inline text to clean white
+     * spaces.
+     */
+    private static final Set<String> EMPTYVISIBLE_ELEMENTS = new HashSet<String>(
+            Arrays.asList("img"));
 
     /**
      * State indicating if the white spaces has to be cleaned. It's an int to
@@ -111,11 +121,7 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
     @Override
     public void characters(char[] ch, int start, int length)
             throws SAXException {
-        if (shouldRemoveWhiteSpaces()) {
-            getContent().append(ch, start, length);
-        } else {
-            super.characters(ch, start, length);
-        }
+        getContent().append(ch, start, length);
     }
 
     @Override
@@ -125,28 +131,29 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
         String qName,
         Attributes atts) throws SAXException {
         if (NONVISIBLE_ELEMENTS.contains(localName)) {
-            appendNonVisibleElement();
+            startNonVisibleElement();
 
             // send start element event
             super.startElement(uri, localName, qName, atts);
         } else {
-            if (shouldRemoveWhiteSpaces()) {
-                if (NONINLINE_ELEMENTS.contains(localName)) {
-                    // Flush previous content and print current one
-                    flushContent();
+            if (NONINLINE_ELEMENTS.contains(localName)) {
+                // Flush previous content and print current one
+                flushContent();
 
-                    // white spaces inside pre element are not cleaned
-                    if ("pre".equalsIgnoreCase(localName)) {
-                        ++fNoCleanUpLevel;
-                    }
-
-                    // send start element event
-                    super.startElement(uri, localName, qName, atts);
-                } else {
-                    appendInlineEvent(new Event(uri, localName, qName, atts));
+                // white spaces inside pre element are not cleaned
+                if ("pre".equalsIgnoreCase(localName)) {
+                    ++fNoCleanUpLevel;
                 }
-            } else {
+
+                // send start element event
                 super.startElement(uri, localName, qName, atts);
+            } else if (EMPTYVISIBLE_ELEMENTS.contains(localName)) {
+                startEmptyVisibleElement();
+
+                super.startElement(uri, localName, qName, atts);
+            } else {
+                appendInlineEvent(new Event(uri, localName, qName,
+                        new AttributesImpl(atts)));
             }
         }
     }
@@ -155,40 +162,43 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
     public void endElement(String uri, String localName, String qName)
             throws SAXException {
         if (NONVISIBLE_ELEMENTS.contains(localName)) {
+            endNonVisibleElement();
+
             super.endElement(uri, localName, qName);
 
             --fNoCleanUpLevel;
         } else {
-            if (shouldRemoveWhiteSpaces()) {
-                if (NONINLINE_ELEMENTS.contains(localName)) {
-                    // Flush previous content and print current one
-                    flushContent();
+            if (NONINLINE_ELEMENTS.contains(localName)) {
+                // Flush previous content and print current one
+                flushContent();
 
-                    // send end element event
-                    super.endElement(uri, localName, qName);
-                } else {
-                    appendInlineEvent(new Event(uri, localName, qName));
-                }
-            } else {
                 // white spaces inside pre element are not cleaned
                 if ("pre".equalsIgnoreCase(localName)) {
                     --fNoCleanUpLevel;
                 }
 
                 super.endElement(uri, localName, qName);
+            } else if (EMPTYVISIBLE_ELEMENTS.contains(localName)) {
+                endEmptyVisibleElement();
+
+                super.endElement(uri, localName, qName);
+            } else {
+                appendInlineEvent(new Event(uri, localName, qName));
             }
         }
     }
 
     @Override
     public void startCDATA() throws SAXException {
-        appendNonVisibleElement();
+        startNonVisibleElement();
 
         super.startCDATA();
     }
 
     @Override
     public void endCDATA() throws SAXException {
+        endNonVisibleElement();
+
         super.endCDATA();
 
         --fNoCleanUpLevel;
@@ -197,10 +207,17 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
     @Override
     public void comment(char[] ch, int start, int length) throws SAXException {
         if (shouldRemoveWhiteSpaces()) {
-            cleanContentLeadingSpaces();
-            cleanContentExtraWhiteSpaces();
+            String comment = new String(ch, start, length);
 
-            appendInlineEvent(new Event(new String(ch, start, length)));
+            if (isSemanticComment(comment)) {
+                // UC6: Semantic comment count as text when grouping white
+                // spaces
+                startEmptyVisibleElement();
+
+                super.comment(ch, start, length);
+            } else {
+                appendInlineEvent(new Event(comment));
+            }
         } else {
             super.comment(ch, start, length);
         }
@@ -304,10 +321,35 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
         }
     }
 
+    protected void startEmptyVisibleElement() throws SAXException {
+        cleanContentLeadingSpaces();
+        cleanContentExtraWhiteSpaces();
+
+        // Send previous content
+        sendPreviousContent(false);
+
+        // Send content
+        sendCharacters(getContent().toString().toCharArray());
+        fPreviousInlineText.append(getContent());
+
+        // Add visible element as part of the inline text
+        fPreviousInlineText.append("EmptyVisibleElement");
+
+        getContent().setLength(0);
+    }
+
+    protected void endEmptyVisibleElement() throws SAXException {
+        // Send current content
+        if (getContent().length() > 0) {
+            sendCharacters(getContent().toString().toCharArray());
+            getContent().setLength(0);
+        }
+    }
+
     /**
      * Append an non visible element.
      */
-    protected void appendNonVisibleElement() throws SAXException {
+    protected void startNonVisibleElement() throws SAXException {
         if (shouldRemoveWhiteSpaces()) {
             cleanContentLeadingSpaces();
             cleanContentExtraWhiteSpaces();
@@ -332,12 +374,26 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
                         fPreviousContent.length() - 1);
                 fPreviousContent = " ";
             }
-
-            getContent().setLength(0);
+        } else {
+            // Send current content
+            sendCharacters(getContent().toString().toCharArray());
         }
+
+        getContent().setLength(0);
 
         // Do not clean white spaces when in non visible element
         ++fNoCleanUpLevel;
+    }
+
+    /**
+     * Flush previous content and print current one.
+     */
+    protected void endNonVisibleElement() throws SAXException {
+        // Send current content
+        if (getContent().length() > 0) {
+            sendCharacters(getContent().toString().toCharArray());
+            getContent().setLength(0);
+        }
     }
 
     protected void sendCharacters(char ch[]) throws SAXException {

@@ -97,6 +97,16 @@ class InternalWikiScannerContext implements IWikiScannerContext {
 
     private WikiParameters fTableRowParams;
 
+    private String fVerbatimContent = null;
+
+    private WikiParameters fVerbatimParameters = WikiParameters.EMPTY;
+
+    private String fMacroName = null;
+
+    private WikiParameters fMacroParameters = WikiParameters.EMPTY;
+
+    private String fMacroContent = null;
+
     public InternalWikiScannerContext(IWemListener listener) {
         fListener = listener;
     }
@@ -448,6 +458,37 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         }
     }
 
+    private void checkVerbatim(boolean inline) {
+        if (fVerbatimContent != null) {
+            if (!inline) {
+                fListener
+                        .onVerbatimBlock(fVerbatimContent, fVerbatimParameters);
+            } else {
+                fListener.onVerbatimInline(fVerbatimContent,
+                        fVerbatimParameters);
+            }
+
+            fVerbatimContent = null;
+            fVerbatimParameters = WikiParameters.EMPTY;
+        }
+    }
+
+    private void checkMacro(boolean inline) {
+        if (fMacroName != null) {
+            if (!inline) {
+                fListener.onMacroBlock(fMacroName, fMacroParameters,
+                        fMacroContent);
+            } else {
+                fListener.onMacroInline(fMacroName, fMacroParameters,
+                        fMacroContent);
+            }
+
+            fMacroName = null;
+            fMacroParameters = WikiParameters.EMPTY;
+            fMacroContent = null;
+        }
+    }
+
     private void checkQuotationLine() {
         if (!isInQuotationLine()) {
             beginQuotLine(fQuoteDepth);
@@ -462,9 +503,17 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         } else if (isInQuotation()) {
             checkQuotationLine();
         } else if (isNoBlockElements()) {
+            String verbatimContent = fVerbatimContent;
+            String macroName = fMacroName;
+            fVerbatimContent = null;
+            fMacroName = null;
             checkParagraph();
+            fMacroName = macroName;
+            fVerbatimContent = verbatimContent;
         }
         openFormat();
+        checkVerbatim(true);
+        checkMacro(true);
     }
 
     private void checkTableCell() {
@@ -474,6 +523,9 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     }
 
     public void closeBlock() {
+        checkVerbatim(false);
+        checkMacro(false);
+
         switch (fBlockType) {
         case IBlockTypes.NONE:
             break;
@@ -807,6 +859,17 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         fInlineState.set(InlineState.LINE_BREAK);
     }
 
+    /**
+     * Waiting for following events to know if the macro is inline or not.
+     */
+    public void onMacro(String name, WikiParameters params, String content) {
+        checkBlockContainer();
+
+        fMacroName = name;
+        fMacroParameters = params;
+        fMacroContent = content;
+    }
+
     public void onMacro(
         String macroName,
         WikiParameters params,
@@ -890,6 +953,16 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     public void onTableRow(WikiParameters params) {
         endTableRow();
         beginTableRow(params);
+    }
+
+    /**
+     * Waiting for following events to know if the verbatim is inline or not.
+     */
+    public void onVerbatim(String str, WikiParameters params) {
+        checkBlockContainer();
+
+        fVerbatimContent = str;
+        fVerbatimParameters = params;
     }
 
     public void onVerbatim(String str, boolean inline) {
