@@ -66,24 +66,25 @@ public class XHTMLWhitespaceXMLFilterTest extends TestCase {
                 "<p><!--comment-->  one  <b>two</b></p>");
         assertCleanedHTML("<p>one <b>two</b> three</p>",
                 "<p>one <b>two</b>  three  </p>");
-        assertCleanedHTML("<!--comment-->one <![CDATA[two]]>",
+        assertCleanedHTML("<!--comment-->one<![CDATA[two]]>",
                 "<!--comment-->  one  <![CDATA[two]]>");
         assertCleanedHTML("<p></p>", "<p>  </p>");
+        assertCleanedHTML("<p><b>text</b></p>", "<p> <b> text </b> </p>");
         assertCleanedHTML(
                 "<!--startmacro:something--><!--nonsemantic--><!--stopmacro-->",
                 "  <!--startmacro:something-->  <!--nonsemantic-->  <!--stopmacro-->  ");
         assertCleanedHTML(
-                "<p>one <!--startmacro:something--><!--stopmacro--></p>",
+                "<p>one<!--startmacro:something--><!--stopmacro--></p>",
                 "<p>one  <!--startmacro:something--><!--stopmacro--></p>");
         assertCleanedHTML(
-                "<p>one <!--startmacro:something--><!--stopmacro--> two</p>",
+                "<p>one <!--startmacro:something--><!--stopmacro-->two</p>",
                 "<p>one  <!--startmacro:something--><!--stopmacro-->  two</p>");
         assertCleanedHTML("<!--comment-->one<![CDATA[two]]>",
                 "<!--comment-->  one<![CDATA[two]]>");
         assertCleanedHTML("<p>one <!--comment-->two<![CDATA[three]]></p>",
                 "<p>one <!--comment-->  two<![CDATA[three]]></p>");
         assertCleanedHTML(
-                "<p>one <span>two </span><!--comment-->three <![CDATA[four]]></p>",
+                "<p>one <span>two </span><!--comment-->three<![CDATA[four]]></p>",
                 "<p> one  <span>  two </span><!--comment-->  three  <![CDATA[four]]></p>");
         assertCleanedHTML("<p>This<strong> Spore Cheat Sheet</strong></p>",
                 "<p>This<strong>\nSpore Cheat Sheet</strong></p>");
@@ -95,12 +96,14 @@ public class XHTMLWhitespaceXMLFilterTest extends TestCase {
         assertCleanedHTML(
                 "<p><strong><span>hello</span></strong><span>world</span></p>",
                 "<p><strong><span>hello</span></strong><span>world</span></p>");
-        assertCleanedHTML(
-                "<unknow>hello word</unknow>",
+        assertCleanedHTML("<div><p></p><p></p></div>",
+                "<div><p></p> <p></p></div>");
+        assertCleanedHTML("<unknow>hello word</unknow>",
                 " <unknow> hello  word </unknow> ");
-        assertCleanedHTML(
-                "<p><unknow>hello word </unknow>text</p>",
+        assertCleanedHTML("<p><unknow>hello word </unknow>text</p>",
                 "<p> <unknow> hello  word </unknow> text</p>");
+        assertCleanedHTML("one<script> one  two </script> two",
+                "one <script> one  two </script> two");
     }
 
     public void testWhiteSpaceStrippingForBlockElements() throws Exception {

@@ -87,44 +87,40 @@ public interface XWikiScannerConstants {
   int I_TABLE_CELL = 71;
   int I_REFERENCE = 72;
   int I_VERBATIM_START = 73;
-  int I_MACRO_EMPTY_BLOCK = 74;
-  int I_MACRO_BLOCK_START = 75;
-  int I_MACRO_EMPTY_INLINE = 76;
-  int I_MACRO_INLINE_START = 77;
-  int I_FORMAT_SYMBOL = 78;
-  int I_BR = 79;
-  int I_BLOCK_PARAMS = 80;
-  int I_INLINE_PARAMS = 81;
-  int I_QUOT_LINE = 82;
-  int I_XWIKI_URI = 83;
-  int I_XWIKI_SPACE = 84;
-  int I_NL = 85;
-  int I_WORD = 86;
-  int I_SPECIAL_SYMBOL = 87;
-  int D_DOC_BEGIN = 88;
-  int D_DOC_END = 89;
-  int D_LIST_ITEM = 90;
-  int D_HEADER_BEGIN = 91;
-  int D_HEADER_END = 92;
-  int D_HORLINE = 93;
-  int D_TABLE_ROW = 94;
-  int D_TABLE_CELL = 95;
-  int D_REFERENCE = 96;
-  int D_VERBATIM_START = 97;
-  int D_MACRO_EMPTY_BLOCK = 98;
-  int D_MACRO_BLOCK_START = 99;
-  int D_MACRO_EMPTY_INLINE = 100;
-  int D_MACRO_INLINE_START = 101;
-  int D_FORMAT_SYMBOL = 102;
-  int D_BR = 103;
-  int D_BLOCK_PARAMS = 104;
-  int D_INLINE_PARAMS = 105;
-  int D_QUOT_LINE = 106;
-  int D_XWIKI_URI = 107;
-  int D_XWIKI_SPACE = 108;
-  int D_NL = 109;
-  int D_WORD = 110;
-  int D_SPECIAL_SYMBOL = 111;
+  int I_MACRO_EMPTY = 74;
+  int I_MACRO_START = 75;
+  int I_FORMAT_SYMBOL = 76;
+  int I_BR = 77;
+  int I_BLOCK_PARAMS = 78;
+  int I_INLINE_PARAMS = 79;
+  int I_QUOT_LINE = 80;
+  int I_XWIKI_URI = 81;
+  int I_XWIKI_SPACE = 82;
+  int I_NL = 83;
+  int I_WORD = 84;
+  int I_SPECIAL_SYMBOL = 85;
+  int D_DOC_BEGIN = 86;
+  int D_DOC_END = 87;
+  int D_LIST_ITEM = 88;
+  int D_HEADER_BEGIN = 89;
+  int D_HEADER_END = 90;
+  int D_HORLINE = 91;
+  int D_TABLE_ROW = 92;
+  int D_TABLE_CELL = 93;
+  int D_REFERENCE = 94;
+  int D_VERBATIM_START = 95;
+  int D_MACRO_EMPTY = 96;
+  int D_MACRO_START = 97;
+  int D_FORMAT_SYMBOL = 98;
+  int D_BR = 99;
+  int D_BLOCK_PARAMS = 100;
+  int D_INLINE_PARAMS = 101;
+  int D_QUOT_LINE = 102;
+  int D_XWIKI_URI = 103;
+  int D_XWIKI_SPACE = 104;
+  int D_NL = 105;
+  int D_WORD = 106;
+  int D_SPECIAL_SYMBOL = 107;
 
   int VERBATIM_CONTEXT = 0;
   int MACRO_CONTEXT = 1;
@@ -206,10 +202,8 @@ public interface XWikiScannerConstants {
     "<I_TABLE_CELL>",
     "<I_REFERENCE>",
     "<I_VERBATIM_START>",
-    "<I_MACRO_EMPTY_BLOCK>",
-    "<I_MACRO_BLOCK_START>",
-    "<I_MACRO_EMPTY_INLINE>",
-    "<I_MACRO_INLINE_START>",
+    "<I_MACRO_EMPTY>",
+    "<I_MACRO_START>",
     "<I_FORMAT_SYMBOL>",
     "<I_BR>",
     "<I_BLOCK_PARAMS>",
@@ -230,10 +224,8 @@ public interface XWikiScannerConstants {
     "<D_TABLE_CELL>",
     "<D_REFERENCE>",
     "<D_VERBATIM_START>",
-    "<D_MACRO_EMPTY_BLOCK>",
-    "<D_MACRO_BLOCK_START>",
-    "<D_MACRO_EMPTY_INLINE>",
-    "<D_MACRO_INLINE_START>",
+    "<D_MACRO_EMPTY>",
+    "<D_MACRO_START>",
     "<D_FORMAT_SYMBOL>",
     "<D_BR>",
     "<D_BLOCK_PARAMS>",

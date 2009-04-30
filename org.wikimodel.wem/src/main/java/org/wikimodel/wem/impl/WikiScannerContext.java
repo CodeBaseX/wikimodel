@@ -315,6 +315,18 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().onLineBreak();
     }
 
+    public void onMacro(
+        String macroName,
+        WikiParameters params,
+        String content,
+        boolean inline) {
+        if (inline) {
+            onMacroInline(macroName, params, content);
+        } else {
+            onMacroBlock(macroName, params, content);
+        }
+    }
+    
     public void onMacroBlock(
         String macroName,
         WikiParameters params,

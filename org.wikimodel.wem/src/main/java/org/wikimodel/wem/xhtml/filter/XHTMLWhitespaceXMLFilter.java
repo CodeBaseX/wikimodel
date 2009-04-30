@@ -12,7 +12,9 @@ package org.wikimodel.wem.xhtml.filter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,35 +29,16 @@ import org.xml.sax.XMLReader;
  * Possible use cases:
  * <p/>
  * <ul>
- * <li><b>UC1</b>:
- * <code>&lt;tag1&gt;(sp)(sp)one(sp)(sp)two(sp)(sp)&lt;/tag1&gt;</code> becomes
- * <code>&lt;tag1&gt;one(sp)two&lt;/tag1&gt;</code></li>
- * <li><b>UC2</b>:
- * <code>&lt;tag1&gt;(sp)(sp)one(sp)(sp)two(sp)(sp)&lt;tag2&gt;three&lt;/tag2&gt;&lt;/tag1&gt;</code>
- * becomes
- * <code>&lt;tag1&gt;one(sp)two(sp)&lt;tag2&gt;three&lt;/tag2&gt;&lt;/tag1&gt;</code>
- * </li>
- * <li><b>UC3</b>:
- * <code>&lt;tag1&gt;(\n\r\t)one(\n\r\t)two(\n\r\t)&lt;/tag1&gt;</code> becomes
- * <code>&lt;tag1&gt;one(sp)two&lt;/tag1&gt;</code></li>
- * <li><b>UC4</b>: <code>&lt;/tag1&gt;(sp)(sp)(\n\r\t)&lt;tag2&gt;</code> (where
- * tag1 and tag2 are not both block elements) becomes
- * <code>&lt;/tag1&gt; &lt;tag2&gt;</code>. If tag1 and tag2 are block elements
- * all spaces are removed</li>
- * <li><b>UC5</b>:
- * <code>&lt;![CDATA[(\n\r\t)(sp)(sp)one(sp)(sp)(\n\r\t)]]&gt;</code> is left
- * untouched</code></li>
- * <li><b>UC6</b>:
- * <code>&lt;pre&gt;(\n\r\t)(sp)(sp)one(sp)(sp)(\n\r\t)&lt;/pre&gt;</code> is
- * left untouched</code></li>
- * <li><b>UC7</b>:
- * <code>&lt;tag1&gt;(sp)(sp)one(sp)(sp)&lt;!--comment--&gt;(sp)(sp)two(sp)(sp)&lt;/tag1&gt;</code>
- * becomes <code>&lt;tag1&gt;one&lt;!--comment--&gt;two&lt;/tag1&gt;</code>
- * <li><b>UC8</b>: <code>&lt;/tag1&gt;(sp)(sp)one(sp)(sp)&lt;/tag2&gt;</code>
- * becomes <code>&lt;/tag1&gt;(sp)one&lt;/tag2&gt;</code></li>
- * <li><b>UC9</b>: Comments which have a meaning for the XHTML parser do not
- * have spaces removed in the content preceding them
- * </ul>
+ * <li><b>UC1</b>: Any white spaces group is removed if it's before a non inline
+ * (see INLINE_ELEMENTS) element or at the begining of the document.</li>
+ * <li><b>UC2</b>: Any white spaces group is removed if it's after a non inline
+ * (see INLINE_ELEMENTS) element or at the end of the document.</li>
+ * <li><b>UC3</b>: Inside inline content any white spaces group become a single
+ * space.</li>
+ * <li><b>UC5</b>: Non visible element (comments, CDATA and NONVISIBLE_ELEMENTS)
+ * are invisibles and does not cut a white space group.
+ * <code>text(sp)<!--comment-->(sp)text</code> becomes
+ * <code>text(sp)<!--comment-->text</code></li>
  * 
  * @author vmassol
  */
@@ -69,30 +52,53 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
     private static final Pattern HTML_WHITESPACE_TAIL_PATTERN = Pattern
             .compile("\\s+$");
 
-    /*
-     * private static final List<String> NONINLINE_ELEMENTS = Arrays.asList(
-     * "html", "head", "body", "p", "table", "ul", "ol", "li", "hr", "td", "tr",
-     * "th", "div", "tbody", "thead", "pre", "h1", "h2", "h3", "h4", "h5", "h6",
-     * "dl", "dt", "dd", "blockquote");
+    private static final Set<String> NONINLINE_ELEMENTS = new HashSet<String>(
+            Arrays.asList("address", "blockquote", "del", "div", "dl", "dt",
+                    "dd", "fieldset", "form", "h1", "h2", "h3", "h4", "h5",
+                    "h6", "hr", "ins", "noscript", "ol", "p", "pre", "script",
+                    "table", "ul", "html", "body", "td", "tr", "th", "tbody",
+                    "head", "li", "thead", "tfoot", "caption", "col",
+                    "colgroup", "legend", "base", "link", "meta", "style",
+                    "title"));
+
+    /**
+     * Non visible elements behave like CDATA and comments: it's part of the
+     * white space group.
      */
+    private static final Set<String> NONVISIBLE_ELEMENTS = new HashSet<String>(
+            Arrays.asList("script"));
 
-    private static final List<String> INLINECONTAINER_ELEMENTS = Arrays.asList(
-            "p", "li", "hr", "td", "th", "div", "thead", "pre", "h1", "h2",
-            "h3", "h4", "h5", "h6", "dl", "dt", "dd", "blockquote");
-
-    private boolean fRemoveWhitespaces = true;
-
-    private int fInlineDepth = 0;
+    /**
+     * State indicating if the white spaces has to be cleaned. It's an int to
+     * support <code>pre</code> inside <code>pre</code>.
+     */
+    private int fNoCleanUpLevel = 0;
 
     /**
      * Content to clean.
      */
     private StringBuffer fContent = new StringBuffer();
 
-    private StringBuffer fPreviousInlineContent = new StringBuffer();
+    /**
+     * Bufferized current inline text. It contains only text (and no inline
+     * start/end element, comment or CDATA) to be able know if a leading space
+     * has to be remove because the previous text ends with it or if there is no
+     * previous text.
+     */
+    private StringBuffer fPreviousInlineText = new StringBuffer();
+
+    /**
+     * The previous content to send. Buffurized waiting to know if its trailing
+     * space has to be removed when it's the last text of inline content.
+     */
     private String fPreviousContent = null;
 
-    private List<String[]> fEndingInlineElements = new ArrayList<String[]>();
+    /**
+     * Previous inline elements. These are the elements before the previous
+     * content. It's buffurized to support space group cleaning betwen different
+     * inline elements.
+     */
+    private List<Event> fPreviousElements = new ArrayList<Event>();
 
     public XHTMLWhitespaceXMLFilter() {
 
@@ -105,7 +111,11 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
     @Override
     public void characters(char[] ch, int start, int length)
             throws SAXException {
-        getContent().append(ch, start, length);
+        if (shouldRemoveWhiteSpaces()) {
+            getContent().append(ch, start, length);
+        } else {
+            super.characters(ch, start, length);
+        }
     }
 
     @Override
@@ -114,149 +124,251 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
         String localName,
         String qName,
         Attributes atts) throws SAXException {
-        cleanBeforeElement();
-        cleanExtraWhiteSpaces();
+        if (NONVISIBLE_ELEMENTS.contains(localName)) {
+            appendNonVisibleElement();
 
-        sendContent();
+            ++fNoCleanUpLevel;
 
-        if (INLINECONTAINER_ELEMENTS.contains(localName)) {
-            ++fInlineDepth;
-            fPreviousInlineContent.setLength(0);
-        }
-        super.startElement(uri, localName, qName, atts);
+            // send start element event
+            super.startElement(uri, localName, qName, atts);
+        } else {
+            if (shouldRemoveWhiteSpaces()) {
+                if (NONINLINE_ELEMENTS.contains(localName)) {
+                    // Flush previous content and print current one
+                    flushContent();
 
-        // UC6: Do not clean white spaces when in PRE element
-        if ("pre".equalsIgnoreCase(localName)) {
-            fRemoveWhitespaces = false;
+                    // white spaces inside pre element are not cleaned
+                    if ("pre".equalsIgnoreCase(localName)) {
+                        ++fNoCleanUpLevel;
+                    }
+
+                    // send start element event
+                    super.startElement(uri, localName, qName, atts);
+                } else {
+                    appendInlineEvent(new Event(uri, localName, qName, atts));
+                }
+            } else {
+                super.startElement(uri, localName, qName, atts);
+            }
         }
     }
 
     @Override
     public void endElement(String uri, String localName, String qName)
             throws SAXException {
-        cleanInlineContentFirstSpaces();
-        cleanExtraWhiteSpaces();
-
-        if (INLINECONTAINER_ELEMENTS.contains(localName)) {
-            --fInlineDepth;
-        }
-
-        if (fInlineDepth == 0) {
-            trimTrailingWhiteSpaces();
-            sendContent();
-            fPreviousInlineContent.setLength(0);
-
-            fRemoveWhitespaces = true;
-
+        if (NONVISIBLE_ELEMENTS.contains(localName)) {
             super.endElement(uri, localName, qName);
-        } else {
-            if (getContent().length() > 0) {
-                sendPreviousContent(false);
-                fPreviousInlineContent.append(getContent());
-                fPreviousContent = getContent().toString();
-            }
 
-            getContent().setLength(0);
-            fEndingInlineElements.add(new String[] { uri, localName, qName });
+            --fNoCleanUpLevel;
+        } else {
+            if (shouldRemoveWhiteSpaces()) {
+                if (NONINLINE_ELEMENTS.contains(localName)) {
+                    // Flush previous content and print current one
+                    flushContent();
+
+                    // send end element event
+                    super.endElement(uri, localName, qName);
+                } else {
+                    appendInlineEvent(new Event(uri, localName, qName));
+                }
+            } else {
+                // white spaces inside pre element are not cleaned
+                if ("pre".equalsIgnoreCase(localName)) {
+                    --fNoCleanUpLevel;
+                }
+
+                super.endElement(uri, localName, qName);
+            }
         }
     }
 
     @Override
     public void startCDATA() throws SAXException {
-        cleanInlineContentFirstSpaces();
-        cleanExtraWhiteSpaces();
-        sendContent();
-
-        // UC5: Do not clean white spaces when in CDATA section
-        fRemoveWhitespaces = false;
+        appendNonVisibleElement();
 
         super.startCDATA();
     }
 
     @Override
     public void endCDATA() throws SAXException {
-        if (getContent().length() > 0) {
-            sendContent();
-        }
         super.endCDATA();
-        fRemoveWhitespaces = true;
+
+        --fNoCleanUpLevel;
     }
 
     @Override
     public void comment(char[] ch, int start, int length) throws SAXException {
-        cleanBeforeElement();
-        cleanExtraWhiteSpaces();
+        if (shouldRemoveWhiteSpaces()) {
+            cleanContentLeadingSpaces();
+            cleanContentExtraWhiteSpaces();
 
-        sendContent();
-
-        if (isSemanticComment(new String(ch, start, length))) {
-            fPreviousInlineContent.append("semanticcomment");
+            appendInlineEvent(new Event(new String(ch, start, length)));
+        } else {
+            super.comment(ch, start, length);
         }
-
-        super.comment(ch, start, length);
     }
 
     protected boolean shouldRemoveWhiteSpaces() {
-        return fRemoveWhitespaces;
+        return fNoCleanUpLevel == 0;
     }
 
     protected void sendPreviousContent(boolean trimTrailing)
             throws SAXException {
-        if (fEndingInlineElements.size() > 0) {
+        if (fPreviousElements.size() > 0) {
             if (fPreviousContent != null && fPreviousContent.length() > 0) {
                 if (trimTrailing) {
                     fPreviousContent = trimTrailingWhiteSpaces(fPreviousContent);
                 }
 
-                sendCharacters(fPreviousContent);
+                sendCharacters(fPreviousContent.toCharArray());
             }
-            for (String[] element : fEndingInlineElements) {
-                super.endElement(element[0], element[1], element[2]);
+            for (Event event : fPreviousElements) {
+                sendInlineEvent(event);
             }
-            fEndingInlineElements.clear();
+            fPreviousElements.clear();
         }
 
         fPreviousContent = null;
     }
 
-    protected void sendContent() throws SAXException {
+    protected void sendInlineEvent(Event event) throws SAXException {
+        if (event.type == Event.Type.BEGIN_ELEMENT) {
+            super.startElement(event.uri, event.localName, event.qName,
+                    event.atts);
+        } else if (event.type == Event.Type.END_ELEMENT) {
+            super.endElement(event.uri, event.localName, event.qName);
+        } else if (event.type == Event.Type.COMMENT) {
+            super.comment(event.content.toCharArray(), 0, event.content
+                    .length());
+        }
+    }
+
+    /**
+     * Flush previous content and print current one.
+     */
+    protected void flushContent() throws SAXException {
+        cleanContentLeadingSpaces();
+        cleanContentExtraWhiteSpaces();
+
+        // UC2: Any white spaces group is removed if it's after a non inline
+        // (see INLINE_ELEMENTS) element.
+        trimTrailingWhiteSpaces();
+
+        // Send previous content
         sendPreviousContent(getContent().length() == 0);
 
+        // Send current content
         if (getContent().length() > 0) {
-            fPreviousInlineContent.append(getContent());
-            sendCharacters(getContent().toString());
+            sendCharacters(getContent().toString().toCharArray());
             getContent().setLength(0);
         }
+
+        // Reinit inline text buffer
+        fPreviousInlineText.setLength(0);
     }
 
-    protected void sendCharacters(String content) throws SAXException {
-        if (content.length() > 0) {
-            super.characters(content.toCharArray(), 0, content.length());
-        }
-    }
+    /**
+     * Append an inline element. Inline elements ending with a space are stacked
+     * waiting for a non space character or the end of the inline content.
+     */
+    protected void appendInlineEvent(Event event) throws SAXException {
+        cleanContentLeadingSpaces();
+        cleanContentExtraWhiteSpaces();
 
-    private void cleanBeforeElement() {
-        if (fInlineDepth == 0) {
-            trimLeadingWhiteSpaces();
-            trimTrailingWhiteSpaces();
-        } else {
-            cleanInlineContentFirstSpaces();
-        }
-    }
-
-    private void cleanInlineContentFirstSpaces() {
         if (getContent().length() > 0) {
-            if (fPreviousInlineContent.length() == 0
-                    || fPreviousInlineContent.charAt(fPreviousInlineContent
-                            .length() - 1) == ' ') {
+            sendPreviousContent(false);
+
+            fPreviousInlineText.append(getContent());
+
+            if (getContent().charAt(getContent().length() - 1) == ' ') {
+                fPreviousContent = getContent().toString();
+                fPreviousElements.add(event);
+            } else {
+                sendCharacters(getContent().toString().toCharArray());
+                sendInlineEvent(event);
+            }
+
+            getContent().setLength(0);
+        } else {
+            if (fPreviousInlineText.length() == 0) {
+                // There is no inline text before this inline element
+                sendInlineEvent(event);
+            } else {
+                // The last inline text ends with a space
+                fPreviousElements.add(event);
+            }
+        }
+    }
+
+    /**
+     * Append an non visible element.
+     */
+    protected void appendNonVisibleElement() throws SAXException {
+        if (shouldRemoveWhiteSpaces()) {
+            cleanContentLeadingSpaces();
+            cleanContentExtraWhiteSpaces();
+
+            if (getContent().length() > 0) {
+                sendPreviousContent(false);
+
+                fPreviousInlineText.append(getContent());
+
+                if (getContent().charAt(getContent().length() - 1) == ' ') {
+                    fPreviousContent = getContent().toString();
+                } else {
+                    sendCharacters(getContent().toString().toCharArray());
+                }
+            }
+
+            // The is some text ending with a space before the non visible
+            // element. The space will move after the element if it's needed (if
+            // the element is followed by inline text);
+            if (fPreviousContent != null) {
+                sendCharacters(fPreviousContent.toCharArray(), 0,
+                        fPreviousContent.length() - 1);
+                fPreviousContent = " ";
+            }
+
+            getContent().setLength(0);
+        }
+
+        // Do not clean white spaces when in non visible element
+        ++fNoCleanUpLevel;
+    }
+
+    protected void sendCharacters(char ch[]) throws SAXException {
+        sendCharacters(ch, 0, ch.length);
+    }
+
+    protected void sendCharacters(char ch[], int start, int length)
+            throws SAXException {
+        if (length > 0) {
+            super.characters(ch, start, length);
+        }
+    }
+
+    /**
+     * UC1: Any white spaces group is removed if it's before a non inline
+     * element or at the begining of the document.
+     * <p>
+     * UC3: Remove leading spaces of content if previous inline text already
+     * ends with a space.
+     */
+    private void cleanContentLeadingSpaces() {
+        if (getContent().length() > 0) {
+            if (fPreviousInlineText.length() == 0
+                    || fPreviousInlineText
+                            .charAt(fPreviousInlineText.length() - 1) == ' ') {
                 trimLeadingWhiteSpaces();
             }
         }
     }
 
-    protected void cleanExtraWhiteSpaces() {
+    /**
+     * UC3: Replace group of white spaces by a single space.
+     */
+    protected void cleanContentExtraWhiteSpaces() {
         if (getContent().length() > 0) {
-            // UC3: Remove non whitespace chars (/n, /r, /t, etc)
             if (shouldRemoveWhiteSpaces()) {
                 Matcher matcher = HTML_WHITESPACE_DUPLICATES_PATTERN
                         .matcher(getContent());
@@ -268,8 +380,7 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
     }
 
     // Trim white spaces and new lines since they are ignored in XHTML (except
-    // when
-    // in CDATA or PRE elements).
+    // when in CDATA or PRE elements).
     protected void trimLeadingWhiteSpaces() {
         if (shouldRemoveWhiteSpaces() && getContent().length() > 0) {
             String result = trimLeadingWhiteSpaces(getContent());
@@ -302,7 +413,7 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
     protected String trimTrailingWhiteSpaces(CharSequence content) {
         String trimedContent;
 
-        if (shouldRemoveWhiteSpaces() && getContent().length() > 0) {
+        if (shouldRemoveWhiteSpaces() && content.length() > 0) {
             Matcher matcher = HTML_WHITESPACE_TAIL_PATTERN.matcher(content);
             trimedContent = matcher.replaceAll("");
         } else {
@@ -325,5 +436,38 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
     protected boolean isSemanticComment(String comment) {
         return comment.startsWith("startmacro:")
                 || comment.startsWith("stopmacro");
+    }
+
+    private static class Event {
+        public enum Type {
+            BEGIN_ELEMENT, END_ELEMENT, COMMENT
+        }
+
+        public Type type;
+        public String uri;
+        public String localName;
+        public String qName;
+        public Attributes atts;
+        String content;
+
+        public Event(String uri, String localName, String qName, Attributes atts) {
+            this.type = Type.BEGIN_ELEMENT;
+            this.uri = uri;
+            this.localName = localName;
+            this.qName = qName;
+            this.atts = atts;
+        }
+
+        public Event(String uri, String localName, String qName) {
+            this.type = Type.END_ELEMENT;
+            this.uri = uri;
+            this.localName = localName;
+            this.qName = qName;
+        }
+
+        public Event(String content) {
+            this.type = Type.COMMENT;
+            this.content = content;
+        }
     }
 }

@@ -11,7 +11,7 @@ import org.wikimodel.wem.WikiStyle;
 public interface IWikiScannerContext extends IWemConstants {
 
     void beginDocument();
-    
+
     void beginDocument(WikiParameters params);
 
     void beginHeader(int level);
@@ -25,7 +25,7 @@ public interface IWikiScannerContext extends IWemConstants {
     void beginList(WikiParameters params);
 
     void beginListItem(String item);
-    
+
     void beginListItem(String item, WikiParameters params);
 
     void beginParagraph();
@@ -161,6 +161,8 @@ public interface IWikiScannerContext extends IWemConstants {
     void onImage(WikiReference ref);
 
     void onLineBreak();
+
+    void onMacro(String macroName, WikiParameters params, String content, boolean inline);
 
     void onMacroBlock(String macroName, WikiParameters params, String content);
 
