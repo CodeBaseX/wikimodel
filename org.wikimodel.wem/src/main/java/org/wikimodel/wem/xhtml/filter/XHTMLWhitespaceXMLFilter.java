@@ -127,8 +127,6 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
         if (NONVISIBLE_ELEMENTS.contains(localName)) {
             appendNonVisibleElement();
 
-            ++fNoCleanUpLevel;
-
             // send start element event
             super.startElement(uri, localName, qName, atts);
         } else {
@@ -208,27 +206,33 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
         }
     }
 
+    @Override
+    public void endDocument() throws SAXException {
+        // Flush previous content and print current one
+        flushContent();
+
+        super.endDocument();
+    }
+
     protected boolean shouldRemoveWhiteSpaces() {
         return fNoCleanUpLevel == 0;
     }
 
     protected void sendPreviousContent(boolean trimTrailing)
             throws SAXException {
-        if (fPreviousElements.size() > 0) {
-            if (fPreviousContent != null && fPreviousContent.length() > 0) {
-                if (trimTrailing) {
-                    fPreviousContent = trimTrailingWhiteSpaces(fPreviousContent);
-                }
+        if (fPreviousContent != null && fPreviousContent.length() > 0) {
+            if (trimTrailing) {
+                fPreviousContent = trimTrailingWhiteSpaces(fPreviousContent);
+            }
 
-                sendCharacters(fPreviousContent.toCharArray());
-            }
-            for (Event event : fPreviousElements) {
-                sendInlineEvent(event);
-            }
-            fPreviousElements.clear();
+            sendCharacters(fPreviousContent.toCharArray());
+            fPreviousContent = null;
         }
 
-        fPreviousContent = null;
+        for (Event event : fPreviousElements) {
+            sendInlineEvent(event);
+        }
+        fPreviousElements.clear();
     }
 
     protected void sendInlineEvent(Event event) throws SAXException {
