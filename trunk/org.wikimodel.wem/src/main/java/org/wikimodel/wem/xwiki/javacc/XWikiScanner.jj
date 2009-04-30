@@ -144,9 +144,9 @@ TOKEN_MGR_DECLS: {
       )+ >
     | <#MACRO_NAME: (<XWIKI_CHAR>)+ (["-", "_", ".", ":"] (<XWIKI_CHAR>)+)* >
     | <#MACRO_PARAMS: ( "~" ~[] | ~["}"] | "}" ~["}"] )* >
-    | <#MACRO_EMPTY: "{{" <MACRO_NAME> ((<SPACE>) <MACRO_PARAMS>)? "/}}" >
+    | <#MACRO_EMPTY: "{{" <MACRO_NAME> ((<SPACE>) <MACRO_PARAMS>)? "/}}" (<NEW_LINE>)? >
     | <#MACRO_START: "{{" <MACRO_NAME> ((<SPACE>) <MACRO_PARAMS>)? "}}" >
-    | <#MACRO_END: "{{/" <MACRO_NAME> (<SPACE>)* "}}" > 
+    | <#MACRO_END: "{{/" <MACRO_NAME> (<SPACE>)* "}}" (<NEW_LINE>)? > 
     | <#MACRO_CONTENT: ( <XWIKI_CHAR> | <SPACE> |<NEW_LINE> | <XWIKI_SPECIAL_SYMBOL> ) >
     | <#REFERENCE_IMAGE: "[[image:" ("~" ~[] | ~["]"] | "]" ~["]"] )* "]]" >
     | <#REFERENCE:  ( "[[" ( <REFERENCE_IMAGE> | "~" ~[] | ~["]"] | "]" ~["]"] )* "]]" ) >
@@ -258,10 +258,8 @@ TOKEN_MGR_DECLS: {
     | <I_TABLE_CELL : <CELL> > : DEFAULT 
     | <I_REFERENCE : <REFERENCE> > : DEFAULT
     | <I_VERBATIM_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
-    | <I_MACRO_EMPTY_BLOCK: (<NEW_LINE>)? <MACRO_EMPTY> > : INITIAL_CONTEXT
-    | <I_MACRO_BLOCK_START: (<NEW_LINE>)? <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
-    | <I_MACRO_EMPTY_INLINE: <MACRO_EMPTY> > : DEFAULT
-    | <I_MACRO_INLINE_START: <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
+    | <I_MACRO_EMPTY: <MACRO_EMPTY> > : INITIAL_CONTEXT
+    | <I_MACRO_START: <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
     | <I_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
     | <I_BR : <BR> > : DEFAULT
     | <I_BLOCK_PARAMS: (<NEW_LINE>)? <PARAMS> > : DEFAULT
@@ -290,10 +288,8 @@ TOKEN_MGR_DECLS: {
     | <D_TABLE_CELL : <CELL> > : DEFAULT 
     | <D_REFERENCE : <REFERENCE> > : DEFAULT
     | <D_VERBATIM_START: <VERBATIM_START> > { verbatimBlockDepth++; } : VERBATIM_CONTEXT
-    | <D_MACRO_EMPTY_BLOCK: <NEW_LINE> <MACRO_EMPTY> > : INITIAL_CONTEXT
-    | <D_MACRO_BLOCK_START: <NEW_LINE> <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
-    | <D_MACRO_EMPTY_INLINE: <MACRO_EMPTY> > : DEFAULT
-    | <D_MACRO_INLINE_START: <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
+    | <D_MACRO_EMPTY: <MACRO_EMPTY> > : INITIAL_CONTEXT
+    | <D_MACRO_START: <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
     | <D_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
     | <D_BR : <BR> > : DEFAULT
     | <D_BLOCK_PARAMS: <NEW_LINE> <PARAMS> > : DEFAULT
@@ -326,10 +322,8 @@ TOKEN_MGR_DECLS: {
     Token getTABLE_CELL(): {Token t=null;} {(t=<I_TABLE_CELL>|t=<D_TABLE_CELL>){return t;}}
     Token getREFERENCE(): {Token t=null;} {(t=<I_REFERENCE>|t=<D_REFERENCE>){return t;}}
     Token getVERBATIM_START(): {Token t=null;} {(t=<I_VERBATIM_START>|t=<D_VERBATIM_START>){return t;}}
-    Token getMACRO_EMPTY_BLOCK(): {Token t=null;} {(t=<I_MACRO_EMPTY_BLOCK>|t=<D_MACRO_EMPTY_BLOCK>){return t;}}
-    Token getMACRO_BLOCK_START(): {Token t=null;} {(t=<I_MACRO_BLOCK_START>|t=<D_MACRO_BLOCK_START>){return t;}}
-    Token getMACRO_EMPTY_INLINE(): {Token t=null;} {(t=<I_MACRO_EMPTY_INLINE>|t=<D_MACRO_EMPTY_INLINE>){return t;}}
-    Token getMACRO_INLINE_START(): {Token t=null;} {(t=<I_MACRO_INLINE_START>|t=<D_MACRO_INLINE_START>){return t;}}
+    Token getMACRO_EMPTY(): {Token t=null;} {(t=<I_MACRO_EMPTY>|t=<D_MACRO_EMPTY>){return t;}}
+    Token getMACRO_START(): {Token t=null;} {(t=<I_MACRO_START>|t=<D_MACRO_START>){return t;}}
     Token getFORMAT_SYMBOL(): {Token t=null;} {(t=<I_FORMAT_SYMBOL>|t=<D_FORMAT_SYMBOL>){return t;}}
     Token getBR(): {Token t=null;} {(t=<I_BR>|t=<D_BR>){return t;}}
     Token getBLOCK_PARAMS(): {Token t=null;} {(t=<I_BLOCK_PARAMS>|t=<D_BLOCK_PARAMS>){return t;}}
@@ -381,7 +375,7 @@ void docElements():
     // Embedded documents
     LOOKAHEAD(3) embeddedDocument()
     |
-    macroBlock()
+    LOOKAHEAD(2) macroBlock()
     |
     // Non-interpreted content
     LOOKAHEAD(3) verbatimBlock()
@@ -555,11 +549,11 @@ void block():
 {
     // Note: the getNL() is there to support the cases where the lines() content
     // is located on a new line.
-    ( embeddedDocument() | macroBlock() | (getNL() { fContext.onNewLine(); } )? lines() )
+    ( embeddedDocument() | (getNL() { fContext.onNewLine(); } )? lines() )
 }
 
 void verbatimBlock():
-{ 
+{
     WikiParameters params = WikiParameters.EMPTY;
     Token t = null;
 }
@@ -612,7 +606,7 @@ void verbatimBody(boolean inline, WikiParameters params):
         if (hasVerbatimEnd) { 
             // If we did not found a new line at the end of a block and it's not the end of the file, it should be an inline element
             if (inline == false) {
-                beginParagraph = inline |= !endingNewLine && !eof;
+                beginParagraph = inline = !endingNewLine && !eof;
             }
             str = str.trim();
             if (str.endsWith("}}}")) {
@@ -643,7 +637,7 @@ void verbatimBody(boolean inline, WikiParameters params):
         	// If the verbatim block is inline continue to parse the inline paragraph
             lines();
         	fContext.endParagraph();
-        }        	
+        }
     }
 }
 
@@ -652,47 +646,32 @@ void macroBlock():
     Token t = null;
 }
 {
-    t = getMACRO_EMPTY_BLOCK()
+    t = getMACRO_EMPTY()
     {
-        sendOnEmptyLinesEvent(true);
-        emptyMacro(t, true);
+        //sendOnEmptyLinesEvent(true);
+        emptyMacro(t, false);
     }
     |
-    t = getMACRO_BLOCK_START()
+    t = getMACRO_START()
     {
-        sendOnEmptyLinesEvent(true);
-        macro(t, true);
+        //sendOnEmptyLinesEvent(true);
+        macro(t, false);
     }
 }
 
-/**
- * If shouldIncrement is true send one more empty lines. All block
- * elements other than paragraph should call shouldIncremet with
- * true since we need to emit one more new line for them (since the
- * lexer "eats" a NewLine token to recognize these block elements.
- */
-void sendOnEmptyLinesEvent(boolean shouldIncrement):
+void emptyMacro(Token t, boolean inline):
 {
+	boolean endingNewLine = false;
+	String beginMacroToken;
+	String name = "";
+    String paramStr = "";
 }
 {
-    {
-        if (emptyLinesCount > 1) {
-            fContext.onEmptyLines(shouldIncrement ? emptyLinesCount : emptyLinesCount - 1);
-        }
-        emptyLinesCount = 0;
-    }
-}
-
-void emptyMacro(Token t, boolean block):
-{
-}
-{
-    {
+	// Get macro name and parameters
+	{
         String str = t.image.trim();
         str = str.substring(2, str.length() - 3);
-        String paramStr = "";
         int paramStrPos = str.indexOf(" ");
-        String name = "";
         if (paramStrPos > 0) {
             paramStr = str.substring(paramStrPos);
             name = str.substring(0, paramStrPos);
@@ -700,32 +679,33 @@ void emptyMacro(Token t, boolean block):
             name = str;
         }
         name = name.trim();
+	}
 
-        str = "";
-        WikiParameters params = new WikiParameters(paramStr);
-        if (block) {
-            fContext.onMacroBlock(name, params, str);
-        } else {
-            fContext.onMacroInline(name, params, str);
-        }        
-    }
+	// Find if the macro ends with a new line
+	{
+		char ch = t.image.charAt(t.image.length() - 1);
+        endingNewLine = ch == '\r' || ch == '\n';
+        
+	}
+    macroBody(name, paramStr, inline, null, endingNewLine)
 }
-void macro(Token t, boolean block):
+
+void macro(Token t, boolean inline):
 {
     StringBuffer buf = new StringBuffer();
-    String name = "";
-    WikiParameters params;
-    String paramStr = "";
-    int paramStrPos = -1;
-    String str = null;
     boolean end = false;
     String prevEnd = null;
+    boolean endingNewLine = false;
+    String beginMacroToken;
+    String name = "";
+    String paramStr = "";
 }
 {
-    {
-        str = t.image.trim();
+	// Get macro name and parameters
+	{
+        String str = t.image.trim();
         str = str.substring(2, str.length() - 2);
-        paramStrPos = str.indexOf(" ");
+        int paramStrPos = str.indexOf(" ");
         if (paramStrPos > 0) {
             paramStr = str.substring(paramStrPos);
             name = str.substring(0, paramStrPos);
@@ -733,7 +713,9 @@ void macro(Token t, boolean block):
             name = str;
         }
         name = name.trim();
-    }
+	}
+	
+	// Get macro content
     (LOOKAHEAD(2)
         (
               t = getINTERNAL_MACRO_START() { end = false; }
@@ -752,14 +734,74 @@ void macro(Token t, boolean block):
             }
         }
     )*
+    
+    // Find if the macro ends with a new line
     {
-        str = buf.toString();
-        params = new WikiParameters(paramStr);
-        if (block) {
-            fContext.onMacroBlock(name, params, str);
-        } else {
-            fContext.onMacroInline(name, params, str);
+    	if (prevEnd != null) {
+          char ch = prevEnd.charAt(prevEnd.length() - 1);
+          endingNewLine = ch == '\r' || ch == '\n';
+    	}
+    }
+    macroBody(name, paramStr, inline, buf.toString(), endingNewLine)
+}
+
+void macroBody(String name, String paramStr, boolean inline, String content, boolean endingNewLine):
+{
+    boolean eof = false;
+    boolean beginParagraph = false;
+    Token t;
+}
+{
+	(LOOKAHEAD(2) ( t = <EOF> { eof = true; }) )?
+    {
+      {
+          if (inline == false) {
+              beginParagraph = inline = !endingNewLine && !eof;
+          }
+      }
+      {
+      	  if (beginParagraph) {
+        	  sendOnEmptyLinesEvent(false);
+        	  // If the macro block is inline, take care of generating the beginParagraph event in case its the first block of the paragraph
+              fContext.beginParagraph();
+          } else {
+        	  sendOnEmptyLinesEvent(true);
+          }
+      }
+	  {
+          WikiParameters params = new WikiParameters(paramStr);
+          fContext.onMacro(name, params, content, inline);
+      }
+      {
+      	  if (endingNewLine && inline) {
+        	  // We consumed the potential new line following the verbatim block to test if the block is inline so take care of generating the vent for it
+        	  fContext.onLineBreak();
+          }
+          
+          if (beginParagraph) {
+        	  // If the verbatim block is inline continue to parse the inline paragraph
+              lines();
+        	  fContext.endParagraph();
+          }
+      }
+    }
+}
+
+/**
+ * If shouldIncrement is true send one more empty lines. All block
+ * elements other than paragraph should call shouldIncremet with
+ * true since we need to emit one more new line for them (since the
+ * lexer "eats" a NewLine token to recognize these block elements.
+ */
+void sendOnEmptyLinesEvent(boolean shouldIncrement):
+{
+}
+{
+    {
+        if (emptyLinesCount > 1) {
+            fContext.onEmptyLines(shouldIncrement ? emptyLinesCount : emptyLinesCount - 1);
         }
+        emptyLinesCount = 0;
     }
 }
 
@@ -959,6 +1001,20 @@ void line():
 			    }
 				verbatimBody(true, WikiParameters.EMPTY)
 			)
+			|
+			(
+			    t = getMACRO_EMPTY()
+			    {
+			    }
+				emptyMacro(t, true)
+			)
+			|
+			(
+			    t = getMACRO_START()
+			    {
+			    }
+				macro(t, true)
+			)
             |
             t = getHEADER_END()
             {
@@ -1009,16 +1065,6 @@ void line():
                 } else {
                     fContext.onSpecialSymbol(t.image);
                 }
-            }
-            |
-            t = getMACRO_EMPTY_INLINE()
-            {
-                emptyMacro(t, false);
-            }
-            |
-            t = getMACRO_INLINE_START() 
-            {
-                macro(t, false);
             }
         )
     )+

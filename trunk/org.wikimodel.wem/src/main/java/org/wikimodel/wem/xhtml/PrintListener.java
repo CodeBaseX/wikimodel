@@ -219,8 +219,13 @@ public class PrintListener extends PrintInlineListener {
         String macroName,
         WikiParameters params,
         String content) {
-        println("<pre class='wikimodel-macro' macroName='" + macroName + "'"
-                + params + "><![CDATA[" + content + "]]></pre>");
+        if (content == null) {
+            println("<pre class='wikimodel-macro' macroName='" + macroName
+                    + "'" + params + "/>");
+        } else {
+            println("<pre class='wikimodel-macro' macroName='" + macroName
+                    + "'" + params + "><![CDATA[" + content + "]]></pre>");
+        }
     }
 
     @Override
@@ -228,8 +233,13 @@ public class PrintListener extends PrintInlineListener {
         String macroName,
         WikiParameters params,
         String content) {
-        print("<span class='wikimodel-macro' macroName='" + macroName + "'"
-                + params + "><![CDATA[" + content + "]]></span>");
+        if (content == null) {
+            print("<span class='wikimodel-macro' macroName='" + macroName + "'"
+                    + params + "/>");
+        } else {
+            print("<span class='wikimodel-macro' macroName='" + macroName + "'"
+                    + params + "><![CDATA[" + content + "]]></span>");
+        }
     }
 
     @Override
