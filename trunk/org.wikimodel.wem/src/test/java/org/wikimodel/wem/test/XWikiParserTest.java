@@ -231,6 +231,8 @@ public class XWikiParserTest extends AbstractWikiParserTest {
                 "<h1>Heading 1</h1>\n<h1>Heading 1</h1>");
         test("= Heading 1 {{macro}}{{/macro}}=",
                 "<h1>Heading 1 <span class='wikimodel-macro' macroName='macro'><![CDATA[]]></span></h1>");
+        test("= Title level 1\n== Title level 2", "<h1>Title level 1</h1>\n<h2>Title level 2</h2>");
+        test("= Title level 1\n\n== Title level 2", "<h1>Title level 1</h1>\n<h2>Title level 2</h2>");
     }
 
     /**
