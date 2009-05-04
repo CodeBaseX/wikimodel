@@ -295,20 +295,20 @@ public class XWikiParserTest extends AbstractWikiParserTest {
     }
 
     public void testMacro() throws WikiParserException {
-        /*
-         * test( "{{macro/}}{{macro/}}",
-         * "<p><span class='wikimodel-macro' macroName='macro'/><span class='wikimodel-macro' macroName='macro'/></p>"
-         * );
-         * 
-         * test( "{{macro/}}\n\n{{macro/}}",
-         * "<pre class='wikimodel-macro' macroName='macro'/>\n<pre class='wikimodel-macro' macroName='macro'/>"
-         * );
-         * 
-         * test( "{{macro/}}\n\n{{macro/}}\n\n{{macro/}}",
-         * "<pre class='wikimodel-macro' macroName='macro'/>\n" +
-         * "<pre class='wikimodel-macro' macroName='macro'/>\n" +
-         * "<pre class='wikimodel-macro' macroName='macro'/>");
-         */
+
+        test(
+                "{{macro/}}{{macro/}}",
+                "<p><span class='wikimodel-macro' macroName='macro'/><span class='wikimodel-macro' macroName='macro'/></p>");
+
+        test(
+                "{{macro/}}\n\n{{macro/}}",
+                "<pre class='wikimodel-macro' macroName='macro'/>\n<pre class='wikimodel-macro' macroName='macro'/>");
+
+        test("{{macro/}}\n\n{{macro/}}\n\n{{macro/}}",
+                "<pre class='wikimodel-macro' macroName='macro'/>\n"
+                        + "<pre class='wikimodel-macro' macroName='macro'/>\n"
+                        + "<pre class='wikimodel-macro' macroName='macro'/>");
+
         test("{{macro/}}\n\n{{macro/}}\n\n{{macro/}}\n\n{{macro/}}",
                 "<pre class='wikimodel-macro' macroName='macro'/>\n"
                         + "<pre class='wikimodel-macro' macroName='macro'/>\n"
@@ -632,7 +632,8 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test("some text {{{}}}\n\n{{{}}}",
                 "<p>some text <code></code></p>\n<pre></pre>");
         test("{{{}}}\n{{{}}}\n{{{}}}", "<pre></pre>\n<pre></pre>\n<pre></pre>");
-        test("{{{}}}\n\n{{{}}}\n\n{{{}}}\n\n{{{}}}", "<pre></pre>\n<pre></pre>\n<pre></pre>\n<pre></pre>");
+        test("{{{}}}\n\n{{{}}}\n\n{{{}}}\n\n{{{}}}",
+                "<pre></pre>\n<pre></pre>\n<pre></pre>\n<pre></pre>");
         test("{{{}}}\nsome text", "<pre></pre>\n<p>some text</p>");
 
         test("some text {{{}}}\nsome text",
