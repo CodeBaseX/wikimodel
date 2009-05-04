@@ -442,7 +442,9 @@ void header():
     }
     ( LOOKAHEAD(3) block() )*
     {
-        fContext.endHeader();
+    	if (!fContext.isInHeader()) {
+          fContext.endHeader();
+    	}
     }
 }
 

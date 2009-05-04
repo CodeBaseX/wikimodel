@@ -229,6 +229,8 @@ public class XWikiParserTest extends AbstractWikiParserTest {
                 "<h1>Heading 1</h1>\n<p> \nsome text</p>");
         test("= Heading 1 =\n\n\n= Heading 1 =",
                 "<h1>Heading 1</h1>\n<h1>Heading 1</h1>");
+        test("= Heading 1 {{macro}}{{/macro}}=",
+                "<h1>Heading 1 <span class='wikimodel-macro' macroName='macro'><![CDATA[]]></span></h1>");
     }
 
     /**
