@@ -3891,7 +3891,7 @@ void TokenLexicalActions(Token matchedToken)
             image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
             verbatimBlockDepth--;
             if (verbatimBlockDepth == 0)  {
-                SwitchTo(INITIAL_CONTEXT);
+                SwitchTo(DEFAULT);
             } else {
                 SwitchTo(VERBATIM_CONTEXT);
             }
@@ -3917,7 +3917,7 @@ void TokenLexicalActions(Token matchedToken)
             if (name.startsWith("/" + macroName)) {
                 macroDepth--;
                 if (macroDepth == 0) {
-                    context = INITIAL_CONTEXT;
+                    context = DEFAULT;
                 }
             }
             SwitchTo(context);

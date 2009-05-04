@@ -826,9 +826,7 @@ public class XWikiScanner implements XWikiScannerConstants {
       }
       block();
     }
-        if (!fContext.isInHeader()) {
-          fContext.endHeader();
-        }
+        fContext.endHeader();
   }
 
   final public void table() throws ParseException {
@@ -2641,14 +2639,14 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  final private boolean jj_3_26() {
-    if (jj_3R_22()) return true;
-    if (jj_3R_22()) return true;
+  final private boolean jj_3R_23() {
+    if (jj_3R_34()) return true;
     return false;
   }
 
-  final private boolean jj_3R_23() {
-    if (jj_3R_34()) return true;
+  final private boolean jj_3_26() {
+    if (jj_3R_22()) return true;
+    if (jj_3R_22()) return true;
     return false;
   }
 
@@ -2657,6 +2655,23 @@ public class XWikiScanner implements XWikiScannerConstants {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_23()) jj_scanpos = xsp;
+    return false;
+  }
+
+  final private boolean jj_3R_18() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_9()) jj_scanpos = xsp;
+    if (jj_3R_53()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_54()) { jj_scanpos = xsp; break; }
+    }
+    xsp = jj_scanpos;
+    if (jj_3R_55()) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(0)) return true;
+    }
     return false;
   }
 
@@ -2679,23 +2694,6 @@ public class XWikiScanner implements XWikiScannerConstants {
     }
     xsp = jj_scanpos;
     if (jj_3_27()) jj_scanpos = xsp;
-    return false;
-  }
-
-  final private boolean jj_3R_18() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_9()) jj_scanpos = xsp;
-    if (jj_3R_53()) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_54()) { jj_scanpos = xsp; break; }
-    }
-    xsp = jj_scanpos;
-    if (jj_3R_55()) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(0)) return true;
-    }
     return false;
   }
 

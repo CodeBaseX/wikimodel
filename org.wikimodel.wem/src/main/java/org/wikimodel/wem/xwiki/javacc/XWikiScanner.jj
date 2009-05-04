@@ -93,7 +93,7 @@ TOKEN_MGR_DECLS: {
     | <INTERNAL_VERBATIM_END: <VERBATIM_END> > {
             verbatimBlockDepth--;
             if (verbatimBlockDepth == 0)  {
-                SwitchTo(INITIAL_CONTEXT);
+                SwitchTo(DEFAULT);
             } else {
                 SwitchTo(VERBATIM_CONTEXT);
             }
@@ -118,7 +118,7 @@ TOKEN_MGR_DECLS: {
             if (name.startsWith("/" + macroName)) {
                 macroDepth--;
                 if (macroDepth == 0) {
-                    context = INITIAL_CONTEXT;
+                    context = DEFAULT;
                 }
             }
             SwitchTo(context);
@@ -442,9 +442,7 @@ void header():
     }
     ( LOOKAHEAD(3) block() )*
     {
-    	if (!fContext.isInHeader()) {
-          fContext.endHeader();
-    	}
+    	fContext.endHeader();
     }
 }
 
