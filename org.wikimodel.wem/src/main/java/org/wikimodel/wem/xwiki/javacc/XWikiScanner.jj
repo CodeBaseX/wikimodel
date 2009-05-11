@@ -568,9 +568,8 @@ void verbatimBlock():
     }
     getVERBATIM_START()
     {
-    	sendOnEmptyLinesEvent(false);
-    	verbatimBody(false, params);
     }
+    verbatimBody(false, params)
 }
 
 void verbatimBody(boolean inline, WikiParameters params):
@@ -607,6 +606,8 @@ void verbatimBody(boolean inline, WikiParameters params):
         }
         str = str.substring("{{{".length());
 
+        sendOnEmptyLinesEvent(false);
+
         if (inline || eof) {
         	sendOnEmptyLinesEvent(false);
         	fContext.onVerbatim(str, inline, params);
@@ -632,17 +633,19 @@ void macroBlock():
     Token t = null;
 }
 {
-    t = getMACRO_EMPTY()
-    {
-        sendOnEmptyLinesEvent(false);
-        emptyMacro(t, false);
-    }
+	(
+      t = getMACRO_EMPTY()
+      {
+      }
+      emptyMacro(t, false)
+    )
     |
-    t = getMACRO_START()
-    {
-        sendOnEmptyLinesEvent(false);
-        macro(t, false);
-    }
+    (
+      t = getMACRO_START()
+      {
+      }
+      macro(t, false)
+    )
 }
 
 void emptyMacro(Token t, boolean inline):
@@ -723,6 +726,8 @@ void macroBody(String name, String paramStr, boolean inline, String content):
 {
 	(LOOKAHEAD(2) ( t = <EOF> { eof = true; }) )?
     {
+    	sendOnEmptyLinesEvent(false);
+
     	WikiParameters params = new WikiParameters(paramStr);
         if (inline || eof) {
         	fContext.onMacro(name, params, content, inline);

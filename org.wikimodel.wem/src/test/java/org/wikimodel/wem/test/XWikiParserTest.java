@@ -168,6 +168,16 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test("(% param=\"value\" %)\n ((( inside ))) after ",
                 "<div class='wikimodel-document' param='value'>\n"
                         + "<p>inside</p>\n" + "</div>\n" + "<p>after </p>");
+        test("((( {{macro}} hello world! {{/macro}} )))", "<div class='wikimodel-document'>\n"+
+                "<pre class='wikimodel-macro' macroName='macro'><![CDATA[ hello world! ]]></pre>\n"+
+                "</div>");
+        test("((( {{{ hello world! }}} )))", 
+                "<div class='wikimodel-document'>\n"+
+                "<pre> hello world! </pre>\n"+
+                "</div>");
+        test("((( {{macro/}} )))", "<div class='wikimodel-document'>\n"+
+                "<pre class='wikimodel-macro' macroName='macro'/>\n"+
+                "</div>");
     }
 
     /**
