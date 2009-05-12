@@ -160,6 +160,15 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
             + "</div>\n"
             + "</div>\n"
             + "</div>");
+
+        test("<html><ul><li>Item 1<div><ul><li>Item 2</li></ul></div></li></ul></html>", "<ul>\n"+
+                "  <li>Item 1<div class='wikimodel-document'>\n"+
+                "<ul>\n"+
+                "  <li>Item 2</li>\n"+
+                "</ul>\n"+
+                "</div>\n"+
+                "</li>\n"+
+                "</ul>");
     }
 
     /**
@@ -172,7 +181,7 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testFormats() throws WikiParserException {
-        test("<html><b>bold</b></html>", "<p><strong>bold</strong></p>");
+        /*test("<html><b>bold</b></html>", "<p><strong>bold</strong></p>");
         test(
             "<html><strong>bold</strong></html>",
             "<p><strong>bold</strong></p>");
@@ -192,6 +201,11 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
         test("<html><sub>sub</sub></html>", "<p><sub>sub</sub></p>");
 
         test("<html><tt>mono</tt></html>", "<p><mono>mono</mono></p>");
+        
+        test("<html>a<strong><em>b</em></strong>c</html>", "<p>a<strong><em>b</em></strong>c</p>");*/
+        //test("<html>a<em><em>b</em></em>c</html>", "<p>a<em>b</em>c</p>");
+        
+        test("<html>a<strong><em>b</em></strong>c</html>", "<p>a<strong><em>b</em></strong>c</p>");
     }
 
     /**

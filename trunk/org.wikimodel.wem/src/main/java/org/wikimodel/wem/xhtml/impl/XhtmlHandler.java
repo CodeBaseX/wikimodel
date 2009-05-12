@@ -57,6 +57,7 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * @author kotelnikov
  * @author vmassol
+ * @author thomas.mortagne
  */
 public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
@@ -67,7 +68,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
             private final WikiParameters fParameters;
 
             private String fName;
-            
+
             private StringBuffer fContent;
 
             public TagHandler fHandler;
@@ -75,16 +76,13 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
             private final TagContext fParent;
 
             TagStack fTagStack;
-            
-            public TagContext(
-                TagContext parent,
-                String name,
-                WikiParameters params,
-                TagStack tagStack) {
+
+            public TagContext(TagContext parent, String name,
+                    WikiParameters params, TagStack tagStack) {
                 fName = name;
                 fParent = parent;
                 fParameters = params;
-                fTagStack = tagStack; 
+                fTagStack = tagStack;
             }
 
             public boolean appendContent(String content) {
@@ -118,13 +116,13 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
             public String getContent() {
                 return fContent != null ? WikiPageUtil.escapeXmlString(fContent
-                    .toString()) : "";
+                        .toString()) : "";
             }
 
             public String getName() {
                 return fName;
             }
-            
+
             public WikiParameters getParams() {
                 return fParameters;
             }
@@ -140,7 +138,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
             public TagStack getTagStack() {
                 return fTagStack;
             }
-            
+
             public boolean isContentContainer() {
                 return fHandler == null || fHandler.isContentContainer();
             }
@@ -155,7 +153,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
         private Map<String, TagHandler> fMap = new HashMap<String, TagHandler>();
 
         private CommentHandler fCommentHandler;
-        
+
         private static final int NEW_LINE = 3;
 
         private static final char SPACE = 1;
@@ -163,47 +161,37 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
         private static final int SPECIAL_SYMBOL = 2;
 
         /**
-         * Allow saving parameters. 
-         * For example we save the number of br elements if we're outside 
-         * of a block element so that we can emit an onEmptyLines event.
+         * Allow saving parameters. For example we save the number of br
+         * elements if we're outside of a block element so that we can emit an
+         * onEmptyLines event.
          */
-        private Map<String, Object> fStackParameters = new HashMap<String, Object>(); 
-        
+        private Stack<Map<String, Object>> fStackParameters = new Stack<Map<String, Object>>();
+
         public void add(String tag, TagHandler handler) {
             fMap.put(tag, handler);
         }
-        
+
         public void addAll(Map<String, TagHandler> handlers) {
-        	fMap.putAll(handlers);
+            fMap.putAll(handlers);
         }
 
         public void setCommentHandler(CommentHandler handler) {
             fCommentHandler = handler;
         }
-        
+
         private TagContext fPeek;
 
         WikiScannerContext fScannerContext;
 
         public TagStack(WikiScannerContext context) {
+            // init stack paramaters
+            pushStackParameters();
+
             fScannerContext = context;
             fCommentHandler = new CommentHandler();
-            
-            // Pre-initialize stack parameters for performance reason 
-            // (so that we don't have to check all the time if they're initialized or not)
-            setStackParameter("ignoreElements", false);
-            setStackParameter("emptyLinesCount", 0);
-            setStackParameter("listStyles", new StringBuffer());
-            setStackParameter("quoteDepth", new Integer(0));
-            setStackParameter("insideBlockElement", new Stack<Boolean>());
-            // Saves the tag name just before we send a beginDocument event for nested documents
-            // so that we send a endDocument when when the closing tag.
-            setStackParameter("tagNameBeforeNestedDocument", new Stack<String>());
         }
 
-        public void beginElement(
-            String name,
-            WikiParameters params) {
+        public void beginElement(String name, WikiParameters params) {
             fPeek = new TagContext(fPeek, name, params, this);
             name = fPeek.getName();
             TagHandler handler = fMap.get(name);
@@ -224,51 +212,51 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
         private XhtmlCharacterType getCharacterType(char ch) {
             XhtmlCharacterType type = XhtmlCharacterType.CHARACTER;
             switch (ch) {
-                case '!':
-                case '\'':
-                case '#':
-                case '$':
-                case '%':
-                case '&':
-                case '(':
-                case ')':
-                case '*':
-                case '+':
-                case ',':
-                case '-':
-                case '.':
-                case '/':
-                case ':':
-                case ';':
-                case '<':
-                case '=':
-                case '>':
-                case '?':
-                case '@':
-                case '[':
-                case '\\':
-                case ']':
-                case '^':
-                case '_':
-                case '`':
-                case '{':
-                case '|':
-                case '}':
-                case '~':
-                case '\"':
-                    type = XhtmlCharacterType.SPECIAL_SYMBOL;
-                    break;
-                case ' ':
-                case '\t':
-                case 160: // This is a &nbsp;
-                    type = XhtmlCharacterType.SPACE;
-                    break;
-                case '\n':
-                case '\r':
-                    type = XhtmlCharacterType.NEW_LINE;
-                    break;
-                default:
-                    break;
+            case '!':
+            case '\'':
+            case '#':
+            case '$':
+            case '%':
+            case '&':
+            case '(':
+            case ')':
+            case '*':
+            case '+':
+            case ',':
+            case '-':
+            case '.':
+            case '/':
+            case ':':
+            case ';':
+            case '<':
+            case '=':
+            case '>':
+            case '?':
+            case '@':
+            case '[':
+            case '\\':
+            case ']':
+            case '^':
+            case '_':
+            case '`':
+            case '{':
+            case '|':
+            case '}':
+            case '~':
+            case '\"':
+                type = XhtmlCharacterType.SPECIAL_SYMBOL;
+                break;
+            case ' ':
+            case '\t':
+            case 160: // This is a &nbsp;
+                type = XhtmlCharacterType.SPACE;
+                break;
+            case '\n':
+            case '\r':
+                type = XhtmlCharacterType.NEW_LINE;
+                break;
+            default:
+                break;
             }
             return type;
         }
@@ -276,7 +264,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
         public WikiScannerContext getScannerContext() {
             return fScannerContext;
         }
-        
+
         public void setScannerContext(WikiScannerContext context) {
             fScannerContext = context;
         }
@@ -285,37 +273,41 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
             while (stack.size() > 0) {
                 XhtmlCharacter character = stack.remove(0);
                 switch (character.getType()) {
-                    case ESCAPED:
-                        fScannerContext.onEscape("" + character.getCharacter());
-                        break;
-                    case SPECIAL_SYMBOL:
-                        fScannerContext.onSpecialSymbol("" + character.getCharacter());
-                        break;
-                    case NEW_LINE:
-                        fScannerContext.onLineBreak();
-                        break;
-                    case SPACE:
-                        StringBuffer spaceBuffer = new StringBuffer(" ");
-                        while ((stack.size() > 0) && (stack.firstElement().getType() == XhtmlCharacterType.SPACE)) {
-                            stack.remove(0);
-                            spaceBuffer.append(' ');
-                        }
-                        fScannerContext.onSpace(spaceBuffer.toString());
-                        break;
-                    default:
-                        StringBuffer charBuffer = new StringBuffer();
-                        charBuffer.append(character.getCharacter());
-                        while ((stack.size() > 0) && (stack.firstElement().getType() == XhtmlCharacterType.CHARACTER)) {
-                            charBuffer.append(stack.firstElement().getCharacter());
-                            stack.remove(0);
-                        }
-                        fScannerContext.onWord(WikiPageUtil.escapeXmlString(charBuffer.toString()));
+                case ESCAPED:
+                    fScannerContext.onEscape("" + character.getCharacter());
+                    break;
+                case SPECIAL_SYMBOL:
+                    fScannerContext.onSpecialSymbol(""
+                            + character.getCharacter());
+                    break;
+                case NEW_LINE:
+                    fScannerContext.onLineBreak();
+                    break;
+                case SPACE:
+                    StringBuffer spaceBuffer = new StringBuffer(" ");
+                    while ((stack.size() > 0)
+                            && (stack.firstElement().getType() == XhtmlCharacterType.SPACE)) {
+                        stack.remove(0);
+                        spaceBuffer.append(' ');
+                    }
+                    fScannerContext.onSpace(spaceBuffer.toString());
+                    break;
+                default:
+                    StringBuffer charBuffer = new StringBuffer();
+                    charBuffer.append(character.getCharacter());
+                    while ((stack.size() > 0)
+                            && (stack.firstElement().getType() == XhtmlCharacterType.CHARACTER)) {
+                        charBuffer.append(stack.firstElement().getCharacter());
+                        stack.remove(0);
+                    }
+                    fScannerContext.onWord(WikiPageUtil
+                            .escapeXmlString(charBuffer.toString()));
                 }
-            }            
+            }
         }
-        
+
         public void onCharacters(String content) {
-            
+
             if (!fPeek.isContentContainer())
                 return;
             boolean ignoreElements = (Boolean) getStackParameter("ignoreElements");
@@ -326,11 +318,12 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
                 Stack<XhtmlCharacter> stack = new Stack<XhtmlCharacter>();
                 for (int i = 0; i < content.length(); i++) {
                     char c = content.charAt(i);
-                    XhtmlCharacter current = new XhtmlCharacter(c, getCharacterType(c));
+                    XhtmlCharacter current = new XhtmlCharacter(c,
+                            getCharacterType(c));
                     XhtmlCharacter result = current;
                     stack.push(result);
                 }
-                
+
                 // Now send the events.
                 flushStack(stack);
             }
@@ -339,13 +332,39 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
         public void onComment(char[] array, int start, int length) {
             fCommentHandler.onComment(new String(array, start, length), this);
         }
-        
-        public void setStackParameter(String name, Object data) {
-        	fStackParameters.put(name, data);
+
+        public void pushStackParameters() {
+            fStackParameters.push(new HashMap<String, Object>());
+
+            // Pre-initialize stack parameters for performance reason
+            // (so that we don't have to check all the time if they're
+            // initialized or not)
+            setStackParameter("ignoreElements", false);
+            setStackParameter("emptyLinesCount", 0);
+            setStackParameter("listStyles", new StringBuffer());
+            setStackParameter("quoteDepth", new Integer(0));
+            setStackParameter("insideBlockElement", new Stack<Boolean>());
+            // Saves the tag name just before we send a beginDocument event for
+            // nested documents
+            // so that we send a endDocument when when the closing tag.
+            setStackParameter("tagNameBeforeNestedDocument",
+                    new Stack<String>());
         }
-        
+
+        public void popStackParameters() {
+            fStackParameters.pop();
+        }
+
+        private Map<String, Object> getStackParameters() {
+            return fStackParameters.peek();
+        }
+
+        public void setStackParameter(String name, Object data) {
+            getStackParameters().put(name, data);
+        }
+
         public Object getStackParameter(String name) {
-        	return fStackParameters.get(name);
+            return getStackParameters().get(name);
         }
 
     }
@@ -358,17 +377,19 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
     TagStack fStack;
 
-    public XhtmlHandler(WikiScannerContext context, Map<String, TagHandler> extraHandlers) {
+    public XhtmlHandler(WikiScannerContext context,
+            Map<String, TagHandler> extraHandlers) {
         this(context, extraHandlers, new CommentHandler());
     }
 
     /**
      * @param context
      */
-    public XhtmlHandler(WikiScannerContext context, Map<String, TagHandler> extraHandlers, CommentHandler commentHandler) {
+    public XhtmlHandler(WikiScannerContext context,
+            Map<String, TagHandler> extraHandlers, CommentHandler commentHandler) {
         fStack = new TagStack(context);
         fStack.setCommentHandler(commentHandler);
-        
+
         // Register default handlers
         fStack.add("p", new ParagraphTagHandler());
         fStack.add("table", new TableTagHandler());
@@ -422,9 +443,9 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
         // Register extra handlers
         fStack.addAll(extraHandlers);
-        
+
         // Allow each handler to have some initialization
-        for (TagHandler tagElementHandler: fStack.fMap.values()) {
+        for (TagHandler tagElementHandler : fStack.fMap.values()) {
             tagElementHandler.initialize(fStack);
         }
     }
@@ -434,7 +455,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
      */
     @Override
     public void characters(char[] array, int start, int length)
-        throws SAXException {
+            throws SAXException {
         fStack.onCharacters(new String(array, start, length));
     }
 
@@ -453,7 +474,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
      */
     @Override
     public void endElement(String uri, String localName, String qName)
-        throws SAXException {
+            throws SAXException {
         fStack.endElement();
     }
 
@@ -486,77 +507,75 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
         String localName,
         String qName,
         Attributes attributes) throws SAXException {
-        fStack.beginElement(getLocalName(uri, localName, qName, false), getParameters(attributes));
+        fStack.beginElement(getLocalName(uri, localName, qName, false),
+                getParameters(attributes));
     }
 
     // Lexical handler methods
 
-    public void comment(char[] array, int start, int length) throws SAXException
-    {
+    public void comment(char[] array, int start, int length)
+            throws SAXException {
         fStack.onComment(array, start, length);
     }
 
-    public void endCDATA() throws SAXException
-    {
+    public void endCDATA() throws SAXException {
         // Nothing to do
     }
 
-    public void endDTD() throws SAXException
-    {
+    public void endDTD() throws SAXException {
         // Nothing to do
     }
 
-    public void endEntity(String arg0) throws SAXException
-    {
+    public void endEntity(String arg0) throws SAXException {
         // Nothing to do
     }
 
-    public void startCDATA() throws SAXException
-    {
+    public void startCDATA() throws SAXException {
         // Nothing to do
     }
 
-    public void startDTD(String arg0, String arg1, String arg2) throws SAXException
-    {
+    public void startDTD(String arg0, String arg1, String arg2)
+            throws SAXException {
         // Nothing to do
     }
 
-    public void startEntity(String arg0) throws SAXException
-    {
+    public void startEntity(String arg0) throws SAXException {
         // Nothing to do
     }
-    
+
     private String getLocalName(
         String uri,
         String localName,
         String name,
         boolean upperCase) {
-        String result = (localName != null && !"".equals(localName))
-            ? localName
-            : name;
+        String result = (localName != null && !"".equals(localName)) ? localName
+                : name;
         return upperCase ? result.toUpperCase() : result;
     }
 
     private WikiParameters getParameters(Attributes attributes) {
         List<WikiParameter> params = new ArrayList<WikiParameter>();
         for (int i = 0; i < attributes.getLength(); i++) {
-            String key = getLocalName(
-                attributes.getURI(i),
-                attributes.getQName(i),
-                attributes.getLocalName(i),
-                false);
+            String key = getLocalName(attributes.getURI(i), attributes
+                    .getQName(i), attributes.getLocalName(i), false);
             String value = attributes.getValue(i);
             WikiParameter param = new WikiParameter(key, value);
 
-            // The XHTML DTD specifies some default value for some attributes. For example for a TD element
-            // it defines colspan=1 and rowspan=1. Thus we'll get a colspan and rowspan attribute passed to
-            // the current method even though they are not defined in the source XHTML content.
-            // However with SAX2 it's possible to check if an attribute is defined in the source or not using
+            // The XHTML DTD specifies some default value for some attributes.
+            // For example for a TD element
+            // it defines colspan=1 and rowspan=1. Thus we'll get a colspan and
+            // rowspan attribute passed to
+            // the current method even though they are not defined in the source
+            // XHTML content.
+            // However with SAX2 it's possible to check if an attribute is
+            // defined in the source or not using
             // the Attributes2 class.
-            // See http://www.saxproject.org/apidoc/org/xml/sax/package-summary.html#package_description
+            // See
+            // http://www.saxproject.org/apidoc/org/xml/sax/package-summary.html#package_description
             if (attributes instanceof Attributes2) {
                 Attributes2 attributes2 = (Attributes2) attributes;
-                // If the attribute is present in the XHTML source file then add it, otherwise skip it.
+                // If the attribute is present in the XHTML source file then add
+                // it, otherwise skip it.
                 if (attributes2.isSpecified(i)) {
                     params.add(param);
                 }

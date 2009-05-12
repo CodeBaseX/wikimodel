@@ -22,35 +22,33 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  * @author vmassol
  * @author thomas.mortagne
  */
-public class DivisionTagHandler extends TagHandler
-{
-    public DivisionTagHandler()
-    {
+public class DivisionTagHandler extends TagHandler {
+    public DivisionTagHandler() {
         super(true, false, true);
     }
 
     /**
-     * @return the class used to indicate the division block is an embedded document. 
-     *         Note that use a method instead of a static private String field so that 
-     *         user code can override the class name.
+     * @return the class used to indicate the division block is an embedded
+     *         document. Note that use a method instead of a static private
+     *         String field so that user code can override the class name.
      */
-    protected String getDocumentClass()
-    {
+    protected String getDocumentClass() {
         return "wikimodel-document";
     }
 
     @Override
-    protected void begin(TagContext context)
-    {
+    protected void begin(TagContext context) {
         WikiParameter param = context.getParams().getParameter("class");
         if (param != null) {
             List<String> classes = Arrays.asList(param.getValue().split(" "));
-            
+
             // Check if we have a div meaning an empty line between block
             if (classes.contains("wikimodel-emptyline")) {
-                int value = (Integer) context.getTagStack().getStackParameter("emptyLinesCount");
+                int value = (Integer) context.getTagStack().getStackParameter(
+                        "emptyLinesCount");
                 value++;
-                context.getTagStack().setStackParameter("emptyLinesCount", value);
+                context.getTagStack().setStackParameter("emptyLinesCount",
+                        value);
             } else {
                 // Consider that we're inside an embedded document
                 beginDocument(context);
@@ -62,8 +60,7 @@ public class DivisionTagHandler extends TagHandler
     }
 
     @Override
-    protected void end(TagContext context)
-    {
+    protected void end(TagContext context) {
         WikiParameter param = context.getParams().getParameter("class");
         if (param != null) {
             List<String> classes = Arrays.asList(param.getValue().split(" "));
@@ -75,23 +72,24 @@ public class DivisionTagHandler extends TagHandler
             endDocument(context);
         }
     }
-    
-    private void beginDocument(TagContext context)
-    {
-        sendEmptyLines(context);
-        context.getScannerContext().beginDocument(context.getParams().remove("class"));
 
-        // Mark that we're not inside a block element since we're starting a new doc
-        Stack<Boolean> insideBlockElementsStack = 
-            (Stack<Boolean>) context.getTagStack().getStackParameter("insideBlockElement");
+    private void beginDocument(TagContext context) {
+        sendEmptyLines(context);
+        context.getScannerContext().beginDocument(
+                context.getParams().remove("class"));
+
+        // Stack context parameters since we enter in a new document
+        context.getTagStack().pushStackParameters();
+
+        // Mark that we're not inside a block element since we're starting a new
+        // doc
+        Stack<Boolean> insideBlockElementsStack = (Stack<Boolean>) context
+                .getTagStack().getStackParameter("insideBlockElement");
         insideBlockElementsStack.push(false);
     }
 
-    private void endDocument(TagContext context)
-    {
-        Stack<Boolean> insideBlockElementsStack = 
-            (Stack<Boolean>) context.getTagStack().getStackParameter("insideBlockElement");
-        insideBlockElementsStack.pop();
+    private void endDocument(TagContext context) {
+        context.getTagStack().popStackParameters();
 
         context.getScannerContext().endDocument();
     }
