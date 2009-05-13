@@ -7,6 +7,7 @@ import org.wikimodel.wem.WikiStyle;
 
 /**
  * @author MikhailKotelnikov
+ * @author thomas.mortagne
  */
 public interface IWikiScannerContext extends IWemConstants {
 
@@ -145,6 +146,14 @@ public interface IWikiScannerContext extends IWemConstants {
     void onFormat(WikiParameters params);
 
     void onFormat(WikiStyle wikiStyle);
+
+    void beginFormat(WikiParameters params);
+
+    void beginFormat(WikiStyle wikiStyle);
+
+    void endFormat(WikiParameters params);
+
+    void endFormat(WikiStyle wikiStyle);
 
     /**
      * @see org.wikimodel.wem.impl.WikiScannerContext#onFormat(org.wikimodel.wem.WikiStyle,

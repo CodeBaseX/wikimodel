@@ -27,16 +27,16 @@ public class StrikedOutTagHandler extends TagHandler {
     @Override
     protected void begin(TagContext context) {
         if (context.getParams().getSize() > 0) {
-            context.getScannerContext().onFormat(context.getParams());
+            context.getScannerContext().beginFormat(context.getParams());
         }
-        context.getScannerContext().onFormat(IWemConstants.STRIKE);
+        context.getScannerContext().beginFormat(IWemConstants.STRIKE);
     }
 
     @Override
     protected void end(TagContext context) {
-        context.getScannerContext().onFormat(IWemConstants.STRIKE);
+        context.getScannerContext().endFormat(IWemConstants.STRIKE);
         if (context.getParams().getSize() > 0) {
-            context.getScannerContext().onFormat(WikiParameters.EMPTY);
+            context.getScannerContext().endFormat(WikiParameters.EMPTY);
         }
     }
 

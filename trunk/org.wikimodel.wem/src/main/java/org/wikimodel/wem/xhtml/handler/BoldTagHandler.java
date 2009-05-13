@@ -27,16 +27,16 @@ public class BoldTagHandler extends TagHandler {
     @Override
     protected void begin(TagContext context) {
         if (context.getParams().getSize() > 0) {
-            context.getScannerContext().onFormat(context.getParams());
+            context.getScannerContext().beginFormat(context.getParams());
         }
-        context.getScannerContext().onFormat(IWemConstants.STRONG);
+        context.getScannerContext().beginFormat(IWemConstants.STRONG);
     }
 
     @Override
     protected void end(TagContext context) {
-        context.getScannerContext().onFormat(IWemConstants.STRONG);
+        context.getScannerContext().endFormat(IWemConstants.STRONG);
         if (context.getParams().getSize() > 0) {
-            context.getScannerContext().onFormat(WikiParameters.EMPTY);
+            context.getScannerContext().endFormat(WikiParameters.EMPTY);
         }
     }
 }

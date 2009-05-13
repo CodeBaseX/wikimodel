@@ -832,6 +832,30 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         fInlineState.set(InlineState.BEGIN_FORMAT);
     }
 
+    public void beginFormat(WikiParameters params) {
+        closeFormat(false);
+        fNewFormat = fNewFormat.setParameters(params.toList());
+        fInlineState.set(InlineState.BEGIN_FORMAT);
+    }
+    
+    public void beginFormat(WikiStyle wikiStyle) {
+        closeFormat(false);
+        fNewFormat = fNewFormat.addStyle(wikiStyle);
+        fInlineState.set(InlineState.BEGIN_FORMAT);
+    }
+    
+    public void endFormat(WikiParameters params) {
+        closeFormat(false);
+        fNewFormat = fNewFormat.setParameters(params.toList());
+        fInlineState.set(InlineState.BEGIN_FORMAT);
+    }
+    
+    public void endFormat(WikiStyle wikiStyle) {
+        closeFormat(false);
+        fNewFormat = fNewFormat.removeStyle(wikiStyle);
+        fInlineState.set(InlineState.BEGIN_FORMAT);
+    }
+    
     public void onHorizontalLine() {
         onHorizontalLine(WikiParameters.EMPTY);
     }

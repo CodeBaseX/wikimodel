@@ -181,7 +181,7 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testFormats() throws WikiParserException {
-        /*test("<html><b>bold</b></html>", "<p><strong>bold</strong></p>");
+        test("<html><b>bold</b></html>", "<p><strong>bold</strong></p>");
         test(
             "<html><strong>bold</strong></html>",
             "<p><strong>bold</strong></p>");
@@ -202,10 +202,10 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
 
         test("<html><tt>mono</tt></html>", "<p><mono>mono</mono></p>");
         
-        test("<html>a<strong><em>b</em></strong>c</html>", "<p>a<strong><em>b</em></strong>c</p>");*/
-        //test("<html>a<em><em>b</em></em>c</html>", "<p>a<em>b</em>c</p>");
-        
         test("<html>a<strong><em>b</em></strong>c</html>", "<p>a<strong><em>b</em></strong>c</p>");
+
+        test("<html>a<em><em>b</em></em>c</html>", "<p>a<em>b</em>c</p>");
+        test("<html>a<em><strong><em>b</em></strong></em>c</html>", "<p>a<em><strong>b</strong></em>c</p>");
     }
 
     /**
