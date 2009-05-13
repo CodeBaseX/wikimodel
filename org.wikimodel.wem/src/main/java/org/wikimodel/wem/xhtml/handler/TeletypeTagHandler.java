@@ -38,9 +38,9 @@ public class TeletypeTagHandler extends TagHandler {
             setAccumulateContent(true);
         } else {
             if (context.getParams().getSize() > 0) {
-                context.getScannerContext().onFormat(context.getParams());
+                context.getScannerContext().beginFormat(context.getParams());
             }
-            context.getScannerContext().onFormat(IWemConstants.MONO);
+            context.getScannerContext().beginFormat(IWemConstants.MONO);
         }
     }
 
@@ -51,9 +51,9 @@ public class TeletypeTagHandler extends TagHandler {
             String str = context.getContent();
             context.getScannerContext().onVerbatim(str, true);
         } else {
-            context.getScannerContext().onFormat(IWemConstants.MONO);
+            context.getScannerContext().endFormat(IWemConstants.MONO);
             if (context.getParams().getSize() > 0) {
-                context.getScannerContext().onFormat(WikiParameters.EMPTY);
+                context.getScannerContext().endFormat(WikiParameters.EMPTY);
             }
         }
     }

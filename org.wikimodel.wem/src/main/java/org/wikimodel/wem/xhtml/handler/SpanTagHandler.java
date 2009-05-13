@@ -25,14 +25,14 @@ public class SpanTagHandler extends TagHandler {
     @Override
     protected void begin(TagContext context) {
         if (context.getParams().getSize() > 0) {
-            context.getScannerContext().onFormat(context.getParams());
+            context.getScannerContext().beginFormat(context.getParams());
         }
     }
 
     @Override
     protected void end(TagContext context) {
         if (context.getParams().getSize() > 0) {
-            context.getScannerContext().onFormat(WikiParameters.EMPTY);
+            context.getScannerContext().endFormat(WikiParameters.EMPTY);
         }
     }
 

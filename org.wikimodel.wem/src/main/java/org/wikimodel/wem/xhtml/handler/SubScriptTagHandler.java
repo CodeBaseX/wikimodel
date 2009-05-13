@@ -27,16 +27,16 @@ public class SubScriptTagHandler extends TagHandler {
     @Override
     protected void begin(TagContext context) {
         if (context.getParams().getSize() > 0) {
-            context.getScannerContext().onFormat(context.getParams());
+            context.getScannerContext().beginFormat(context.getParams());
         }
-        context.getScannerContext().onFormat(IWemConstants.SUB);
+        context.getScannerContext().beginFormat(IWemConstants.SUB);
     }
 
     @Override
     protected void end(TagContext context) {
-        context.getScannerContext().onFormat(IWemConstants.SUB);
+        context.getScannerContext().endFormat(IWemConstants.SUB);
         if (context.getParams().getSize() > 0) {
-            context.getScannerContext().onFormat(WikiParameters.EMPTY);
+            context.getScannerContext().endFormat(WikiParameters.EMPTY);
         }
     }
 

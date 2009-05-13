@@ -27,16 +27,16 @@ public class UnderlineTagHandler extends TagHandler {
     @Override
     protected void begin(TagContext context) {
         if (context.getParams().getSize() > 0) {
-            context.getScannerContext().onFormat(context.getParams());
+            context.getScannerContext().beginFormat(context.getParams());
         }
-        context.getScannerContext().onFormat(IWemConstants.INS);
+        context.getScannerContext().beginFormat(IWemConstants.INS);
     }
 
     @Override
     protected void end(TagContext context) {
-        context.getScannerContext().onFormat(IWemConstants.INS);
+        context.getScannerContext().endFormat(IWemConstants.INS);
         if (context.getParams().getSize() > 0) {
-            context.getScannerContext().onFormat(WikiParameters.EMPTY);
+            context.getScannerContext().endFormat(WikiParameters.EMPTY);
         }
     }
 

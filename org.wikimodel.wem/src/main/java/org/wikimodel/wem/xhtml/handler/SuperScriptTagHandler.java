@@ -27,16 +27,16 @@ public class SuperScriptTagHandler extends TagHandler {
     @Override
     protected void begin(TagContext context) {
         if (context.getParams().getSize() > 0) {
-            context.getScannerContext().onFormat(context.getParams());
+            context.getScannerContext().beginFormat(context.getParams());
         }
-        context.getScannerContext().onFormat(IWemConstants.SUP);
+        context.getScannerContext().beginFormat(IWemConstants.SUP);
     }
 
     @Override
     protected void end(TagContext context) {
-        context.getScannerContext().onFormat(IWemConstants.SUP);
+        context.getScannerContext().endFormat(IWemConstants.SUP);
         if (context.getParams().getSize() > 0) {
-            context.getScannerContext().onFormat(WikiParameters.EMPTY);
+            context.getScannerContext().endFormat(WikiParameters.EMPTY);
         }
     }
 
