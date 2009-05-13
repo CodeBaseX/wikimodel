@@ -349,6 +349,11 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
             // so that we send a endDocument when when the closing tag.
             setStackParameter("tagNameBeforeNestedDocument",
                     new Stack<String>());
+
+            // Allow each handler to have some initialization
+            for (TagHandler tagElementHandler : fMap.values()) {
+                tagElementHandler.initialize(this);
+            }
         }
 
         public void popStackParameters() {
