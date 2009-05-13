@@ -15,7 +15,7 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 /**
  * @author kotelnikov
  * @author vmassol
- * @author tmortagne
+ * @author thomas.mortagne
  */
 public class ListTagHandler extends TagHandler {
 
