@@ -169,6 +169,16 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
                 "</div>\n"+
                 "</li>\n"+
                 "</ul>");
+        test("<html><ul><li>Item 1<p>Before</p><ul><li>Item 2</li></ul><p>After</p></li></ul></html>", "<ul>\n"+
+                "  <li>Item 1<div class='wikimodel-document'>\n"+
+                "<p>Before</p>\n"+
+                "<ul>\n"+
+                "  <li>Item 2</li>\n"+
+                "</ul>\n"+
+                "<p>After</p>\n"+
+                "</div>\n"+
+                "</li>\n"+
+                "</ul>");
     }
 
     /**

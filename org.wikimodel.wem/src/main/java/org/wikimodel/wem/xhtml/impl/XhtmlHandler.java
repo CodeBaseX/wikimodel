@@ -344,11 +344,6 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
             setStackParameter("listStyles", new StringBuffer());
             setStackParameter("quoteDepth", new Integer(0));
             setStackParameter("insideBlockElement", new Stack<Boolean>());
-            // Saves the tag name just before we send a beginDocument event for
-            // nested documents
-            // so that we send a endDocument when when the closing tag.
-            setStackParameter("tagNameBeforeNestedDocument",
-                    new Stack<String>());
 
             // Allow each handler to have some initialization
             for (TagHandler tagElementHandler : fMap.values()) {

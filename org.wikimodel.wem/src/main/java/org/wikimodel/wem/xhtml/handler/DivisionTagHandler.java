@@ -12,7 +12,6 @@ package org.wikimodel.wem.xhtml.handler;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Stack;
 
 import org.wikimodel.wem.WikiParameter;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
@@ -51,11 +50,11 @@ public class DivisionTagHandler extends TagHandler {
                         value);
             } else {
                 // Consider that we're inside an embedded document
-                beginDocument(context);
+                beginDocument(context, context.getParams().remove("class"));
             }
         } else {
             // Consider that we're inside an embedded document
-            beginDocument(context);
+            beginDocument(context, context.getParams());
         }
     }
 
@@ -71,33 +70,5 @@ public class DivisionTagHandler extends TagHandler {
         } else {
             endDocument(context);
         }
-    }
-
-    private void beginDocument(TagContext context) {
-        sendEmptyLines(context);
-        context.getScannerContext().beginDocument(
-                context.getParams().remove("class"));
-
-        Object ignoreElements = context.getTagStack().getStackParameter(
-                "ignoreElements");
-
-        // Stack context parameters since we enter in a new document
-        context.getTagStack().pushStackParameters();
-
-        // ignoreElements apply on embedded document
-        context.getTagStack().setStackParameter("ignoreElements",
-                ignoreElements);
-
-        // Mark that we're not inside a block element since we're starting a new
-        // doc
-        Stack<Boolean> insideBlockElementsStack = (Stack<Boolean>) context
-                .getTagStack().getStackParameter("insideBlockElement");
-        insideBlockElementsStack.push(false);
-    }
-
-    private void endDocument(TagContext context) {
-        context.getTagStack().popStackParameters();
-
-        context.getScannerContext().endDocument();
     }
 }
