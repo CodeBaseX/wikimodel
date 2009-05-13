@@ -78,8 +78,15 @@ public class DivisionTagHandler extends TagHandler {
         context.getScannerContext().beginDocument(
                 context.getParams().remove("class"));
 
+        Object ignoreElements = context.getTagStack().getStackParameter(
+                "ignoreElements");
+
         // Stack context parameters since we enter in a new document
         context.getTagStack().pushStackParameters();
+
+        // ignoreElements apply on embedded document
+        context.getTagStack().setStackParameter("ignoreElements",
+                ignoreElements);
 
         // Mark that we're not inside a block element since we're starting a new
         // doc
