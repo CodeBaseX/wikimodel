@@ -25,7 +25,7 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack;
  * their execution).
  * 
  * @author vmassol
- * @author tmortagne
+ * @author thomas.mortagne
  */
 public class CommentHandler {
     private static final String MACRO_SEPARATOR = "|-|";
@@ -79,9 +79,10 @@ public class CommentHandler {
 
             // If we're inside a block element then issue an inline macro event
             // otherwise issue a block macro event
-            Stack<Boolean> insideBlockElementsStack = 
-                (Stack<Boolean>) stack.getStackParameter("insideBlockElement");
-            if (!insideBlockElementsStack.isEmpty() && insideBlockElementsStack.peek()) { 
+            Stack<Boolean> insideBlockElementsStack = (Stack<Boolean>) stack
+                    .getStackParameter("insideBlockElement");
+            if (!insideBlockElementsStack.isEmpty()
+                    && insideBlockElementsStack.peek()) {
                 stack.getScannerContext().onMacroInline(macroName, macroParams,
                         macroContent);
             } else {
