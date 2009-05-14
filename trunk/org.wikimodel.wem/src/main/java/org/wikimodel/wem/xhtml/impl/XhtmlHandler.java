@@ -97,7 +97,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
             public void beginElement(TagHandler handler) {
                 if (fParent == null) {
-                    fScannerContext.beginDocument();
+                    getScannerContext().beginDocument();
                 }
                 fHandler = handler;
                 if (fHandler != null) {
@@ -110,7 +110,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
                     fHandler.endElement(this);
                 }
                 if (fParent == null) {
-                    fScannerContext.endDocument();
+                    getScannerContext().endDocument();
                 }
             }
 
@@ -132,7 +132,8 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
             }
 
             public WikiScannerContext getScannerContext() {
-                return fScannerContext;
+                return fScannerContext.isEmpty() ? null : fScannerContext
+                        .peek();
             }
 
             public TagStack getTagStack() {
@@ -148,17 +149,9 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
             }
         }
 
-        private static final int CHARACTER = 0;
-
         private Map<String, TagHandler> fMap = new HashMap<String, TagHandler>();
 
         private CommentHandler fCommentHandler;
-
-        private static final int NEW_LINE = 3;
-
-        private static final char SPACE = 1;
-
-        private static final int SPECIAL_SYMBOL = 2;
 
         /**
          * Allow saving parameters. For example we save the number of br
@@ -181,13 +174,13 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
         private TagContext fPeek;
 
-        WikiScannerContext fScannerContext;
+        private Stack<WikiScannerContext> fScannerContext = new Stack<WikiScannerContext>();
 
         public TagStack(WikiScannerContext context) {
             // init stack paramaters
             pushStackParameters();
 
-            fScannerContext = context;
+            fScannerContext.push(context);
             fCommentHandler = new CommentHandler();
         }
 
@@ -262,11 +255,23 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
         }
 
         public WikiScannerContext getScannerContext() {
-            return fScannerContext;
+            return fScannerContext.isEmpty() ? null : fScannerContext.peek();
         }
 
         public void setScannerContext(WikiScannerContext context) {
-            fScannerContext = context;
+            if (fScannerContext.isEmpty()) {
+                pushScannerContext(context);
+            } else {
+                fScannerContext.set(fScannerContext.size() - 1, context);
+            }
+        }
+
+        public void pushScannerContext(WikiScannerContext context) {
+            fScannerContext.push(context);
+        }
+
+        public WikiScannerContext popScannerContext() {
+            return fScannerContext.pop();
         }
 
         private void flushStack(Stack<XhtmlCharacter> stack) {
@@ -274,14 +279,14 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
                 XhtmlCharacter character = stack.remove(0);
                 switch (character.getType()) {
                 case ESCAPED:
-                    fScannerContext.onEscape("" + character.getCharacter());
+                    getScannerContext().onEscape("" + character.getCharacter());
                     break;
                 case SPECIAL_SYMBOL:
-                    fScannerContext.onSpecialSymbol(""
-                            + character.getCharacter());
+                    getScannerContext().onSpecialSymbol(
+                            "" + character.getCharacter());
                     break;
                 case NEW_LINE:
-                    fScannerContext.onLineBreak();
+                    getScannerContext().onLineBreak();
                     break;
                 case SPACE:
                     StringBuffer spaceBuffer = new StringBuffer(" ");
@@ -290,7 +295,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
                         stack.remove(0);
                         spaceBuffer.append(' ');
                     }
-                    fScannerContext.onSpace(spaceBuffer.toString());
+                    getScannerContext().onSpace(spaceBuffer.toString());
                     break;
                 default:
                     StringBuffer charBuffer = new StringBuffer();
@@ -300,8 +305,10 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
                         charBuffer.append(stack.firstElement().getCharacter());
                         stack.remove(0);
                     }
-                    fScannerContext.onWord(WikiPageUtil
-                            .escapeXmlString(charBuffer.toString()));
+                    getScannerContext()
+                            .onWord(
+                                    WikiPageUtil.escapeXmlString(charBuffer
+                                            .toString()));
                 }
             }
         }
@@ -360,13 +367,35 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
         }
 
         public void setStackParameter(String name, Object data) {
-            getStackParameters().put(name, data);
+            Stack<Object> set = (Stack<Object>) getStackParameters().get(name);
+            if (set == null || set.isEmpty()) {
+                pushStackParameter(name, data);
+            } else {
+                set.setElementAt(data, set.size() - 1);
+            }
         }
 
         public Object getStackParameter(String name) {
-            return getStackParameters().get(name);
+            Stack<Object> set = (Stack<Object>) getStackParameters().get(name);
+            if (set == null || set.isEmpty()) {
+                return null;
+            } else {
+                return set.peek();
+            }
         }
 
+        public void pushStackParameter(String name, Object data) {
+            Stack<Object> set = (Stack<Object>) getStackParameters().get(name);
+            if (set == null) {
+                getStackParameters().put(name, set = new Stack<Object>());
+            }
+
+            set.push(data);
+        }
+
+        public Object popStackParameter(String name) {
+            return ((Stack<Object>) getStackParameters().get(name)).pop();
+        }
     }
 
     protected String fDocumentSectionUri;
