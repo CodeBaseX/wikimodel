@@ -381,4 +381,21 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
             "<html><p><tt class=\"wikimodel-verbatim\">verbatim</tt></p></html>",
             "<p><code>verbatim</code></p>");
     }
+
+    public void testMacro() throws WikiParserException
+    {
+        test(
+                "<html><!--startmacro:name|-|param=\"value\"|-|content--><!--stopmacro--></html>",
+                "<pre class='wikimodel-macro' macroName='name' param='value'><![CDATA[content]]></pre>");
+        test(
+                "<html><!--startmacro:name|-|title=\"value\"-->macro<!--stopmacro--></html>",
+                "<pre class='wikimodel-macro' macroName='name' title='value'/>");
+
+        test(
+                "<html><!--startmacro:name|-|param=\"va|-|lue\"|-|content-->macro<!--stopmacro--></html>",
+                "<pre class='wikimodel-macro' macroName='name' param='va|-|lue'><![CDATA[content]]></pre>");
+        test(
+                "<html><!--startmacro:name|-|title=\"va|-|lue\"-->macro<!--stopmacro--></html>",
+                "<pre class='wikimodel-macro' macroName='name' title='va|-|lue'/>");
+    }
 }
