@@ -63,8 +63,10 @@ public class CommentHandler {
                     macroParams = new WikiParameters(parameters);
 
                     // Extract macro content
-                    macroContent = macroString.substring(index
-                            + MACRO_SEPARATOR.length());
+                    if (macroString.length() > index) {
+                        macroContent = macroString.substring(index
+                                + MACRO_SEPARATOR.length());
+                    }
                 } else {
                     // There is only parameters remaining in the string, the
                     // macro does not have content
