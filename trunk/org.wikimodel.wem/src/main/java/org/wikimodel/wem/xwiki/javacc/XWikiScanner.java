@@ -18,6 +18,7 @@ import org.wikimodel.wem.impl.IWikiScannerContext;
 import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.impl.WikiScannerUtil;
 import org.wikimodel.wem.xwiki.XWikiReferenceParser;
+import org.wikimodel.wem.xwiki.XWikiWikiParameters;
 
 import org.wikimodel.wem.xwiki.XWikiScannerUtil;
 
@@ -25,6 +26,7 @@ import org.wikimodel.wem.xwiki.XWikiScannerUtil;
  * This is the internal wiki page parser generated from the grammar file.
  * 
  * @author kotelnikov
+ * @author thomas.mortagne
  */
 public class XWikiScanner implements XWikiScannerConstants {
 
@@ -48,8 +50,8 @@ public class XWikiScanner implements XWikiScannerConstants {
     }
 
     protected WikiParameters newWikiParameters(String str) {
-        str = WikiScannerUtil.extractSubstring(str, "(%", "%)", '~');
-        return new WikiParameters(str);
+        str = WikiScannerUtil.extractSubstring(str, "(%", "%)", '~', false);
+        return new XWikiWikiParameters(str);
     }
 
   final public Token getINTERNAL_VERBATIM_START() throws ParseException {
@@ -865,7 +867,7 @@ public class XWikiScanner implements XWikiScannerConstants {
             String p  = str.substring(2, idx);
             str = str.substring(idx + 2);
             head = (str.startsWith("!=") || str.startsWith("|="));
-            rowParams = new WikiParameters(p);
+            rowParams = new XWikiWikiParameters(p);
             cellParams = newWikiParameters(str);
         } else {
             head = (str.startsWith("!=") || str.startsWith("|="));
@@ -1229,7 +1231,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     }
         sendOnEmptyLinesEvent(false);
 
-        WikiParameters params = new WikiParameters(paramStr);
+        WikiParameters params = new XWikiWikiParameters(paramStr);
         if (inline || eof) {
                 fContext.onMacro(name, params, content, inline);
         } else {
@@ -1848,11 +1850,6 @@ public class XWikiScanner implements XWikiScannerConstants {
     try { return !jj_3_34(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(33, xla); }
-  }
-
-  final private boolean jj_3_5() {
-    if (jj_3R_18()) return true;
-    return false;
   }
 
   final private boolean jj_3R_74() {
@@ -2764,6 +2761,11 @@ public class XWikiScanner implements XWikiScannerConstants {
 
   final private boolean jj_3_6() {
     if (jj_3R_19()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_5() {
+    if (jj_3R_18()) return true;
     return false;
   }
 

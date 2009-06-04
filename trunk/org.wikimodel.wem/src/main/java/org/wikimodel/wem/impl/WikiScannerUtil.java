@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2005,2007 Cognium Systems SA and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Apache License, Version 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Contributors:
+ *     Cognium Systems SA - initial API and implementation
+ *******************************************************************************/
 package org.wikimodel.wem.impl;
 
 import java.util.List;
@@ -8,8 +18,14 @@ import org.wikimodel.wem.WikiParameter;
  * This class contains some utility methods used by scanners.
  * 
  * @author MikhailKotelnikov
+ * @author thomas.mortagne
  */
 public class WikiScannerUtil {
+
+    /**
+     * The default character to use has escaping char.
+     */
+    public static final char DEFAULT_ESCAPECHAR = '\\';
 
     /**
      * Extracts and returns a substring of the given string starting from the
@@ -29,6 +45,30 @@ public class WikiScannerUtil {
         String open,
         String close,
         char escape) {
+        return extractSubstring(str, open, close, escape, true);
+    }
+
+    /**
+     * Extracts and returns a substring of the given string starting from the
+     * given open sequence and finishing by the specified close sequence. This
+     * method unescapes all symbols prefixed by the given escape symbol.
+     * 
+     * @param str from this string the substring framed by the specified open
+     *        and close sequence will be returned
+     * @param open the start substring sequence
+     * @param close the closing substring sequence
+     * @param escape the escape symbol
+     * @param cleanEscape indicate if the escaping char has to be removed.
+     *        Useful when the substring use the same escaping that the string.
+     * @return a substring of the given string starting from the given open
+     *         sequence and finishing by the specified close sequence
+     */
+    public static String extractSubstring(
+        String str,
+        String open,
+        String close,
+        char escape,
+        boolean cleanEscape) {
         int i;
         StringBuffer buf = new StringBuffer();
         int len = str.length();
@@ -38,6 +78,7 @@ public class WikiScannerUtil {
                 break;
             }
         }
+
         boolean escaped = false;
         for (; i < len; i++) {
             if (escaped) {
@@ -49,11 +90,12 @@ public class WikiScannerUtil {
                     break;
                 char ch = str.charAt(i);
                 escaped = ch == escape;
-                if (!escaped) {
+                if (!escaped || !cleanEscape) {
                     buf.append(ch);
                 }
             }
         }
+
         return buf.toString();
     }
 
@@ -107,6 +149,7 @@ public class WikiScannerUtil {
      * @param buf to this buffer the extracted token value will be appended
      * @param trim this array is used to return the boolean flag specifying if
      *        the value collected in the buffer should be trimmed or not
+     * @param escapeChar the escaping character
      * @return the new position in the array after extracting of a new token
      */
     private static int getNextToken(
@@ -114,7 +157,8 @@ public class WikiScannerUtil {
         int pos,
         char[] delimiter,
         StringBuffer buf,
-        boolean[] trim) {
+        boolean[] trim,
+        char escapeChar) {
         buf.delete(0, buf.length());
         boolean escaped = false;
         if (pos < array.length && (array[pos] == '\'' || array[pos] == '"')) {
@@ -126,7 +170,7 @@ public class WikiScannerUtil {
                     buf.append(array[pos]);
                     escaped = false;
                 } else {
-                    escaped = array[pos] == '\\';
+                    escaped = array[pos] == escapeChar;
                     if (!escaped)
                         buf.append(array[pos]);
                 }
@@ -136,21 +180,25 @@ public class WikiScannerUtil {
         } else {
             trim[0] = true;
             for (; pos < array.length; pos++) {
-                if (array[pos] == '='
-                    || skipSequence(array, pos, delimiter) > pos)
-                    break;
-                if (!escaped && (array[pos] == '\'' || array[pos] == '"'))
-                    break;
                 if (escaped) {
                     buf.append(array[pos]);
                     escaped = false;
                 } else {
-                    escaped = array[pos] == '\\';
+                    if ((array[pos] == '=' || skipSequence(array, pos,
+                            delimiter) > pos)) {
+                        break;
+                    }
+                    if (array[pos] == '\'' || array[pos] == '"') {
+                        break;
+                    }
+
+                    escaped = array[pos] == escapeChar;
                     if (!escaped)
                         buf.append(array[pos]);
                 }
             }
         }
+
         return pos;
     }
 
@@ -190,7 +238,7 @@ public class WikiScannerUtil {
     private static int removeSpaces(char[] array, int pos, StringBuffer buf) {
         buf.delete(0, buf.length());
         for (; pos < array.length
-            && (array[pos] == '=' || Character.isSpaceChar(array[pos])); pos++) {
+                && (array[pos] == '=' || Character.isSpaceChar(array[pos])); pos++) {
             if (array[pos] == '=')
                 buf.append(array[pos]);
         }
@@ -243,6 +291,21 @@ public class WikiScannerUtil {
         return splitToPairs(str, list, delimiter, null);
     }
 
+    public static int splitToPairs(
+        String str,
+        List<WikiParameter> list,
+        char escapeChar) {
+        return splitToPairs(str, list, null, null, escapeChar);
+    }
+
+    public static int splitToPairs(
+        String str,
+        List<WikiParameter> list,
+        String delimiter,
+        String end) {
+        return splitToPairs(str, list, delimiter, end, DEFAULT_ESCAPECHAR);
+    }
+
     /**
      * Splits the given string into a set of key-value pairs; all extracted
      * values will be added to the given list
@@ -251,13 +314,15 @@ public class WikiScannerUtil {
      * @param list to this list all extracted values will be added
      * @param delimiter a delimiter for individual key/value pairs
      * @param end the ending sequence, if null it's not taken into account
+     * @param escapeChar the escaping character
      * @return the index where parser stopped
      */
     public static int splitToPairs(
         String str,
         List<WikiParameter> list,
         String delimiter,
-        String end) {
+        String end,
+        char escapeChar) {
         if (str == null)
             return 0;
         char[] array = str.toCharArray();
@@ -288,12 +353,13 @@ public class WikiScannerUtil {
                 break;
             }
 
-            i = getNextToken(array, i, delimiterArray, buf, trim);
+            i = getNextToken(array, i, delimiterArray, buf, trim, escapeChar);
             key = buf.toString().trim();
 
             i = removeSpaces(array, i, buf);
             if (buf.indexOf("=") >= 0) {
-                i = getNextToken(array, i, delimiterArray, buf, trim);
+                i = getNextToken(array, i, delimiterArray, buf, trim,
+                        escapeChar);
                 value = buf.toString();
                 if (trim[0]) {
                     value = value.trim();

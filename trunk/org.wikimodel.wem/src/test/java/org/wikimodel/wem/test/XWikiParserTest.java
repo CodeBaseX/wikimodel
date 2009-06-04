@@ -165,9 +165,13 @@ public class XWikiParserTest extends AbstractWikiParserTest {
                         + "  <tr><td param='value'><div class='wikimodel-document'>\n"
                         + "<p>inside</p>\n" + "</div>\n" + "after </td></tr>\n"
                         + "</tbody></table>");
-        test("(% param=\"value\" %)\n ((( inside ))) after ",
-                "<div class='wikimodel-document' param='value'>\n"
+
+        test("(% param=\"value\" %)\n ((( inside ))) after ", "<div class='wikimodel-document' param='value'>\n"
                         + "<p>inside</p>\n" + "</div>\n" + "<p>after </p>");
+        test("(% param=value %)(((inside)))", "<div class='wikimodel-document' param='value'>\n"
+                        + "<p>inside</p>\n"
+                        + "</div>");
+
         test("((( {{macro}} hello world! {{/macro}} )))", "<div class='wikimodel-document'>\n"+
                 "<pre class='wikimodel-macro' macroName='macro'><![CDATA[ hello world! ]]></pre>\n"+
                 "</div>");
@@ -364,10 +368,6 @@ public class XWikiParserTest extends AbstractWikiParserTest {
                 "before\n{{toto}}a{{/toto}}after",
                 "<p>before\n<span class='wikimodel-macro' macroName='toto'><![CDATA[a]]></span>after</p>");
 
-        test(
-                "{{macro param=\"val\\\"u\\\\e\"/}}{{macro/}}",
-                "<p><span class='wikimodel-macro' macroName='macro' param='val&#x22;u\\e'/><span class='wikimodel-macro' macroName='macro'/></p>");
-
         // URIs as macro names
         test("{{x:toto}}a{{/x:toto}}",
                 "<pre class='wikimodel-macro' macroName='x:toto'><![CDATA[a]]></pre>");
@@ -487,6 +487,10 @@ public class XWikiParserTest extends AbstractWikiParserTest {
                 "<p>a<span class='wikimodel-macro' macroName='a'><![CDATA[{{b}}]]></span></p>");
         test("a{{a}}{{b}}{",
                 "<p>a<span class='wikimodel-macro' macroName='a'><![CDATA[{{b}}{]]></span></p>");
+
+        // escaping
+        test("{{toto param1=\"val~\"ue1\" param2=\"v~~al~}}ue2\"}}a{{/toto}}",
+            "<pre class='wikimodel-macro' macroName='toto' param1='val&#x22;ue1' param2='v~al}}ue2'><![CDATA[a]]></pre>");
     }
 
     /**
@@ -664,5 +668,9 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test("{{{ ~{~{{ }}}", "<pre> {{{ </pre>");
         test("{{{ ~ }}}", "<pre> ~ </pre>");
         test("{{{ ~}~}~}", "<pre> }}}</pre>");
+    }
+    
+    public void testLink() throws WikiParserException {
+        test("[[label>>reference||param=\"value ~\"value~\"\"]]", "<p><a href='reference' param='value &#x22;value&#x22;'>label</a></p>");
     }
 }

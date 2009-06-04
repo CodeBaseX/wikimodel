@@ -14,6 +14,8 @@ package org.wikimodel.wem.xwiki;
  * @author thomas.mortagne
  */
 public class XWikiScannerUtil {
+    public static final char ESCAPECHAR = '~';
+    
     /**
      * To have }}} or {{{ inside inline block we need to escape it in some
      * condition. This method remove this escaping to send the correct text to

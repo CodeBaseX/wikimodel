@@ -22,6 +22,7 @@ import org.wikimodel.wem.impl.WikiScannerUtil;
  * This is a default implementation of the {@link IWikiParams} interface.
  * 
  * @author kotelnikov
+ * @author thomas.mortagne
  */
 public class WikiParameters {
 
@@ -36,15 +37,19 @@ public class WikiParameters {
     private static final long serialVersionUID = 1253393289284318413L;
 
     public static WikiParameters newWikiParameters(String str) {
+        return newWikiParameters(str, WikiScannerUtil.DEFAULT_ESCAPECHAR);
+    }
+    
+    public static WikiParameters newWikiParameters(String str, char escapeChar) {
         if (str == null)
             return EMPTY;
         str = str.trim();
         if ("".equals(str))
             return EMPTY;
-        return new WikiParameters(str);
+        return new WikiParameters(str, escapeChar);
     }
 
-    private final List<WikiParameter> fList = new ArrayList<WikiParameter>();
+    protected final List<WikiParameter> fList = new ArrayList<WikiParameter>();
 
     private Map<String, WikiParameter[]> fMap;
 
@@ -52,7 +57,7 @@ public class WikiParameters {
 
     /**
      */
-    WikiParameters() {
+    protected WikiParameters() {
         this((String) null);
     }
 
@@ -72,6 +77,11 @@ public class WikiParameters {
         WikiScannerUtil.splitToPairs(str, fList);
     }
 
+    public WikiParameters(String str, char escapeChar) {
+        super();
+        WikiScannerUtil.splitToPairs(str, fList, escapeChar);
+    }
+    
     /**
      * @param str
      * @param delimiter

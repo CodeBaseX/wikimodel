@@ -12,6 +12,7 @@ package org.wikimodel.wem.xwiki;
 
 import java.util.regex.Pattern;
 
+import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.WikiReferenceParser;
 
 /**
@@ -36,8 +37,8 @@ public class XWikiReferenceParser extends WikiReferenceParser {
     }
 
     @Override
-    protected String getParameters(String[] chunks) {
-        return chunks[2];
+    protected WikiParameters getParameters(String[] chunks) {
+        return XWikiWikiParameters.newWikiParameters(chunks[2]);
     }
 
     @Override

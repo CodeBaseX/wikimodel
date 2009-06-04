@@ -18,6 +18,7 @@ package org.wikimodel.wem;
  * 
  * @see WikiReference
  * @author kotelnikov
+ * @author thomas.mortagne
  */
 public class WikiReferenceParser implements IWikiReferenceParser {
 
@@ -43,30 +44,34 @@ public class WikiReferenceParser implements IWikiReferenceParser {
 
     /**
      * Extracts parameters part of the original reference and returns it as a
-     * unique string.
+     * WikiParameters.
      * 
      * @param chunks the array of chunks
-     * @return a part of the parsed reference containing parameters
+     * @return the parameters
      */
-    protected String getParameters(String[] chunks) {
-        return chunks.length > 2 ? chunks[2].trim() : null;
+    protected WikiParameters getParameters(String[] chunks) {
+        return WikiParameters.newWikiParameters(chunks.length > 2 ? chunks[2]
+                .trim() : null);
     }
 
     /**
      * @see org.wikimodel.wem.IWikiReferenceParser#parse(java.lang.String)
      */
     public WikiReference parse(String str) {
-        if (str == null)
+        if (str == null) {
             return null;
+        }
+
         String[] chunks = splitToChunks(str);
-        if (chunks.length == 0)
+        if (chunks.length == 0) {
             return null;
+        }
+
         String link = getLink(chunks);
         String label = getLabel(chunks);
-        WikiParameters params = WikiParameters
-            .newWikiParameters(getParameters(chunks));
-        WikiReference reference = new WikiReference(link, label, params);
-        return reference;
+        WikiParameters parameters = getParameters(chunks);
+
+        return new WikiReference(link, label, parameters);
     }
 
     /**
