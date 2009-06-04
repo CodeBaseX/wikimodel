@@ -28,6 +28,7 @@ import org.wikimodel.wem.impl.IWikiScannerContext;
 import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.impl.WikiScannerUtil;
 import org.wikimodel.wem.xwiki.XWikiReferenceParser;
+import org.wikimodel.wem.xwiki.XWikiWikiParameters;
 
 import org.wikimodel.wem.xwiki.XWikiScannerUtil;
 
@@ -35,6 +36,7 @@ import org.wikimodel.wem.xwiki.XWikiScannerUtil;
  * This is the internal wiki page parser generated from the grammar file.
  * 
  * @author kotelnikov
+ * @author thomas.mortagne
  */
 public class XWikiScanner {
 
@@ -58,8 +60,8 @@ public class XWikiScanner {
     }
 
     protected WikiParameters newWikiParameters(String str) {
-        str = WikiScannerUtil.extractSubstring(str, "(%", "%)", '~');
-        return new WikiParameters(str);
+        str = WikiScannerUtil.extractSubstring(str, "(%", "%)", '~', false);
+        return new XWikiWikiParameters(str);
     }
     
 }
@@ -480,7 +482,7 @@ void tableRow():
             String p  = str.substring(2, idx); 
             str = str.substring(idx + 2);
             head = (str.startsWith("!=") || str.startsWith("|="));
-            rowParams = new WikiParameters(p);
+            rowParams = new XWikiWikiParameters(p);
             cellParams = newWikiParameters(str);
         } else {
             head = (str.startsWith("!=") || str.startsWith("|="));
@@ -728,7 +730,7 @@ void macroBody(String name, String paramStr, boolean inline, String content):
     {
     	sendOnEmptyLinesEvent(false);
 
-    	WikiParameters params = new WikiParameters(paramStr);
+    	WikiParameters params = new XWikiWikiParameters(paramStr);
         if (inline || eof) {
         	fContext.onMacro(name, params, content, inline);
         } else {

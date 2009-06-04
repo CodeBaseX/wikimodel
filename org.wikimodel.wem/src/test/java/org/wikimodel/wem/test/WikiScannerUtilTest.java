@@ -8,6 +8,7 @@ import org.wikimodel.wem.impl.WikiScannerUtil;
 
 /**
  * @author MikhailKotelnikov
+ * @author thomas.mortagne
  */
 public class WikiScannerUtilTest extends TestCase {
 
@@ -68,17 +69,25 @@ public class WikiScannerUtilTest extends TestCase {
         testSubstringExtract1("(abc)", "abc");
         testSubstringExtract1("123(abc)456", "abc");
         testSubstringExtract1("123(a\\(b\\)c)456", "a(b)c");
+        testSubstringExtract1("123(a\\(b\\)c)456", "a\\(b\\)c", false);
 
         testSubstringExtract2("123{{}}", "");
         testSubstringExtract2("{{}}", "");
         testSubstringExtract2("{{abc}}", "abc");
         testSubstringExtract2("123{{abc}}456", "abc");
         testSubstringExtract2("123{{a\\(b\\)c}}456", "a(b)c");
+        testSubstringExtract2("123{{a\\(b\\)c}}456", "a\\(b\\)c", false);
         testSubstringExtract2("123{{a\\{{b\\}}c}}456", "a{{b}}c");
+        testSubstringExtract2("123{{a\\{{b\\}}c}}456", "a\\{{b\\}}c", false);
     }
 
     private void testSubstringExtract1(String str, String result) {
         String test = WikiScannerUtil.extractSubstring(str, "(", ")", '\\');
+        assertEquals(result, test);
+    }
+    
+    private void testSubstringExtract1(String str, String result, boolean cleanEscape) {
+        String test = WikiScannerUtil.extractSubstring(str, "(", ")", '\\', cleanEscape);
         assertEquals(result, test);
     }
 
@@ -86,5 +95,9 @@ public class WikiScannerUtilTest extends TestCase {
         String test = WikiScannerUtil.extractSubstring(str, "{{", "}}", '\\');
         assertEquals(result, test);
     }
-
+    
+    private void testSubstringExtract2(String str, String result, boolean cleanEscape) {
+        String test = WikiScannerUtil.extractSubstring(str, "{{", "}}", '\\', cleanEscape);
+        assertEquals(result, test);
+    }
 }
