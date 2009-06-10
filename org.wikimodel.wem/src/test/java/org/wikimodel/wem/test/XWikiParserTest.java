@@ -192,6 +192,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test("~ A space just after a tilda the tilda should desapear",
                 "<p> A space just after a tilda the tilda should desapear</p>");
         test("~~escaped tilda", "<p>~escaped tilda</p>");
+        test("tilda at the end~", "<p>tilda at the end</p>");
     }
 
     public void testFormat() throws Exception {

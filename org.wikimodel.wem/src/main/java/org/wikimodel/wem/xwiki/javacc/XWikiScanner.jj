@@ -932,7 +932,10 @@ void line():
                     // The first char is an escape symbol, only send the second one
                     fContext.onSpecialSymbol("" + t.image.charAt(1));
                 } else {
-                	fContext.onSpecialSymbol(t.image);
+                    //It's a '~' when it's the last character of the content
+                    if (t.image.charAt(0) != '~') {
+                	  fContext.onSpecialSymbol(t.image);
+                	}
                 }
             }
             |
