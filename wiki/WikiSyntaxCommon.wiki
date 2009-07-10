@@ -7,7 +7,30 @@ The common Wiki Syntax was developed as the "native" Wiki Model Syntax. It conta
  * _embedded documents_ - using this feature you can insert one table into another or a header in a list.
  * _hierarchical properties_ are used to define specific "labeled" parts of wiki documents 
 
+
+
 = Details =
+
+== Simple Formatting ==
+
+{{{
+*bold*
+__italic__ 
+^^superscript^^
+~~subscript~~
+}}}
+
+== References ==
+{{{
+http://www.google.com - simple link
+[http://www.google.com Google] - link with a custom label
+}}}
+
+== Images ==
+{{{
+img:http://www.example.com/images/MyImage.png - an image
+}}}
+
 
 == Block elements ==
 ===  Lists ===
