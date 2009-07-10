@@ -29,6 +29,7 @@ http://www.google.com - simple link
 == Images ==
 {{{
 img:http://www.example.com/images/MyImage.png - an image
+img:MyImage.jpg - a local image
 }}}
 
 
