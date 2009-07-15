@@ -36,63 +36,68 @@ public class CommentHandler {
         // Some **content**
         // --><p>Some <strong>content</strong></p><!--stopmacro-->
         if (content.startsWith("startmacro:")) {
-            stack.setStackParameter("ignoreElements", true);
+            if (!(Boolean) stack.getStackParameter("ignoreElements")) {
+                String macroName;
+                WikiParameters macroParams = WikiParameters.EMPTY;
+                String macroContent = null;
 
-            String macroName;
-            WikiParameters macroParams = WikiParameters.EMPTY;
-            String macroContent = null;
+                String macroString = content.substring("startmacro:".length());
 
-            String macroString = content.substring("startmacro:".length());
+                int index = macroString.indexOf(MACRO_SEPARATOR);
 
-            int index = macroString.indexOf(MACRO_SEPARATOR);
-
-            if (index != -1) {
-                // Extract macro name
-                macroName = macroString.substring(0, index);
-
-                // Remove macro name part and continue parsing
-                macroString = macroString.substring(index
-                        + MACRO_SEPARATOR.length());
-
-                index = macroString.indexOf(MACRO_SEPARATOR);
                 if (index != -1) {
-                    // Extract macro parameters
-                    List<WikiParameter> parameters = new ArrayList<WikiParameter>();
-                    index = WikiScannerUtil.splitToPairs(macroString,
-                            parameters, null, MACRO_SEPARATOR);
-                    macroParams = new WikiParameters(parameters);
+                    // Extract macro name
+                    macroName = macroString.substring(0, index);
 
-                    // Extract macro content
-                    if (macroString.length() > index) {
-                        macroContent = macroString.substring(index
-                                + MACRO_SEPARATOR.length());
+                    // Remove macro name part and continue parsing
+                    macroString = macroString.substring(index
+                            + MACRO_SEPARATOR.length());
+
+                    index = macroString.indexOf(MACRO_SEPARATOR);
+                    if (index != -1) {
+                        // Extract macro parameters
+                        List<WikiParameter> parameters = new ArrayList<WikiParameter>();
+                        index = WikiScannerUtil.splitToPairs(macroString,
+                                parameters, null, MACRO_SEPARATOR);
+                        macroParams = new WikiParameters(parameters);
+
+                        // Extract macro content
+                        if (macroString.length() > index) {
+                            macroContent = macroString.substring(index
+                                    + MACRO_SEPARATOR.length());
+                        }
+                    } else {
+                        // There is only parameters remaining in the string, the
+                        // macro does not have content
+                        // Extract macro parameters
+                        macroParams = WikiParameters
+                                .newWikiParameters(macroString);
                     }
                 } else {
-                    // There is only parameters remaining in the string, the
-                    // macro does not have content
-                    // Extract macro parameters
-                    macroParams = WikiParameters.newWikiParameters(macroString);
+                    // There is only macro name, the macro does not have
+                    // parameters
+                    // or content
+                    macroName = macroString;
                 }
-            } else {
-                // There is only macro name, the macro does not have parameters
-                // or content
-                macroName = macroString;
+
+                // If we're inside a block element then issue an inline macro
+                // event
+                // otherwise issue a block macro event
+                Stack<Boolean> insideBlockElementsStack = (Stack<Boolean>) stack
+                        .getStackParameter("insideBlockElement");
+                if (!insideBlockElementsStack.isEmpty()
+                        && insideBlockElementsStack.peek()) {
+                    stack.getScannerContext().onMacroInline(macroName,
+                            macroParams, macroContent);
+                } else {
+                    stack.getScannerContext().onMacroBlock(macroName,
+                            macroParams, macroContent);
+                }
             }
 
-            // If we're inside a block element then issue an inline macro event
-            // otherwise issue a block macro event
-            Stack<Boolean> insideBlockElementsStack = (Stack<Boolean>) stack
-                    .getStackParameter("insideBlockElement");
-            if (!insideBlockElementsStack.isEmpty()
-                    && insideBlockElementsStack.peek()) {
-                stack.getScannerContext().onMacroInline(macroName, macroParams,
-                        macroContent);
-            } else {
-                stack.getScannerContext().onMacroBlock(macroName, macroParams,
-                        macroContent);
-            }
+            stack.pushStackParameter("ignoreElements", true);
         } else if (content.startsWith("stopmacro")) {
-            stack.setStackParameter("ignoreElements", false);
+            stack.popStackParameter("ignoreElements");
         }
     }
 }

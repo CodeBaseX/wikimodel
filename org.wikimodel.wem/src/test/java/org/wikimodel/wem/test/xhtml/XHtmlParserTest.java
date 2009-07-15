@@ -397,5 +397,8 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
         test(
                 "<html><!--startmacro:name|-|title=\"va|-|lue\"-->macro<!--stopmacro--></html>",
                 "<pre class='wikimodel-macro' macroName='name' title='va|-|lue'/>");
+        test(
+                "<html><!--startmacro:name|-|param=\"value\"|-|content--><!--startmacro:subname|-|subparam=\"subvalue\"|-|subcontent--><!--stopmacro--><!--stopmacro--></html>",
+                "<pre class='wikimodel-macro' macroName='name' param='value'><![CDATA[content]]></pre>");
     }
 }
