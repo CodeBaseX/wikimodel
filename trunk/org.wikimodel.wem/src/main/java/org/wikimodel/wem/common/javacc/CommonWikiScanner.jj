@@ -42,8 +42,12 @@ public class CommonWikiScanner {
     }
 
     protected WikiParameters newWikiParameters(String str) {
-        str = WikiScannerUtil.extractSubstring(str, "{{", "}}", '\\');
+        str = WikiScannerUtil.extractSubstring(str, "{{", "}}");
         return new WikiParameters(str);
+    }
+    
+    protected String unescape(String str) {
+    	return WikiScannerUtil.unescape(str);
     }
 
     protected void onExtension(String str, boolean  block) {
@@ -53,7 +57,7 @@ public class CommonWikiScanner {
         int idx = str.indexOf("(");
         if (idx > 0 && str.endsWith(")")) {
             String p = str.substring(idx + 1, str.length() - 1);
-            p = WikiScannerUtil.unescape(p, '\\');
+            p = unescape(p);
             params = new WikiParameters(p);
             str = str.substring(0, idx); 
         }
@@ -709,7 +713,7 @@ void verbatimBody(boolean inline):
             | t = getINTERNAL_VERBATIM_START()
         )
         {
-            str = WikiScannerUtil.unescape(t.image, '\\');
+            str = unescape(t.image);
             buf.append(str);        
         }
     )*
@@ -803,7 +807,7 @@ void macro(Token t, boolean block):
                 prevEnd = t.image;
             } else {
                 prevEnd = null;
-                str = WikiScannerUtil.unescape(t.image, '\\');
+                str = unescape(t.image);
                 buf.append(str);        
             }
         }
@@ -1050,7 +1054,7 @@ void line():
             {
                 str = t.image.trim();
                 str = str.substring(1, str.length() - 1);
-                str = WikiScannerUtil.unescape(str, '\\');
+                str = unescape(str);
                 fContext.onVerbatim(str, true);
             }
             |
@@ -1080,7 +1084,7 @@ void line():
                     str = str.substring(1, str.length() - 1);
                 }
                 str = str.trim();
-                str = WikiScannerUtil.unescape(str, '\\');
+                str = unescape(str);
                 WikiReference ref = fReferenceParser.parse(str);
                 fContext.onReference(ref);
             }

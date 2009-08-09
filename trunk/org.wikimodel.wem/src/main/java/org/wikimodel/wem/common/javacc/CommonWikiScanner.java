@@ -36,8 +36,12 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
     }
 
     protected WikiParameters newWikiParameters(String str) {
-        str = WikiScannerUtil.extractSubstring(str, "{{", "}}", '\u005c\u005c');
+        str = WikiScannerUtil.extractSubstring(str, "{{", "}}");
         return new WikiParameters(str);
+    }
+
+    protected String unescape(String str) {
+        return WikiScannerUtil.unescape(str);
     }
 
     protected void onExtension(String str, boolean  block) {
@@ -47,7 +51,7 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
         int idx = str.indexOf("(");
         if (idx > 0 && str.endsWith(")")) {
             String p = str.substring(idx + 1, str.length() - 1);
-            p = WikiScannerUtil.unescape(p, '\u005c\u005c');
+            p = unescape(p);
             params = new WikiParameters(p);
             str = str.substring(0, idx);
         }
@@ -1438,7 +1442,7 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
         jj_consume_token(-1);
         throw new ParseException();
       }
-            str = WikiScannerUtil.unescape(t.image, '\u005c\u005c');
+            str = unescape(t.image);
             buf.append(str);
     }
     if (jj_2_21(2)) {
@@ -1557,7 +1561,7 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
                 prevEnd = t.image;
             } else {
                 prevEnd = null;
-                str = WikiScannerUtil.unescape(t.image, '\u005c\u005c');
+                str = unescape(t.image);
                 buf.append(str);
             }
     }
@@ -1843,7 +1847,7 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
         t = getVERBATIM_INLINE();
                 str = t.image.trim();
                 str = str.substring(1, str.length() - 1);
-                str = WikiScannerUtil.unescape(str, '\u005c\u005c');
+                str = unescape(str);
                 fContext.onVerbatim(str, true);
         break;
       case I_EXTENSION_INLINE:
@@ -1873,7 +1877,7 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
                     str = str.substring(1, str.length() - 1);
                 }
                 str = str.trim();
-                str = WikiScannerUtil.unescape(str, '\u005c\u005c');
+                str = unescape(str);
                 WikiReference ref = fReferenceParser.parse(str);
                 fContext.onReference(ref);
         break;
@@ -2156,21 +2160,6 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
     try { return !jj_3_33(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(32, xla); }
-  }
-
-  private boolean jj_3R_38() {
-    if (jj_3R_25()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_32()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  private boolean jj_3_11() {
-    if (jj_3R_25()) return true;
-    return false;
   }
 
   private boolean jj_3_31() {
@@ -3266,6 +3255,21 @@ public class CommonWikiScanner implements CommonWikiScannerConstants {
 
   private boolean jj_3_32() {
     if (jj_3R_39()) return true;
+    if (jj_3R_25()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_38() {
+    if (jj_3R_25()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_32()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  private boolean jj_3_11() {
     if (jj_3R_25()) return true;
     return false;
   }

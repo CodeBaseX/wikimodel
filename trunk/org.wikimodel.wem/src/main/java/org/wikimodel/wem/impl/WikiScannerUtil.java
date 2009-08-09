@@ -25,7 +25,23 @@ public class WikiScannerUtil {
     /**
      * The default character to use has escaping char.
      */
-    public static final char DEFAULT_ESCAPECHAR = '\\';
+    private static final char DEFAULT_ESCAPECHAR = '\u005c\u005c';
+
+    /**
+     * Extracts and returns a substring of the given string starting from the
+     * given open sequence and finishing by the specified close sequence. This
+     * method unescapes all symbols prefixed by the given escape symbol.
+     * 
+     * @param str from this string the substring framed by the specified open
+     *        and close sequence will be returned
+     * @param open the start substring sequence
+     * @param close the closing substring sequence
+     * @return a substring of the given string starting from the given open
+     *         sequence and finishing by the specified close sequence
+     */
+    public static String extractSubstring(String str, String open, String close) {
+        return extractSubstring(str, open, close, DEFAULT_ESCAPECHAR, true);
+    }
 
     /**
      * Extracts and returns a substring of the given string starting from the
@@ -276,6 +292,13 @@ public class WikiScannerUtil {
         return splitToPairs(str, list, null);
     }
 
+    public static int splitToPairs(
+        String str,
+        List<WikiParameter> list,
+        char escapeChar) {
+        return splitToPairs(str, list, null, null, escapeChar);
+    }
+
     /**
      * Splits the given string into a set of key-value pairs; all extracted
      * values will be added to the given list
@@ -289,13 +312,6 @@ public class WikiScannerUtil {
         List<WikiParameter> list,
         String delimiter) {
         return splitToPairs(str, list, delimiter, null);
-    }
-
-    public static int splitToPairs(
-        String str,
-        List<WikiParameter> list,
-        char escapeChar) {
-        return splitToPairs(str, list, null, null, escapeChar);
     }
 
     public static int splitToPairs(
@@ -371,6 +387,17 @@ public class WikiScannerUtil {
         }
 
         return i;
+    }
+
+    /**
+     * Unescapes the given string and returns the result. This method uses the
+     * default escape symbol (see {@link #DEFAULT_ESCAPECHAR}).
+     * 
+     * @param str the string to unescape
+     * @return an unescaped string
+     */
+    public static String unescape(String str) {
+        return unescape(str, DEFAULT_ESCAPECHAR);
     }
 
     /**

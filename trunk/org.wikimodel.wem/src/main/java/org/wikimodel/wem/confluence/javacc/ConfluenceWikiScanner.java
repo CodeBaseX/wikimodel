@@ -921,7 +921,7 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
                 prevEnd = t.image;
             } else {
                 prevEnd = null;
-                str = WikiScannerUtil.unescape(t.image, '\u005c\u005c');
+                str = WikiScannerUtil.unescape(t.image);
                 buf.append(str);
             }
     }
