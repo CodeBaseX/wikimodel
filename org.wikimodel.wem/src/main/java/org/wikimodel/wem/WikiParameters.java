@@ -27,6 +27,11 @@ import org.wikimodel.wem.impl.WikiScannerUtil;
 public class WikiParameters {
 
     /**
+     * The default character to use has escaping char.
+     */
+    public static final char DEFAULT_ESCAPECHAR = '\\';
+
+    /**
      * An empty parameter list
      */
     public final static WikiParameters EMPTY = new WikiParameters();
@@ -37,9 +42,9 @@ public class WikiParameters {
     private static final long serialVersionUID = 1253393289284318413L;
 
     public static WikiParameters newWikiParameters(String str) {
-        return newWikiParameters(str, WikiScannerUtil.DEFAULT_ESCAPECHAR);
+        return newWikiParameters(str, DEFAULT_ESCAPECHAR);
     }
-    
+
     public static WikiParameters newWikiParameters(String str, char escapeChar) {
         if (str == null)
             return EMPTY;
@@ -81,7 +86,7 @@ public class WikiParameters {
         super();
         WikiScannerUtil.splitToPairs(str, fList, escapeChar);
     }
-    
+
     /**
      * @param str
      * @param delimiter
