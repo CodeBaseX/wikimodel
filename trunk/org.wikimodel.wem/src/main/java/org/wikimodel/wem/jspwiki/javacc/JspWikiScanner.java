@@ -781,114 +781,114 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     }
   }
 
-  private boolean jj_2_1(int xla) {
+  final private boolean jj_2_1(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_1(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(0, xla); }
   }
 
-  private boolean jj_2_2(int xla) {
+  final private boolean jj_2_2(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_2(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(1, xla); }
   }
 
-  private boolean jj_2_3(int xla) {
+  final private boolean jj_2_3(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_3(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(2, xla); }
   }
 
-  private boolean jj_2_4(int xla) {
+  final private boolean jj_2_4(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_4(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(3, xla); }
   }
 
-  private boolean jj_2_5(int xla) {
+  final private boolean jj_2_5(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_5(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(4, xla); }
   }
 
-  private boolean jj_2_6(int xla) {
+  final private boolean jj_2_6(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_6(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(5, xla); }
   }
 
-  private boolean jj_2_7(int xla) {
+  final private boolean jj_2_7(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_7(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(6, xla); }
   }
 
-  private boolean jj_2_8(int xla) {
+  final private boolean jj_2_8(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_8(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(7, xla); }
   }
 
-  private boolean jj_2_9(int xla) {
+  final private boolean jj_2_9(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_9(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(8, xla); }
   }
 
-  private boolean jj_2_10(int xla) {
+  final private boolean jj_2_10(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_10(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(9, xla); }
   }
 
-  private boolean jj_2_11(int xla) {
+  final private boolean jj_2_11(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
     try { return !jj_3_11(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(10, xla); }
   }
 
-  private boolean jj_3_3() {
+  final private boolean jj_3_3() {
     if (jj_3R_13()) return true;
     return false;
   }
 
-  private boolean jj_3R_23() {
+  final private boolean jj_3R_23() {
     if (jj_3R_37()) return true;
     return false;
   }
 
-  private boolean jj_3R_22() {
+  final private boolean jj_3R_22() {
     if (jj_3R_18()) return true;
     return false;
   }
 
-  private boolean jj_3R_21() {
+  final private boolean jj_3R_21() {
     if (jj_3R_36()) return true;
     return false;
   }
 
-  private boolean jj_3_2() {
+  final private boolean jj_3_2() {
     if (jj_3R_12()) return true;
     return false;
   }
 
-  private boolean jj_3R_20() {
+  final private boolean jj_3R_20() {
     if (jj_3R_35()) return true;
     return false;
   }
 
-  private boolean jj_3R_37() {
+  final private boolean jj_3R_37() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(60)) {
@@ -898,7 +898,7 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3_11() {
+  final private boolean jj_3_11() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_20()) {
@@ -935,12 +935,12 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_33() {
+  final private boolean jj_3R_33() {
     if (jj_3R_46()) return true;
     return false;
   }
 
-  private boolean jj_3R_12() {
+  final private boolean jj_3R_12() {
     Token xsp;
     if (jj_3_11()) return true;
     while (true) {
@@ -950,12 +950,12 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_46() {
+  final private boolean jj_3R_46() {
     if (jj_3R_47()) return true;
     return false;
   }
 
-  private boolean jj_3R_39() {
+  final private boolean jj_3R_39() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(53)) {
@@ -965,7 +965,7 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_38() {
+  final private boolean jj_3R_38() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(54)) {
@@ -975,7 +975,7 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_36() {
+  final private boolean jj_3R_36() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(59)) {
@@ -985,12 +985,12 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3_1() {
+  final private boolean jj_3_1() {
     if (jj_3R_11()) return true;
     return false;
   }
 
-  private boolean jj_3R_18() {
+  final private boolean jj_3R_18() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(58)) {
@@ -1000,7 +1000,7 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_47() {
+  final private boolean jj_3R_47() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(48)) {
@@ -1010,12 +1010,12 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_32() {
+  final private boolean jj_3R_32() {
     if (jj_3R_45()) return true;
     return false;
   }
 
-  private boolean jj_3R_43() {
+  final private boolean jj_3R_43() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(51)) {
@@ -1025,7 +1025,7 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_41() {
+  final private boolean jj_3R_41() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(56)) {
@@ -1035,7 +1035,7 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_16() {
+  final private boolean jj_3R_16() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(57)) {
@@ -1045,7 +1045,7 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_14() {
+  final private boolean jj_3R_14() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_32()) {
@@ -1055,12 +1055,12 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_19() {
+  final private boolean jj_3R_19() {
     if (jj_3R_16()) return true;
     return false;
   }
 
-  private boolean jj_3R_42() {
+  final private boolean jj_3R_42() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(50)) {
@@ -1070,7 +1070,7 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_40() {
+  final private boolean jj_3R_40() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(55)) {
@@ -1080,7 +1080,7 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_31() {
+  final private boolean jj_3R_31() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(46)) {
@@ -1090,12 +1090,12 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3_6() {
+  final private boolean jj_3_6() {
     if (jj_3R_14()) return true;
     return false;
   }
 
-  private boolean jj_3R_44() {
+  final private boolean jj_3R_44() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(52)) {
@@ -1105,7 +1105,7 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_34() {
+  final private boolean jj_3R_34() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(45)) {
@@ -1115,18 +1115,18 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_30() {
+  final private boolean jj_3R_30() {
     if (jj_3R_44()) return true;
     return false;
   }
 
-  private boolean jj_3_10() {
+  final private boolean jj_3_10() {
     if (jj_3R_19()) return true;
     if (jj_3R_12()) return true;
     return false;
   }
 
-  private boolean jj_3R_35() {
+  final private boolean jj_3R_35() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(44)) {
@@ -1136,12 +1136,12 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3_9() {
+  final private boolean jj_3_9() {
     if (jj_3R_16()) return true;
     return false;
   }
 
-  private boolean jj_3R_45() {
+  final private boolean jj_3R_45() {
     if (jj_3R_12()) return true;
     Token xsp;
     while (true) {
@@ -1151,7 +1151,7 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_15() {
+  final private boolean jj_3R_15() {
     if (jj_3R_34()) return true;
     Token xsp;
     while (true) {
@@ -1161,27 +1161,27 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_29() {
+  final private boolean jj_3R_29() {
     if (jj_3R_43()) return true;
     return false;
   }
 
-  private boolean jj_3R_28() {
+  final private boolean jj_3R_28() {
     if (jj_3R_42()) return true;
     return false;
   }
 
-  private boolean jj_3_5() {
+  final private boolean jj_3_5() {
     if (jj_3R_15()) return true;
     return false;
   }
 
-  private boolean jj_3_8() {
+  final private boolean jj_3_8() {
     if (jj_3R_18()) return true;
     return false;
   }
 
-  private boolean jj_3R_17() {
+  final private boolean jj_3R_17() {
     Token xsp;
     if (jj_3_8()) return true;
     while (true) {
@@ -1192,33 +1192,33 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_27() {
+  final private boolean jj_3R_27() {
     if (jj_3R_41()) return true;
     return false;
   }
 
-  private boolean jj_3R_26() {
+  final private boolean jj_3R_26() {
     if (jj_3R_40()) return true;
     return false;
   }
 
-  private boolean jj_3_4() {
+  final private boolean jj_3_4() {
     if (jj_3R_14()) return true;
     return false;
   }
 
-  private boolean jj_3_7() {
+  final private boolean jj_3_7() {
     if (jj_3R_16()) return true;
     if (jj_3R_17()) return true;
     return false;
   }
 
-  private boolean jj_3R_25() {
+  final private boolean jj_3R_25() {
     if (jj_3R_39()) return true;
     return false;
   }
 
-  private boolean jj_3R_13() {
+  final private boolean jj_3R_13() {
     if (jj_3R_31()) return true;
     Token xsp;
     while (true) {
@@ -1228,54 +1228,50 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_11() {
+  final private boolean jj_3R_11() {
     if (jj_3R_17()) return true;
     return false;
   }
 
-  private boolean jj_3R_24() {
+  final private boolean jj_3R_24() {
     if (jj_3R_38()) return true;
     return false;
   }
 
-  /** Generated Token Manager. */
   public JspWikiScannerTokenManager token_source;
   SimpleCharStream jj_input_stream;
-  /** Current token. */
-  public Token token;
-  /** Next token. */
-  public Token jj_nt;
+  public Token token, jj_nt;
   private int jj_ntk;
   private Token jj_scanpos, jj_lastpos;
   private int jj_la;
+  public boolean lookingAhead = false;
+  private boolean jj_semLA;
   private int jj_gen;
   final private int[] jj_la1 = new int[22];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
   static {
-      jj_la1_init_0();
-      jj_la1_init_1();
-      jj_la1_init_2();
+      jj_la1_0();
+      jj_la1_1();
+      jj_la1_2();
    }
-   private static void jj_la1_init_0() {
+   private static void jj_la1_0() {
       jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
-   private static void jj_la1_init_1() {
+   private static void jj_la1_1() {
       jj_la1_1 = new int[] {0x20001000,0x40002000,0x80004000,0x8000,0x10000,0x20000,0x40000,0x80000,0x100000,0x200000,0x400000,0x800000,0x1000000,0x2000000,0x4000000,0x8000000,0x10000000,0xfffff000,0x3dfc1000,0xfffff000,0x3dfd1000,0x3dfc1000,};
    }
-   private static void jj_la1_init_2() {
+   private static void jj_la1_2() {
       jj_la1_2 = new int[] {0x0,0x0,0x0,0x1,0x2,0x4,0x8,0x10,0x20,0x40,0x80,0x100,0x200,0x400,0x800,0x1000,0x2000,0x3fff,0x3bf8,0x3fff,0x3bfa,0x3bf8,};
    }
   final private JJCalls[] jj_2_rtns = new JJCalls[11];
   private boolean jj_rescan = false;
   private int jj_gc = 0;
 
-  /** Constructor with InputStream. */
   public JspWikiScanner(java.io.InputStream stream) {
      this(stream, null);
   }
-  /** Constructor with InputStream and supplied encoding */
   public JspWikiScanner(java.io.InputStream stream, String encoding) {
     try { jj_input_stream = new SimpleCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source = new JspWikiScannerTokenManager(jj_input_stream);
@@ -1286,11 +1282,9 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
-  /** Reinitialise. */
   public void ReInit(java.io.InputStream stream) {
      ReInit(stream, null);
   }
-  /** Reinitialise. */
   public void ReInit(java.io.InputStream stream, String encoding) {
     try { jj_input_stream.ReInit(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source.ReInit(jj_input_stream);
@@ -1301,7 +1295,6 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
-  /** Constructor. */
   public JspWikiScanner(java.io.Reader stream) {
     jj_input_stream = new SimpleCharStream(stream, 1, 1);
     token_source = new JspWikiScannerTokenManager(jj_input_stream);
@@ -1312,7 +1305,6 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
-  /** Reinitialise. */
   public void ReInit(java.io.Reader stream) {
     jj_input_stream.ReInit(stream, 1, 1);
     token_source.ReInit(jj_input_stream);
@@ -1323,7 +1315,6 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
-  /** Constructor with generated Token Manager. */
   public JspWikiScanner(JspWikiScannerTokenManager tm) {
     token_source = tm;
     token = new Token();
@@ -1333,7 +1324,6 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
-  /** Reinitialise. */
   public void ReInit(JspWikiScannerTokenManager tm) {
     token_source = tm;
     token = new Token();
@@ -1343,7 +1333,7 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
-  private Token jj_consume_token(int kind) throws ParseException {
+  final private Token jj_consume_token(int kind) throws ParseException {
     Token oldToken;
     if ((oldToken = token).next != null) token = token.next;
     else token = token.next = token_source.getNextToken();
@@ -1369,7 +1359,7 @@ public class JspWikiScanner implements JspWikiScannerConstants {
 
   static private final class LookaheadSuccess extends java.lang.Error { }
   final private LookaheadSuccess jj_ls = new LookaheadSuccess();
-  private boolean jj_scan_token(int kind) {
+  final private boolean jj_scan_token(int kind) {
     if (jj_scanpos == jj_lastpos) {
       jj_la--;
       if (jj_scanpos.next == null) {
@@ -1390,8 +1380,6 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return false;
   }
 
-
-/** Get the next Token. */
   final public Token getNextToken() {
     if (token.next != null) token = token.next;
     else token = token.next = token_source.getNextToken();
@@ -1400,9 +1388,8 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return token;
   }
 
-/** Get the specific Token. */
   final public Token getToken(int index) {
-    Token t = token;
+    Token t = lookingAhead ? jj_scanpos : token;
     for (int i = 0; i < index; i++) {
       if (t.next != null) t = t.next;
       else t = t.next = token_source.getNextToken();
@@ -1410,14 +1397,14 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     return t;
   }
 
-  private int jj_ntk() {
+  final private int jj_ntk() {
     if ((jj_nt=token.next) == null)
       return (jj_ntk = (token.next=token_source.getNextToken()).kind);
     else
       return (jj_ntk = jj_nt.kind);
   }
 
-  private java.util.List jj_expentries = new java.util.ArrayList();
+  private java.util.Vector jj_expentries = new java.util.Vector();
   private int[] jj_expentry;
   private int jj_kind = -1;
   private int[] jj_lasttokens = new int[100];
@@ -1432,26 +1419,31 @@ public class JspWikiScanner implements JspWikiScannerConstants {
       for (int i = 0; i < jj_endpos; i++) {
         jj_expentry[i] = jj_lasttokens[i];
       }
-      jj_entries_loop: for (java.util.Iterator it = jj_expentries.iterator(); it.hasNext();) {
-        int[] oldentry = (int[])(it.next());
+      boolean exists = false;
+      for (java.util.Enumeration e = jj_expentries.elements(); e.hasMoreElements();) {
+        int[] oldentry = (int[])(e.nextElement());
         if (oldentry.length == jj_expentry.length) {
+          exists = true;
           for (int i = 0; i < jj_expentry.length; i++) {
             if (oldentry[i] != jj_expentry[i]) {
-              continue jj_entries_loop;
+              exists = false;
+              break;
             }
           }
-          jj_expentries.add(jj_expentry);
-          break jj_entries_loop;
+          if (exists) break;
         }
       }
+      if (!exists) jj_expentries.addElement(jj_expentry);
       if (pos != 0) jj_lasttokens[(jj_endpos = pos) - 1] = kind;
     }
   }
 
-  /** Generate ParseException. */
   public ParseException generateParseException() {
-    jj_expentries.clear();
+    jj_expentries.removeAllElements();
     boolean[] la1tokens = new boolean[78];
+    for (int i = 0; i < 78; i++) {
+      la1tokens[i] = false;
+    }
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -1475,7 +1467,7 @@ public class JspWikiScanner implements JspWikiScannerConstants {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
-        jj_expentries.add(jj_expentry);
+        jj_expentries.addElement(jj_expentry);
       }
     }
     jj_endpos = 0;
@@ -1483,20 +1475,18 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     jj_add_error_token(0, 0);
     int[][] exptokseq = new int[jj_expentries.size()][];
     for (int i = 0; i < jj_expentries.size(); i++) {
-      exptokseq[i] = (int[])jj_expentries.get(i);
+      exptokseq[i] = (int[])jj_expentries.elementAt(i);
     }
     return new ParseException(token, exptokseq, tokenImage);
   }
 
-  /** Enable tracing. */
   final public void enable_tracing() {
   }
 
-  /** Disable tracing. */
   final public void disable_tracing() {
   }
 
-  private void jj_rescan_token() {
+  final private void jj_rescan_token() {
     jj_rescan = true;
     for (int i = 0; i < 11; i++) {
     try {
@@ -1525,7 +1515,7 @@ public class JspWikiScanner implements JspWikiScannerConstants {
     jj_rescan = false;
   }
 
-  private void jj_save(int index, int xla) {
+  final private void jj_save(int index, int xla) {
     JJCalls p = jj_2_rtns[index];
     while (p.gen > jj_gen) {
       if (p.next == null) { p = p.next = new JJCalls(); break; }
