@@ -234,6 +234,9 @@ public class MediawikiParserTest extends AbstractWikiParserTest {
      */
     public void testQuot() throws WikiParserException {
         test("This is a paragraph\n\n and this is a quotations\n the second line");
+
+        // Verify that an empty quot line works fine
+        test(" first quote line\n \n");
     }
 
     /**
