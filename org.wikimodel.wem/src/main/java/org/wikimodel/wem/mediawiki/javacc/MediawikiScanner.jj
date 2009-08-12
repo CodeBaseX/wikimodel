@@ -65,6 +65,7 @@ TOKEN_MGR_DECLS: {
         ) >
     | <#REFERENCE:  ( "[[" ( "\\" ~[] | ~["[", "]"] )* "]]" | "[" ( "\\" ~[] | ~["[", "]"] )* "]" ) >
     | <#HORLINE: "---" ("-")+ >
+    | <#QUOT_LINE: (" ")+ >
 
     | <#PARAMS: (<SPACE> | <CHAR> | <SPECIAL_SYMBOL>)* >
     | <#TABLE_BEGIN: "{|" (<PARAMS>)? >
@@ -185,7 +186,8 @@ TOKEN_MGR_DECLS: {
     | <I_VERBATIM_INLINE : <VERBATIM_INLINE> > : DEFAULT
     | <I_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
     | <I_BR : <BR> > : DEFAULT
-    
+    | <I_QUOT_LINE: (<NEW_LINE>)? <QUOT_LINE> > : DEFAULT
+
     // "Standard" tokens. They are the same for all wikis.
     | <I_URI : <URI> > : DEFAULT
     | <I_NL: (<NEW_LINE>)? > : DEFAULT
@@ -217,7 +219,8 @@ TOKEN_MGR_DECLS: {
     | <D_VERBATIM_INLINE : <VERBATIM_INLINE> > : DEFAULT
     | <D_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
     | <D_BR : <BR> > : DEFAULT
-    
+    | <D_QUOT_LINE: <NEW_LINE> <QUOT_LINE> > : DEFAULT
+
     // "Standard" tokens. They are the same for all wikis.
     | <D_URI : <URI> > : DEFAULT
     | <D_NL: <NEW_LINE> > : DEFAULT
@@ -247,7 +250,8 @@ TOKEN_MGR_DECLS: {
     Token getVERBATIM_INLINE(): {Token t=null;} {(t=<I_VERBATIM_INLINE>|t=<D_VERBATIM_INLINE>){return t;}}
     Token getFORMAT_SYMBOL(): {Token t=null;} {(t=<I_FORMAT_SYMBOL>|t=<D_FORMAT_SYMBOL>){return t;}}
     Token getBR(): {Token t=null;} {(t=<I_BR>|t=<D_BR>){return t;}}
-    
+    Token getQUOT_LINE(): {Token t=null;} {(t=<I_QUOT_LINE>|t=<D_QUOT_LINE>){return t;}}
+
     // "Standard" tokens. They are the same for all wikis.
     Token getURI(): {Token t=null;} {(t=<I_URI>|t=<D_URI>){return t;}}
     Token getNL(): {Token t=null;} {(t=<I_NL>|t=<D_NL>){return t;}}
@@ -464,16 +468,23 @@ void quot():
         fContext.endQuot();
     }
 }
+
 void quotLine():
 {
-	Token t = null;
-	int depthCounter = 0;
+    Token t = null;
+    String str = "";
 }
 {
-    ( LOOKAHEAD(2) t = getSPACE() { depthCounter++; } )+
-    { fContext.beginQuotLine(depthCounter); }
-    line()
-    { fContext.endQuotLine(); }
+    t = getQUOT_LINE()
+    {
+        str = t.image.trim();
+        int depth = str.length();
+        fContext.beginQuotLine(depth);
+    }
+    (LOOKAHEAD(2) line() )?
+    {
+        fContext.endQuotLine();
+    }
 }
 
 void emptyParagraph():
