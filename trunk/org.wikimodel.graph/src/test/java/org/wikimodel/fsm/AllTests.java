@@ -8,6 +8,7 @@ import org.wikimodel.graph.NodeWalkerTest;
 import org.wikimodel.graph.SectionBuilderTest;
 import org.wikimodel.graph.TreeBuilderTest;
 import org.wikimodel.iterator.MergeIteratorTest;
+import org.wikimodel.template.dom.TemplateTest;
 
 public class AllTests {
 
@@ -20,6 +21,7 @@ public class AllTests {
         suite.addTestSuite(TreeBuilderTest.class);
         suite.addTestSuite(SectionBuilderTest.class);
         suite.addTestSuite(MergeIteratorTest.class);
+        suite.addTestSuite(TemplateTest.class);
         // $JUnit-END$
         return suite;
     }

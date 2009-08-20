@@ -26,12 +26,13 @@ public abstract class NodeWalkerListener1<T, E extends Throwable>
      * @see org.wikimodel.graph.INodeWalkerListener#beginNode(java.lang.Object,
      *      java.lang.Object)
      */
-    public final void beginNode(T parent, T node) {
+    public final boolean beginNode(T parent, T node) {
         if (fIn && parent != null) {
             onBeginSubnodes(parent);
         }
         fIn = true;
         onBeginNode(parent, node);
+        return true;
     }
 
     /**

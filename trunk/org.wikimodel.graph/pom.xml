@@ -4,8 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.wikimodel</groupId>
 	<artifactId>org.wikimodel.graph</artifactId>
-	<packaging>jar</packaging>
 	<version>1.0.9-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>org.wikimodel.graph</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>

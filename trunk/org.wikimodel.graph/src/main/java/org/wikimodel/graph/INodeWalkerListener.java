@@ -17,8 +17,9 @@ public interface INodeWalkerListener<T, E extends Throwable> {
      * 
      * @param parent the parent node
      * @param node a new node to initialize
+     * @return <code>true</code> if the current node should be visited
      */
-    void beginNode(T parent, T node) throws E;
+    boolean beginNode(T parent, T node) throws E;
 
     /**
      * This method is launched after visiting the given node. This method can

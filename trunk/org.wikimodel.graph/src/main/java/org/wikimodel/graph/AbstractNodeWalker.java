@@ -158,11 +158,12 @@ public abstract class AbstractNodeWalker<T, E extends Throwable> {
         int status;
         if (fNextNode != null) {
             T node = fNextNode;
-            fNextNode = fSource.getFirstSubnode(node);
             T parentNode = getPeekNode();
+            boolean visit = true;
             if (parentNode != null || node != null) {
-                nodeListener.beginNode(parentNode, node);
+                visit = nodeListener.beginNode(parentNode, node);
             }
+            fNextNode = visit ? fSource.getFirstSubnode(node) : null;
             pushNode(node);
             status = fNextNode != null ? CHILD : NO_CHILD;
         } else {

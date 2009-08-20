@@ -71,6 +71,7 @@ public class NodeWalkerTest extends TestCase {
      */
     public void test() {
         INodeWalkerSource<File, RuntimeException> source = new IteratorBasedNodeSource<File, RuntimeException>() {
+            @Override
             protected Iterator<File> newIterator(File f) {
                 File[] a = f.listFiles();
                 if (a == null)
@@ -85,6 +86,7 @@ public class NodeWalkerTest extends TestCase {
                         return ".svn".equals(file.getName());
                     }
 
+                    @Override
                     protected File shiftItem() {
                         File result = null;
                         while (result == null && pos < array.length) {
@@ -111,8 +113,9 @@ public class NodeWalkerTest extends TestCase {
         final INodeWalkerListener<File, RuntimeException> listener = new NodeWalkerListener<File, RuntimeException>() {
 
             @Override
-            public void beginNode(File parent, File node) {
+            public boolean beginNode(File parent, File node) {
                 fDepth++;
+                return true;
             }
 
             @Override
