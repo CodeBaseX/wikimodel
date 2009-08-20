@@ -21,7 +21,8 @@ public class NodeWalkerListener<T, E extends Throwable>
      * @see org.wikimodel.graph.INodeWalkerListener#beginNode(java.lang.Object,
      *      java.lang.Object)
      */
-    public void beginNode(T parent, T node) throws E {
+    public boolean beginNode(T parent, T node) throws E {
+        return true;
     }
 
     /**

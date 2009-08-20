@@ -39,6 +39,7 @@ public class TreeBuilderTest extends TestCase {
             this.ch = ch;
         }
 
+        @Override
         public String toString() {
             return "" + ch;
         }
@@ -75,8 +76,9 @@ public class TreeBuilderTest extends TestCase {
         Class<T> cls,
         final StringBuffer buf) {
         final INodeWalkerListener<T, RuntimeException> listener = new INodeWalkerListener<T, RuntimeException>() {
-            public void beginNode(T parent, T node) {
+            public boolean beginNode(T parent, T node) {
                 buf.append("<" + node + ">");
+                return true;
             }
 
             public void endNode(T parent, T node) {

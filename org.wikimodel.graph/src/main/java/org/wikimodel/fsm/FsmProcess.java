@@ -16,12 +16,13 @@ public class FsmProcess implements IFsmProcessConst {
 
     private INodeWalkerListener<FsmState, RuntimeException> fListener = new INodeWalkerListener<FsmState, RuntimeException>() {
 
-        public void beginNode(FsmState parent, FsmState node) {
+        public boolean beginNode(FsmState parent, FsmState node) {
             try {
                 fProcessListener.beginState(node);
             } catch (Throwable t) {
                 fProcessListener.handleError(node, t);
             }
+            return true;
         }
 
         public void endNode(FsmState parent, FsmState node) {
@@ -70,16 +71,19 @@ public class FsmProcess implements IFsmProcessConst {
 
         protected FsmState fPeek;
 
+        @Override
         protected FsmState getPeekNode() {
             return fPeek;
         }
 
+        @Override
         protected FsmState popNode() {
             FsmState result = fPeek;
             fPeek = fPeek != null ? fPeek.getParentState() : null;
             return result;
         }
 
+        @Override
         protected void pushNode(FsmState currentNode) {
             fPeek = currentNode;
         }
@@ -96,6 +100,7 @@ public class FsmProcess implements IFsmProcessConst {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     @SuppressWarnings("unchecked")
     public boolean equals(Object obj) {
         if (obj == this)
@@ -123,6 +128,7 @@ public class FsmProcess implements IFsmProcessConst {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
         return fRootState.hashCode();
     }
@@ -151,6 +157,7 @@ public class FsmProcess implements IFsmProcessConst {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
         return "Process[" + fRootState + "]";
     }
