@@ -29,11 +29,13 @@ public abstract class AbstractDataSelector<N>
      * not be interpreted as a container then this method returns
      * <code>null</code>. This method could be overloaded in subclasses to
      * re-define the default behaveour.
-     * 
+     * @param node TODO
      * @param data
+     * @param selector TODO
+     * 
      * @return an array of entries contained in the given container
      */
-    protected Object[] getObjectAsArray(Object data) {
+    protected Object[] getObjectAsArray(N node, Object data, String selector) {
         if (data instanceof Collection<?>) {
             return ((Collection<?>) data).toArray();
         }
@@ -68,7 +70,7 @@ public abstract class AbstractDataSelector<N>
         }
         if (result == null) {
             if (expand) {
-                result = getObjectAsArray(data);
+                result = getObjectAsArray(node, data, selector);
             }
             if (result == null) {
                 result = toArray(data);
