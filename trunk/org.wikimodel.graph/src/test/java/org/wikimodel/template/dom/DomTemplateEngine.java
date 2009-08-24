@@ -12,57 +12,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.wikimodel.template.IXmlTemplateConst;
+import org.wikimodel.template.IXmlTemplateNodeManager;
 import org.wikimodel.template.XmlTemplateEngine;
-import org.wikimodel.template.impl.AbstractDataSelector;
-import org.wikimodel.template.impl.ITemplateNodeManager;
 
 public class DomTemplateEngine extends XmlTemplateEngine<Node> {
 
     @Override
-    protected String getElementName(Node node) {
-        return node.getNodeName();
-    }
-
-    @Override
-    protected Map<String, String> getElementParams(Node node) {
-        if (!isElement(node))
-            return null;
-        Element element = (Element) node;
-        Map<String, String> params = new HashMap<String, String>();
-        NamedNodeMap atts = element.getAttributes();
-        for (int i = 0; i < atts.getLength(); i++) {
-            Attr n = (Attr) atts.item(i);
-            String key = n.getName();
-            if (key.startsWith(IXmlTemplateConst._PREFIX))
-                continue;
-            String value = n.getValue();
-            params.put(key, value);
-        }
-        return params;
-    }
-
-    @Override
-    protected String getTextContent(Node node) {
-        return node.getTextContent();
-    }
-
-    @Override
-    protected boolean isElement(Node node) {
-        return node.getNodeType() == Node.ELEMENT_NODE;
-    }
-
-    @Override
-    protected AbstractDataSelector<Node> newDataSelector() {
-        return new AbstractDataSelector<Node>() {
-
-            @Override
-            protected String getAttribute(Node node, String attr) {
-                if (!isElement(node))
-                    return null;
-                Element element = (Element) node;
-                return element.getAttribute(attr);
-            }
-
+    protected XmlDataSelector newDataSelector() {
+        return new XmlDataSelector() {
             @Override
             protected Object selectChildData(Node node, Object data, String path) {
                 Object result = null;
@@ -104,8 +61,37 @@ public class DomTemplateEngine extends XmlTemplateEngine<Node> {
     }
 
     @Override
-    protected ITemplateNodeManager<Node> newTemplateNodeManager() {
-        return new ITemplateNodeManager<Node>() {
+    protected IXmlTemplateNodeManager<Node> newNodeManager() {
+        return new IXmlTemplateNodeManager<Node>() {
+
+            public String getAttribute(Node node, String attrName) {
+                if (!isElement(node))
+                    return null;
+                Element element = (Element) node;
+                return element.getAttribute(attrName);
+            }
+
+            public String getElementName(Node node) {
+                return node.getNodeName();
+            }
+
+            public Map<String, String> getElementParams(Node node) {
+                if (!isElement(node))
+                    return null;
+                Element element = (Element) node;
+                Map<String, String> params = new HashMap<String, String>();
+                NamedNodeMap atts = element.getAttributes();
+                for (int i = 0; i < atts.getLength(); i++) {
+                    Attr n = (Attr) atts.item(i);
+                    String key = n.getName();
+                    if (key.startsWith(IXmlTemplateConst._PREFIX))
+                        continue;
+                    String value = n.getValue();
+                    params.put(key, value);
+                }
+                return params;
+            }
+
             public Node getFirstChild(Node node) {
                 return node.getFirstChild();
             }
@@ -113,6 +99,15 @@ public class DomTemplateEngine extends XmlTemplateEngine<Node> {
             public Node getNextSibling(Node node) {
                 return node.getNextSibling();
             }
+
+            public String getTextContent(Node node) {
+                return node.getTextContent();
+            }
+
+            public boolean isElement(Node node) {
+                return node.getNodeType() == Node.ELEMENT_NODE;
+            }
+
         };
     }
 

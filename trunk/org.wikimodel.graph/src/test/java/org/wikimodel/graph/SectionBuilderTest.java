@@ -91,4 +91,20 @@ public class SectionBuilderTest extends TestCase {
         check(control);
     }
 
+    public void test1() {
+        fBuilder.beginDocument();
+        check("<level0>");
+        test(1, "A", "<s><h1>A</h1><c>");
+        fBuilder.beginDocument();
+        test(3, "B", "<level1><s><h3>B</h3><c>");
+        test(3, "C", "</c></s><s><h3>C</h3><c>");
+        fBuilder.endDocument();
+        test(5, "D", "<s><h5>D</h5><c>");
+        test(5, "E", "</c></s><s><h5>E</h5><c>");
+        test(3, "F", "</c></s></level1></c></s><s><h3>F</h3><c>");
+        fBuilder.endDocument();
+        check("</c></s></level1></c></s></level0>");
+
+    }
+
 }
