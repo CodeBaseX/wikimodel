@@ -63,6 +63,23 @@ public class TemplateTest extends TestCase {
         };
     }
 
+    public void test() throws Exception {
+        test(
+            "" + "<div><h1 st-value='title'>xyz</h1></div>",
+            "<div />",
+            "<div><h1></h1></div>");
+        test(""
+            + "<div>before[<div st-select='items'>xyz</div>]after"
+            + "</div>", "<div />", "<div>before[]after</div>");
+        test(""
+            + "<div>\n<h1 st-value='title'>X</h1>\n"
+            + "before[<div st-select='items'></div>]after\n"
+            + "</div>", "<div><title>Title</title></div>", "<div>\n"
+            + "<h1>Title</h1>\n"
+            + "before[]after\n"
+            + "</div>");
+    }
+
     /**
      * @param templateStr
      * @param data
@@ -168,16 +185,24 @@ public class TemplateTest extends TestCase {
             "<div><h1 st-value='title'/><div st-value='content'/></div>",
             "<div><title>Title</title><content>Content</content></div>",
             "<div><h1>Title</h1><div>Content</div></div>");
-
+        test(""
+            + "<div>\n"
+            + "<h1 st-value='title'>X</h1>\n"
+            + "before[<div st-select='items'></div>]after\n"
+            + "</div>", "<div><title>Title</title></div>", "<div>\n"
+            + "<h1>Title</h1>\n"
+            + "before[]after\n"
+            + "</div>");
         String userTemplate = ""
             + "<div>\n"
             + "<h1 st-value='title'></h1>\n"
-            + "<div st-value='content'></div>\n"
+            + "<div st-value='content'>Content</div>\n"
             + "<div st-select='users'>\n"
+            + " <h2>A list of users</h2>\n"
             + " <div st-select='user'>\n"
-            + "     <h2 st-value='name'></h2>\n"
+            + "     <h3 st-value='name'>John Smith</h3>\n"
             + "     <div st-select='email'>\n"
-            + "         <h3>Emails</h3>\n"
+            + "         <h4>Emails</h4>\n"
             + "         <ul>\n"
             + "             <li st-iterate='$this'><a href='' st-attribute='href:$this' st-value='$this'></a></li>\n"
             + "         </ul>\n"
@@ -201,8 +226,9 @@ public class TemplateTest extends TestCase {
             + "<h1>Title</h1>\n"
             + "<div>Content</div>\n"
             + "<div>\n"
+            + " <h2>A list of users</h2>\n"
             + " <div>\n"
-            + "     <h2>Alex</h2>\n"
+            + "     <h3>Alex</h3>\n"
             + "     \n"
             + " </div>\n"
             + "</div>\n"
@@ -223,10 +249,11 @@ public class TemplateTest extends TestCase {
                 + "<h1>Title</h1>\n"
                 + "<div>Content</div>\n"
                 + "<div>\n"
+                + " <h2>A list of users</h2>\n"
                 + " <div>\n"
-                + "     <h2>Alex</h2>\n"
+                + "     <h3>Alex</h3>\n"
                 + "     <div>\n"
-                + "         <h3>Emails</h3>\n"
+                + "         <h4>Emails</h4>\n"
                 + "         <ul>\n"
                 + "             <li><a href='alex@test.com'>alex@test.com</a></li>\n"
                 + "         </ul>\n"
@@ -248,10 +275,11 @@ public class TemplateTest extends TestCase {
             + "<h1>Title</h1>\n"
             + "<div>Content</div>\n"
             + "<div>\n"
+            + " <h2>A list of users</h2>\n"
             + " <div>\n"
-            + "     <h2>Alex</h2>\n"
+            + "     <h3>Alex</h3>\n"
             + "     <div>\n"
-            + "         <h3>Emails</h3>\n"
+            + "         <h4>Emails</h4>\n"
             + "         <ul>\n"
             + "             <li><a href='alex@test.com'>alex@test.com</a></li>"
             + "<li><a href='alex@test.com'>alex@test.com</a></li>\n"
