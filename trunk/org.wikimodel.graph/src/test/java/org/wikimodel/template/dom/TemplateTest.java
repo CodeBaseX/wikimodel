@@ -65,12 +65,39 @@ public class TemplateTest extends TestCase {
 
     public void test() throws Exception {
         test(
+            "<ul><li st-iterate='items.item' st-value='title'></li></ul>",
+            "<div><items>"
+                + "   <item title='Hello one'/>"
+                + "   <item title='Hello two'/>"
+                + "   <item><title>Hello three</title></item>'/>"
+                + "</items></div>",
+            "<ul><li>Hello one</li><li>Hello two</li><li>Hello three</li></ul>");
+
+        test(
             "" + "<div><h1 st-value='title'>xyz</h1></div>",
             "<div />",
             "<div><h1></h1></div>");
         test(""
-            + "<div>before[<div st-select='items'>xyz</div>]after"
+            + "<div>before["
+            + "<div st-select='items'><h1 st-value='title'>X</h1></div>"
+            + "]after"
             + "</div>", "<div />", "<div>before[]after</div>");
+        test(
+            ""
+                + "<div>before["
+                + "<div st-select='items'><h1 st-value='item.title'>X</h1></div>"
+                + "]after"
+                + "</div>",
+            "<div><items><item title='Hello, world!'/></items></div>",
+            "<div>before[<div><h1>Hello, world!</h1></div>]after</div>");
+        test(
+            ""
+                + "<div>before["
+                + "<div st-iterate='items'><h1 st-value='item.title'>X</h1></div>"
+                + "]after"
+                + "</div>",
+            "<div><items><item title='Hello, world!'/></items></div>",
+            "<div>before[<div><h1>Hello, world!</h1></div>]after</div>");
         test(""
             + "<div>\n<h1 st-value='title'>X</h1>\n"
             + "before[<div st-select='items'></div>]after\n"
@@ -282,7 +309,7 @@ public class TemplateTest extends TestCase {
             + "         <h4>Emails</h4>\n"
             + "         <ul>\n"
             + "             <li><a href='alex@test.com'>alex@test.com</a></li>"
-            + "<li><a href='alex@test.com'>alex@test.com</a></li>\n"
+            + "<li><a href='toto@titi.com'>toto@titi.com</a></li>\n"
             + "         </ul>\n"
             + "     </div>\n"
             + " </div>\n"

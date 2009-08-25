@@ -39,7 +39,7 @@ public class DomTemplateEngine extends XmlTemplateEngine<Node> {
                             } else if (len > 1) {
                                 List<Node> list = new ArrayList<Node>();
                                 for (int i = 0; i < len; i++) {
-                                    Node item = children.item(0);
+                                    Node item = children.item(i);
                                     list.add(item);
                                 }
                                 result = list;
