@@ -10,25 +10,24 @@
  *******************************************************************************/
 package org.wikimodel.wem.xhtml;
 
-public class XhtmlCharacter
-{
+public class XhtmlCharacter {
     private char fCharacter;
-    
+
     private XhtmlCharacterType fType;
-    
+
     public XhtmlCharacter(char character, XhtmlCharacterType type) {
         fCharacter = character;
         fType = type;
     }
-    
+
     public char getCharacter() {
         return fCharacter;
     }
-    
+
     public XhtmlCharacterType getType() {
         return fType;
     }
-    
+
     public void setType(XhtmlCharacterType type) {
         fType = type;
     }

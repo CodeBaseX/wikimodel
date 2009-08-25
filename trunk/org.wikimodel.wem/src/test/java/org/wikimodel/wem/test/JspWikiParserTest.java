@@ -57,7 +57,7 @@ public class JspWikiParserTest extends AbstractWikiParserTest {
 
         test("not a bold__");
         test("not an italic''");
-}
+    }
 
     /**
      * @throws WikiParserException

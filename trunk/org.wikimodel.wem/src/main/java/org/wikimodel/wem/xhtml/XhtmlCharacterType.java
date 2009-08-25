@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.wikimodel.wem.xhtml;
 
-public enum XhtmlCharacterType
-{
+public enum XhtmlCharacterType {
     SPECIAL_SYMBOL, CHARACTER, SPACE, NEW_LINE, ESCAPED;
 }

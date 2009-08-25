@@ -51,8 +51,8 @@ public class WikiParameter {
         if (!(obj instanceof WikiParameter))
             return false;
         WikiParameter pair = (WikiParameter) obj;
-        return fKey.equals(pair.fKey) &&
-            (fValue == pair.fValue || (fValue != null && fValue
+        return fKey.equals(pair.fKey)
+            && (fValue == pair.fValue || (fValue != null && fValue
                 .equals(pair.fValue)));
     }
 
@@ -93,8 +93,8 @@ public class WikiParameter {
                 } else if (ch == '.' || ch == '-') {
                     result = i > 0 && i < len - 1;
                 } else {
-                    result &= (i == 0 && Character.isLetter(ch)) ||
-                        Character.isLetterOrDigit(ch);
+                    result &= (i == 0 && Character.isLetter(ch))
+                        || Character.isLetterOrDigit(ch);
                 }
             }
             fValid = result ? Boolean.TRUE : Boolean.FALSE;

@@ -13,8 +13,6 @@ package org.wikimodel.wem.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.wikimodel.wem.util.TreeBuilder.IPos;
-
 /**
  * This is an internal utility class used as a context to keep in memory the
  * current state of parsed trees (list items).
@@ -23,7 +21,7 @@ import org.wikimodel.wem.util.TreeBuilder.IPos;
  */
 public class ListBuilder {
 
-    static class CharPos implements TreeBuilder.IPos {
+    static class CharPos implements TreeBuilder.IPos<CharPos> {
 
         private int fPos;
 
@@ -47,8 +45,8 @@ public class ListBuilder {
             return equalsData(pos) && pos.fPos == fPos;
         }
 
-        public boolean equalsData(IPos pos) {
-            return ((CharPos) pos).fTreeChar == fTreeChar;
+        public boolean equalsData(CharPos pos) {
+            return pos.fTreeChar == fTreeChar;
         }
 
         public int getPos() {
@@ -57,25 +55,23 @@ public class ListBuilder {
 
     }
 
-    TreeBuilder fBuilder = new TreeBuilder(
-        new TreeBuilder.ITreeListener() {
+    TreeBuilder<CharPos> fBuilder = new TreeBuilder<CharPos>(
+        new TreeBuilder.ITreeListener<CharPos>() {
 
-            public void onBeginRow(IPos n) {
-                CharPos pos = (CharPos) n;
+            public void onBeginRow(CharPos pos) {
                 fListener.beginRow(pos.fTreeChar, pos.fRowChar);
             }
 
-            public void onBeginTree(IPos n) {
-                fListener.beginTree(((CharPos) n).fTreeChar);
+            public void onBeginTree(CharPos pos) {
+                fListener.beginTree(pos.fTreeChar);
             }
 
-            public void onEndRow(IPos n) {
-                CharPos pos = (CharPos) n;
+            public void onEndRow(CharPos pos) {
                 fListener.endRow(pos.fTreeChar, pos.fRowChar);
             }
 
-            public void onEndTree(IPos n) {
-                fListener.endTree(((CharPos) n).fTreeChar);
+            public void onEndTree(CharPos pos) {
+                fListener.endTree(pos.fTreeChar);
             }
 
         });
@@ -95,12 +91,12 @@ public class ListBuilder {
      * @param rowParams the parameters of the row
      */
     public void alignContext(String row) {
-        List<IPos> list = getCharPositions(row);
+        List<CharPos> list = getCharPositions(row);
         fBuilder.align(list);
     }
 
-    private List<IPos> getCharPositions(String s) {
-        List<IPos> list = new ArrayList<IPos>();
+    private List<CharPos> getCharPositions(String s) {
+        List<CharPos> list = new ArrayList<CharPos>();
         char[] array = s.toCharArray();
         int pos = 0;
         for (int i = 0; i < array.length; i++) {

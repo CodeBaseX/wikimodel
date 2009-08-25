@@ -44,10 +44,11 @@ public class DivisionTagHandler extends TagHandler {
             // Check if we have a div meaning an empty line between block
             if (classes.contains("wikimodel-emptyline")) {
                 int value = (Integer) context.getTagStack().getStackParameter(
-                        "emptyLinesCount");
+                    "emptyLinesCount");
                 value++;
-                context.getTagStack().setStackParameter("emptyLinesCount",
-                        value);
+                context.getTagStack().setStackParameter(
+                    "emptyLinesCount",
+                    value);
             } else {
                 // Consider that we're inside an embedded document
                 beginDocument(context, context.getParams().remove("class"));

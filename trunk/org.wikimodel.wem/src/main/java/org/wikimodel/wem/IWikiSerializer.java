@@ -14,7 +14,6 @@ import java.io.Reader;
 
 /**
  * This is a common interface for all wiki syntax serializers.
- * 
  */
 
 public interface IWikiSerializer {
@@ -24,5 +23,6 @@ public interface IWikiSerializer {
      * @param listener
      * @throws WikiParserException
      */
-    void serialize(Reader reader, IWemListener listener) throws WikiParserException;
+    void serialize(Reader reader, IWemListener listener)
+        throws WikiParserException;
 }

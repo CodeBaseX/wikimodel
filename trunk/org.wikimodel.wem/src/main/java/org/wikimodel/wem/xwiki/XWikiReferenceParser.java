@@ -75,8 +75,9 @@ public class XWikiReferenceParser extends WikiReferenceParser {
                     i += 2;
                     parameters.append(array, i, array.length - i);
                     break;
-                } else if (c == '[' && i + 1 < array.length
-                        && array[i + 1] == '[') {
+                } else if (c == '['
+                    && i + 1 < array.length
+                    && array[i + 1] == '[') {
                     int endLink = findEndLink(array, i + 2);
                     if (endLink != -1) {
                         // If we find an internal link we skip it
@@ -119,12 +120,14 @@ public class XWikiReferenceParser extends WikiReferenceParser {
             if (!escaped) {
                 if (array[i] == '~') {
                     escaped = true;
-                } else if (c == '[' && i + 1 < array.length
-                        && array[i + 1] == '[') {
+                } else if (c == '['
+                    && i + 1 < array.length
+                    && array[i + 1] == '[') {
                     ++linkdepth;
                     ++i;
-                } else if (c == ']' && i + 1 < array.length
-                        && array[i + 1] == ']') {
+                } else if (c == ']'
+                    && i + 1 < array.length
+                    && array[i + 1] == ']') {
                     --linkdepth;
                     ++i;
                     endLink = i + 1;

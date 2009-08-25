@@ -22,8 +22,10 @@ public class ListItemTagHandler extends TagHandler {
         super(true, false, true);
     }
 
-    public ListItemTagHandler(boolean documentContainer,
-            boolean requiresDocument, boolean contentContainer) {
+    public ListItemTagHandler(
+        boolean documentContainer,
+        boolean requiresDocument,
+        boolean contentContainer) {
         super(documentContainer, requiresDocument, contentContainer);
     }
 
@@ -34,16 +36,18 @@ public class ListItemTagHandler extends TagHandler {
     }
 
     protected void begin(String markup, TagContext context) {
-        StringBuffer listStyles = (StringBuffer) context.getTagStack()
-                .getStackParameter("listStyles");
+        StringBuffer listStyles = (StringBuffer) context
+            .getTagStack()
+            .getStackParameter("listStyles");
         listStyles.append(markup);
         context.getScannerContext().beginListItem(listStyles.toString());
     }
 
     @Override
     public void end(TagContext context) {
-        StringBuffer listStyles = (StringBuffer) context.getTagStack()
-                .getStackParameter("listStyles");
+        StringBuffer listStyles = (StringBuffer) context
+            .getTagStack()
+            .getStackParameter("listStyles");
         // We should always have a length greater than 0 but we handle
         // the case where the user has entered some badly formed HTML
         if (listStyles.length() > 0) {

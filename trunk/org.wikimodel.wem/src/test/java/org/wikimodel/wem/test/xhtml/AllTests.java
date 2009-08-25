@@ -7,10 +7,10 @@ public class AllTests {
 
     public static Test suite() {
         TestSuite suite = new TestSuite("Test for org.wikimodel.wem.test.xhtml");
-        //$JUnit-BEGIN$
+        // $JUnit-BEGIN$
         suite.addTestSuite(XHTMLWhitespaceXMLFilterTest.class);
         suite.addTestSuite(XHtmlParserTest.class);
-        //$JUnit-END$
+        // $JUnit-END$
         return suite;
     }
 

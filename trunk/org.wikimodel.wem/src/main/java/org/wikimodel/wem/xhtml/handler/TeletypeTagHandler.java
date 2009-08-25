@@ -24,17 +24,21 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 public class TeletypeTagHandler extends TagHandler {
 
     // There are 2 possible output for <tt>:
-    // * If there a class="wikimodel-verbatim" specified then we emit a onVerbatimInline() event
-    // * If there no class or a class with another value then we emit a Monospace Format event.
+    // * If there a class="wikimodel-verbatim" specified then we emit a
+    // onVerbatimInline() event
+    // * If there no class or a class with another value then we emit a
+    // Monospace Format event.
 
-	public TeletypeTagHandler() {
-		super(false, false, true);
-	}
+    public TeletypeTagHandler() {
+        super(false, false, true);
+    }
 
     @Override
     protected void begin(TagContext context) {
         WikiParameter param = context.getParams().getParameter("class");
-        if ((param != null) && Arrays.asList(param.getValue().split(" ")).contains("wikimodel-verbatim")) {
+        if ((param != null)
+            && Arrays.asList(param.getValue().split(" ")).contains(
+                "wikimodel-verbatim")) {
             setAccumulateContent(true);
         } else {
             if (context.getParams().getSize() > 0) {
@@ -47,7 +51,9 @@ public class TeletypeTagHandler extends TagHandler {
     @Override
     protected void end(TagContext context) {
         WikiParameter param = context.getParams().getParameter("class");
-        if ((param != null) && Arrays.asList(param.getValue().split(" ")).contains("wikimodel-verbatim")) {
+        if ((param != null)
+            && Arrays.asList(param.getValue().split(" ")).contains(
+                "wikimodel-verbatim")) {
             String str = context.getContent();
             context.getScannerContext().onVerbatim(str, true);
         } else {

@@ -18,15 +18,16 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  */
 public class BreakTagHandler extends TagHandler {
 
-	public BreakTagHandler() {
-		super(false, false, false);
-	}
+    public BreakTagHandler() {
+        super(false, false, false);
+    }
 
     @Override
     protected void begin(TagContext context) {
         // If we're inside a quotation line then a BR must close the current
         // quotation line and start a new quotation line.
-        int quoteDepth = (Integer) context.getTagStack().getStackParameter("quoteDepth");
+        int quoteDepth = (Integer) context.getTagStack().getStackParameter(
+            "quoteDepth");
         if (quoteDepth > 0) {
             context.getScannerContext().beginQuotLine(quoteDepth);
         } else {

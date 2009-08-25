@@ -15,24 +15,22 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
 /**
- * SAX parsers are allowed to call the characters() method several times in a row.
- * Some parsers have a buffer of 8K (Crimson), others of 16K (Xerces) and others can
- * even call onCharacters() for every single characters! Thus we need to accumulate
- * the characters in a buffer before we process them. This filter does exactly this.
- *  
+ * SAX parsers are allowed to call the characters() method several times in a
+ * row. Some parsers have a buffer of 8K (Crimson), others of 16K (Xerces) and
+ * others can even call onCharacters() for every single characters! Thus we need
+ * to accumulate the characters in a buffer before we process them. This filter
+ * does exactly this.
+ * 
  * @author vmassol
  */
-public class AccumulationXMLFilter extends DefaultXMLFilter
-{
+public class AccumulationXMLFilter extends DefaultXMLFilter {
     private StringBuffer fAccumulationBuffer = new StringBuffer();
 
-    public AccumulationXMLFilter()
-    {
+    public AccumulationXMLFilter() {
         super();
     }
-    
-    public AccumulationXMLFilter(XMLReader reader)
-    {
+
+    public AccumulationXMLFilter(XMLReader reader) {
         super(reader);
     }
 
@@ -46,18 +44,21 @@ public class AccumulationXMLFilter extends DefaultXMLFilter
             fAccumulationBuffer.append(array, start, length);
         }
     }
-    
+
     /**
      * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String,
      *      java.lang.String, java.lang.String, org.xml.sax.Attributes)
      */
     @Override
-    public void startElement(String uri, String localName, String qName, 
+    public void startElement(
+        String uri,
+        String localName,
+        String qName,
         Attributes attributes) throws SAXException {
         flushAccumulationBuffer();
         super.startElement(uri, localName, qName, attributes);
     }
-    
+
     /**
      * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String,
      *      java.lang.String, java.lang.String)
@@ -68,32 +69,32 @@ public class AccumulationXMLFilter extends DefaultXMLFilter
         flushAccumulationBuffer();
         super.endElement(uri, localName, qName);
     }
-    
+
     @Override
-    public void comment(char[] array, int start, int length) throws SAXException
-    {
+    public void comment(char[] array, int start, int length)
+        throws SAXException {
         flushAccumulationBuffer();
         super.comment(array, start, length);
     }
-    
+
     @Override
-    public void startCDATA() throws SAXException
-    {
+    public void startCDATA() throws SAXException {
         flushAccumulationBuffer();
         super.startCDATA();
     }
-    
+
     @Override
-    public void endCDATA() throws SAXException
-    {
+    public void endCDATA() throws SAXException {
         flushAccumulationBuffer();
         super.endCDATA();
     }
 
-    private void flushAccumulationBuffer() throws SAXException
-    {
+    private void flushAccumulationBuffer() throws SAXException {
         if (fAccumulationBuffer.length() > 0) {
-            super.characters(fAccumulationBuffer.toString().toCharArray(), 0, fAccumulationBuffer.length());
+            super.characters(
+                fAccumulationBuffer.toString().toCharArray(),
+                0,
+                fAccumulationBuffer.length());
         }
         fAccumulationBuffer.setLength(0);
     }

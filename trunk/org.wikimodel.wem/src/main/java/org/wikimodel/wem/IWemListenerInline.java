@@ -35,7 +35,8 @@ package org.wikimodel.wem;
  * <dd>These elements require interpretation of some syntax-specific formatting
  * and are notified using the following methods: {@link #onEscape(String)},
  * {@link #onLineBreak()}, {@link #onReference(String)}/
- * {@link #onReference(WikiReference)}, {@link #onVerbatimInline(String, WikiParameters)}</dd>
+ * {@link #onReference(WikiReference)},
+ * {@link #onVerbatimInline(String, WikiParameters)}</dd>
  * </dl>
  * 
  * @author kotelnikov
@@ -68,13 +69,13 @@ public interface IWemListenerInline {
     void onEscape(String str);
 
     /**
-     * This method is called to notify that an free standing image was
-     * found in the parsed wiki document.
+     * This method is called to notify that an free standing image was found in
+     * the parsed wiki document.
      * 
      * @param ref the reference the reference
      */
     void onImage(String ref);
-    
+
     /**
      * This method is called to notify that a structured reference was found in
      * the text
@@ -121,7 +122,7 @@ public interface IWemListenerInline {
      * @param ref the reference the reference
      */
     void onReference(WikiReference ref);
-    
+
     /**
      * This method is called to notify about a sequence of space symbols (like
      * " " or "\t" symbols).

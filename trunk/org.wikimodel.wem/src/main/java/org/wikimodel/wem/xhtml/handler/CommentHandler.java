@@ -51,27 +51,30 @@ public class CommentHandler {
 
                     // Remove macro name part and continue parsing
                     macroString = macroString.substring(index
-                            + MACRO_SEPARATOR.length());
+                        + MACRO_SEPARATOR.length());
 
                     index = macroString.indexOf(MACRO_SEPARATOR);
                     if (index != -1) {
                         // Extract macro parameters
                         List<WikiParameter> parameters = new ArrayList<WikiParameter>();
-                        index = WikiScannerUtil.splitToPairs(macroString,
-                                parameters, null, MACRO_SEPARATOR);
+                        index = WikiScannerUtil.splitToPairs(
+                            macroString,
+                            parameters,
+                            null,
+                            MACRO_SEPARATOR);
                         macroParams = new WikiParameters(parameters);
 
                         // Extract macro content
                         if (macroString.length() > index) {
                             macroContent = macroString.substring(index
-                                    + MACRO_SEPARATOR.length());
+                                + MACRO_SEPARATOR.length());
                         }
                     } else {
                         // There is only parameters remaining in the string, the
                         // macro does not have content
                         // Extract macro parameters
                         macroParams = WikiParameters
-                                .newWikiParameters(macroString);
+                            .newWikiParameters(macroString);
                     }
                 } else {
                     // There is only macro name, the macro does not have
@@ -84,14 +87,18 @@ public class CommentHandler {
                 // event
                 // otherwise issue a block macro event
                 Stack<Boolean> insideBlockElementsStack = (Stack<Boolean>) stack
-                        .getStackParameter("insideBlockElement");
+                    .getStackParameter("insideBlockElement");
                 if (!insideBlockElementsStack.isEmpty()
-                        && insideBlockElementsStack.peek()) {
-                    stack.getScannerContext().onMacroInline(macroName,
-                            macroParams, macroContent);
+                    && insideBlockElementsStack.peek()) {
+                    stack.getScannerContext().onMacroInline(
+                        macroName,
+                        macroParams,
+                        macroContent);
                 } else {
-                    stack.getScannerContext().onMacroBlock(macroName,
-                            macroParams, macroContent);
+                    stack.getScannerContext().onMacroBlock(
+                        macroName,
+                        macroParams,
+                        macroContent);
                 }
             }
 

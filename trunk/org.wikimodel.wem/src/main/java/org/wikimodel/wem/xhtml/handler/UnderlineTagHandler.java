@@ -20,9 +20,9 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  */
 public class UnderlineTagHandler extends TagHandler {
 
-	public UnderlineTagHandler() {
-		super(false, false, true);
-	}
+    public UnderlineTagHandler() {
+        super(false, false, true);
+    }
 
     @Override
     protected void begin(TagContext context) {

@@ -14,9 +14,9 @@ package org.wikimodel.wem;
  * This object represents an individual reference in the wiki document. A
  * reference contains the following parts:
  * <ul>
- * <li> link (mandatory) - it can b e a hyperlink, URI or a wiki page name</li>
- * <li> label (optional) - a human readable label associated with this reference</li>
- * <li> parameters (optional) - additional wiki parameters associated with the
+ * <li>link (mandatory) - it can b e a hyperlink, URI or a wiki page name</li>
+ * <li>label (optional) - a human readable label associated with this reference</li>
+ * <li>parameters (optional) - additional wiki parameters associated with the
  * reference. It can be a style name, a target of the link or something else.</li>
  * </ul>
  * Instances of this type are immutable so they can be shared between various

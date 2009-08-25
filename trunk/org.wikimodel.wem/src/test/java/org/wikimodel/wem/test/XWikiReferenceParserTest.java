@@ -41,13 +41,17 @@ public class XWikiReferenceParserTest extends TestCase {
 
         XWikiReferenceParser parser = new XWikiReferenceParser();
         WikiReference reference = parser
-                .parse("reference||param1=value1 param2=value2");
+            .parse("reference||param1=value1 param2=value2");
         assertNull(reference.getLabel());
         assertEquals(2, reference.getParameters().getSize());
-        assertEquals("value1", reference.getParameters().getParameter("param1")
-                .getValue());
-        assertEquals("value2", reference.getParameters().getParameter("param2")
-                .getValue());
+        assertEquals("value1", reference
+            .getParameters()
+            .getParameter("param1")
+            .getValue());
+        assertEquals("value2", reference
+            .getParameters()
+            .getParameter("param2")
+            .getValue());
         assertEquals("reference", reference.getLink());
     }
 
@@ -55,15 +59,17 @@ public class XWikiReferenceParserTest extends TestCase {
         XWikiReferenceParser parser = new XWikiReferenceParser();
         WikiReference reference = parser.parse("label>>reference||param=value");
         assertEquals("label", reference.getLabel());
-        assertEquals("value", reference.getParameters().getParameter("param")
-                .getValue());
+        assertEquals("value", reference
+            .getParameters()
+            .getParameter("param")
+            .getValue());
         assertEquals("reference", reference.getLink());
     }
 
     public void testParseReferenceWithGreaterThanSymbolInLabel() {
         XWikiReferenceParser parser = new XWikiReferenceParser();
         WikiReference reference = parser
-                .parse("<strong>hello</strong>>>reference");
+            .parse("<strong>hello</strong>>>reference");
         assertEquals("<strong>hello</strong>", reference.getLabel());
         assertEquals("reference", reference.getLink());
     }
@@ -72,29 +78,35 @@ public class XWikiReferenceParserTest extends TestCase {
         XWikiReferenceParser parser = new XWikiReferenceParser();
         WikiReference reference = parser.parse("reference|||param=value");
         assertEquals("reference|", reference.getLink());
-        assertEquals("value", reference.getParameters().getParameter("param")
-                .getValue());
+        assertEquals("value", reference
+            .getParameters()
+            .getParameter("param")
+            .getValue());
     }
 
     public void testParseReferenceWhenLabelAndParametersSpecifiedWithSomeEscaping() {
         XWikiReferenceParser parser = new XWikiReferenceParser();
         WikiReference reference = parser
-                .parse("la~>>bel>>refe~||rence||param=value");
+            .parse("la~>>bel>>refe~||rence||param=value");
         assertEquals("la>>bel", reference.getLabel());
-        assertEquals("value", reference.getParameters().getParameter("param")
-                .getValue());
+        assertEquals("value", reference
+            .getParameters()
+            .getParameter("param")
+            .getValue());
         assertEquals("refe||rence", reference.getLink());
     }
 
     public void testParseReferenceWhenLabelAndParametersSpecifiedWithSomeEscapingAndInternalLink() {
         XWikiReferenceParser parser = new XWikiReferenceParser();
         WikiReference reference = parser
-                .parse("[[sub~>>label>>subre~||ference||subparam=subvalue]]la~>>bel>>refe~||rence||param=value");
+            .parse("[[sub~>>label>>subre~||ference||subparam=subvalue]]la~>>bel>>refe~||rence||param=value");
         assertEquals(
-                "[[sub~>>label>>subre~||ference||subparam=subvalue]]la>>bel",
-                reference.getLabel());
-        assertEquals("value", reference.getParameters().getParameter("param")
-                .getValue());
+            "[[sub~>>label>>subre~||ference||subparam=subvalue]]la>>bel",
+            reference.getLabel());
+        assertEquals("value", reference
+            .getParameters()
+            .getParameter("param")
+            .getValue());
         assertEquals("refe||rence", reference.getLink());
     }
 }

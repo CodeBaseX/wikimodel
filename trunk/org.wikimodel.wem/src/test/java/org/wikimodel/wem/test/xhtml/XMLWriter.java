@@ -17,53 +17,50 @@ import org.xml.sax.SAXException;
 /**
  * @author vmassol
  */
-public class XMLWriter extends DefaultXMLFilter
-{
+public class XMLWriter extends DefaultXMLFilter {
     StringBuffer fBuffer = new StringBuffer();
-    
-    public String getBuffer()
-    {
+
+    public String getBuffer() {
         return fBuffer.toString();
     }
-    
-    public void reset()
-    {
+
+    public void reset() {
         fBuffer.setLength(0);
     }
 
     @Override
-    public void characters(char[] array, int start, int length) throws SAXException
-    {
+    public void characters(char[] array, int start, int length)
+        throws SAXException {
         fBuffer.append(array, start, length);
     }
 
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException
-    {
+    public void startElement(
+        String uri,
+        String localName,
+        String qName,
+        Attributes atts) throws SAXException {
         fBuffer.append("<" + localName + ">");
     }
 
     @Override
-    public void endElement(String uri, String localName, String qName) throws SAXException
-    {
+    public void endElement(String uri, String localName, String qName)
+        throws SAXException {
         fBuffer.append("</" + localName + ">");
     }
 
     @Override
-    public void startCDATA() throws SAXException
-    {
+    public void startCDATA() throws SAXException {
         fBuffer.append("<![CDATA[");
     }
 
     @Override
-    public void endCDATA() throws SAXException
-    {
+    public void endCDATA() throws SAXException {
         fBuffer.append("]]>");
     }
 
     @Override
-    public void comment(char[] ch, int start, int length) throws SAXException
-    {
+    public void comment(char[] ch, int start, int length) throws SAXException {
         fBuffer.append("<!--");
         fBuffer.append(ch, start, length);
         fBuffer.append("-->");

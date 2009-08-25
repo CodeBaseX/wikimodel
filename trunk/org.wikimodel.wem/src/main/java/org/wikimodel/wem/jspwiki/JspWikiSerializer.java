@@ -101,6 +101,22 @@ public class JspWikiSerializer implements IWemListener {
 
     }
 
+    public void beginSection(
+        int docLevel,
+        int sectionLevel,
+        WikiParameters params) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void beginSectionContent(
+        int docLevel,
+        int sectionLevel,
+        WikiParameters params) {
+        // TODO Auto-generated method stub
+
+    }
+
     public void beginTable(WikiParameters params) {
     }
 
@@ -187,6 +203,19 @@ public class JspWikiSerializer implements IWemListener {
     }
 
     public void endQuotationLine() {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void endSection(int docLevel, int sectionLevel, WikiParameters params) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void endSectionContent(
+        int docLevel,
+        int sectionLevel,
+        WikiParameters params) {
         // TODO Auto-generated method stub
 
     }

@@ -77,8 +77,11 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
             TagStack fTagStack;
 
-            public TagContext(TagContext parent, String name,
-                    WikiParameters params, TagStack tagStack) {
+            public TagContext(
+                TagContext parent,
+                String name,
+                WikiParameters params,
+                TagStack tagStack) {
                 fName = name;
                 fParent = parent;
                 fParameters = params;
@@ -116,7 +119,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
             public String getContent() {
                 return fContent != null ? WikiPageUtil.escapeXmlString(fContent
-                        .toString()) : "";
+                    .toString()) : "";
             }
 
             public String getName() {
@@ -133,7 +136,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
             public WikiScannerContext getScannerContext() {
                 return fScannerContext.isEmpty() ? null : fScannerContext
-                        .peek();
+                    .peek();
             }
 
             public TagStack getTagStack() {
@@ -205,51 +208,51 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
         private XhtmlCharacterType getCharacterType(char ch) {
             XhtmlCharacterType type = XhtmlCharacterType.CHARACTER;
             switch (ch) {
-            case '!':
-            case '\'':
-            case '#':
-            case '$':
-            case '%':
-            case '&':
-            case '(':
-            case ')':
-            case '*':
-            case '+':
-            case ',':
-            case '-':
-            case '.':
-            case '/':
-            case ':':
-            case ';':
-            case '<':
-            case '=':
-            case '>':
-            case '?':
-            case '@':
-            case '[':
-            case '\\':
-            case ']':
-            case '^':
-            case '_':
-            case '`':
-            case '{':
-            case '|':
-            case '}':
-            case '~':
-            case '\"':
-                type = XhtmlCharacterType.SPECIAL_SYMBOL;
-                break;
-            case ' ':
-            case '\t':
-            case 160: // This is a &nbsp;
-                type = XhtmlCharacterType.SPACE;
-                break;
-            case '\n':
-            case '\r':
-                type = XhtmlCharacterType.NEW_LINE;
-                break;
-            default:
-                break;
+                case '!':
+                case '\'':
+                case '#':
+                case '$':
+                case '%':
+                case '&':
+                case '(':
+                case ')':
+                case '*':
+                case '+':
+                case ',':
+                case '-':
+                case '.':
+                case '/':
+                case ':':
+                case ';':
+                case '<':
+                case '=':
+                case '>':
+                case '?':
+                case '@':
+                case '[':
+                case '\\':
+                case ']':
+                case '^':
+                case '_':
+                case '`':
+                case '{':
+                case '|':
+                case '}':
+                case '~':
+                case '\"':
+                    type = XhtmlCharacterType.SPECIAL_SYMBOL;
+                    break;
+                case ' ':
+                case '\t':
+                case 160: // This is a &nbsp;
+                    type = XhtmlCharacterType.SPACE;
+                    break;
+                case '\n':
+                case '\r':
+                    type = XhtmlCharacterType.NEW_LINE;
+                    break;
+                default:
+                    break;
             }
             return type;
         }
@@ -278,37 +281,40 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
             while (stack.size() > 0) {
                 XhtmlCharacter character = stack.remove(0);
                 switch (character.getType()) {
-                case ESCAPED:
-                    getScannerContext().onEscape("" + character.getCharacter());
-                    break;
-                case SPECIAL_SYMBOL:
-                    getScannerContext().onSpecialSymbol(
+                    case ESCAPED:
+                        getScannerContext().onEscape(
                             "" + character.getCharacter());
-                    break;
-                case NEW_LINE:
-                    getScannerContext().onLineBreak();
-                    break;
-                case SPACE:
-                    StringBuffer spaceBuffer = new StringBuffer(" ");
-                    while ((stack.size() > 0)
+                        break;
+                    case SPECIAL_SYMBOL:
+                        getScannerContext().onSpecialSymbol(
+                            "" + character.getCharacter());
+                        break;
+                    case NEW_LINE:
+                        getScannerContext().onLineBreak();
+                        break;
+                    case SPACE:
+                        StringBuffer spaceBuffer = new StringBuffer(" ");
+                        while ((stack.size() > 0)
                             && (stack.firstElement().getType() == XhtmlCharacterType.SPACE)) {
-                        stack.remove(0);
-                        spaceBuffer.append(' ');
-                    }
-                    getScannerContext().onSpace(spaceBuffer.toString());
-                    break;
-                default:
-                    StringBuffer charBuffer = new StringBuffer();
-                    charBuffer.append(character.getCharacter());
-                    while ((stack.size() > 0)
+                            stack.remove(0);
+                            spaceBuffer.append(' ');
+                        }
+                        getScannerContext().onSpace(spaceBuffer.toString());
+                        break;
+                    default:
+                        StringBuffer charBuffer = new StringBuffer();
+                        charBuffer.append(character.getCharacter());
+                        while ((stack.size() > 0)
                             && (stack.firstElement().getType() == XhtmlCharacterType.CHARACTER)) {
-                        charBuffer.append(stack.firstElement().getCharacter());
-                        stack.remove(0);
-                    }
-                    getScannerContext()
+                            charBuffer.append(stack
+                                .firstElement()
+                                .getCharacter());
+                            stack.remove(0);
+                        }
+                        getScannerContext()
                             .onWord(
-                                    WikiPageUtil.escapeXmlString(charBuffer
-                                            .toString()));
+                                WikiPageUtil.escapeXmlString(charBuffer
+                                    .toString()));
                 }
             }
         }
@@ -325,8 +331,9 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
                 Stack<XhtmlCharacter> stack = new Stack<XhtmlCharacter>();
                 for (int i = 0; i < content.length(); i++) {
                     char c = content.charAt(i);
-                    XhtmlCharacter current = new XhtmlCharacter(c,
-                            getCharacterType(c));
+                    XhtmlCharacter current = new XhtmlCharacter(
+                        c,
+                        getCharacterType(c));
                     XhtmlCharacter result = current;
                     stack.push(result);
                 }
@@ -406,16 +413,19 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
 
     TagStack fStack;
 
-    public XhtmlHandler(WikiScannerContext context,
-            Map<String, TagHandler> extraHandlers) {
+    public XhtmlHandler(
+        WikiScannerContext context,
+        Map<String, TagHandler> extraHandlers) {
         this(context, extraHandlers, new CommentHandler());
     }
 
     /**
      * @param context
      */
-    public XhtmlHandler(WikiScannerContext context,
-            Map<String, TagHandler> extraHandlers, CommentHandler commentHandler) {
+    public XhtmlHandler(
+        WikiScannerContext context,
+        Map<String, TagHandler> extraHandlers,
+        CommentHandler commentHandler) {
         fStack = new TagStack(context);
         fStack.setCommentHandler(commentHandler);
 
@@ -484,7 +494,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
      */
     @Override
     public void characters(char[] array, int start, int length)
-            throws SAXException {
+        throws SAXException {
         fStack.onCharacters(new String(array, start, length));
     }
 
@@ -503,7 +513,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
      */
     @Override
     public void endElement(String uri, String localName, String qName)
-            throws SAXException {
+        throws SAXException {
         fStack.endElement();
     }
 
@@ -536,14 +546,15 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
         String localName,
         String qName,
         Attributes attributes) throws SAXException {
-        fStack.beginElement(getLocalName(uri, localName, qName, false),
-                getParameters(attributes));
+        fStack.beginElement(
+            getLocalName(uri, localName, qName, false),
+            getParameters(attributes));
     }
 
     // Lexical handler methods
 
     public void comment(char[] array, int start, int length)
-            throws SAXException {
+        throws SAXException {
         fStack.onComment(array, start, length);
     }
 
@@ -564,7 +575,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
     }
 
     public void startDTD(String arg0, String arg1, String arg2)
-            throws SAXException {
+        throws SAXException {
         // Nothing to do
     }
 
@@ -577,8 +588,9 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
         String localName,
         String name,
         boolean upperCase) {
-        String result = (localName != null && !"".equals(localName)) ? localName
-                : name;
+        String result = (localName != null && !"".equals(localName))
+            ? localName
+            : name;
         return upperCase ? result.toUpperCase() : result;
     }
 
@@ -586,7 +598,7 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
         List<WikiParameter> params = new ArrayList<WikiParameter>();
         for (int i = 0; i < attributes.getLength(); i++) {
             String key = getLocalName(attributes.getURI(i), attributes
-                    .getQName(i), attributes.getLocalName(i), false);
+                .getQName(i), attributes.getLocalName(i), false);
             String value = attributes.getValue(i);
             WikiParameter param = new WikiParameter(key, value);
 

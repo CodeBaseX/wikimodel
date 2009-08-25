@@ -18,13 +18,12 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  */
 public class TableTagHandler extends TagHandler {
 
-	public TableTagHandler() {
-		super(false, true, false);
-	}
+    public TableTagHandler() {
+        super(false, true, false);
+    }
 
-	@Override
-    public boolean isBlockHandler(TagContext context)
-    {
+    @Override
+    public boolean isBlockHandler(TagContext context) {
         return true;
     }
 

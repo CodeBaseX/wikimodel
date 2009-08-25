@@ -20,9 +20,9 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  */
 public class StrikedOutTagHandler extends TagHandler {
 
-	public StrikedOutTagHandler() {
-		super(false, false, true);
-	}
+    public StrikedOutTagHandler() {
+        super(false, false, true);
+    }
 
     @Override
     protected void begin(TagContext context) {

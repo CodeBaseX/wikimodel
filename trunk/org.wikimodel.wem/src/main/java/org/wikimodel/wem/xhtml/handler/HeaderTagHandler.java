@@ -17,14 +17,13 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  * @author vmassol
  */
 public class HeaderTagHandler extends TagHandler {
-    
-	public HeaderTagHandler() {
-		super(false, true, true);
-	}
-	
-	@Override
-    public boolean isBlockHandler(TagContext context)
-    {
+
+    public HeaderTagHandler() {
+        super(false, true, true);
+    }
+
+    @Override
+    public boolean isBlockHandler(TagContext context) {
         return true;
     }
 

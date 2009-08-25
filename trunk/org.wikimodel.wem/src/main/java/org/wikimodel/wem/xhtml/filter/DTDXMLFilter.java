@@ -19,20 +19,17 @@ import org.xml.sax.XMLReader;
  * 
  * @author vmassol
  */
-public class DTDXMLFilter extends DefaultXMLFilter
-{
+public class DTDXMLFilter extends DefaultXMLFilter {
     /**
      * We want to accumulate characters only when not parsing the DTD.
      */
     private boolean fIsInDTD;
 
-    public DTDXMLFilter()
-    {
+    public DTDXMLFilter() {
         super();
     }
-    
-    public DTDXMLFilter(XMLReader reader)
-    {
+
+    public DTDXMLFilter(XMLReader reader) {
         super(reader);
     }
 
@@ -46,19 +43,22 @@ public class DTDXMLFilter extends DefaultXMLFilter
             super.characters(array, start, length);
         }
     }
-    
+
     /**
      * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String,
      *      java.lang.String, java.lang.String, org.xml.sax.Attributes)
      */
     @Override
-    public void startElement(String uri, String localName, String qName, 
+    public void startElement(
+        String uri,
+        String localName,
+        String qName,
         Attributes attributes) throws SAXException {
         if (!fIsInDTD) {
             super.startElement(uri, localName, qName, attributes);
         }
     }
-    
+
     /**
      * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String,
      *      java.lang.String, java.lang.String)
@@ -70,41 +70,38 @@ public class DTDXMLFilter extends DefaultXMLFilter
             super.endElement(uri, localName, qName);
         }
     }
-    
+
     @Override
-    public void comment(char[] array, int start, int length) throws SAXException
-    {
+    public void comment(char[] array, int start, int length)
+        throws SAXException {
         if (!fIsInDTD) {
             super.comment(array, start, length);
         }
     }
-    
+
     @Override
-    public void startCDATA() throws SAXException
-    {
+    public void startCDATA() throws SAXException {
         if (!fIsInDTD) {
             super.startCDATA();
         }
     }
-    
+
     @Override
-    public void endCDATA() throws SAXException
-    {
+    public void endCDATA() throws SAXException {
         if (!fIsInDTD) {
             super.endCDATA();
         }
     }
 
     @Override
-    public void startDTD(String name, String publicId, String systemId) throws SAXException
-    {
+    public void startDTD(String name, String publicId, String systemId)
+        throws SAXException {
         fIsInDTD = true;
         super.startDTD(name, publicId, systemId);
     }
 
     @Override
-    public void endDTD() throws SAXException
-    {
+    public void endDTD() throws SAXException {
         fIsInDTD = false;
         super.endDTD();
     }

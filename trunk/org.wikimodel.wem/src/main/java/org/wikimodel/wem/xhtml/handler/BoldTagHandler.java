@@ -20,10 +20,10 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  */
 public class BoldTagHandler extends TagHandler {
 
-	public BoldTagHandler() {
-		super(false, false, true);
-	}
-	
+    public BoldTagHandler() {
+        super(false, false, true);
+    }
+
     @Override
     protected void begin(TagContext context) {
         if (context.getParams().getSize() > 0) {

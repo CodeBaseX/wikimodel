@@ -161,24 +161,28 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
             + "</div>\n"
             + "</div>");
 
-        test("<html><ul><li>Item 1<div><ul><li>Item 2</li></ul></div></li></ul></html>", "<ul>\n"+
-                "  <li>Item 1<div class='wikimodel-document'>\n"+
-                "<ul>\n"+
-                "  <li>Item 2</li>\n"+
-                "</ul>\n"+
-                "</div>\n"+
-                "</li>\n"+
-                "</ul>");
-        test("<html><ul><li>Item 1<p>Before</p><ul><li>Item 2</li></ul><p>After</p></li></ul></html>", "<ul>\n"+
-                "  <li>Item 1<div class='wikimodel-document'>\n"+
-                "<p>Before</p>\n"+
-                "<ul>\n"+
-                "  <li>Item 2</li>\n"+
-                "</ul>\n"+
-                "<p>After</p>\n"+
-                "</div>\n"+
-                "</li>\n"+
-                "</ul>");
+        test(
+            "<html><ul><li>Item 1<div><ul><li>Item 2</li></ul></div></li></ul></html>",
+            "<ul>\n"
+                + "  <li>Item 1<div class='wikimodel-document'>\n"
+                + "<ul>\n"
+                + "  <li>Item 2</li>\n"
+                + "</ul>\n"
+                + "</div>\n"
+                + "</li>\n"
+                + "</ul>");
+        test(
+            "<html><ul><li>Item 1<p>Before</p><ul><li>Item 2</li></ul><p>After</p></li></ul></html>",
+            "<ul>\n"
+                + "  <li>Item 1<div class='wikimodel-document'>\n"
+                + "<p>Before</p>\n"
+                + "<ul>\n"
+                + "  <li>Item 2</li>\n"
+                + "</ul>\n"
+                + "<p>After</p>\n"
+                + "</div>\n"
+                + "</li>\n"
+                + "</ul>");
     }
 
     /**
@@ -211,11 +215,15 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
         test("<html><sub>sub</sub></html>", "<p><sub>sub</sub></p>");
 
         test("<html><tt>mono</tt></html>", "<p><mono>mono</mono></p>");
-        
-        test("<html>a<strong><em>b</em></strong>c</html>", "<p>a<strong><em>b</em></strong>c</p>");
+
+        test(
+            "<html>a<strong><em>b</em></strong>c</html>",
+            "<p>a<strong><em>b</em></strong>c</p>");
 
         test("<html>a<em><em>b</em></em>c</html>", "<p>a<em>b</em>c</p>");
-        test("<html>a<em><strong><em>b</em></strong></em>c</html>", "<p>a<em><strong>b</strong></em>c</p>");
+        test(
+            "<html>a<em><strong><em>b</em></strong></em>c</html>",
+            "<p>a<em><strong>b</strong></em>c</p>");
     }
 
     /**
@@ -382,23 +390,22 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
             "<p><code>verbatim</code></p>");
     }
 
-    public void testMacro() throws WikiParserException
-    {
+    public void testMacro() throws WikiParserException {
         test(
-                "<html><!--startmacro:name|-|param=\"value\"|-|content--><!--stopmacro--></html>",
-                "<pre class='wikimodel-macro' macroName='name' param='value'><![CDATA[content]]></pre>");
+            "<html><!--startmacro:name|-|param=\"value\"|-|content--><!--stopmacro--></html>",
+            "<pre class='wikimodel-macro' macroName='name' param='value'><![CDATA[content]]></pre>");
         test(
-                "<html><!--startmacro:name|-|title=\"value\"-->macro<!--stopmacro--></html>",
-                "<pre class='wikimodel-macro' macroName='name' title='value'/>");
+            "<html><!--startmacro:name|-|title=\"value\"-->macro<!--stopmacro--></html>",
+            "<pre class='wikimodel-macro' macroName='name' title='value'/>");
 
         test(
-                "<html><!--startmacro:name|-|param=\"va|-|lue\"|-|content-->macro<!--stopmacro--></html>",
-                "<pre class='wikimodel-macro' macroName='name' param='va|-|lue'><![CDATA[content]]></pre>");
+            "<html><!--startmacro:name|-|param=\"va|-|lue\"|-|content-->macro<!--stopmacro--></html>",
+            "<pre class='wikimodel-macro' macroName='name' param='va|-|lue'><![CDATA[content]]></pre>");
         test(
-                "<html><!--startmacro:name|-|title=\"va|-|lue\"-->macro<!--stopmacro--></html>",
-                "<pre class='wikimodel-macro' macroName='name' title='va|-|lue'/>");
+            "<html><!--startmacro:name|-|title=\"va|-|lue\"-->macro<!--stopmacro--></html>",
+            "<pre class='wikimodel-macro' macroName='name' title='va|-|lue'/>");
         test(
-                "<html><!--startmacro:name|-|param=\"value\"|-|content--><!--startmacro:subname|-|subparam=\"subvalue\"|-|subcontent--><!--stopmacro--><!--stopmacro--></html>",
-                "<pre class='wikimodel-macro' macroName='name' param='value'><![CDATA[content]]></pre>");
+            "<html><!--startmacro:name|-|param=\"value\"|-|content--><!--startmacro:subname|-|subparam=\"subvalue\"|-|subcontent--><!--stopmacro--><!--stopmacro--></html>",
+            "<pre class='wikimodel-macro' macroName='name' param='value'><![CDATA[content]]></pre>");
     }
 }

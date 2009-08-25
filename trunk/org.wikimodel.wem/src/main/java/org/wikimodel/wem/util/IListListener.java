@@ -17,6 +17,7 @@ public interface IListListener {
 
     /**
      * Begins of a new row
+     * 
      * @param treeType TODO
      * @param rowType the type of the row
      */
@@ -31,6 +32,7 @@ public interface IListListener {
 
     /**
      * Ends of the row.
+     * 
      * @param treeType TODO
      * @param rowType the type of the row
      */

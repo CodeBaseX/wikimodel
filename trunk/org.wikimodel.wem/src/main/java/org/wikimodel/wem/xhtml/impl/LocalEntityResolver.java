@@ -32,7 +32,8 @@ public class LocalEntityResolver implements EntityResolver {
         .getLogger(LocalEntityResolver.class.getName());
 
     /**
-     * Allow the application to resolve external entities. <p/>
+     * Allow the application to resolve external entities.
+     * <p/>
      * <p>
      * The Parser will call this method before opening any external entity
      * except the top-level document entity including the external DTD subset,

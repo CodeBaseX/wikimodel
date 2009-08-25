@@ -17,8 +17,9 @@ import org.wikimodel.wem.WikiParameters;
  */
 public class XWikiWikiParameters extends WikiParameters {
     public static WikiParameters newWikiParameters(String str) {
-        return WikiParameters.newWikiParameters(str,
-                XWikiScannerUtil.ESCAPECHAR);
+        return WikiParameters.newWikiParameters(
+            str,
+            XWikiScannerUtil.ESCAPECHAR);
     }
 
     public XWikiWikiParameters(String str) {

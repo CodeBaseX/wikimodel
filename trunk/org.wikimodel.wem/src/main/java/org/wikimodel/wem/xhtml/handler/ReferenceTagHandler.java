@@ -23,10 +23,10 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  */
 public class ReferenceTagHandler extends TagHandler {
 
-	public ReferenceTagHandler() {
-		super(false, false, true);
-	}
-	
+    public ReferenceTagHandler() {
+        super(false, false, true);
+    }
+
     @Override
     protected void begin(TagContext context) {
         setAccumulateContent(true);
@@ -43,31 +43,36 @@ public class ReferenceTagHandler extends TagHandler {
         }
 
         if (ref != null) {
-            // Check if there's a class attribute with a "wikimodel-freestanding" value.
+            // Check if there's a class attribute with a
+            // "wikimodel-freestanding" value.
             // If so it means we have a free standing link.
             if (isFreeStandingReference(context)) {
                 context.getScannerContext().onReference(ref.getValue());
             } else {
                 String content = context.getContent();
-                
-                // Make sure we remove the HREF and SRC parameters from the list of parameters
+
+                // Make sure we remove the HREF and SRC parameters from the list
+                // of parameters
                 // since they are already consumed as link reference.
                 WikiParameters parameters = context.getParams();
                 parameters = parameters.remove("src");
                 parameters = parameters.remove("href");
-                
-                WikiReference reference = new WikiReference(ref.getValue(),
-                    content, parameters);
+
+                WikiReference reference = new WikiReference(
+                    ref.getValue(),
+                    content,
+                    parameters);
                 context.getScannerContext().onReference(reference);
             }
         }
     }
-    
-    protected boolean isFreeStandingReference(TagContext context)
-    {
-        // Check if there's a class attribute with a "wikimodel-freestanding" value.
+
+    protected boolean isFreeStandingReference(TagContext context) {
+        // Check if there's a class attribute with a "wikimodel-freestanding"
+        // value.
         // If so it means we have a free standing link.
         WikiParameter classParam = context.getParams().getParameter("class");
-        return ((classParam != null) && classParam.getValue().equalsIgnoreCase("wikimodel-freestanding"));
+        return ((classParam != null) && classParam.getValue().equalsIgnoreCase(
+            "wikimodel-freestanding"));
     }
 }

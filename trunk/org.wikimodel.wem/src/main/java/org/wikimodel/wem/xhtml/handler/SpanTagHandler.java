@@ -17,7 +17,7 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  * @author vmassol
  */
 public class SpanTagHandler extends TagHandler {
-    
+
     public SpanTagHandler() {
         super(false, false, true);
     }
