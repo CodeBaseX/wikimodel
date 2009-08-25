@@ -8,6 +8,7 @@ import org.wikimodel.template.impl.ITemplateListener;
 import org.wikimodel.template.impl.TemplateEngine;
 
 public abstract class XmlTemplateEngine<N> {
+
     public abstract class XmlDataSelector implements ITemplateDataSelector<N> {
 
         /**
