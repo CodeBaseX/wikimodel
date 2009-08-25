@@ -18,8 +18,9 @@ import org.wikimodel.template.XmlTemplateEngine;
 public class DomTemplateEngine extends XmlTemplateEngine<Node> {
 
     @Override
-    protected XmlDataSelector newDataSelector() {
-        return new XmlDataSelector() {
+    protected XmlDataSelector<Node> newDataSelector(
+        IXmlTemplateNodeManager<Node> nodeManager) {
+        return new XmlDataSelector<Node>(nodeManager) {
             @Override
             protected Object selectChildData(Node node, Object data, String path) {
                 Object result = null;
@@ -46,7 +47,7 @@ public class DomTemplateEngine extends XmlTemplateEngine<Node> {
                             }
                         }
                         if (result == null) {
-                            String attr = getAttribute(e, path);
+                            String attr = getAttribute(fNodeManager, e, path);
                             if (attr != null && !"".equals(attr)) {
                                 result = attr;
                             }

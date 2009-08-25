@@ -9,13 +9,18 @@ import org.wikimodel.template.impl.TemplateEngine;
 
 public abstract class XmlTemplateEngine<N> {
 
-    public abstract class XmlDataSelector implements ITemplateDataSelector<N> {
+    public static abstract class XmlDataSelector<N>
+        implements
+        ITemplateDataSelector<N> {
+
+        protected IXmlTemplateNodeManager<N> fNodeManager;
 
         /**
          * 
          */
-        public XmlDataSelector() {
+        public XmlDataSelector(IXmlTemplateNodeManager<N> nodeManager) {
             super();
+            fNodeManager = nodeManager;
         }
 
         /**
@@ -77,7 +82,10 @@ public abstract class XmlTemplateEngine<N> {
             Object object = data[index];
 
             Object[] result = null;
-            String selector = getAttribute(node, IXmlTemplateConst.JSITERATE);
+            String selector = getAttribute(
+                fNodeManager,
+                node,
+                IXmlTemplateConst.JSITERATE);
             if (selector != null) {
                 object = selectData(node, object, selector);
                 if (object != null) {
@@ -87,7 +95,10 @@ public abstract class XmlTemplateEngine<N> {
                     }
                 }
             } else {
-                selector = getAttribute(node, IXmlTemplateConst.JSSELECT);
+                selector = getAttribute(
+                    fNodeManager,
+                    node,
+                    IXmlTemplateConst.JSSELECT);
                 if (selector != null) {
                     object = selectData(node, object, selector);
                     result = object != null ? toArray(object) : EMPTY_ARRAY;
@@ -103,6 +114,21 @@ public abstract class XmlTemplateEngine<N> {
     private static final Object[] EMPTY_ARRAY = toArray();
 
     /**
+     * @param node
+     * @param attr
+     * @return
+     */
+    protected static <N> String getAttribute(
+        IXmlTemplateNodeManager<N> nodeManager,
+        N node,
+        String attr) {
+        if (!nodeManager.isElement(node))
+            return null;
+        String jscontent = nodeManager.getAttribute(node, attr);
+        return jscontent != null && !"".equals(jscontent) ? jscontent : null;
+    }
+
+    /**
      * @param data
      * @return
      */
@@ -114,27 +140,16 @@ public abstract class XmlTemplateEngine<N> {
 
     private IXmlTemplateNodeManager<N> fNodeManager;
 
-    private XmlDataSelector fSelector;
+    private XmlDataSelector<N> fSelector;
 
     public XmlTemplateEngine() {
         fNodeManager = newNodeManager();
-        fSelector = newDataSelector();
+        fSelector = newDataSelector(fNodeManager);
         fEngine = new TemplateEngine<N>(fNodeManager, fSelector);
     }
 
-    /**
-     * @param node
-     * @param attr
-     * @return
-     */
-    protected String getAttribute(N node, String attr) {
-        if (!fNodeManager.isElement(node))
-            return null;
-        String jscontent = fNodeManager.getAttribute(node, attr);
-        return jscontent != null && !"".equals(jscontent) ? jscontent : null;
-    }
-
-    protected abstract XmlDataSelector newDataSelector();
+    protected abstract XmlDataSelector<N> newDataSelector(
+        IXmlTemplateNodeManager<N> nodeManager);
 
     protected abstract IXmlTemplateNodeManager<N> newNodeManager();
 
@@ -151,7 +166,10 @@ public abstract class XmlTemplateEngine<N> {
                     selectAttributes(node, data, params);
                     listener.beginElement(name, params);
 
-                    String path = getAttribute(node, IXmlTemplateConst.JSVALUE);
+                    String path = getAttribute(
+                        fNodeManager,
+                        node,
+                        IXmlTemplateConst.JSVALUE);
                     if (path != null) {
                         String content = selectStringContent(node, data, path);
                         if (content == null)
@@ -178,7 +196,10 @@ public abstract class XmlTemplateEngine<N> {
                 N node,
                 Object data,
                 Map<String, String> params) {
-                String path = getAttribute(node, IXmlTemplateConst.JSATTRIBUTES);
+                String path = getAttribute(
+                    fNodeManager,
+                    node,
+                    IXmlTemplateConst.JSATTRIBUTES);
                 if (path == null)
                     return;
                 String[] array = path.split(";");
