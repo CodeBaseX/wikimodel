@@ -6,20 +6,29 @@ package org.wikimodel.wem.util;
  */
 public interface ISectionListener<T> {
 
-    void beginLevel(int level, T data);
+    public static interface IPos<T> {
 
-    void beginSection(int level, T data);
+        T getData();
 
-    void beginSectionContent(int level, T data);
+        int getDocumentLevel();
 
-    void beginSectionHeader(int level, T data);
+        int getHeaderLevel();
+    }
 
-    void endLevel(int level, T data);
+    void beginDocument(IPos<T> pos);
 
-    void endSection(int level, T data);
+    void beginSection(IPos<T> pos);
 
-    void endSectionContent(int level, T data);
+    void beginSectionContent(IPos<T> pos);
 
-    void endSectionHeader(int level, T data);
+    void beginSectionHeader(IPos<T> pos);
+
+    void endDocument(IPos<T> pos);
+
+    void endSection(IPos<T> pos);
+
+    void endSectionContent(IPos<T> pos);
+
+    void endSectionHeader(IPos<T> pos);
 
 }

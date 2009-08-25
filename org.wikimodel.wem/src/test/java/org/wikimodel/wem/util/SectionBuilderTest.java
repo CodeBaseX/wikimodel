@@ -10,9 +10,62 @@ import junit.framework.TestCase;
  */
 public class SectionBuilderTest extends TestCase {
 
-    final StringBuffer fBuf = new StringBuffer();
+    protected static class PrintListener implements ISectionListener<String> {
+
+        final StringBuffer fBuf = new StringBuffer();
+
+        public void beginDocument(IPos<String> pos) {
+            fBuf.append("<doc" + n(pos) + ">");
+        }
+
+        public void beginSection(IPos<String> pos) {
+            fBuf.append("<s" + n(pos) + ">");
+        }
+
+        public void beginSectionContent(IPos<String> pos) {
+            fBuf.append("<c" + n(pos) + ">");
+        }
+
+        public void beginSectionHeader(IPos<String> pos) {
+            fBuf.append("<h" + n(pos) + ">");
+        }
+
+        public void endDocument(IPos<String> pos) {
+            fBuf.append("</doc" + n(pos) + ">");
+        }
+
+        public void endSection(IPos<String> pos) {
+            fBuf.append("</s" + n(pos) + ">");
+        }
+
+        public void endSectionContent(IPos<String> pos) {
+            fBuf.append("</c" + n(pos) + ">");
+        }
+
+        public void endSectionHeader(IPos<String> pos) {
+            fBuf.append("</h" + n(pos) + ">");
+        }
+
+        private String n(IPos<String> pos) {
+            return "["
+                + pos.getData()
+                + "]"
+                + "-"
+                + pos.getDocumentLevel()
+                + "-"
+                + pos.getHeaderLevel();
+        }
+
+        @Override
+        public String toString() {
+            return fBuf.toString();
+        }
+
+    }
 
     SectionBuilder<String> fBuilder;
+
+    private PrintListener fListener;
 
     /**
      * @param name
@@ -21,74 +74,130 @@ public class SectionBuilderTest extends TestCase {
         super(name);
     }
 
-    private void check(String control) {
-        assertEquals(control, fBuf.toString());
-    }
+    private String check(String prev, String delta) {
+        String test = fListener.toString();
+        assertEquals(prev + delta, test);
+        return test;
+    };
 
     @Override
     protected void setUp() throws Exception {
-        ISectionListener<String> listener = new ISectionListener<String>() {
-
-            public void beginLevel(int level, String data) {
-                fBuf.append("<level>");
-            }
-
-            public void beginSection(int level, String data) {
-                fBuf.append("<s>");
-            }
-
-            public void beginSectionContent(int level, String data) {
-                fBuf.append("<c>");
-            }
-
-            public void beginSectionHeader(int level, String data) {
-                fBuf.append("<h" + level + ">");
-            }
-
-            public void endLevel(int level, String data) {
-                fBuf.append("</level>");
-            }
-
-            public void endSection(int level, String data) {
-                fBuf.append("</s>");
-            }
-
-            public void endSectionContent(int level, String data) {
-                fBuf.append("</c>");
-            }
-
-            public void endSectionHeader(int level, String data) {
-                fBuf.append("</h" + level + ">");
-            }
-
-        };
-
-        fBuilder = new SectionBuilder<String>(listener);
+        fListener = new PrintListener();
+        fBuilder = new SectionBuilder<String>(fListener);
     }
 
-    public void test() {
-        fBuilder.beginDocument();
-        check("");
+    public void testDocumentLevels() {
+        String prev = "";
+
+        fBuilder.beginDocument("X");
+        prev = check(prev, "<doc[X]-1-0>");
+        fBuilder.beginDocument("Y");
+        prev = check(prev, "<doc[Y]-2-0>");
+        fBuilder.endDocument();
+        prev = check(prev, "</doc[Y]-2-0>");
+        fBuilder.endDocument();
+        prev = check(prev, "</doc[X]-1-0>");
+    }
+
+    public void testDocumentLevels2() {
+        String prev = "";
+        fBuilder.beginDocument("X");
+        prev = check(prev, "<doc[X]-1-0>");
 
         fBuilder.beginHeader(1, "A");
-        check("<level><s><h1>");
+        prev = check(prev, "<s[A]-1-1><h[A]-1-1>");
         fBuilder.endHeader();
-        check("<level><s><h1></h1><c>");
+        prev = check(prev, "</h[A]-1-1><c[A]-1-1>");
 
-        fBuilder.beginHeader(3, "A");
-        check("<level><s><h1></h1><c><level><s><h3>");
-        fBuilder.endHeader();
-        check("<level><s><h1></h1><c><level><s><h3></h3><c>");
+        fBuilder.beginDocument("Y");
+        prev = check(prev, "<doc[Y]-2-0>");
+        fBuilder.endDocument();
+        prev = check(prev, "</doc[Y]-2-0>");
 
-        fBuilder.beginHeader(3, "A");
-        check("<level><s><h1></h1><c><level><s><h3></h3><c></c></s><s><h3>");
+        fBuilder.beginHeader(2, "B");
+        prev = check(prev, "<s[B]-1-1><h[B]-1-1>");
         fBuilder.endHeader();
-        check("<level><s><h1></h1><c><level><s><h3></h3><c></c></s><s><h3></h3><c>");
+        prev = check(prev, "</h[B]-1-1><c[B]-1-1>");
 
         fBuilder.endDocument();
-        check("<level><s><h1></h1><c>"
-            + "<level><s><h3></h3><c></c></s><s><h3></h3><c></c></s></level>"
-            + "</c></s>");
+        prev = check(prev, "</c[B]-1-1></s[B]-1-1>"
+            + "</c[A]-1-1></s[A]-1-1>"
+            + "</doc[X]-1-0>");
+    }
+
+    public void testHeaderLevels() {
+
+        fBuilder.beginDocument("X");
+        String prev = "";
+        prev = check(prev, "<doc[X]-1-0>");
+
+        fBuilder.beginHeader(1, "A");
+        prev = check(prev, "<s[A]-1-1><h[A]-1-1>");
+        fBuilder.endHeader();
+        prev = check(prev, "</h[A]-1-1><c[A]-1-1>");
+
+        fBuilder.beginHeader(3, "B");
+        prev = check(prev, "<s[B]-1-3><h[B]-1-3>");
+        fBuilder.endHeader();
+        prev = check(prev, "</h[B]-1-3><c[B]-1-3>");
+
+        fBuilder.beginHeader(3, "C");
+        prev = check(prev, "</c[B]-1-3></s[B]-1-3><s[C]-1-3><h[C]-1-3>");
+        fBuilder.endHeader();
+        prev = check(prev, "</h[C]-1-3><c[C]-1-3>");
+
+        fBuilder.beginHeader(2, "D");
+        prev = check(prev, "</c[C]-1-3></s[C]-1-3><s[D]-1-2><h[D]-1-2>");
+        fBuilder.endHeader();
+        prev = check(prev, "</h[D]-1-2><c[D]-1-2>");
+
+        fBuilder.beginHeader(3, "E");
+        prev = check(prev, "<s[E]-1-3><h[E]-1-3>");
+        fBuilder.endHeader();
+        prev = check(prev, "</h[E]-1-3><c[E]-1-3>");
+
+        fBuilder.endDocument();
+        prev = check(prev, "</c[E]-1-3></s[E]-1-3>"
+            + "</c[D]-1-2></s[D]-1-2>"
+            + "</c[A]-1-1></s[A]-1-1>"
+            + "</doc[X]-1-0>");
+    }
+
+    public void testWithoutLevels() {
+        fBuilder.beginDocument("X");
+        String prev = "";
+        prev = check(prev, "<doc[X]-1-0>");
+
+        fBuilder.beginHeader(1, "A");
+        prev = check(prev, "<s[A]-1-1><h[A]-1-1>");
+        fBuilder.endHeader();
+        prev = check(prev, "</h[A]-1-1><c[A]-1-1>");
+
+        fBuilder.beginHeader(3, "B");
+        prev = check(prev, "<s[B]-1-3><h[B]-1-3>");
+        fBuilder.endHeader();
+        prev = check(prev, "</h[B]-1-3><c[B]-1-3>");
+
+        fBuilder.beginHeader(3, "C");
+        prev = check(prev, "</c[B]-1-3></s[B]-1-3><s[C]-1-3><h[C]-1-3>");
+        fBuilder.endHeader();
+        prev = check(prev, "</h[C]-1-3><c[C]-1-3>");
+
+        fBuilder.beginHeader(2, "D");
+        prev = check(prev, "</c[C]-1-3></s[C]-1-3><s[D]-1-2><h[D]-1-2>");
+        fBuilder.endHeader();
+        prev = check(prev, "</h[D]-1-2><c[D]-1-2>");
+
+        fBuilder.beginHeader(3, "E");
+        prev = check(prev, "<s[E]-1-3><h[E]-1-3>");
+        fBuilder.endHeader();
+        prev = check(prev, "</h[E]-1-3><c[E]-1-3>");
+
+        fBuilder.endDocument();
+        prev = check(prev, "</c[E]-1-3></s[E]-1-3>"
+            + "</c[D]-1-2></s[D]-1-2>"
+            + "</c[A]-1-1></s[A]-1-1>"
+            + "</doc[X]-1-0>");
 
     }
 

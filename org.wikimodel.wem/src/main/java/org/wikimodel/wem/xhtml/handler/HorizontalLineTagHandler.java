@@ -18,13 +18,12 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  */
 public class HorizontalLineTagHandler extends TagHandler {
 
-	public HorizontalLineTagHandler() {
-		super(false, true, false);
-	}
+    public HorizontalLineTagHandler() {
+        super(false, true, false);
+    }
 
-	@Override
-    public boolean isBlockHandler(TagContext context)
-    {
+    @Override
+    public boolean isBlockHandler(TagContext context) {
         return true;
     }
 

@@ -69,8 +69,10 @@ public class TagHandler {
      * @param requiresDocument
      * @param contentContainer
      */
-    public TagHandler(boolean documentContainer, boolean requiresDocument,
-            boolean contentContainer) {
+    public TagHandler(
+        boolean documentContainer,
+        boolean requiresDocument,
+        boolean contentContainer) {
         fDocumentContainer = documentContainer;
         fRequiresDocument = requiresDocument;
         fContentContainer = contentContainer;
@@ -82,22 +84,25 @@ public class TagHandler {
     public void beginElement(TagContext context) {
 
         Stack<Boolean> insideBlockElementsStack = (Stack<Boolean>) context
-                .getTagStack().getStackParameter("insideBlockElement");
+            .getTagStack()
+            .getStackParameter("insideBlockElement");
 
         if (isBlockHandler(context)) {
             // If we're starting a block tag and we're in inline mode (ie inside
             // a block element) then start a nested document
             // and save the parent tag, see endElement().
             if (!insideBlockElementsStack.isEmpty()
-                    && insideBlockElementsStack.peek()) {
+                && insideBlockElementsStack.peek()) {
                 beginDocument(context);
 
-                context.getTagStack().setStackParameter("documentParent",
-                        context.getParent());
+                context.getTagStack().setStackParameter(
+                    "documentParent",
+                    context.getParent());
 
                 // Get the new inside block element state
                 insideBlockElementsStack = (Stack<Boolean>) context
-                        .getTagStack().getStackParameter("insideBlockElement");
+                    .getTagStack()
+                    .getStackParameter("insideBlockElement");
             }
 
             insideBlockElementsStack.push(true);
@@ -114,8 +119,9 @@ public class TagHandler {
         // opened.
         // To verify this we check the current tag being closed and verify if
         // it's the one saved when the nested document was opened.
-        TagContext docParent = (TagContext) context.getTagStack()
-                .getStackParameter("documentParent");
+        TagContext docParent = (TagContext) context
+            .getTagStack()
+            .getStackParameter("documentParent");
         if (context == docParent) {
             endDocument(context);
         }
@@ -123,7 +129,8 @@ public class TagHandler {
         end(context);
 
         Stack<Boolean> insideBlockElementsStack = (Stack<Boolean>) context
-                .getTagStack().getStackParameter("insideBlockElement");
+            .getTagStack()
+            .getStackParameter("insideBlockElement");
 
         if (isBlockHandler(context)) {
             insideBlockElementsStack.pop();
@@ -155,7 +162,7 @@ public class TagHandler {
      */
     public static void sendEmptyLines(TagContext context) {
         int lineCount = (Integer) context.getTagStack().getStackParameter(
-                "emptyLinesCount");
+            "emptyLinesCount");
         if (lineCount > 0) {
             context.getScannerContext().onEmptyLines(lineCount);
             context.getTagStack().setStackParameter("emptyLinesCount", 0);
@@ -187,14 +194,15 @@ public class TagHandler {
         }
 
         Object ignoreElements = context.getTagStack().getStackParameter(
-                "ignoreElements");
+            "ignoreElements");
 
         // Stack context parameters since we enter in a new document
         context.getTagStack().pushStackParameters();
 
         // ignoreElements apply on embedded document
-        context.getTagStack().setStackParameter("ignoreElements",
-                ignoreElements);
+        context.getTagStack().setStackParameter(
+            "ignoreElements",
+            ignoreElements);
     }
 
     protected void endDocument(TagContext context) {

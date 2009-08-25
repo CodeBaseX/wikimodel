@@ -18,18 +18,20 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  */
 public class TableDataTagHandler extends TagHandler {
 
-	public TableDataTagHandler() {
-		super(true, false, true);
-	}
+    public TableDataTagHandler() {
+        super(true, false, true);
+    }
 
     @Override
     protected void begin(TagContext context) {
-        context.getScannerContext().beginTableCell(context.isTag("th"), context.getParams());
+        context.getScannerContext().beginTableCell(
+            context.isTag("th"),
+            context.getParams());
     }
 
     @Override
     protected void end(TagContext context) {
         context.getScannerContext().endTableCell();
     }
-	
+
 }

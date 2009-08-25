@@ -51,7 +51,7 @@ public class WikiReferenceParser implements IWikiReferenceParser {
      */
     protected WikiParameters getParameters(String[] chunks) {
         return WikiParameters.newWikiParameters(chunks.length > 2 ? chunks[2]
-                .trim() : null);
+            .trim() : null);
     }
 
     /**

@@ -200,8 +200,10 @@ public class WikiScannerUtil {
                     buf.append(array[pos]);
                     escaped = false;
                 } else {
-                    if ((array[pos] == '=' || skipSequence(array, pos,
-                            delimiter) > pos)) {
+                    if ((array[pos] == '=' || skipSequence(
+                        array,
+                        pos,
+                        delimiter) > pos)) {
                         break;
                     }
                     if (array[pos] == '\'' || array[pos] == '"') {
@@ -254,7 +256,7 @@ public class WikiScannerUtil {
     private static int removeSpaces(char[] array, int pos, StringBuffer buf) {
         buf.delete(0, buf.length());
         for (; pos < array.length
-                && (array[pos] == '=' || Character.isSpaceChar(array[pos])); pos++) {
+            && (array[pos] == '=' || Character.isSpaceChar(array[pos])); pos++) {
             if (array[pos] == '=')
                 buf.append(array[pos]);
         }
@@ -374,8 +376,13 @@ public class WikiScannerUtil {
 
             i = removeSpaces(array, i, buf);
             if (buf.indexOf("=") >= 0) {
-                i = getNextToken(array, i, delimiterArray, buf, trim,
-                        escapeChar);
+                i = getNextToken(
+                    array,
+                    i,
+                    delimiterArray,
+                    buf,
+                    trim,
+                    escapeChar);
                 value = buf.toString();
                 if (trim[0]) {
                     value = value.trim();

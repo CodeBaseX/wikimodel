@@ -23,25 +23,21 @@ import org.xml.sax.helpers.XMLFilterImpl;
 /**
  * @author vmassol
  */
-public class DefaultXMLFilter extends XMLFilterImpl implements LexicalHandler
-{
+public class DefaultXMLFilter extends XMLFilterImpl implements LexicalHandler {
     public static final String SAX_LEXICAL_HANDLER_PROPERTY = "http://xml.org/sax/properties/lexical-handler";
 
     private LexicalHandler lexicalHandler;
 
-    public DefaultXMLFilter()
-    {
+    public DefaultXMLFilter() {
         super();
     }
-    
-    public DefaultXMLFilter(XMLReader reader)
-    {
+
+    public DefaultXMLFilter(XMLReader reader) {
         super(reader);
     }
-    
+
     @Override
-    public void parse(InputSource input) throws SAXException, IOException
-    {
+    public void parse(InputSource input) throws SAXException, IOException {
         if (getParent() != null) {
             getParent().setProperty(SAX_LEXICAL_HANDLER_PROPERTY, this);
         }
@@ -49,9 +45,11 @@ public class DefaultXMLFilter extends XMLFilterImpl implements LexicalHandler
     }
 
     @Override
-    public void setProperty(String name, Object value) throws SAXNotRecognizedException, SAXNotSupportedException
-    {
-        // We save the lexical handler so that we can use it in the implementation of the LexicalHandler interface methods.
+    public void setProperty(String name, Object value)
+        throws SAXNotRecognizedException,
+        SAXNotSupportedException {
+        // We save the lexical handler so that we can use it in the
+        // implementation of the LexicalHandler interface methods.
         if (SAX_LEXICAL_HANDLER_PROPERTY.equals(name)) {
             this.lexicalHandler = (LexicalHandler) value;
         } else {
@@ -60,59 +58,54 @@ public class DefaultXMLFilter extends XMLFilterImpl implements LexicalHandler
     }
 
     @Override
-    public Object getProperty(String name) throws SAXNotRecognizedException, SAXNotSupportedException
-    {
+    public Object getProperty(String name)
+        throws SAXNotRecognizedException,
+        SAXNotSupportedException {
         if (SAX_LEXICAL_HANDLER_PROPERTY.equals(name)) {
             return this.lexicalHandler;
         } else {
             return super.getProperty(name);
         }
     }
-    
-    public void comment(char[] ch, int start, int length) throws SAXException
-    {
+
+    public void comment(char[] ch, int start, int length) throws SAXException {
         if (this.lexicalHandler != null) {
             this.lexicalHandler.comment(ch, start, length);
         }
     }
 
-    public void endCDATA() throws SAXException
-    {
+    public void endCDATA() throws SAXException {
         if (this.lexicalHandler != null) {
             this.lexicalHandler.endCDATA();
         }
     }
 
-    public void endDTD() throws SAXException
-    {
+    public void endDTD() throws SAXException {
         if (this.lexicalHandler != null) {
             this.lexicalHandler.endDTD();
         }
     }
 
-    public void endEntity(String name) throws SAXException
-    {
+    public void endEntity(String name) throws SAXException {
         if (this.lexicalHandler != null) {
             this.lexicalHandler.endEntity(name);
         }
     }
 
-    public void startCDATA() throws SAXException
-    {
+    public void startCDATA() throws SAXException {
         if (this.lexicalHandler != null) {
             this.lexicalHandler.startCDATA();
         }
     }
 
-    public void startDTD(String name, String publicId, String systemId) throws SAXException
-    {
+    public void startDTD(String name, String publicId, String systemId)
+        throws SAXException {
         if (this.lexicalHandler != null) {
             this.lexicalHandler.startDTD(name, publicId, systemId);
         }
     }
 
-    public void startEntity(String name) throws SAXException
-    {
+    public void startEntity(String name) throws SAXException {
         if (this.lexicalHandler != null) {
             this.lexicalHandler.startEntity(name);
         }

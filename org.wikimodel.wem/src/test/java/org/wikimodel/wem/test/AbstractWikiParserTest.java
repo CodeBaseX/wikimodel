@@ -17,6 +17,7 @@ import junit.framework.TestCase;
 import org.wikimodel.wem.IWemListener;
 import org.wikimodel.wem.IWikiParser;
 import org.wikimodel.wem.IWikiPrinter;
+import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.WikiParserException;
 import org.wikimodel.wem.xhtml.PrintListener;
 
@@ -27,6 +28,8 @@ public abstract class AbstractWikiParserTest extends TestCase {
 
     private boolean fOutputEnabled;
 
+    private boolean fShowSections;
+
     /**
      * @param name
      */
@@ -34,8 +37,101 @@ public abstract class AbstractWikiParserTest extends TestCase {
         super(name);
     }
 
+    /**
+     * @param control
+     * @param test
+     */
+    protected void checkResults(String control, String test) {
+        if (control != null) {
+            control = "<div class='wikimodel-document'>\n"
+                + control
+                + "\n</div>\n";
+            assertEquals(control, test);
+        }
+    }
+
     protected void enableOutput(boolean enable) {
         fOutputEnabled = enable;
+    }
+
+    /**
+     * @param buf
+     * @return
+     */
+    protected IWemListener newParserListener(final StringBuffer buf) {
+        IWikiPrinter printer = newPrinter(buf);
+        IWemListener listener;
+        if (!fShowSections) {
+            listener = new PrintListener(printer);
+        } else {
+            listener = new PrintListener(printer) {
+                @Override
+                public void beginSection(
+                    int docLevel,
+                    int sectionLevel,
+                    WikiParameters params) {
+                    println("<section-"
+                        + docLevel
+                        + "-"
+                        + sectionLevel
+                        + params
+                        + ">");
+                }
+
+                @Override
+                public void beginSectionContent(
+                    int docLevel,
+                    int sectionLevel,
+                    WikiParameters params) {
+                    println("<sectionContent-"
+                        + docLevel
+                        + "-"
+                        + sectionLevel
+                        + params
+                        + ">");
+                }
+
+                @Override
+                public void endSection(
+                    int docLevel,
+                    int sectionLevel,
+                    WikiParameters params) {
+                    println("</section-" + docLevel + "-" + sectionLevel + ">");
+                }
+
+                @Override
+                public void endSectionContent(
+                    int docLevel,
+                    int sectionLevel,
+                    WikiParameters params) {
+                    println("</sectionContent-"
+                        + docLevel
+                        + "-"
+                        + sectionLevel
+                        + ">");
+                }
+            };
+        }
+        return listener;
+    }
+
+    /**
+     * @param buf
+     * @return
+     */
+    protected IWikiPrinter newPrinter(final StringBuffer buf) {
+        IWikiPrinter printer = new IWikiPrinter() {
+
+            public void print(String str) {
+                buf.append(str);
+            }
+
+            public void println(String str) {
+                buf.append(str);
+                buf.append("\n");
+            }
+        };
+        return printer;
     }
 
     protected abstract IWikiParser newWikiParser();
@@ -49,6 +145,10 @@ public abstract class AbstractWikiParserTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         enableOutput(true);
+    }
+
+    protected void showSections(boolean b) {
+        fShowSections = b;
     }
 
     /**
@@ -74,46 +174,6 @@ public abstract class AbstractWikiParserTest extends TestCase {
         String test = buf.toString();
         println(test);
         checkResults(control, test);
-    }
-
-    /**
-     * @param control
-     * @param test
-     */
-    protected void checkResults(String control, String test) {
-        if (control != null) {
-            control = "<div class='wikimodel-document'>\n" + control + "\n</div>\n";
-            assertEquals(control, test);
-        }
-    }
-
-    /**
-     * @param buf
-     * @return
-     */
-    protected IWemListener newParserListener(final StringBuffer buf) {
-        IWikiPrinter printer = newPrinter(buf);
-        IWemListener listener = new PrintListener(printer);
-        return listener;
-    }
-
-    /**
-     * @param buf
-     * @return
-     */
-    protected IWikiPrinter newPrinter(final StringBuffer buf) {
-        IWikiPrinter printer = new IWikiPrinter() {
-
-            public void print(String str) {
-                buf.append(str);
-            }
-
-            public void println(String str) {
-                buf.append(str);
-                buf.append("\n");
-            }
-        };
-        return printer;
     }
 
 }

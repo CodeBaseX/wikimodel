@@ -18,13 +18,12 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  */
 public class ParagraphTagHandler extends TagHandler {
 
-	public ParagraphTagHandler() {
-		super(false, true, true);
-	}
+    public ParagraphTagHandler() {
+        super(false, true, true);
+    }
 
     @Override
-    public boolean isBlockHandler(TagContext context)
-    {
+    public boolean isBlockHandler(TagContext context) {
         return true;
     }
 

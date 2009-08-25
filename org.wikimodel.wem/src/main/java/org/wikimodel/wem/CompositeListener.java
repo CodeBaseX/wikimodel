@@ -50,15 +50,6 @@ public class CompositeListener implements IWemListener {
     }
 
     /**
-     * @see org.wikimodel.wem.IWemListener#beginDocument()
-     */
-    public void beginDocument() {
-        for (IWemListener listener : fListeners) {
-            listener.beginDocument();
-        }
-    }
-
-    /**
      * @see org.wikimodel.wem.IWemListenerDocument#beginDocument(org.wikimodel.wem.WikiParameters)
      */
     public void beginDocument(WikiParameters params) {
@@ -161,6 +152,32 @@ public class CompositeListener implements IWemListener {
     }
 
     /**
+     * @see org.wikimodel.wem.IWemListenerDocument#beginSection(int, int,
+     *      WikiParameters)
+     */
+    public void beginSection(
+        int docLevel,
+        int sectionLevel,
+        WikiParameters params) {
+        for (IWemListener listener : fListeners) {
+            listener.beginSection(docLevel, sectionLevel, params);
+        }
+    }
+
+    /**
+     * @see org.wikimodel.wem.IWemListenerDocument#beginSectionContent(int, int,
+     *      WikiParameters)
+     */
+    public void beginSectionContent(
+        int docLevel,
+        int sectionLevel,
+        WikiParameters params) {
+        for (IWemListener listener : fListeners) {
+            listener.beginSectionContent(docLevel, sectionLevel, params);
+        }
+    }
+
+    /**
      * @see org.wikimodel.wem.IWemListener#beginTable(org.wikimodel.wem.WikiParameters)
      */
     public void beginTable(WikiParameters params) {
@@ -212,15 +229,6 @@ public class CompositeListener implements IWemListener {
     public void endDefinitionTerm() {
         for (IWemListener listener : fListeners) {
             listener.endDefinitionTerm();
-        }
-    }
-
-    /**
-     * @see org.wikimodel.wem.IWemListener#endDocument()
-     */
-    public void endDocument() {
-        for (IWemListener listener : fListeners) {
-            listener.endDocument();
         }
     }
 
@@ -323,6 +331,30 @@ public class CompositeListener implements IWemListener {
     public void endQuotationLine() {
         for (IWemListener listener : fListeners) {
             listener.endQuotationLine();
+        }
+    }
+
+    /**
+     * @see org.wikimodel.wem.IWemListenerDocument#endSection(int, int,
+     *      WikiParameters)
+     */
+    public void endSection(int docLevel, int sectionLevel, WikiParameters params) {
+        for (IWemListener listener : fListeners) {
+            listener.endSection(docLevel, sectionLevel, params);
+        }
+
+    }
+
+    /**
+     * @see org.wikimodel.wem.IWemListenerDocument#endSectionContent(int, int,
+     *      WikiParameters)
+     */
+    public void endSectionContent(
+        int docLevel,
+        int sectionLevel,
+        WikiParameters params) {
+        for (IWemListener listener : fListeners) {
+            listener.endSectionContent(docLevel, sectionLevel, params);
         }
     }
 
@@ -505,7 +537,8 @@ public class CompositeListener implements IWemListener {
     }
 
     /**
-     * @see org.wikimodel.wem.IWemListener#onVerbatimInline(java.lang.String, WikiParameters)
+     * @see org.wikimodel.wem.IWemListener#onVerbatimInline(java.lang.String,
+     *      WikiParameters)
      */
     public void onVerbatimInline(String str, WikiParameters params) {
         for (IWemListener listener : fListeners) {

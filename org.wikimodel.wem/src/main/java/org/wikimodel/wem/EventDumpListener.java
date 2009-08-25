@@ -39,12 +39,6 @@ public class EventDumpListener extends PrintTextListener {
     }
 
     @Override
-    public void beginDocument() {
-        println("beginDocument()");
-        inc();
-    }
-
-    @Override
     public void beginDocument(WikiParameters params) {
         println("beginDocument([" + params + "])");
         inc();
@@ -111,6 +105,24 @@ public class EventDumpListener extends PrintTextListener {
     }
 
     @Override
+    public void beginSection(
+        int docLevel,
+        int sectionLevel,
+        WikiParameters params) {
+        println("beginSection([" + docLevel + "])");
+        inc();
+    }
+
+    @Override
+    public void beginSectionContent(
+        int docLevel,
+        int sectionLevel,
+        WikiParameters params) {
+        println("beginSectionContent([" + docLevel + "])");
+        inc();
+    }
+
+    @Override
     public void beginTable(WikiParameters params) {
         println("beginTable([" + params + "])");
         inc();
@@ -154,12 +166,6 @@ public class EventDumpListener extends PrintTextListener {
     public void endDefinitionTerm() {
         dec();
         println("endDefinitionTerm()");
-    }
-
-    @Override
-    public void endDocument() {
-        dec();
-        println("endDocument()");
     }
 
     @Override
@@ -229,6 +235,21 @@ public class EventDumpListener extends PrintTextListener {
     }
 
     @Override
+    public void endSection(int docLevel, int sectionLevel, WikiParameters params) {
+        dec();
+        println("endSection([" + docLevel + "])");
+    }
+
+    @Override
+    public void endSectionContent(
+        int docLevel,
+        int sectionLevel,
+        WikiParameters params) {
+        dec();
+        println("endSectionContent([" + docLevel + "])");
+    }
+
+    @Override
     public void endTable(WikiParameters params) {
         dec();
         println("endTable([" + params + "])");
@@ -285,8 +306,13 @@ public class EventDumpListener extends PrintTextListener {
         String macroName,
         WikiParameters params,
         String content) {
-        println("onMacroBlock('" + macroName + "', " + params + ", '" + content
-                + "')");
+        println("onMacroBlock('"
+            + macroName
+            + "', "
+            + params
+            + ", '"
+            + content
+            + "')");
     }
 
     @Override
@@ -294,8 +320,13 @@ public class EventDumpListener extends PrintTextListener {
         String macroName,
         WikiParameters params,
         String content) {
-        println("onMacroInline('" + macroName + "', " + params + ", '"
-                + content + "')");
+        println("onMacroInline('"
+            + macroName
+            + "', "
+            + params
+            + ", '"
+            + content
+            + "')");
     }
 
     @Override

@@ -18,19 +18,18 @@ import org.wikimodel.wem.WikiStyle;
 
 import junit.framework.TestCase;
 
-public class WikiFormatTest extends TestCase
-{
+public class WikiFormatTest extends TestCase {
     public void testOrder() {
         WikiFormat format = new WikiFormat(IWemConstants.STRONG);
         format = format.addStyle(IWemConstants.EM);
-        
+
         List<WikiStyle> styles = format.getStyles();
         assertEquals(IWemConstants.STRONG, styles.get(0));
         assertEquals(IWemConstants.EM, styles.get(1));
 
         format = new WikiFormat(IWemConstants.EM);
         format = format.addStyle(IWemConstants.STRONG);
-        
+
         styles = format.getStyles();
         assertEquals(IWemConstants.EM, styles.get(0));
         assertEquals(IWemConstants.STRONG, styles.get(1));

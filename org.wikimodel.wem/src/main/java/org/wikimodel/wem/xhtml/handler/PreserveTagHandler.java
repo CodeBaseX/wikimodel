@@ -18,13 +18,12 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  */
 public class PreserveTagHandler extends TagHandler {
 
-	public PreserveTagHandler() {
-		super(false, true, true);
-	}
-	
+    public PreserveTagHandler() {
+        super(false, true, true);
+    }
+
     @Override
-    protected void begin(TagContext context)
-    {
+    protected void begin(TagContext context) {
         setAccumulateContent(true);
     }
 

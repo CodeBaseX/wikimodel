@@ -20,9 +20,9 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  */
 public class ItalicTagHandler extends TagHandler {
 
-	public ItalicTagHandler() {
-		super(false, false, true);
-	}
+    public ItalicTagHandler() {
+        super(false, false, true);
+    }
 
     @Override
     protected void begin(TagContext context) {

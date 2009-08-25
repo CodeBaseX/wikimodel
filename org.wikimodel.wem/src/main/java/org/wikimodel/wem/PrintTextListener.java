@@ -36,16 +36,9 @@ public class PrintTextListener implements IWemListener {
     }
 
     /**
-     * @see org.wikimodel.wem.IWemListener#beginDocument()
-     */
-    public void beginDocument() {
-    }
-
-    /**
      * @see org.wikimodel.wem.IWemListenerDocument#beginDocument(org.wikimodel.wem.WikiParameters)
      */
     public void beginDocument(WikiParameters params) {
-        beginDocument();
     }
 
     /**
@@ -114,6 +107,28 @@ public class PrintTextListener implements IWemListener {
     }
 
     /**
+     * @see org.wikimodel.wem.IWemListenerDocument#beginSection(int, int,
+     *      WikiParameters)
+     */
+    public void beginSection(
+        int docLevel,
+        int sectionLevel,
+        WikiParameters params) {
+        // 
+    }
+
+    /**
+     * @see org.wikimodel.wem.IWemListenerDocument#beginSectionContent(int, int,
+     *      WikiParameters)
+     */
+    public void beginSectionContent(
+        int docLevel,
+        int sectionLevel,
+        WikiParameters params) {
+        // 
+    }
+
+    /**
      * @see org.wikimodel.wem.IWemListener#beginTable(org.wikimodel.wem.WikiParameters)
      */
     public void beginTable(WikiParameters params) {
@@ -161,17 +176,10 @@ public class PrintTextListener implements IWemListener {
     }
 
     /**
-     * @see org.wikimodel.wem.IWemListener#endDocument()
-     */
-    public void endDocument() {
-        endBlock();
-    }
-
-    /**
      * @see org.wikimodel.wem.IWemListenerDocument#endDocument(org.wikimodel.wem.WikiParameters)
      */
     public void endDocument(WikiParameters params) {
-        endDocument();
+        endBlock();
     }
 
     /**
@@ -242,6 +250,25 @@ public class PrintTextListener implements IWemListener {
      * @see org.wikimodel.wem.IWemListener#endQuotationLine()
      */
     public void endQuotationLine() {
+        //
+    }
+
+    /**
+     * @see org.wikimodel.wem.IWemListenerDocument#endSection(int, int,
+     *      WikiParameters)
+     */
+    public void endSection(int docLevel, int sectionLevel, WikiParameters params) {
+        // 
+    }
+
+    /**
+     * @see org.wikimodel.wem.IWemListenerDocument#endSectionContent(int, int,
+     *      WikiParameters)
+     */
+    public void endSectionContent(
+        int docLevel,
+        int sectionLevel,
+        WikiParameters params) {
         //
     }
 
@@ -400,7 +427,8 @@ public class PrintTextListener implements IWemListener {
     }
 
     /**
-     * @see org.wikimodel.wem.IWemListener#onVerbatimInline(java.lang.String, WikiParameters)
+     * @see org.wikimodel.wem.IWemListener#onVerbatimInline(java.lang.String,
+     *      WikiParameters)
      */
     public void onVerbatimInline(String str, WikiParameters params) {
         print(str);

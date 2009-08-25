@@ -16,27 +16,78 @@ import org.wikimodel.wem.IWemListener;
 import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.WikiStyle;
+import org.wikimodel.wem.util.SectionBuilder;
+import org.wikimodel.wem.util.SectionListener;
 
 public class WikiScannerContext implements IWikiScannerContext {
 
     private final IWemListener fListener;
 
+    private SectionBuilder<WikiParameters> fSectionBuilder;
+
     private final Stack<IWikiScannerContext> fStack = new Stack<IWikiScannerContext>();
 
     public WikiScannerContext(IWemListener listener) {
         fListener = listener;
-    }
+        fSectionBuilder = new SectionBuilder<WikiParameters>(
+            new SectionListener<WikiParameters>() {
 
-    private InternalWikiScannerContext pushContext() {
-        InternalWikiScannerContext context = (InternalWikiScannerContext) getContext();
-        if (context != null) {
-            context.checkBlockContainer();
-            context.closeFormat();
-        }
-        context = new InternalWikiScannerContext(fListener);
-        fStack.push(context);
+                @Override
+                public void beginDocument(IPos<WikiParameters> pos) {
+                    WikiParameters params = pos.getData();
+                    fListener.beginDocument(params);
+                    beginSection(pos);
+                    beginSectionContent(pos);
+                }
 
-        return context;
+                @Override
+                public void beginSection(IPos<WikiParameters> pos) {
+                    WikiParameters params = pos.getData();
+                    int docLevel = pos.getDocumentLevel();
+                    int headerLevel = pos.getHeaderLevel();
+                    fListener.beginSection(docLevel, headerLevel, params);
+                }
+
+                @Override
+                public void beginSectionContent(IPos<WikiParameters> pos) {
+                    fListener.beginSectionContent(pos.getDocumentLevel(), pos
+                        .getHeaderLevel(), pos.getData());
+                }
+
+                @Override
+                public void beginSectionHeader(IPos<WikiParameters> pos) {
+                    fListener.beginHeader(pos.getHeaderLevel(), pos.getData());
+                }
+
+                @Override
+                public void endDocument(IPos<WikiParameters> pos) {
+                    endSectionContent(pos);
+                    endSection(pos);
+                    WikiParameters params = pos.getData();
+                    fListener.endDocument(params);
+                }
+
+                @Override
+                public void endSection(IPos<WikiParameters> pos) {
+                    WikiParameters params = pos.getData();
+                    int docLevel = pos.getDocumentLevel();
+                    int headerLevel = pos.getHeaderLevel();
+                    fListener.endSection(docLevel, headerLevel, params);
+                }
+
+                @Override
+                public void endSectionContent(IPos<WikiParameters> pos) {
+                    fListener.endSectionContent(pos.getDocumentLevel(), pos
+                        .getHeaderLevel(), pos.getData());
+                }
+
+                @Override
+                public void endSectionHeader(IPos<WikiParameters> pos) {
+                    fListener.endHeader(pos.getHeaderLevel(), pos.getData());
+                }
+
+            });
+
     }
 
     public void beginDocument() {
@@ -47,6 +98,14 @@ public class WikiScannerContext implements IWikiScannerContext {
     public void beginDocument(WikiParameters params) {
         InternalWikiScannerContext context = pushContext();
         context.beginDocument(params);
+    }
+
+    public void beginFormat(WikiParameters params) {
+        getContext().beginFormat(params);
+    }
+
+    public void beginFormat(WikiStyle wikiStyle) {
+        getContext().beginFormat(wikiStyle);
     }
 
     public void beginHeader(int level) {
@@ -153,6 +212,14 @@ public class WikiScannerContext implements IWikiScannerContext {
         fStack.pop();
     }
 
+    public void endFormat(WikiParameters params) {
+        getContext().endFormat(params);
+    }
+
+    public void endFormat(WikiStyle wikiStyle) {
+        getContext().endFormat(wikiStyle);
+    }
+
     public void endHeader() {
         getContext().endHeader();
     }
@@ -208,8 +275,7 @@ public class WikiScannerContext implements IWikiScannerContext {
     public IWikiScannerContext getContext() {
         if (!fStack.isEmpty())
             return fStack.peek();
-        InternalWikiScannerContext context = new InternalWikiScannerContext(
-                fListener);
+        InternalWikiScannerContext context = newInternalContext();
         fStack.push(context);
         return context;
     }
@@ -258,6 +324,16 @@ public class WikiScannerContext implements IWikiScannerContext {
         return getContext().isInTableRow();
     }
 
+    /**
+     * @return
+     */
+    private InternalWikiScannerContext newInternalContext() {
+        InternalWikiScannerContext context = new InternalWikiScannerContext(
+            fSectionBuilder,
+            fListener);
+        return context;
+    }
+
     public void onDefinitionListItemSplit() {
         getContext().onDefinitionListItemSplit();
     }
@@ -284,22 +360,6 @@ public class WikiScannerContext implements IWikiScannerContext {
 
     public void onFormat(WikiStyle wikiStyle) {
         getContext().onFormat(wikiStyle);
-    }
-
-    public void beginFormat(WikiParameters params) {
-        getContext().beginFormat(params);
-    }
-
-    public void beginFormat(WikiStyle wikiStyle) {
-        getContext().beginFormat(wikiStyle);
-    }
-
-    public void endFormat(WikiParameters params) {
-        getContext().endFormat(params);
-    }
-
-    public void endFormat(WikiStyle wikiStyle) {
-        getContext().endFormat(wikiStyle);
     }
 
     /**
@@ -404,10 +464,6 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().onTableRow(params);
     }
 
-    public void onVerbatim(String str, WikiParameters params) {
-        getContext().onVerbatim(str, params);
-    }
-
     /**
      * @see org.wikimodel.wem.impl.WikiScannerContext#onVerbatim(java.lang.String,
      *      boolean)
@@ -420,8 +476,24 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().onVerbatim(str, inline, params);
     }
 
+    public void onVerbatim(String str, WikiParameters params) {
+        getContext().onVerbatim(str, params);
+    }
+
     public void onWord(String str) {
         getContext().onWord(str);
+    }
+
+    private InternalWikiScannerContext pushContext() {
+        InternalWikiScannerContext context = (InternalWikiScannerContext) getContext();
+        if (context != null) {
+            context.checkBlockContainer();
+            context.closeFormat();
+        }
+        context = newInternalContext();
+        fStack.push(context);
+
+        return context;
     }
 
 }

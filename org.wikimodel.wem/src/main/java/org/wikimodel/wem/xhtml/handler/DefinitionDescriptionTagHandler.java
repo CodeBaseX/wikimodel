@@ -18,9 +18,9 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  */
 public class DefinitionDescriptionTagHandler extends ListItemTagHandler {
 
-	public DefinitionDescriptionTagHandler() {
-		super(true, false, true);
-	}
+    public DefinitionDescriptionTagHandler() {
+        super(true, false, true);
+    }
 
     @Override
     public void begin(TagContext context) {

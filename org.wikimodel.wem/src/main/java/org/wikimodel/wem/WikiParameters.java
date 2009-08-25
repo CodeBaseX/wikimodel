@@ -13,6 +13,7 @@ package org.wikimodel.wem;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,7 @@ import org.wikimodel.wem.impl.WikiScannerUtil;
  * @author kotelnikov
  * @author thomas.mortagne
  */
-public class WikiParameters {
+public class WikiParameters implements Iterable<WikiParameter> {
 
     /**
      * The default character to use has escaping char.
@@ -193,6 +194,10 @@ public class WikiParameters {
         return fList.hashCode();
     }
 
+    public Iterator<WikiParameter> iterator() {
+        return fList.iterator();
+    }
+
     /**
      * @param key the key of the parameter to remove
      * @return a new copy of parameter list without the specified parameter; if
@@ -220,8 +225,7 @@ public class WikiParameters {
      * @return a list of all parameters
      */
     public List<WikiParameter> toList() {
-        List<WikiParameter> result = new ArrayList<WikiParameter>();
-        result.addAll(fList);
+        List<WikiParameter> result = new ArrayList<WikiParameter>(fList);
         return result;
     }
 

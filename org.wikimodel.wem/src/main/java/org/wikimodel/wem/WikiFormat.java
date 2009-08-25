@@ -34,7 +34,7 @@ public class WikiFormat {
     private LinkedHashSet<WikiStyle> fStyles = new LinkedHashSet<WikiStyle>();
 
     private WikiParameters fParams = WikiParameters.EMPTY;
-    
+
     /**
      * 
      */
@@ -49,14 +49,14 @@ public class WikiFormat {
         super();
         fStyles.addAll(styles);
     }
-    
+
     public WikiFormat(Set<WikiStyle> styles, Collection<WikiParameter> params) {
         this(styles);
         fParams = new WikiParameters(params);
     }
 
     public WikiFormat(Collection<WikiParameter> params) {
-        this(Collections.<WikiStyle>emptySet(), params);
+        this(Collections.<WikiStyle> emptySet(), params);
     }
 
     /**
@@ -67,9 +67,9 @@ public class WikiFormat {
     }
 
     public WikiFormat(WikiStyle style, Collection<WikiParameter> params) {
-        this(Collections.<WikiStyle>singleton(style));
+        this(Collections.<WikiStyle> singleton(style));
     }
-    
+
     /**
      * @param styles
      */
@@ -79,7 +79,7 @@ public class WikiFormat {
             fStyles.add(style);
         }
     }
-    
+
     public WikiFormat setParameters(Collection<WikiParameter> params) {
         return new WikiFormat(fStyles, params);
     }
@@ -146,7 +146,8 @@ public class WikiFormat {
      */
     @Override
     public int hashCode() {
-        // Random number. See http://www.geocities.com/technofundo/tech/java/equalhash.html
+        // Random number. See
+        // http://www.geocities.com/technofundo/tech/java/equalhash.html
         // for the detail of this algorithm.
         int hash = 8;
         hash = 31 * hash + (null == fStyles ? 0 : fStyles.hashCode());
@@ -201,11 +202,11 @@ public class WikiFormat {
     public List<WikiStyle> getStyles() {
         return new ArrayList<WikiStyle>(fStyles);
     }
-    
+
     public List<WikiParameter> getParams() {
         return fParams.toList();
     }
-    
+
     /**
      * @see java.lang.Object#toString()
      */

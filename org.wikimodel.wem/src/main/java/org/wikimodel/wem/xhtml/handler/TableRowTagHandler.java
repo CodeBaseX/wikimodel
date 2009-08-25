@@ -18,9 +18,9 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  */
 public class TableRowTagHandler extends TagHandler {
 
-	public TableRowTagHandler() {
-		super(false, false, false);
-	}
+    public TableRowTagHandler() {
+        super(false, false, false);
+    }
 
     @Override
     protected void begin(TagContext context) {
@@ -31,5 +31,5 @@ public class TableRowTagHandler extends TagHandler {
     protected void end(TagContext context) {
         context.getScannerContext().endTableRow();
     }
-	
+
 }

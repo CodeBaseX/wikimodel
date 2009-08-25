@@ -55,7 +55,7 @@ public class PrintCharactersTest extends TestCase {
     }
 
     /**
-     <pre>
+     * <pre>
     | <#NEW_LINE : "\r\n" | "\r" | "\n" >
     | <#SPACE : [" ", "\t"] >
     | <#SPECIAL_SYMBOL : [
@@ -73,13 +73,12 @@ public class PrintCharactersTest extends TestCase {
     ] >
     </pre>
      */
-    
-    /**     
-    
-     * 
+
+    /**
      * http://en.wikipedia.org/wiki/Uniform_Resource_Identifier
      * http://en.wikipedia.org/wiki/URI_scheme#Generic_syntax
      * http://www.iana.org/assignments/uri-schemes.html
+     * 
      * <pre>
      
      
@@ -170,7 +169,7 @@ public class PrintCharactersTest extends TestCase {
                     str += ch;
                     break;
             }
-             System.out.print("[" + Integer.toHexString(i) + "] - ");
+            System.out.print("[" + Integer.toHexString(i) + "] - ");
             System.out.print("\"");
             System.out.print(str);
             System.out.print("\", ");

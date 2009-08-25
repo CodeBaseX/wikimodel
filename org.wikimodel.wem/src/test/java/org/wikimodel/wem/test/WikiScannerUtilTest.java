@@ -85,9 +85,17 @@ public class WikiScannerUtilTest extends TestCase {
         String test = WikiScannerUtil.extractSubstring(str, "(", ")", '\\');
         assertEquals(result, test);
     }
-    
-    private void testSubstringExtract1(String str, String result, boolean cleanEscape) {
-        String test = WikiScannerUtil.extractSubstring(str, "(", ")", '\\', cleanEscape);
+
+    private void testSubstringExtract1(
+        String str,
+        String result,
+        boolean cleanEscape) {
+        String test = WikiScannerUtil.extractSubstring(
+            str,
+            "(",
+            ")",
+            '\\',
+            cleanEscape);
         assertEquals(result, test);
     }
 
@@ -95,9 +103,17 @@ public class WikiScannerUtilTest extends TestCase {
         String test = WikiScannerUtil.extractSubstring(str, "{{", "}}", '\\');
         assertEquals(result, test);
     }
-    
-    private void testSubstringExtract2(String str, String result, boolean cleanEscape) {
-        String test = WikiScannerUtil.extractSubstring(str, "{{", "}}", '\\', cleanEscape);
+
+    private void testSubstringExtract2(
+        String str,
+        String result,
+        boolean cleanEscape) {
+        String test = WikiScannerUtil.extractSubstring(
+            str,
+            "{{",
+            "}}",
+            '\\',
+            cleanEscape);
         assertEquals(result, test);
     }
 }

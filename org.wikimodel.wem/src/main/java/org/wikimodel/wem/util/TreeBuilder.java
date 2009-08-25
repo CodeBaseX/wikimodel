@@ -93,7 +93,7 @@ public final class TreeBuilder<X extends TreeBuilder.IPos<X>> {
                 s++;
             }
         }
-        removeTail(listener, firstArray, f, newTree);
+        removeTail(listener, firstArray, f, newTree, expand);
         if (expand) {
             addTail(listener, firstArray, secondArray, s, newTree);
         }
@@ -107,15 +107,17 @@ public final class TreeBuilder<X extends TreeBuilder.IPos<X>> {
         ITreeListener<X> listener,
         List<X> array,
         int pos,
-        boolean closeTree) {
+        boolean closeTree,
+        boolean remove) {
         X node = getNode(array, pos);
         if (node == null)
             return;
-        removeTail(listener, array, pos + 1, true);
+        removeTail(listener, array, pos + 1, true, true);
         listener.onEndRow(node);
         if (closeTree)
             listener.onEndTree(node);
-        array.remove(pos);
+        if (remove)
+            array.remove(pos);
     }
 
     /**
@@ -133,6 +135,10 @@ public final class TreeBuilder<X extends TreeBuilder.IPos<X>> {
         fListener = listener;
     }
 
+    public void align(List<X> row) {
+        doAlign(fListener, fList, row, true);
+    }
+
     public void align(X pos) {
         List<X> list = new ArrayList<X>();
         if (pos != null)
@@ -140,12 +146,16 @@ public final class TreeBuilder<X extends TreeBuilder.IPos<X>> {
         align(list);
     }
 
-    public void align(List<X> row) {
-        doAlign(fListener, fList, row, true);
+    public X get(int pos) {
+        return pos >= 0 && pos < fList.size() ? fList.get(pos) : null;
     }
 
     public X getPeek() {
-        return !fList.isEmpty() ? fList.get(fList.size() - 1) : null;
+        return get(fList.size() - 1);
+    }
+
+    public void trim(List<X> row) {
+        doAlign(fListener, fList, row, false);
     }
 
     public void trim(X pos) {
@@ -153,10 +163,6 @@ public final class TreeBuilder<X extends TreeBuilder.IPos<X>> {
         if (pos != null)
             list.add(pos);
         trim(list);
-    }
-
-    public void trim(List<X> row) {
-        doAlign(fListener, fList, row, false);
     }
 
 }

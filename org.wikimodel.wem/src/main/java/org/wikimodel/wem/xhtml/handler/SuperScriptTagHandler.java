@@ -20,9 +20,9 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  */
 public class SuperScriptTagHandler extends TagHandler {
 
-	public SuperScriptTagHandler() {
-		super(false, false, true);
-	}
+    public SuperScriptTagHandler() {
+        super(false, false, true);
+    }
 
     @Override
     protected void begin(TagContext context) {
