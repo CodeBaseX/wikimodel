@@ -45,10 +45,12 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     }
 
     private WikiParameters newMacroParameters(String paramStr) {
+        if (paramStr == null || "".equals(paramStr.trim()))
+            return WikiParameters.EMPTY;
         WikiParameters params;
-        if (paramStr.indexOf("|") < 0) {
+        if (paramStr.indexOf("|") < 0 && paramStr.indexOf("=") < 0) {
             params = new WikiParameters("");
-            params.addParameter("value", paramStr);
+            params = params.addParameter("value", paramStr);
         } else {
             params = new WikiParameters(paramStr, "|");
         }
@@ -1281,12 +1283,6 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     finally { jj_save(12, xla); }
   }
 
-  private boolean jj_3R_10() {
-    if (jj_3R_33()) return true;
-    if (jj_3R_34()) return true;
-    return false;
-  }
-
   private boolean jj_3_3() {
     if (jj_3R_12()) return true;
     return false;
@@ -1787,6 +1783,12 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
 
   private boolean jj_3R_21() {
     if (jj_3R_43()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_10() {
+    if (jj_3R_33()) return true;
+    if (jj_3R_34()) return true;
     return false;
   }
 
