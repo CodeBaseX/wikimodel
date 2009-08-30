@@ -51,10 +51,12 @@ public class ConfluenceWikiScanner {
     }
     
     private WikiParameters newMacroParameters(String paramStr) {
+        if (paramStr == null || "".equals(paramStr.trim()))
+            return WikiParameters.EMPTY;
         WikiParameters params;
-        if (paramStr.indexOf("|") < 0) {
+        if (paramStr.indexOf("|") < 0 && paramStr.indexOf("=") < 0) {
             params = new WikiParameters("");
-            params.addParameter("value", paramStr);
+            params = params.addParameter("value", paramStr);
         } else {
             params = new WikiParameters(paramStr, "|");
         }

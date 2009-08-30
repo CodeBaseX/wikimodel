@@ -423,7 +423,7 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
             "<pre class='wikimodel-macro' macroName='float'><![CDATA[x]]></pre>");
         test(
             "{float:left}align to left{float}",
-            "<pre class='wikimodel-macro' macroName='float' left=''><![CDATA[align to left]]></pre>");
+            "<pre class='wikimodel-macro' macroName='float' value='left'><![CDATA[align to left]]></pre>");
         test(
             "{column:width=50%}\n" + "Text in this column.\n" + "{column}",
             "<pre class='wikimodel-macro' macroName='column' width='50%'><![CDATA[\nText in this column.\n]]></pre>");
@@ -725,7 +725,7 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
                 + "    return foo;\n"
                 + "}\n"
                 + "</pre>\n"
-                + "<pre xml='' type='code'>\n"
+                + "<pre value='xml' type='code'>\n"
                 + "&#x3c;test&#x3e;\n"
                 + "  &#x3c;another tag=\"attribute\"/&#x3e;\n"
                 + "&#x3c;/test&#x3e;\n"
