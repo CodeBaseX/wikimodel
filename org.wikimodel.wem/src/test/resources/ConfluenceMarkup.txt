@@ -1,0 +1,784 @@
+
+Confluence pages are stored internally in a simple content-formatting language called *Wiki Markup*, based on [Textile|http://textism.com/tools/textile/].
+
+The *Wiki Markup Editor* allows you to edit Confluence pages directly in wiki markup language. This has the advantage of being faster than the *Rich Text Editor* for some formatting tasks.
+
+A quick notation guide, *Notation Help*, appears beside the edit screen when you choose the *Wiki Markup* edit tab. You can then click the *full notation guide* link in the help window to view the [full Notation Guide|http://confluence.atlassian.com/renderer/notationhelp.action?section=all]. This shows you the entire list of formatting and other complex operations that Confluence's notation permits, along with the markup detailing how to perform them.
+
+{tip:title=Try it now}
+Because wiki markup is designed to be simple to learn, the quickest way to learn wiki markup is to edit an existing page, switch to the wiki markup editor and experiment.
+{tip}
+
+Below are some links to more information on wiki markup editing:
+[Full Notation Guide|http://confluence.atlassian.com/renderer/notationhelp.action?section=all]
+[Working with Headings]
+[Working with Text Effects]
+[Working with Text Breaks]
+[Working with Links|Working with Links Overview]
+[Working with Anchors]
+[Working with Images|Displaying an Image]
+[Working with Lists]
+[Working with Tables]
+[Working with Macros]
+[Confluence Emoticons]
+
+h2. What does the Notation Guide contain and why is it not part of the Confluence User Guide?
+The Confluence Notation Guide is included as part of the Confluence code and is dynamically generated when you view it. Its contents depend upon:
+* the macro plugins available in the Confluence installation
+* the documentation included by the plugin developer for the installed version of the plugin.
+
+If you view the Full Notation Guide from the [Atlassian Confluence|http://confluence.atlassian.com] site, you will see the information for the macro plugins currently installed on this site. If you view the Full Notation Guide from your own Confluence instance, you will see information for the macro plugins installed on your site.
+
+The plugin developer writes the help file and includes it in the [macro code|Documenting Macros].
+
+h2. Examples of Markup
+
+Here's a short example of some typical markup:
+|| What you type || What you get ||
+| {code}
+h4. Confluence Markup
+
+Ideally, the markup should be _readable_ and even *clearly understandable* when you are
+editing it. Inserting formatting should require few keystrokes, and little thought.
+
+After all, we want people to be concentrating on the words, not on where the angle-brackets
+should go.
+
+* Kinds of Markup
+** Text Effects
+** Headings
+** Text Breaks
+** Links
+** Other
+{code}\\ \\ | h4. Confluence Markup
+\\
+Ideally, the markup should be _readable_ and even *clearly understandable* when you are \\
+editing it. Inserting formatting should require few keystrokes, and little thought. \\
+\\
+After all, we want people to be concentrating on the words, not on where the angle-brackets \\
+should go. \\
+* Kinds of Markup
+** Text Effects
+** Headings
+** Text Breaks
+** Links
+** Other \\ |
+Here, in comparison, is how that would look if you had to edit the page in HTML:
+\\
+{code:lang=xml}
+<h4>Confluence Markup</h4>
+<p>Ideally, the markup should be <em>readable</em> and even <strong>clearly understandable</strong>
+when you are editing it. Inserting formatting should require few keystrokes, and little thought</p>
+<p>After all, we want people to be concentrating on the words, not on where the angle-brackets should
+go.</p>
+<ul>
+<li>Kinds of Markup
+<ul>
+<li>Text Effects</li>
+<li>Headings</li>
+<li>Text Breaks</li>
+<li>Links</li>
+<li>Other</li>
+</ul>
+</li>
+</ul>
+{code}\\
+\\
+
+h5. RELATED TOPICS
+
+[Full Notation Guide|http://confluence.atlassian.com/renderer/notationhelp.action?section=all]
+[Rich Text Editor Overview]
+[Writing Confluence pages]
+[Creating a New Page]
+[Working with Macros]
+
+Take me back to [Confluence User Guide] 
+
+--------------------------------------------------------------------------------
+
+h1. Working with Headings
+
+You can use Confluence Notation or the [Rich Text editor|Rich Text-Working with Text Effects] to create headers.
+
+Creating a header is easy. Simply place "hn." at the start of your line (where n can be a number from 1-6).
+|| What you need to type || What you will get ||
+| \\
+{noformat:nopanel=true}h1. Biggest heading{noformat} | h1. Biggest heading |
+| \\
+{noformat:nopanel=true}h2. Bigger heading{noformat} | h2. Bigger heading |
+| \\
+{noformat:nopanel=true}h3. Big heading{noformat} | h3. Big heading |
+| \\
+{noformat:nopanel=true}h4. Normal heading{noformat} | h4. Normal heading |
+| \\
+{noformat:nopanel=true}h5. Small heading{noformat} | h5. Small heading |
+| \\
+{noformat:nopanel=true}h6. Smallest heading{noformat} | h6. Smallest heading |
+Note that Confluence treats all headings as [anchors|Working with Anchors].
+
+h5. RELATED TOPICS
+
+[Rich Text-Working with Text Effects]
+[Working with Text Effects]
+[Working with Macros]
+
+Take me back to [Confluence User Guide]
+
+
+--------------------------------------------------------------------------------
+h1. Working with Text Effects
+
+
+Use the markup shown in the examples below to format the text in your pages.
+
+||What you need to type||What you will get||
+|\\*strong*|*strong* |
+|\\_emphasis_|_emphasis_|
+|\\??citation??|??citation??|
+|\\-deleted-|-deleted-|
+|\\+inserted+|+inserted+|
+|\\^superscript^|^superscript^|
+|\\~subscript~|~subscript~|
+|\\{{monospaced}}|{{monospaced}}|
+|\\bq. Here's how you make text in a paragraph into a block quotation|bq. Here's how you make text in a paragraph into a block quotation|
+|\\{nomarkup}{color:red}look ma, red text!{color}{nomarkup}|{color:red}look ma, red text!{color}|
+
+h5.RELATED TOPICS
+[Working with Headings]
+
+Take me back to [Confluence User Guide]
+
+--------------------------------------------------------------------------------
+
+h1. Working with Text Breaks
+
+{color:#0099cc}{*}Paragraph break{*}{color}
+
+When writing text in Confluence, a continuous line of text with two carriage returns at its end forms a paragraph in its own right. This is equivalent to a continuous line of text followed by a blank line.
+(i) When rendered into HTML, the result is a line of text 'wrapped' in a set of {{<p></p>}} tags.
+
+{color:#0099cc}{*}Line break{*}{color}
+
+Confluence also provides two options for forcing a line break within a paragraph of text either implicitly, by entering a single carriage return at its end or explicitly, by entering two consecutive backslashes {nomarkup}(\\){nomarkup}.
+(i) When rendered into HTML, the result is a paragraph of text split into separate lines by {{<br>}} tags, wherever a forced line break appears.
+
+For most purposes, explicit line breaks are not required because a single carriage return will often suffice. However, the examples below show how explicit line breaks can be used.
+
+|| What you need to type || What you will get ||
+| here is some text
+{nomarkup} \\
+{nomarkup} \\
+{nomarkup}divided \\
+{nomarkup} \\
+{nomarkup}using line \\ \\
+{nomarkup} \\
+{nomarkup}breaks
+{nomarkup} | here is some text \\
+divided \\
+using line \\ \\
+breaks |
+| This is a short list:
+\* Point 1
+Text to go with point 1
+\* Point 2{nomarkup} \\ \\{nomarkup}
+Text to go with point 2 with a break | This is a short list:
+* Point 1
+Text to go with point 1
+* Point 2 \\ \\
+Text to go with point 2 with a break |
+
+{info}If you wish to use multiple consecutive line breaks, each should be separated by a space character. For example, use {{{nomarkup}\\ \\{nomarkup}}} for two consecutive line breaks.{info}
+
+----
+{color:#0099cc}{*}Horizontal ruler{*}{color}
+
+Use four dashes (----) to create a horizontal ruler.
+
+(i) Make sure that the dashes are in a separate line from the text.
+|| What you need to type || What you will get ||
+| here is some text \\
+{nomarkup}----
+{nomarkup} \\
+divided by a horizontal ruler | here is some text
+----
+divided by a horizontal ruler
+
+h5. RELATED TOPICS
+
+[Working with Lists]
+[Confluence Notation Guide Overview]
+
+Take me back to [Confluence User Guide]
+
+--------------------------------------------------------------------------------
+
+h1. Working with Links Overview
+
+Confluence tries to encourage linking by making it as simple as possible. You can link to content anywhere within Confluence or an external site just as easily, using the same syntax. Confluence also gives you the flexibility to do some pretty complicated things with links.
+
+You can create links to and from any of the editable content on the site:
+* Pages in the [same space|Linking to Pages Within the Same Space], in [another space|Linking to Pages in Another Space], or [outside Confluence|Linking to Web Pages]
+
+* [News items|Linking to News]
+* [Comments | Linking to Comments]
+* [User profiles or personal spaces|Linking to Personal Spaces and User Profiles]
+* [Mail messages|Linking to Mail]
+* [Attachments|Linking to Attachments]
+
+You can also use a Confluence link to:
+* Create a [new mail message|Using a link to create a new mail message].
+
+Links in Confluence are always denoted by square brackets. Whenever you place text between square brackets, Confluence recognises it as a link.
+{tip:title=Handy Hints}
+* Links in Confluence will not break even when you rename pages or move them between spaces on your site\!
+* Looking for link type not shown above? You might find a [plugin|http://confluence.atlassian.com/display/CONFEXT/Plugin+Index] can help you.
+* Your Confluence administrator can configure Confluence to [display icons|Showing Link Icons] next to each link, distinguishing external links, user links and email links.
+{tip}
+\\
+
+h5. RELATED TOPICS
+
+[Rich Text-Creating and removing a link]
+[Changing the Title of a Link]
+[Working with Anchors]
+[CamelCase linking]
+[Trackback]
+[Linking to Confluence Pages from Outside Confluence]
+
+Take me back to [Confluence User Guide]
+
+--------------------------------------------------------------------------------
+
+h1. Working with Anchors
+
+Confluence tries to encourage linking by making it as simple as possible. You can link to content anywhere within Confluence or an external site just as easily, using the same syntax. Confluence also gives you the flexibility to do some pretty complicated things with links.
+
+You can create links to and from any of the editable content on the site:
+* Pages in the [same space|Linking to Pages Within the Same Space], in [another space|Linking to Pages in Another Space], or [outside Confluence|Linking to Web Pages]
+
+* [News items|Linking to News]
+* [Comments | Linking to Comments]
+* [User profiles or personal spaces|Linking to Personal Spaces and User Profiles]
+* [Mail messages|Linking to Mail]
+* [Attachments|Linking to Attachments]
+
+You can also use a Confluence link to:
+* Create a [new mail message|Using a link to create a new mail message].
+
+Links in Confluence are always denoted by square brackets. Whenever you place text between square brackets, Confluence recognises it as a link.
+{tip:title=Handy Hints}
+* Links in Confluence will not break even when you rename pages or move them between spaces on your site\!
+* Looking for link type not shown above? You might find a [plugin|http://confluence.atlassian.com/display/CONFEXT/Plugin+Index] can help you.
+* Your Confluence administrator can configure Confluence to [display icons|Showing Link Icons] next to each link, distinguishing external links, user links and email links.
+{tip}
+\\
+
+h5. RELATED TOPICS
+
+[Rich Text-Creating and removing a link]
+[Changing the Title of a Link]
+[Working with Anchors]
+[CamelCase linking]
+[Trackback]
+[Linking to Confluence Pages from Outside Confluence]
+
+Take me back to [Confluence User Guide] 
+
+--------------------------------------------------------------------------------
+
+h1. Displaying an Image 
+
+You can display an image from either a file attached to the Confluence page, or from another location.
+
+This page shows you how to display an image using Confluence Notation, also known as [Wiki Markup|Confluence Notation Guide Overview].
+
+{info:title=Using the 'Insert Image' icon}Instead of Wiki Markup, you can use the 'Insert Image' icon. This behaves in a similar way for both the Wiki Markup and the Rich Text editor, as described in [Inserting an image|Rich Text-Inserting an image].
+{info}
+
+To follow the instructions below, you need to edit in 'Wiki Markup' mode. Put an exclamation point before and after the image link.
+
+h2. Displaying an image from a remote location
+
+You need to know the URL from which the image can be linked.
+|| What you need to type || What you will get ||
+| \!http://www.atlassian.com/images/confluence_feature.gif\! | !http://www.atlassian.com/images/confluence_feature.gif! |
+
+h2. Displaying an image attached to a page
+
+* First, [attach|Attaching Files to a Page] the image to the page.
+* Now you can display the attached image:
+|| What you need to type || What you will get ||
+| \\
+\!fish.gif\! | !fish.gif! |
+
+h2. Displaying an image attached to another Confluence page
+
+|| What you need to type || What you will get ||
+| \\
+\!Space attachments directory^fish.gif\! | !space attachments directory^fish.gif! |
+Where 'Space Attachments Directory' is the name of the page containing the attachment.
+
+*Usage example*
+
+What if you want to upload an image only once, but display it on many pages?
+* [Attach|Attaching Files to a Page] the image to a page, such as our page called the '[Space attachments directory|space attachments directory]'.
+* Link to the uploaded image using the syntax described above.
+(i) To view the image, the user needs to have _view_ permission for the page to which it is attached.
+
+h2. Displaying an image attached to page in a difference space
+\\
+{noformat}
+!SPACE:my page^myimg.jpg!
+{noformat}\\
+\\
+
+h2. Formatting an image
+
+|| What you need to type || What you will get ||
+| \\
+\!fish.gif\|align=right,border=2,bordercolor=blue\! | !space attachments directory^fish.gif|align=right,border=2,bordercolor=blue! |
+
+h2. Displaying alternative text
+
+Use the HTML {{title}} attribute to specify text which is displayed when the pointer is hovering over an image. Use the {{alt}} attribute to specify alternative text to be included in the HTML code.
+
+|| What you need to type || What you will get ||
+| \\
+\!fish.gif\|title="I am a fish"\! | !space attachments directory^fish.gif|title="I am a fish"! |
+| \\
+\!fish.gif\|alt="I am a fish"\! | !space attachments directory^fish.gif|alt="I am a fish"! |
+
+h2. HTML image attributes
+For any image, you can also specify attributes of the HTML image tag as a comma-separated list of name=value pairs. Available image tags include:
+* *align* --- available values are 'left', 'right', 'bottom', 'center', 'top'.
+* *border* --- specify the width of the border (in pixels).
+* *bordercolor* --- use this with the above 'border' tag to specify the colour of the image border. Specify the colours by name or by hex value. See more information about [web colours|http://www.answers.com/web+colors?cat=technology]. (Available with Confluence 2.6.2 and later.)
+* *hspace* --- specify the amount of whitespace to be inserted to the left and right of the image (in pixels).
+* *vspace* --- specify the amount of whitespace to be inserted above and below the image (in pixels).
+* *width* --- specify the width of the image (in pixels). This will override the natural width of the image.
+* *height* --- specify the height of the image (in pixels). This will override the natural height of the image.
+* *title* --- specify alternative text for the image, which is displayed when the pointer hovers over the image
+* *alt* --- specify alternative text, which is included in the HTML code. This text is retrievable via search, and contributes to accessibility of the page for text-only viewing.
+
+h5. RELATED TOPICS
+
+[Linking an image to another page or URL|Linking an Image]
+[Rich Text-Inserting an image]
+[Attaching Files to a Page]
+[Image File Formats]
+[Displaying a Thumbnail Image]
+[Gallery Macro]
+
+Take a look at some plugins too.
+(!) First read the warning on [support of third-party plugins|DEVNET:Atlassian Supported Plugins].
+* [ImageMap Plugin|CONFEXT:ImageMap Plugin]
+* [Other image and visualisation plugins|CONFEXT:Image and Visualisation]
+
+Take me back to [Confluence User Guide] 
+
+--------------------------------------------------------------------------------
+
+h1. Working with Lists
+
+Confluence allows you to create bulleted or numbered lists, and is flexible enough to allow a combination of the two lists.
+
+(i) If you need to separate the text within lists using line breaks, make sure you do so using a double slash (//). Empty lines may disrupt the list.
+
+h2. Simple lists
+
+Use the hyphen (\-) to create simple lists.
+Make sure there is a space between the hyphen and your text.
+
+||What you need to type||What you will get||
+|{code}- some
+- bullet
+- points{code}|- some
+- bullet
+- points|
+
+
+h2. Bulleted lists
+
+Use the asterisk (\*) to create bullets. For each subsequent level, add an extra asterisk.
+Make sure there is a space between the asterisk and your text.
+
+||What you need to type||What you will get||
+|{code}* some
+* bullet
+** indented
+** bullets
+* points{code}|* some
+* bullet
+** indented
+** bullets
+* points|
+
+
+h2. Numbered lists
+
+Use the hash (\#) to create numbered lists.
+Make sure there is a space between the hash and your text.
+
+||What you need to type||What you will get||
+|{code}
+# a
+# numbered
+# list{code}|# a
+# numbered
+# list|
+
+A second level of hashes will produce a sub-list, such as the *alphabetical* sub-list shown below.
+
+||What you need to type||What you will get||
+|{code}
+# Here's a sentence.
+## This is a sub-list point.
+## And a second sub-list point.
+# Here's another sentence.{code}|# Here's a sentence.
+## This is a sub-list point.
+## And a second sub-list point.
+# Here's another sentence.|
+
+Try a third level of hashes to produce a sub-sub-list.
+
+||What you need to type||What you will get||
+|{code}
+# Here's a sentence.
+## This is a sub-list point.
+### Third list level.
+### Another point at the third level.
+## And a second sub-list point.
+# Here's another sentence.{code}|# Here's a sentence.
+## This is a sub-list point.
+### Third list level.
+### Another point at the third level.
+## And a second sub-list point.
+# Here's another sentence.|
+
+{note}
+In numbered lists as described above, the format of the 'number' displayed at each list level may be different, depending upon your browser and the style sheets installed on your Confluence instance. So in some cases, you may see letters (A, B, C, etc; or a, b, c, etc) or Roman numerals (i, ii, iii, etc) at different list levels.
+{note}
+
+h2. Mixed lists
+
+||What you need to type||What you will get||
+|{code}
+# Here
+#* is
+#* an
+# example
+#* of
+#* a
+# mixed
+# list
+{code}|# Here
+#* is
+#* an
+# example
+#* of
+#* a
+# mixed
+# list|
+
+
+h5.RELATED TOPICS
+[Working with Text Breaks]
+[Confluence Notation Guide Overview]
+
+Take me back to [Confluence User Guide] 
+
+--------------------------------------------------------------------------------
+
+h1. Working with Tables 
+
+
+You can use Confluence wiki markup or the [Rich Text editor|Rich Text-Working with Tables] to create tables. Below are some guidelines on using wiki markup to create tables.
+
+Confluence allows you to create two types of tables.
+
+h3. Table Type 1
+
+Allows you to create a simple table with an optional header row. You cannot set the width of the columns in this table.
+Use double bars for a table heading row.
+
+*What you need to type:*
+| {code}
+||heading 1||heading 2||heading 3||
+|cell A1|cell A2|cell A3|
+|cell B1|cell B2|cell B3|
+{code} |
+*What you will get:*
+|| heading 1 || heading 2 || heading 3 ||
+| cell A1 | cell A2 | cell A3 |
+| cell B1 | cell B2 | cell B3 |
+(i) Currently, Confluence does not support nested tables.
+
+You can also use a vertical header.
+
+*What you need to type:*
+{code}
+||heading 1|col A1|col A2|col A3|
+||heading 2|col B1|col B2|col B3|
+{code}
+
+*What you will get:*
+||heading 1|col A1|col A2|col A3|
+||heading 2|col B1|col B2|col B3|
+
+
+h3. Table Type 2
+
+This method allows you to specify the width of the columns in the table.
+
+*What you need to type*
+{code}
+{section:border=true}
+
+{column:width=30%}
+Text for this column goes here. This is the smaller column with a width of only 30%.
+{column}
+
+{column:width=70%}
+Text for this column goes here. This is the larger column with a width of 70%.
+{column}
+
+{section}
+{code}
+\\
+
+*What you will get*
+{section:border=true}
+{column:width=30%}
+Text for this column goes here. This is the smaller column with a width of only 30%.
+{column}
+{column:width=70%}
+Text for this column goes here. This is the larger column with a width of 70%.
+{column}
+{section}
+(i) For more details please see the [Column Macro] and the [Section Macro].
+
+h3. Advanced Formatting
+
+h4. Colour and Other Formatting
+
+To add colour and other formatting to your tables, you can use the [Panel Macro] within columns.
+More table-formatting options may be available if your Confluence administrator has installed additional [macros|http://confluence.atlassian.com/display/CONFEXT/Macros].
+
+h4. Lists
+
+Here's an example of how to embed lists in a table:
+
+*What you need to type*
+{code}
+||Heading 1||Heading 2||
+|* Item 1
+* Item 2
+* Item 3|# Item 1
+# Item 2
+# Item 3|
+{code}
+
+*What you will get*
+
+||Heading 1||Heading 2||
+|* Item 1
+* Item 2
+* Item 3|# Item 1
+# Item 2
+# Item 3|
+
+h5. RELATED TOPICS
+
+[Rich Text-Working with Tables]
+[Working with Macros]
+
+Take me back to [Confluence User Guide]
+
+--------------------------------------------------------------------------------
+
+h1. Working with Macros
+
+
+{float:right|border=none|width=30%}
+{panel:title=Differences in Confluence Hosted for Small Business| borderStyle=solid|borderColor=#99c23f| titleBGColor=#d1e2a0| bgColor=#ffffff}
+If you are using [Confluence Hosted for Small Business|http://www.atlassian.com/software/confluence/hosted.jsp], the plugins and macros are installed for you. Refer to the list of [macros on Confluence Hosted for Small Business|CSH:Macros and Plugins on Confluence Hosted for Small Business].
+{panel}
+{float}
+Macros perform programmatic functions within a page and can be used to generate complex content structures or dynamic content.
+
+Macros allow you to add extra functionality or include dynamic content in a page. For example, the [Attachments macro|Displaying List of Attachments in a Page] will list a page's attachments in the page itself, so that readers do not have to visit the Attachments tab.
+
+*On this page:*
+{toc:minLevel=2|maxLevel=4}
+
+h2. Including a Macro in your Page
+
+There are two ways to include a macro in your page. You can add macros using the visual Macro Browser, or by manually typing a macro command into the editor.
+
+h4. Including Macros with the Macro Browser
+
+{color:#0099cc}*To insert a macro into a page using the Macro Browser,*{color}
+{panel: borderStyle=dashed| borderColor=#ccc| titleBGColor=#F7D6C1| bgColor= #D5EFFF}
+{excerpt-include:Navigating to the Macro Browser|nopanel=true}
+Once you've found the macro you want, click '*insert*' to add it to your page.
+{panel}
+
+h4. Including Macros with the Confluence Editor
+
+In the Confluence editor, a macro is simply a command wrapped inside curly braces \{...\}.
+
+For instance, the Attachments Macro is written as:
+\\
+{code}
+{attachments}
+{code}\\
+
+h4. Macro Parameters
+Many macros allow you to include optional parameters to control the macro's output.
+
+With the Attachments Macro, for instance, you have two optional parameters:
+* To specify the file formats of the attachments displayed.
+* To choose whether or not you want old versions of the attachments displayed.
+
+These optional parameters are included within the curly braces, following a colon, like this:
+\\
+{code}
+{attachments:patterns=.*jpg}
+{code}\\
+When specifying more than one parameter within the same macro, use the pipe symbol ('\|') to separate one from the other, like this:
+{code}
+{attachments:old=true|patterns=.*jpg}
+{code}\\
+
+h4. Case Sensitivity in Macro Parameters
+Macro parameters are case sensitive. In most cases, the macro will expect its parameters to be in lower case. Make sure you follow the documentation for the specific macro and match the expected case, otherwise the parameter may be ignored.
+
+For example, this code correctly has the parameter 'patterns' with a lower case 'p' as expected by the Attachments Macro:
+{code}
+{attachments:patterns=.*jpg}
+{code}
+
+This code will not work, because the parameter 'Patterns' has an upper case 'p', which the Attachments Macro will not recognise:
+*Invalid macro code:*
+{code}
+{attachments:Patterns=.*jpg}
+{code}
+
+h2. Macros Shipped with your Confluence Installation
+
+When you download your Confluence installation file, many macros are shipped with the download. Below is a list of the macros currently shipped with Confluence. Click a macro name for details of the usage, including optional parameters and examples.
+
+|| [Attachments Macro|Displaying List of Attachments in a Page] | Displays a list of attachments belonging to the current page. ||
+|| [Blog Posts Macro] | Lists the most recent news items in the space. ||
+|| [Bookmarks Macro] | Includes a list of bookmarks on a Confluence page. ||
+|| [Change-History Macro] | Displays a history of updates made to a page. ||
+|| [Chart Macro] | Displays a chart based on tabular data. ||
+|| [Cheese Macro] | Displays the words "I like cheese!" ||
+|| [Children Display Macro] | Displays the children and descendants of the current page. ||
+|| [Code Block Macro] | Displays code in your document with the appropriate syntax highlighting. ||
+|| [Color Text Macro] | Changes the colour of a block of text. ||
+|| [Column Macro] | Used with the [Section Macro]. Defines columns within the page. ||
+|| [Content by Label Macro] | Renders a list of content associated with specific labels. ||
+|| [Create Space Button Macro] | Renders a create space button linked to the create space page. ||
+|| [Tasklist Macro] | Displays a dynamic task list which can be modified in 'view' mode. ||
+|| [Edit in Word Link Macro] | Displays an 'Edit in Word' icon on your page. ||
+|| [Excerpt Macro] | Allows you to define a part of the page as the page's 'excerpt' which is then used by other macros to summarise a page's content. ||
+|| [Excerpt Include Macro] | Allows you to display an excerpt from another page within the current page. ||
+|| [Favourite Pages Macro] | Displays a list of your favourite pages. ||
+|| [Excerpt Include Macro] | Includes one page's excerpt in another. ||
+|| [Gallery Macro] | Forms a thumbnail gallery of all images attached to a page. ||
+|| [Global Reports Macro] | Renders a list of links to global reports within a table. ||
+|| [HTML Macro] | Renders your specified HTML code within the current page. ||
+|| [HTML Include Macro] | Includes the content of an external HTML file into a Confluence page. ||
+|| [IM Presence Macro] | Displays graphically when a contact is online. ||
+|| [Include Page Macro] | Inserts the contents of the specified page into the current one. ||
+|| [Info Macro] | Displays a block of text in a blue highlight box. ||
+|| [JIRA Issues Macro] | Displays a list of JIRA issues in a page. ||
+|| [JIRA Portlet Macro] | Displays a JIRA dashboard portlet in Confluence. ||
+|| [JUnit Report Macro] | Display a summary of JUnit test results. ||
+|| [Livesearch Macro|Livesearch Macro] | Add a dynamic search box to a wiki page. ||
+|| [Loremipsum Macro|Loremipsum Macro] | Display a few paragraphs of pseudo-Latin text. ||
+|| [Navmap Macro] | Renders the list of pages associated with a specified label as a navigable map. ||
+|| [Noformat Macro] | Displays a block of text in monospace font. ||
+|| [Nolink and nl Macros] | Prevents the browser from automatically hyperlinking a URL. ||
+|| [Note Macro] | Displays a block of text in a yellow highlight box. ||
+|| [Panel Macro] | Displays a block of text within a fully customisable panel. ||
+|| [Pagetree Macro] | Displays a dynamic, hierarchical list of pages starting from a specified parent (root) page. ||
+|| [Pagetree Search Macro] | Adds a search box to your Confluence page and searches a hierarchy of pages starting from a specified parent (root) page. ||
+|| [Recently Updated Macro] | Displays a list of recently changed content (pages, news items, comments, etc). ||
+|| [Recently Used Labels Macro] | Lists labels most recently used in a specified scope (Global, Space, or Personal) ||
+|| [Related Labels Macro] | Lists labels frequently appearing on the same pages as the current page's labels. ||
+|| [RSS Feed Macro] | Displays the contents of an RSS feed. ||
+|| [Search Macro] | Searches Confluence, and includes the results in the page. ||
+|| [Section Macro] | Used with the [Column Macro] to define columns within the page. ||
+|| [Space Details Macro] | Includes the summary of a Confluence space in the page. ||
+|| [Spaces List Macro] | Displays a list of all spaces visible to the user. ||
+|| [Tip Macro] | Displays a block of text in a green highlight box. ||
+|| [Userlister Macro] | Displays a list of Confluence users, from an optional group. ||
+|| [View File Macro] | Embeds an Office document into your Confluence page. ||
+|| [Warning Macro] | Displays a block of text in a red highlight box. ||
+|| [Web-Widget Macro|Widget Macro] | Same as the Widget macro. ||
+|| [Welcome Message macro] | Includes the Confluence site welcome message. ||
+|| [Widget Macro] | Displays videos, slide shows, twitter chats, documents and more, sourced from other web sites and displayed on your Confluence page. ||
+
+h2. Information about Other Macros
+
+Other macros are available as [plugins|CONFEXT:Plugin Index] or as [user macros|CONFEXT:User Macros], and can be installed by your Confluence administrator.
+
+Customers using Adaptavist macros or plugins might be interested in the [Adaptavist's Confluence user guide|http://www.adaptavist.com/display/USERGUIDE/Confluence].
+
+Some examples are:
+* \{toc} macro, provided by the [Table of Contents Plugin|CONFEXT:Confluence Table of Contents Plugin] - full documentation by [CustomWare|http://www.customware.net/repository/display/AtlassianPlugins/Table+of+Contents+Plugin].
+* \{float} macro and others, provided by the [Composition plugin|CONFEXT:Composition Plugin] - full documentation by [CustomWare|http://www.customware.net/repository/display/AtlassianPlugins/Composition+Plugin].
+
+h2. Writing your own Macros
+
+To learn how to write your own macro, take a look at the following documentation:
+* User macros are simple template-like macros that allow you to create simple formatting macros using the Confluence web interface. Read more about [User Macros].
+* The [Confluence Plugin Guide|Confluence Plugin Guide] tells you how to develop a plugin for Confluence.
+
+h5. RELATED TOPICS
+
+[Confluence Notation Guide Overview]
+[Confluence Plugin Guide|DOC:Confluence Plugin Guide]
+[Plugin Index|CONFEXT:Plugin Index]
+[User Macros|CONFEXT:User Macros]
+
+Take me back to the [Confluence User Guide].
+
+
+--------------------------------------------------------------------------------
+
+h1. Confluence Emoticons
+
+
+Emoticons are little images you can easily use in a Confluence page. They use a simple wiki markup as shown below, or you can insert them [using the Rich Text editor|Rich Text-Inserting emoticons].
+
+h3. Graphical emoticons (smileys).
+
+|| Notation || Image ||
+| :\) | :) |
+| :\( | :( |
+| :_P_ | :P |
+| :_D_ | :D |
+| ;\) | ;) |
+| \(y) | (y) |
+| \(n) | (n) |
+| \(i) | (i) |
+| \(/) | (/) |
+| \(x) | (x) |
+| \(!) | (!) |
+| \(+) | (+) |
+| \(-) | (-) |
+| \(?) | (?) |
+| \(on) | (on) |
+| \(off) | (off) |
+| \(*) | (*) |
+| \(*r) | (*r) |
+| \(*g) | (*g) |
+| \(*b) | (*b) |
+| \(*y) | (*y) |
+ 
+
+--------------------------------------------------------------------------------

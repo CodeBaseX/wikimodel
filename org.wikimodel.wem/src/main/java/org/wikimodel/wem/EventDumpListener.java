@@ -51,8 +51,8 @@ public class EventDumpListener extends PrintTextListener {
     }
 
     @Override
-    public void beginHeader(int level, WikiParameters params) {
-        println("beginHeader(" + level + ",[" + params + "])");
+    public void beginHeader(int headerLevel, WikiParameters params) {
+        println("beginHeader(" + headerLevel + ",[" + params + "])");
         inc();
     }
 
@@ -107,7 +107,7 @@ public class EventDumpListener extends PrintTextListener {
     @Override
     public void beginSection(
         int docLevel,
-        int sectionLevel,
+        int headerLevel,
         WikiParameters params) {
         println("beginSection([" + docLevel + "])");
         inc();
@@ -116,7 +116,7 @@ public class EventDumpListener extends PrintTextListener {
     @Override
     public void beginSectionContent(
         int docLevel,
-        int sectionLevel,
+        int headerLevel,
         WikiParameters params) {
         println("beginSectionContent([" + docLevel + "])");
         inc();
@@ -181,9 +181,9 @@ public class EventDumpListener extends PrintTextListener {
     }
 
     @Override
-    public void endHeader(int level, WikiParameters params) {
+    public void endHeader(int headerLevel, WikiParameters params) {
         dec();
-        println("endHeader(" + level + ", [" + params + "])");
+        println("endHeader(" + headerLevel + ", [" + params + "])");
     }
 
     @Override
@@ -235,7 +235,7 @@ public class EventDumpListener extends PrintTextListener {
     }
 
     @Override
-    public void endSection(int docLevel, int sectionLevel, WikiParameters params) {
+    public void endSection(int docLevel, int headerLevel, WikiParameters params) {
         dec();
         println("endSection([" + docLevel + "])");
     }
@@ -243,7 +243,7 @@ public class EventDumpListener extends PrintTextListener {
     @Override
     public void endSectionContent(
         int docLevel,
-        int sectionLevel,
+        int headerLevel,
         WikiParameters params) {
         dec();
         println("endSectionContent([" + docLevel + "])");

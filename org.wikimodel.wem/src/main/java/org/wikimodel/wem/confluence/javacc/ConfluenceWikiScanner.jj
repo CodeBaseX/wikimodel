@@ -41,7 +41,7 @@ public class ConfluenceWikiScanner {
         fContext = context;
         doParse();
     }
-    
+     
     private boolean isImage(WikiReference ref) {
         String str = ref.getLink().toLowerCase();
         return str.endsWith(".gif") ||
@@ -51,7 +51,14 @@ public class ConfluenceWikiScanner {
     }
     
     private WikiParameters newMacroParameters(String paramStr) {
-        return new WikiParameters(paramStr, "|");
+        WikiParameters params;
+        if (paramStr.indexOf("|") < 0) {
+            params = new WikiParameters("");
+            params.addParameter("value", paramStr);
+        } else {
+            params = new WikiParameters(paramStr, "|");
+        }
+        return params;
     }
 
     private String[] splitMacroParams(String str) {

@@ -12,9 +12,9 @@ public class XWikiSerializer extends PrintTextListener {
         super(printer);
     }
 
-    public void beginHeader(int level, WikiParameters params) {
+    public void beginHeader(int headerLevel, WikiParameters params) {
         print("1");
-        for (int i = 0; i < level - 1; i++) {
+        for (int i = 0; i < headerLevel - 1; i++) {
             print(".1");
         }
         print(" ");
@@ -41,7 +41,7 @@ public class XWikiSerializer extends PrintTextListener {
         fNewTableRow = true;
     }
 
-    public void endHeader(int level, WikiParameters params) {
+    public void endHeader(int headerLevel, WikiParameters params) {
         println();
         println();
     }

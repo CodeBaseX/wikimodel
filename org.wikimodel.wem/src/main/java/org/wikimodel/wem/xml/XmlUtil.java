@@ -14,11 +14,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
+import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
@@ -36,7 +38,81 @@ import org.xml.sax.XMLReader;
  * 
  * @author kotelnikov
  */
-public class DOMUtil {
+public class XmlUtil {
+
+    public static void formatXML(
+        Document xml,
+        Document xsl,
+        URIResolver resolver,
+        Writer output) throws Exception {
+        try {
+            DOMSource xslSource = new DOMSource(xsl);
+            DOMSource xmlSource = new DOMSource(xml);
+            Result result = new StreamResult(output);
+            formatXML(xmlSource, xslSource, resolver, result);
+        } finally {
+            output.close();
+        }
+    }
+
+    public static void formatXML(Document xml, Document xsl, Writer output)
+        throws Exception {
+        formatXML(xml, xsl, null, output);
+    }
+
+    public static void formatXML(
+        Reader xml,
+        Reader xsl,
+        URIResolver resolver,
+        Writer output) throws Exception {
+        try {
+            try {
+                try {
+                    Source xmlSource = new SAXSource(new InputSource(xml));
+                    Source xslSource = new SAXSource(new InputSource(xsl));
+                    Result result = new StreamResult(output);
+                    formatXML(xmlSource, xslSource, resolver, result);
+                } finally {
+                    output.close();
+                }
+            } finally {
+                xsl.close();
+            }
+        } finally {
+            xml.close();
+        }
+    }
+
+    public static void formatXML(Reader xml, Reader xsl, Writer output)
+        throws Exception {
+        formatXML(xml, xsl, null, output);
+    }
+
+    /**
+     * @param xmlSource
+     * @param xslSource
+     * @param resolver
+     * @param output
+     * @throws TransformerFactoryConfigurationError
+     * @throws TransformerConfigurationException
+     * @throws TransformerException
+     */
+    public static void formatXML(
+        Source xmlSource,
+        Source xslSource,
+        URIResolver resolver,
+        Result result)
+        throws TransformerFactoryConfigurationError,
+        TransformerConfigurationException,
+        TransformerException {
+        TransformerFactory factory = TransformerFactory.newInstance();
+        Templates t = factory.newTemplates(xslSource);
+        Transformer transformer = t.newTransformer();
+        if (resolver != null) {
+            transformer.setURIResolver(resolver);
+        }
+        transformer.transform(xmlSource, result);
+    }
 
     /**
      * Creates and returns an new document builder factory. This method tries to
@@ -96,8 +172,9 @@ public class DOMUtil {
      * 
      * @return a newly created DOM document
      * @throws ParserConfigurationException
+     * @throws ParserConfigurationException
      */
-    public static Document newDocument() throws Exception {
+    public static Document newDocument() throws ParserConfigurationException {
         DocumentBuilder builder = getDocumentBuilder();
         return builder.newDocument();
     }
@@ -176,6 +253,26 @@ public class DOMUtil {
     }
 
     /**
+     * @param reader
+     * @param parser
+     * @param output
+     * @throws TransformerConfigurationException
+     * @throws TransformerFactoryConfigurationError
+     * @throws TransformerException
+     */
+    public static void write(Reader reader, XMLReader parser, Result output)
+        throws TransformerConfigurationException,
+        TransformerFactoryConfigurationError,
+        TransformerException {
+        SAXSource input = new SAXSource();
+        InputSource inputSource = new InputSource();
+        inputSource.setCharacterStream(reader);
+        input.setInputSource(inputSource);
+        input.setXMLReader(parser);
+        write(input, output);
+    }
+
+    /**
      * @param parser
      * @param writer
      * @throws TransformerConfigurationException
@@ -186,22 +283,11 @@ public class DOMUtil {
         throws TransformerConfigurationException,
         TransformerFactoryConfigurationError,
         TransformerException {
-        SAXSource input = new SAXSource();
-        InputSource inputSource = new InputSource();
-        inputSource.setCharacterStream(reader);
-        input.setInputSource(inputSource);
-        input.setXMLReader(parser);
-        write(input, writer);
+        Result output = new StreamResult(writer);
+        write(reader, parser, output);
     }
 
-    /**
-     * @param input
-     * @param os
-     * @throws TransformerConfigurationException
-     * @throws TransformerFactoryConfigurationError
-     * @throws TransformerException
-     */
-    private static void write(Source input, Writer writer)
+    public static void write(Source input, Result output)
         throws TransformerConfigurationException,
         TransformerFactoryConfigurationError,
         TransformerException {
@@ -231,8 +317,22 @@ public class DOMUtil {
         if (doctype != null)
             idTransform.setOutputProperty("doctype-public", doctype);
 
-        Result output = new StreamResult(writer);
         idTransform.transform(input, output);
+    }
+
+    /**
+     * @param input
+     * @param os
+     * @throws TransformerConfigurationException
+     * @throws TransformerFactoryConfigurationError
+     * @throws TransformerException
+     */
+    public static void write(Source input, Writer writer)
+        throws TransformerConfigurationException,
+        TransformerFactoryConfigurationError,
+        TransformerException {
+        Result output = new StreamResult(writer);
+        write(input, output);
     }
 
 }

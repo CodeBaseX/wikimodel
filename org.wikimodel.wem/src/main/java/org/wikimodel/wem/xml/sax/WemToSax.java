@@ -6,6 +6,7 @@ package org.wikimodel.wem.xml.sax;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.wikimodel.wem.WikiPageUtil;
 import org.wikimodel.wem.xml.ITagListener;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -21,7 +22,7 @@ public class WemToSax implements ITagListener {
 
     public final static String WEM_NS = "http://www.wikimodel.org/ns/wem#";
 
-    public final static String WEM_PREFIX = "";
+    public final static String WEM_PREFIX = "w";
 
     private int fDepth;
 
@@ -193,22 +194,28 @@ public class WemToSax implements ITagListener {
                 return null;
             }
 
+            private String getValue(Map<String, String> map, String key) {
+                String value = map.get(key);
+                value = WikiPageUtil.escapeXmlAttribute(value);
+                return value;
+            }
+
             public String getValue(String qName) {
                 int idx = qName.indexOf(':');
                 String prefix = qName.substring(0, idx);
                 qName = qName.substring(idx + 1);
                 if (WEM_PREFIX.equals(prefix))
-                    return tagParams.get(qName);
+                    return getValue(tagParams, qName);
                 if (USER_PREFIX.equals(prefix))
-                    return userParams.get(qName);
+                    return getValue(userParams, qName);
                 return null;
             }
 
             public String getValue(String uri, String localName) {
                 if (WEM_NS.equals(uri))
-                    return tagParams.get(localName);
+                    return getValue(tagParams, localName);
                 if (USER_NS.equals(uri))
-                    return userParams.get(localName);
+                    return getValue(userParams, localName);
                 return null;
             }
 
@@ -228,6 +235,7 @@ public class WemToSax implements ITagListener {
      * @return
      */
     private String getQualifiedName(String prefix, String tagName) {
+        tagName = WikiPageUtil.escapeXmlAttribute(tagName);
         return prefix != null && !"".equals(prefix)
             ? prefix + ":" + tagName
             : tagName;
@@ -263,6 +271,7 @@ public class WemToSax implements ITagListener {
      */
     public void onText(String content) {
         try {
+            content = WikiPageUtil.escapeXmlString(content, false);
             char[] chars = content.toCharArray();
             fHandler.characters(chars, 0, chars.length);
         } catch (Throwable e) {
