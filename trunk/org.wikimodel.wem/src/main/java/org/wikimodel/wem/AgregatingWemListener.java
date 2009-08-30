@@ -78,9 +78,9 @@ public class AgregatingWemListener implements IWemListener {
      * @see org.wikimodel.wem.IWemListenerDocument#beginHeader(int,
      *      org.wikimodel.wem.WikiParameters)
      */
-    public void beginHeader(int level, WikiParameters params) {
+    public void beginHeader(int headerLevel, WikiParameters params) {
         if (fDocumentListener != null) {
-            fDocumentListener.beginHeader(level, params);
+            fDocumentListener.beginHeader(headerLevel, params);
         }
     }
 
@@ -166,10 +166,10 @@ public class AgregatingWemListener implements IWemListener {
      */
     public void beginSection(
         int docLevel,
-        int sectionLevel,
+        int headerLevel,
         WikiParameters params) {
         if (fDocumentListener != null) {
-            fDocumentListener.beginSection(docLevel, sectionLevel, params);
+            fDocumentListener.beginSection(docLevel, headerLevel, params);
         }
     }
 
@@ -179,12 +179,12 @@ public class AgregatingWemListener implements IWemListener {
      */
     public void beginSectionContent(
         int docLevel,
-        int sectionLevel,
+        int headerLevel,
         WikiParameters params) {
         if (fDocumentListener != null) {
             fDocumentListener.beginSectionContent(
                 docLevel,
-                sectionLevel,
+                headerLevel,
                 params);
         }
     }
@@ -266,9 +266,9 @@ public class AgregatingWemListener implements IWemListener {
      * @see org.wikimodel.wem.IWemListenerDocument#endHeader(int,
      *      org.wikimodel.wem.WikiParameters)
      */
-    public void endHeader(int level, WikiParameters params) {
+    public void endHeader(int headerLevel, WikiParameters params) {
         if (fDocumentListener != null) {
-            fDocumentListener.endHeader(level, params);
+            fDocumentListener.endHeader(headerLevel, params);
         }
     }
 
@@ -351,9 +351,9 @@ public class AgregatingWemListener implements IWemListener {
      * @see org.wikimodel.wem.IWemListenerDocument#endSection(int, int,
      *      org.wikimodel.wem.WikiParameters)
      */
-    public void endSection(int docLevel, int sectionLevel, WikiParameters params) {
+    public void endSection(int docLevel, int headerLevel, WikiParameters params) {
         if (fDocumentListener != null) {
-            fDocumentListener.endSection(docLevel, sectionLevel, params);
+            fDocumentListener.endSection(docLevel, headerLevel, params);
         }
     }
 
@@ -363,10 +363,10 @@ public class AgregatingWemListener implements IWemListener {
      */
     public void endSectionContent(
         int docLevel,
-        int sectionLevel,
+        int headerLevel,
         WikiParameters params) {
         if (fDocumentListener != null) {
-            fDocumentListener.endSectionContent(docLevel, sectionLevel, params);
+            fDocumentListener.endSectionContent(docLevel, headerLevel, params);
         }
     }
 

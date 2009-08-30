@@ -78,9 +78,9 @@ public interface ISaxConst {
 
     String SECTION_DOC_LEVEL = "docLevel";
 
-    String SECTION_LEVEL = "sectionLevel";
+    String SECTION_HEADER_LEVEL = "headerLevel";
 
-    String SPECIAL = "special";
+    String SECTION_LEVEL = "absLevel";
 
     String STYLES = "styles";
 

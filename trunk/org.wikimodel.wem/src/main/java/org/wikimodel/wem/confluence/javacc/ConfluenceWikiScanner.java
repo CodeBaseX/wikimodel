@@ -45,7 +45,14 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     }
 
     private WikiParameters newMacroParameters(String paramStr) {
-        return new WikiParameters(paramStr, "|");
+        WikiParameters params;
+        if (paramStr.indexOf("|") < 0) {
+            params = new WikiParameters("");
+            params.addParameter("value", paramStr);
+        } else {
+            params = new WikiParameters(paramStr, "|");
+        }
+        return params;
     }
 
     private String[] splitMacroParams(String str) {
@@ -1274,26 +1281,6 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     finally { jj_save(12, xla); }
   }
 
-  private boolean jj_3R_12() {
-    if (jj_3R_35()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_4()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_22() {
-    if (jj_3R_44()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_21() {
-    if (jj_3R_43()) return true;
-    return false;
-  }
-
   private boolean jj_3R_10() {
     if (jj_3R_33()) return true;
     if (jj_3R_34()) return true;
@@ -1592,13 +1579,13 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3_9() {
-    if (jj_3R_18()) return true;
+  private boolean jj_3_6() {
     if (jj_3R_11()) return true;
     return false;
   }
 
-  private boolean jj_3_6() {
+  private boolean jj_3_9() {
+    if (jj_3R_18()) return true;
     if (jj_3R_11()) return true;
     return false;
   }
@@ -1780,6 +1767,26 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
 
   private boolean jj_3R_30() {
     if (jj_3R_52()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_12() {
+    if (jj_3R_35()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_4()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_22() {
+    if (jj_3R_44()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_21() {
+    if (jj_3R_43()) return true;
     return false;
   }
 

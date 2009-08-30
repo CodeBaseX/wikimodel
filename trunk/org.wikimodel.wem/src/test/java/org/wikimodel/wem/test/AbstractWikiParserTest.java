@@ -68,12 +68,12 @@ public abstract class AbstractWikiParserTest extends TestCase {
                 @Override
                 public void beginSection(
                     int docLevel,
-                    int sectionLevel,
+                    int headerLevel,
                     WikiParameters params) {
                     println("<section-"
                         + docLevel
                         + "-"
-                        + sectionLevel
+                        + headerLevel
                         + params
                         + ">");
                 }
@@ -81,12 +81,12 @@ public abstract class AbstractWikiParserTest extends TestCase {
                 @Override
                 public void beginSectionContent(
                     int docLevel,
-                    int sectionLevel,
+                    int headerLevel,
                     WikiParameters params) {
                     println("<sectionContent-"
                         + docLevel
                         + "-"
-                        + sectionLevel
+                        + headerLevel
                         + params
                         + ">");
                 }
@@ -94,20 +94,20 @@ public abstract class AbstractWikiParserTest extends TestCase {
                 @Override
                 public void endSection(
                     int docLevel,
-                    int sectionLevel,
+                    int headerLevel,
                     WikiParameters params) {
-                    println("</section-" + docLevel + "-" + sectionLevel + ">");
+                    println("</section-" + docLevel + "-" + headerLevel + ">");
                 }
 
                 @Override
                 public void endSectionContent(
                     int docLevel,
-                    int sectionLevel,
+                    int headerLevel,
                     WikiParameters params) {
                     println("</sectionContent-"
                         + docLevel
                         + "-"
-                        + sectionLevel
+                        + headerLevel
                         + ">");
                 }
             };

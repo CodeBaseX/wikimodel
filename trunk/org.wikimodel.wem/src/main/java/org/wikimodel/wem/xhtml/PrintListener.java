@@ -47,8 +47,8 @@ public class PrintListener extends PrintInlineListener {
     }
 
     @Override
-    public void beginHeader(int level, WikiParameters params) {
-        print("<h" + level + params + ">");
+    public void beginHeader(int headerLevel, WikiParameters params) {
+        print("<h" + headerLevel + params + ">");
     }
 
     @Override
@@ -130,8 +130,8 @@ public class PrintListener extends PrintInlineListener {
     }
 
     @Override
-    public void endHeader(int level, WikiParameters params) {
-        println("</h" + level + ">");
+    public void endHeader(int headerLevel, WikiParameters params) {
+        println("</h" + headerLevel + ">");
     }
 
     @Override

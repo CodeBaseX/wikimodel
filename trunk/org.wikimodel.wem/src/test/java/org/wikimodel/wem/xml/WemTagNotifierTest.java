@@ -36,7 +36,7 @@ public class WemTagNotifierTest extends AbstractWikiParserTest {
         IWikiParser parser = newWikiParser();
         WemReader xmlReader = new WemReader(parser);
         StringWriter writer = new StringWriter();
-        DOMUtil.write(reader, xmlReader, writer);
+        XmlUtil.write(reader, xmlReader, writer);
         System.out.println(writer);
     }
 

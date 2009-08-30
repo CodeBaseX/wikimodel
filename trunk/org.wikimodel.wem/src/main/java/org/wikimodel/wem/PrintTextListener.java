@@ -50,7 +50,7 @@ public class PrintTextListener implements IWemListener {
     /**
      * @see org.wikimodel.wem.IWemListener#beginHeader(int, WikiParameters)
      */
-    public void beginHeader(int level, WikiParameters params) {
+    public void beginHeader(int headerLevel, WikiParameters params) {
     }
 
     /**
@@ -112,7 +112,7 @@ public class PrintTextListener implements IWemListener {
      */
     public void beginSection(
         int docLevel,
-        int sectionLevel,
+        int headerLevel,
         WikiParameters params) {
         // 
     }
@@ -123,7 +123,7 @@ public class PrintTextListener implements IWemListener {
      */
     public void beginSectionContent(
         int docLevel,
-        int sectionLevel,
+        int headerLevel,
         WikiParameters params) {
         // 
     }
@@ -191,7 +191,7 @@ public class PrintTextListener implements IWemListener {
     /**
      * @see org.wikimodel.wem.IWemListener#endHeader(int, WikiParameters)
      */
-    public void endHeader(int level, WikiParameters params) {
+    public void endHeader(int headerLevel, WikiParameters params) {
         endBlock();
     }
 
@@ -257,7 +257,7 @@ public class PrintTextListener implements IWemListener {
      * @see org.wikimodel.wem.IWemListenerDocument#endSection(int, int,
      *      WikiParameters)
      */
-    public void endSection(int docLevel, int sectionLevel, WikiParameters params) {
+    public void endSection(int docLevel, int headerLevel, WikiParameters params) {
         // 
     }
 
@@ -267,7 +267,7 @@ public class PrintTextListener implements IWemListener {
      */
     public void endSectionContent(
         int docLevel,
-        int sectionLevel,
+        int headerLevel,
         WikiParameters params) {
         //
     }

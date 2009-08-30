@@ -254,13 +254,13 @@ public class TexSerializer extends PrintTextListener {
     }
 
     @Override
-    public void beginHeader(int level, WikiParameters params) {
+    public void beginHeader(int headerLevel, WikiParameters params) {
         println();
         print("\\");
-        if (level == 1) {
+        if (headerLevel == 1) {
             print("chapter{");
-        } else if (level < 4) {
-            for (int i = 1; i < level - 1; i++)
+        } else if (headerLevel < 4) {
+            for (int i = 1; i < headerLevel - 1; i++)
                 print("sub");
             print("section{");
         } else {
@@ -333,7 +333,7 @@ public class TexSerializer extends PrintTextListener {
     }
 
     @Override
-    public void endHeader(int level, WikiParameters params) {
+    public void endHeader(int headerLevel, WikiParameters params) {
         println("}");
 
     }

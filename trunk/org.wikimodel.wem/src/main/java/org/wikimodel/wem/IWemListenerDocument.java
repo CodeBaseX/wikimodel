@@ -98,10 +98,10 @@ public interface IWemListenerDocument {
      * This method is called to notify about a new section header found in the
      * document.
      * 
-     * @param level the level of the found header; valid values: 1-6
+     * @param headerLevel the level of the found header; valid values: 1-6
      * @param params wiki parameters associated with the
      */
-    void beginHeader(int level, WikiParameters params);
+    void beginHeader(int headerLevel, WikiParameters params);
 
     /**
      * This method is used to notify about the beginning of a section. Document
@@ -109,10 +109,10 @@ public interface IWemListenerDocument {
      * level starts with a new document or a new header.
      * 
      * @param docLevel the level (depth) of the document containing this section
-     * @param sectionLevel the level of the header defining this section
+     * @param headerLevel the level of the header defining this section
      * @param params parameters parameters of the document or the header
      */
-    void beginSection(int docLevel, int sectionLevel, WikiParameters params);
+    void beginSection(int docLevel, int headerLevel, WikiParameters params);
 
     /**
      * This method is used to notify about the beginning of a section. Document
@@ -120,12 +120,12 @@ public interface IWemListenerDocument {
      * level starts with a new document or a new header.
      * 
      * @param docLevel the level (depth) of the document containing this section
-     * @param sectionLevel the level of the header defining this section
+     * @param headerLevel the level of the header defining this section
      * @param params parameters parameters of the document or the header
      */
     void beginSectionContent(
         int docLevel,
-        int sectionLevel,
+        int headerLevel,
         WikiParameters params);
 
     /**
@@ -137,27 +137,27 @@ public interface IWemListenerDocument {
     /**
      * This method is called to notify about the end of a section-level header.
      * 
-     * @param level the level of the header
+     * @param headerLevel the level of the header
      * @param params wiki parameters of the header
      */
-    void endHeader(int level, WikiParameters params);
+    void endHeader(int headerLevel, WikiParameters params);
 
     /**
      * This method is used to notify about the end of a document section.
      * 
      * @param docLevel the level (depth) of the document containing this section
-     * @param sectionLevel the level of the header defining this section
+     * @param headerLevel the level of the header defining this section
      * @param params parameters parameters of the document or the header
      */
-    void endSection(int docLevel, int sectionLevel, WikiParameters params);
+    void endSection(int docLevel, int headerLevel, WikiParameters params);
 
     /**
      * This method is used to notify about the end of a document section.
      * 
      * @param docLevel the level (depth) of the document containing this section
-     * @param sectionLevel the level of the header defining this section
+     * @param headerLevel the level of the header defining this section
      * @param params parameters parameters of the document or the header
      */
-    void endSectionContent(int docLevel, int sectionLevel, WikiParameters params);
+    void endSectionContent(int docLevel, int headerLevel, WikiParameters params);
 
 }

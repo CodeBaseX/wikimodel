@@ -52,9 +52,9 @@ public class JspWikiSerializer implements IWemListener {
 
     }
 
-    public void beginHeader(int level, WikiParameters params) {
+    public void beginHeader(int headerLevel, WikiParameters params) {
         println(getEol());
-        for (int i = 0; i < level; i++) {
+        for (int i = 0; i < headerLevel; i++) {
             print("!");
         }
         print(" ");
@@ -103,7 +103,7 @@ public class JspWikiSerializer implements IWemListener {
 
     public void beginSection(
         int docLevel,
-        int sectionLevel,
+        int headerLevel,
         WikiParameters params) {
         // TODO Auto-generated method stub
 
@@ -111,7 +111,7 @@ public class JspWikiSerializer implements IWemListener {
 
     public void beginSectionContent(
         int docLevel,
-        int sectionLevel,
+        int headerLevel,
         WikiParameters params) {
         // TODO Auto-generated method stub
 
@@ -161,7 +161,7 @@ public class JspWikiSerializer implements IWemListener {
 
     }
 
-    public void endHeader(int level, WikiParameters params) {
+    public void endHeader(int headerLevel, WikiParameters params) {
         println("");
         println("");
 
@@ -207,14 +207,14 @@ public class JspWikiSerializer implements IWemListener {
 
     }
 
-    public void endSection(int docLevel, int sectionLevel, WikiParameters params) {
+    public void endSection(int docLevel, int headerLevel, WikiParameters params) {
         // TODO Auto-generated method stub
 
     }
 
     public void endSectionContent(
         int docLevel,
-        int sectionLevel,
+        int headerLevel,
         WikiParameters params) {
         // TODO Auto-generated method stub
 

@@ -74,32 +74,7 @@ public class SectionBuilderTest extends TestCase {
         super(name);
     }
 
-    private String check(String prev, String delta) {
-        String test = fListener.toString();
-        assertEquals(prev + delta, test);
-        return test;
-    };
-
-    @Override
-    protected void setUp() throws Exception {
-        fListener = new PrintListener();
-        fBuilder = new SectionBuilder<String>(fListener);
-    }
-
-    public void testDocumentLevels() {
-        String prev = "";
-
-        fBuilder.beginDocument("X");
-        prev = check(prev, "<doc[X]-1-0>");
-        fBuilder.beginDocument("Y");
-        prev = check(prev, "<doc[Y]-2-0>");
-        fBuilder.endDocument();
-        prev = check(prev, "</doc[Y]-2-0>");
-        fBuilder.endDocument();
-        prev = check(prev, "</doc[X]-1-0>");
-    }
-
-    public void testDocumentLevels2() {
+    public void _testDocumentLevels2() {
         String prev = "";
         fBuilder.beginDocument("X");
         prev = check(prev, "<doc[X]-1-0>");
@@ -123,6 +98,31 @@ public class SectionBuilderTest extends TestCase {
         prev = check(prev, "</c[B]-1-1></s[B]-1-1>"
             + "</c[A]-1-1></s[A]-1-1>"
             + "</doc[X]-1-0>");
+    };
+
+    private String check(String prev, String delta) {
+        String test = fListener.toString();
+        assertEquals(prev + delta, test);
+        return test;
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        fListener = new PrintListener();
+        fBuilder = new SectionBuilder<String>(fListener);
+    }
+
+    public void testDocumentLevels() {
+        String prev = "";
+
+        fBuilder.beginDocument("X");
+        prev = check(prev, "<doc[X]-1-0>");
+        fBuilder.beginDocument("Y");
+        prev = check(prev, "<doc[Y]-2-0>");
+        fBuilder.endDocument();
+        prev = check(prev, "</doc[Y]-2-0>");
+        fBuilder.endDocument();
+        prev = check(prev, "</doc[X]-1-0>");
     }
 
     public void testHeaderLevels() {

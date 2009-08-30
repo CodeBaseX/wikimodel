@@ -70,9 +70,9 @@ public class CompositeListener implements IWemListener {
     /**
      * @see org.wikimodel.wem.IWemListener#beginHeader(int, WikiParameters)
      */
-    public void beginHeader(int level, WikiParameters params) {
+    public void beginHeader(int headerLevel, WikiParameters params) {
         for (IWemListener listener : fListeners) {
-            listener.beginHeader(level, params);
+            listener.beginHeader(headerLevel, params);
         }
     }
 
@@ -157,10 +157,10 @@ public class CompositeListener implements IWemListener {
      */
     public void beginSection(
         int docLevel,
-        int sectionLevel,
+        int headerLevel,
         WikiParameters params) {
         for (IWemListener listener : fListeners) {
-            listener.beginSection(docLevel, sectionLevel, params);
+            listener.beginSection(docLevel, headerLevel, params);
         }
     }
 
@@ -170,10 +170,10 @@ public class CompositeListener implements IWemListener {
      */
     public void beginSectionContent(
         int docLevel,
-        int sectionLevel,
+        int headerLevel,
         WikiParameters params) {
         for (IWemListener listener : fListeners) {
-            listener.beginSectionContent(docLevel, sectionLevel, params);
+            listener.beginSectionContent(docLevel, headerLevel, params);
         }
     }
 
@@ -253,9 +253,9 @@ public class CompositeListener implements IWemListener {
     /**
      * @see org.wikimodel.wem.IWemListener#endHeader(int, WikiParameters)
      */
-    public void endHeader(int level, WikiParameters params) {
+    public void endHeader(int headerLevel, WikiParameters params) {
         for (IWemListener listener : fListeners) {
-            listener.endHeader(level, params);
+            listener.endHeader(headerLevel, params);
         }
     }
 
@@ -338,9 +338,9 @@ public class CompositeListener implements IWemListener {
      * @see org.wikimodel.wem.IWemListenerDocument#endSection(int, int,
      *      WikiParameters)
      */
-    public void endSection(int docLevel, int sectionLevel, WikiParameters params) {
+    public void endSection(int docLevel, int headerLevel, WikiParameters params) {
         for (IWemListener listener : fListeners) {
-            listener.endSection(docLevel, sectionLevel, params);
+            listener.endSection(docLevel, headerLevel, params);
         }
 
     }
@@ -351,10 +351,10 @@ public class CompositeListener implements IWemListener {
      */
     public void endSectionContent(
         int docLevel,
-        int sectionLevel,
+        int headerLevel,
         WikiParameters params) {
         for (IWemListener listener : fListeners) {
-            listener.endSectionContent(docLevel, sectionLevel, params);
+            listener.endSectionContent(docLevel, headerLevel, params);
         }
     }
 

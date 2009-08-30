@@ -40,15 +40,15 @@ public class WemInlineTagNotifier extends AbstractTagNotifier
         WikiReference r = new WikiReference(ref);
         fListener.onTag(
             IMAGE,
-            tagParams(tagParams(ref), IMAGE_IMPLICIT, "true"),
+            tagParams(tagParams(r), IMAGE_IMPLICIT, "true"),
             userParams(r));
     }
 
     public void onImage(WikiReference ref) {
-        fListener.onTag(
-            IMAGE,
-            tagParams(IMAGE_IMPLICIT, "false"),
-            userParams(ref));
+        fListener.onTag(IMAGE, tagParams(
+            tagParams(ref),
+            IMAGE_IMPLICIT,
+            "false"), userParams(ref));
     }
 
     public void onLineBreak() {
@@ -73,9 +73,9 @@ public class WemInlineTagNotifier extends AbstractTagNotifier
     }
 
     public void onSpecialSymbol(String str) {
-        fListener.beginTag(SPECIAL, EMPTY_MAP, EMPTY_MAP);
+        // fListener.beginTag(SPECIAL, EMPTY_MAP, EMPTY_MAP);
         fListener.onText(str);
-        fListener.endTag(SPECIAL, EMPTY_MAP, EMPTY_MAP);
+        // fListener.endTag(SPECIAL, EMPTY_MAP, EMPTY_MAP);
     }
 
     public void onVerbatimInline(String str, WikiParameters params) {
