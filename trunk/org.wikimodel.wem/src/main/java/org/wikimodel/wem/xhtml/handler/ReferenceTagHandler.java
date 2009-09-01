@@ -20,6 +20,7 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  * 
  * @author kotelnikov
  * @author vmassol
+ * @author thomas.mortagne
  */
 public class ReferenceTagHandler extends TagHandler {
 
@@ -35,12 +36,7 @@ public class ReferenceTagHandler extends TagHandler {
     @Override
     protected void end(TagContext context) {
         // TODO: it should be replaced by a normal parameters
-        WikiParameter ref = null;
-        if (context.getName().equals("img")) {
-            ref = context.getParams().getParameter("src");
-        } else {
-            ref = context.getParams().getParameter("href");
-        }
+        WikiParameter ref = context.getParams().getParameter("href");
 
         if (ref != null) {
             // Check if there's a class attribute with a
@@ -55,7 +51,6 @@ public class ReferenceTagHandler extends TagHandler {
                 // of parameters
                 // since they are already consumed as link reference.
                 WikiParameters parameters = context.getParams();
-                parameters = parameters.remove("src");
                 parameters = parameters.remove("href");
 
                 WikiReference reference = new WikiReference(
