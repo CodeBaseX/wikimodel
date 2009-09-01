@@ -16,7 +16,7 @@ import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 
 /**
- * Handles both A and IMG tags (since WikiModel handles images as references).
+ * Handles references.
  * 
  * @author kotelnikov
  * @author vmassol
@@ -47,9 +47,8 @@ public class ReferenceTagHandler extends TagHandler {
             } else {
                 String content = context.getContent();
 
-                // Make sure we remove the HREF and SRC parameters from the list
-                // of parameters
-                // since they are already consumed as link reference.
+                // Make sure we remove the HREF parameters from the list
+                // of parameters since they it's already consumed as link reference.
                 WikiParameters parameters = context.getParams();
                 parameters = parameters.remove("href");
 
