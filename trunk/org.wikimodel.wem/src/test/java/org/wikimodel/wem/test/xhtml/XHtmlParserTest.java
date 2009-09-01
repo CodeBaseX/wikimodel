@@ -339,6 +339,8 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testReferences() throws WikiParserException {
+        test("<html><a href=\"reference\">label</a></html>", "<p><a href='reference'>label</a></p>");
+        test("<html><a href=\"reference\" param=\"value\">label</a></html>", "<p><a href='reference' param='value'>label</a></p>");
     }
 
     /**
