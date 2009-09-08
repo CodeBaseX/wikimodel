@@ -56,6 +56,7 @@ public class TeletypeTagHandler extends TagHandler {
                 "wikimodel-verbatim")) {
             String str = context.getContent();
             context.getScannerContext().onVerbatim(str, true);
+            setAccumulateContent(false);
         } else {
             context.getScannerContext().endFormat(IWemConstants.MONO);
             if (context.getParams().getSize() > 0) {
