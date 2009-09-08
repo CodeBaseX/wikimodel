@@ -371,7 +371,7 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
         test("<html><td>first cell</td></html>");
 
         test("<table><tr><td><tt class=\"wikimodel-verbatim\">x</tt></td><td><tt>y</tt></td></tr></table>", "<table><tbody>\n"
-            +"<tr><td><code>x</code></td><td><mono>y</mono></td></tr>\n"
+            +"  <tr><td><code>x</code></td><td><mono>y</mono></td></tr>\n"
             +"</tbody></table>");
     }
 
