@@ -678,7 +678,6 @@ void macro(Token t, boolean inline):
     StringBuffer buf = new StringBuffer();
     boolean end = false;
     String prevEnd = null;
-    String beginMacroToken;
     String name = "";
     String paramStr = "";
 }
@@ -722,7 +721,6 @@ void macro(Token t, boolean inline):
 void macroBody(String name, String paramStr, boolean inline, String content):
 {
     boolean eof = false;
-    boolean beginParagraph = false;
     Token t;
 }
 {
@@ -906,7 +904,6 @@ void line():
 {
     Token t = null;
     String str = null;
-    boolean explicitLink = false;
 }
 {
     ( LOOKAHEAD(2)
