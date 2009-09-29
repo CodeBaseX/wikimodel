@@ -323,9 +323,18 @@ public class XWikiParserTest extends AbstractWikiParserTest {
 
     public void testImages() throws WikiParserException {
         test("image:reference", "<p><img src='reference'/></p>");
-        //test("image:wiki:space.page", "");
+        test("image:reference ", "<p><img src='reference'/> </p>");
+        test("image:reference~ ", "<p><img src='reference~ '/></p>");
+        test("image:wiki:space.page", "<p><img src='wiki:space.page'/></p>");
+        test("image:wiki:space.page@file.ext", "<p><img src='wiki:space.page@file.ext'/></p>");
     }
-    
+
+    public void testAttach() throws WikiParserException {
+        test("attach:reference", "<p><a href='attach:reference'>attach:reference</a></p>");
+        test("attach:wiki:space.page", "<p><a href='attach:wiki:space.page'>attach:wiki:space.page</a></p>");
+        test("attach:wiki:space.page@file.ext", "<p><a href='attach:wiki:space.page@file.ext'>attach:wiki:space.page@file.ext</a></p>");
+    }
+
     /**
      * @throws WikiParserException
      */

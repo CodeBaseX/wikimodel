@@ -157,9 +157,11 @@ TOKEN_MGR_DECLS: {
     | <#CELL: ( "|=" | "|" | "!=" | "!!" ) (<PARAMS>)? >
     | <#QUOT_LINE: (">")+ >
 	| <#FORMAT_SYMBOL: ("//" | "**" | "__" | "--" | "^^" | ",," | "##") >
-	
+	| <#IMAGE: "image:" ("~" ~[] | <XWIKI_CHAR> | <XWIKI_SPECIAL_SYMBOL> )* >
+	| <#ATTACH: "attach:" ("~" ~[] | <XWIKI_CHAR> | <XWIKI_SPECIAL_SYMBOL> )* > 
+
 	| <#XWIKI_URI: ( ( <XWIKI_URI_URIS> ( <URI_PATH_ABSOLUTE> | <URI_PATH_ROOTLESS> ) ) | <URI_SCHEME_COMPOSITE> "://" <URI_AUTHORITY> <URI_PATH_ABEMPTY> ) ("?" <URI_QUERY>)? ("#" <URI_FRAGMENT>)? >
-	| <#XWIKI_URI_URIS: "mailto:" | "attach:" | "image:" >
+	| <#XWIKI_URI_URIS: "mailto:" >
 	| <#XWIKI_SPECIAL_SYMBOL: <SPECIAL_SYMBOL> | "~" <SPECIAL_SYMBOL> >
 	| <#XWIKI_CHAR: <CHAR> | "~" <CHAR> >
 	| <#XWIKI_SPACE: <SPACE> | "~" <SPACE> >
@@ -263,6 +265,8 @@ TOKEN_MGR_DECLS: {
     | <I_MACRO_EMPTY: <MACRO_EMPTY> > : INITIAL_CONTEXT
     | <I_MACRO_START: <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
     | <I_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
+    | <I_IMAGE : <IMAGE> > : DEFAULT
+    | <I_ATTACH : <ATTACH> > : DEFAULT
     | <I_BR : <BR> > : DEFAULT
     | <I_BLOCK_PARAMS: (<NEW_LINE>)? <PARAMS> > : DEFAULT
     | <I_INLINE_PARAMS: <PARAMS> > : DEFAULT
@@ -293,6 +297,8 @@ TOKEN_MGR_DECLS: {
     | <D_MACRO_EMPTY: <MACRO_EMPTY> > : INITIAL_CONTEXT
     | <D_MACRO_START: <MACRO_START> > { initMacro(image); } : MACRO_CONTEXT
     | <D_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
+    | <D_IMAGE : <IMAGE> > : DEFAULT
+    | <D_ATTACH : <ATTACH> > : DEFAULT
     | <D_BR : <BR> > : DEFAULT
     | <D_BLOCK_PARAMS: <NEW_LINE> <PARAMS> > : DEFAULT
     | <D_INLINE_PARAMS: <PARAMS> > : DEFAULT
@@ -327,6 +333,8 @@ TOKEN_MGR_DECLS: {
     Token getMACRO_EMPTY(): {Token t=null;} {(t=<I_MACRO_EMPTY>|t=<D_MACRO_EMPTY>){return t;}}
     Token getMACRO_START(): {Token t=null;} {(t=<I_MACRO_START>|t=<D_MACRO_START>){return t;}}
     Token getFORMAT_SYMBOL(): {Token t=null;} {(t=<I_FORMAT_SYMBOL>|t=<D_FORMAT_SYMBOL>){return t;}}
+    Token getIMAGE(): {Token t=null;} {(t=<I_IMAGE>|t=<D_IMAGE>){return t;}}
+    Token getATTACH(): {Token t=null;} {(t=<I_ATTACH>|t=<D_ATTACH>){return t;}}
     Token getBR(): {Token t=null;} {(t=<I_BR>|t=<D_BR>){return t;}}
     Token getBLOCK_PARAMS(): {Token t=null;} {(t=<I_BLOCK_PARAMS>|t=<D_BLOCK_PARAMS>){return t;}}
     Token getINLINE_PARAMS(): {Token t=null;} {(t=<I_INLINE_PARAMS>|t=<D_INLINE_PARAMS>){return t;}}
@@ -1048,6 +1056,15 @@ void inline():
         {
             fContext.onReference(t.image.trim());
         }
+        |
+        t = getIMAGE()
+        {
+            fContext.onImage(t.image.substring("image:".length()));        }
+        |
+        t = getATTACH()
+        {
+            fContext.onReference(t.image);
+        } 
         |
         t = getREFERENCE() 
         {
