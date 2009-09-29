@@ -317,8 +317,15 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             "<h3>Heading 3</h3>\n<p>text1</p>\n<p>text2</p>");
         test("= Heading 1 =\n= Heading 2 =", "<h1>Heading 1</h1>\n<h1>Heading 2</h1>");
         test("= Heading 1\n\n= Heading 2 =", "<h1>Heading 1</h1>\n<h1>Heading 2</h1>");
+        test("= Heading 1 ={{macro/}}", "<h1>Heading 1</h1>\n<pre class='wikimodel-macro' macroName='macro'/>");
+        test("= Heading 1 =\n{{macro/}}", "<h1>Heading 1</h1>\n<pre class='wikimodel-macro' macroName='macro'/>");
     }
 
+    public void testImages() throws WikiParserException {
+        test("image:reference", "<p><img src='reference'/></p>");
+        test("image:wiki:space.page", "");
+    }
+    
     /**
      * @throws WikiParserException
      */
