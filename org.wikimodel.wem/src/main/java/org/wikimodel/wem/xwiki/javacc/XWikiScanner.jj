@@ -886,7 +886,13 @@ void block():
 {
     // Note: the getNL() is there to support the cases where the lines() content
     // is located on a new line.
-    ( embeddedDocument() | (getNL() { fContext.onNewLine(); } )? lines() )
+    (
+      (getNL() { fContext.onNewLine(); } )?
+      (
+          embeddedDocument()
+          |
+          lines()
+      )    )
 }
 
 // default inline lines matcher, for header see linesHeader
