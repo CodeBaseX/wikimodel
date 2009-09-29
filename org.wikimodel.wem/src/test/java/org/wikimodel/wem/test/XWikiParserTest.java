@@ -312,6 +312,11 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test(
             "= Title level 1\n\n== Title level 2",
             "<h1>Title level 1</h1>\n<h2>Title level 2</h2>");
+        test(
+            "=== Heading 3===\ntext1\n\ntext2",
+            "<h3>Heading 3</h3>\n<p>text1</p>\n<p>text2</p>");
+        test("= Heading 1 =\n= Heading 2 =", "<h1>Heading 1</h1>\n<h1>Heading 2</h1>");
+        test("= Heading 1\n\n= Heading 2 =", "<h1>Heading 1</h1>\n<h1>Heading 2</h1>");
     }
 
     /**

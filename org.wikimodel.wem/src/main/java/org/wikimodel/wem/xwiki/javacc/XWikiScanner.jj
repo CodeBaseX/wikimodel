@@ -442,7 +442,8 @@ void header():
         int level = t.image.trim().length();
         fContext.beginHeader(level, params);
     }
-    ( LOOKAHEAD(3) block() )*
+    ( LOOKAHEAD(3) blockHeader() )*
+    ( LOOKAHEAD(2) t = getHEADER_END() ) ?
     {
     	fContext.endHeader();
     }
@@ -543,15 +544,6 @@ void listItem():
             fContext.endListItem();
         }
     )
-}
-
-void block():
-{
-}
-{
-    // Note: the getNL() is there to support the cases where the lines() content
-    // is located on a new line.
-    ( embeddedDocument() | (getNL() { fContext.onNewLine(); } )? lines() )
 }
 
 void verbatimBlock():
@@ -879,6 +871,17 @@ void emptyParagraph():
     }
 }
 
+// default block matcher, for header content blockHeader
+void block():
+{
+}
+{
+    // Note: the getNL() is there to support the cases where the lines() content
+    // is located on a new line.
+    ( embeddedDocument() | (getNL() { fContext.onNewLine(); } )? lines() )
+}
+
+// default inline lines matcher, for header see linesHeader
 void lines():
 {
 }
@@ -900,145 +903,173 @@ void newLine():
     }
 }
 
+// default inline line matcher, for header see lineHeader
 void line():
+{
+    Token t = null;
+}
+{
+    ( LOOKAHEAD(2)
+        (
+            inline()
+            |
+            t = getHEADER_END()
+            {
+              	int pos = t.image.indexOf('=');
+              	if (pos > 0) {
+        	        // Spaces are sent as a single event.
+                    fContext.onSpace(t.image.substring(0, pos));
+                }
+                for (int i = pos; i < t.image.length(); i++) {
+                    // And special symbols are sent as one event per symbol.
+                    fContext.onSpecialSymbol("=");
+                }
+            }
+         )
+    )+
+}
+
+void blockHeader():
+{
+}
+{
+    // Note: the getNL() is there to support the cases where the lines() content
+    // is located on a new line.
+    ( embeddedDocument() | (getNL() { fContext.onNewLine(); } )? linesHeader() )
+}
+
+void linesHeader():
+{
+}
+{
+    lineHeader()
+    ( LOOKAHEAD(2)
+        newLine()
+        lineHeader()
+    )*
+}
+
+// a line of paragraph in a header
+void lineHeader():
+{
+    Token t = null;
+}
+{
+    ( LOOKAHEAD(2)
+        inline()
+    )+
+}
+
+// inline element
+void inline():
 {
     Token t = null;
     String str = null;
 }
 {
-    ( LOOKAHEAD(2)
-        (
-            t = getINLINE_PARAMS()
-            {
-            	fContext.onFormat(newWikiParameters(t.image.trim()));
-            }
-            |
-            t = getWORD()
-            {
-                fContext.onWord(t.image.replaceAll("~", ""));
-            }
-            |
-            t = getXWIKI_SPACE()
-            {
-                fContext.onSpace(t.image.replaceAll("~", ""));
-            }
-            |
-            t = getSPECIAL_SYMBOL()
-            {
-                if (t.image.length() == 2) {
-                    // The first char is an escape symbol, only send the second one
-                    fContext.onSpecialSymbol("" + t.image.charAt(1));
-                } else {
-                    //It's a '~' when it's the last character of the content
-                    if (t.image.charAt(0) != '~') {
-                	  fContext.onSpecialSymbol(t.image);
-                	}
-                }
-            }
-            |
-            t = getFORMAT_SYMBOL()
-            {
-                str = t.image.trim();
-                WikiStyle style = null;
-                if ("**".equals(str)) {
-                	style  = IWikiScannerContext.STRONG;
-                } else if ("//".equals(str)) {
-                  	style  = IWikiScannerContext.EM;
-                } else if ("--".equals(str)) {
-                  	style  = IWikiScannerContext.STRIKE;
-                } else if ("__".equals(str)) {
-                    style  = IWikiScannerContext.INS;
-                } else if ("^^".equals(str)) {
-                    style  = IWikiScannerContext.SUP;
-                } else if (",,".equals(str)) {
-                	style  = IWikiScannerContext.SUB;
-              	} else if ("##".equals(str)) {
-                	style  = IWikiScannerContext.MONO;
-				}
-                fContext.onFormat(style);
-            }
-            |
-            (
-			    t = getVERBATIM_START()
-			    {
-			    }
-				verbatimBody(true, WikiParameters.EMPTY)
-			)
-			|
-			(
-			    t = getMACRO_EMPTY()
-			    {
-			    }
-				emptyMacro(t, true)
-			)
-			|
-			(
-			    t = getMACRO_START()
-			    {
-			    }
-				macro(t, true)
-			)
-            |
-            t = getHEADER_END()
-            {
-                if (!fContext.isInHeader()) {
-                	int pos = t.image.indexOf('=');
-                	if (pos > 0) {
-                		// Spaces are sent as a single event.
-                		fContext.onSpace(t.image.substring(0, pos));
-                	} 
-                    for (int i = pos; i < t.image.length(); i++) {
-                        // And special symbols are sent as one event per symbol.
-                        fContext.onSpecialSymbol("=");
-                    }
-                } else {
-			        fContext.endHeader();
-			        followHeaderEnd();
-			    }
-            }
-            |
-            t = getBR()
-            {
-                fContext.onLineBreak();
-            }
-            |
-            t = getXWIKI_URI()
-            {
-                fContext.onReference(t.image.trim());
-            }
-            |
-            t = getREFERENCE() 
-            {
-                str = t.image.trim();
-                if (str.startsWith("[[")) {
-                    str = str.substring(2, str.length() - 2);
-                    str = str.trim();
-                }
-                WikiReference ref = fReferenceParser.parse(str);
-                fContext.onReference(ref);
-            }
-            |
-            t = getTABLE_CELL() 
-            {
-                if (fContext.isInTable()) {
-                    str = t.image.trim();
-                    WikiParameters cellParams = newWikiParameters(str);
-                    boolean head  = str.startsWith("|=") || str.startsWith("!=");
-                    fContext.onTableCell(head, cellParams);
-                } else {
+    (
+        t = getINLINE_PARAMS()
+        {
+            fContext.onFormat(newWikiParameters(t.image.trim()));
+        }
+        |
+        t = getWORD()
+        {
+            fContext.onWord(t.image.replaceAll("~", ""));
+        }
+        |
+        t = getXWIKI_SPACE()
+        {
+            fContext.onSpace(t.image.replaceAll("~", ""));
+        }
+        |
+        t = getSPECIAL_SYMBOL()
+        {
+            if (t.image.length() == 2) {
+                // The first char is an escape symbol, only send the second one
+                fContext.onSpecialSymbol("" + t.image.charAt(1));
+            } else {
+                //It's a '~' when it's the last character of the content
+                if (t.image.charAt(0) != '~') {
                     fContext.onSpecialSymbol(t.image);
-                }
+             	}
             }
+        }
+        |
+        t = getFORMAT_SYMBOL()
+        {
+            str = t.image.trim();
+            WikiStyle style = null;
+            if ("**".equals(str)) {
+            	style  = IWikiScannerContext.STRONG;
+            } else if ("//".equals(str)) {
+              	style  = IWikiScannerContext.EM;
+            } else if ("--".equals(str)) {
+              	style  = IWikiScannerContext.STRIKE;
+            } else if ("__".equals(str)) {
+                style  = IWikiScannerContext.INS;
+            } else if ("^^".equals(str)) {
+                style  = IWikiScannerContext.SUP;
+            } else if (",,".equals(str)) {
+               	style  = IWikiScannerContext.SUB;
+            } else if ("##".equals(str)) {
+               	style  = IWikiScannerContext.MONO;
+		    }
+            fContext.onFormat(style);
+        }
+        |
+        (
+		    t = getVERBATIM_START()
+		    {
+		    }
+			verbatimBody(true, WikiParameters.EMPTY)
+		)
+		|
+		(
+		    t = getMACRO_EMPTY()
+		    {
+		    }
+			emptyMacro(t, true)
+		)
+		|
+		(
+		    t = getMACRO_START()
+		    {
+		    }
+		    macro(t, true)
         )
-    )+
-}
-
-void followHeaderEnd():
-{
-}
-{
-	( LOOKAHEAD(2)
-        getNL()
-        line()
-    )?
+        |
+        t = getBR()
+        {
+            fContext.onLineBreak();
+        }
+        |
+        t = getXWIKI_URI()
+        {
+            fContext.onReference(t.image.trim());
+        }
+        |
+        t = getREFERENCE() 
+        {
+            str = t.image.trim();
+            if (str.startsWith("[[")) {
+                str = str.substring(2, str.length() - 2);
+                str = str.trim();
+            }
+            WikiReference ref = fReferenceParser.parse(str);
+            fContext.onReference(ref);
+        }
+        |
+        t = getTABLE_CELL() 
+        {
+            if (fContext.isInTable()) {
+                str = t.image.trim();
+                WikiParameters cellParams = newWikiParameters(str);
+                boolean head  = str.startsWith("|=") || str.startsWith("!=");
+                fContext.onTableCell(head, cellParams);
+            } else {
+                fContext.onSpecialSymbol(t.image);
+            }
+        }
+    )
 }
