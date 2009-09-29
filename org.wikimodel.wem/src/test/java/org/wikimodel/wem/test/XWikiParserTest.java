@@ -691,7 +691,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             "<p>before <a href='toto'>toto</a> after</p>");
         test(
             "before [[ [toto] [tata] ]] after",
-            "<p>before <a href='[toto] [tata]'>[toto] [tata]</a> after</p>");
+            "<p>before <a href=' [toto] [tata] '> [toto] [tata] </a> after</p>");
         test("before wiki:Hello after", "<p>before wiki:Hello after</p>");
         test(
             "before mailto:Hello after",
