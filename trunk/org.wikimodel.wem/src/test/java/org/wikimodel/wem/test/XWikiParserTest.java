@@ -323,7 +323,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
 
     public void testImages() throws WikiParserException {
         test("image:reference", "<p><img src='reference'/></p>");
-        test("image:wiki:space.page", "");
+        //test("image:wiki:space.page", "");
     }
     
     /**
