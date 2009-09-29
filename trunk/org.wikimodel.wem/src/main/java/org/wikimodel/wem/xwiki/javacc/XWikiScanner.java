@@ -1774,7 +1774,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     case I_XWIKI_URI:
     case D_XWIKI_URI:
       t = getXWIKI_URI();
-            fContext.onReference(t.image.trim());
+            fContext.onReference(t.image);
       break;
     case I_IMAGE:
     case D_IMAGE:
@@ -1789,10 +1789,9 @@ public class XWikiScanner implements XWikiScannerConstants {
     case I_REFERENCE:
     case D_REFERENCE:
       t = getREFERENCE();
-            str = t.image.trim();
+            str = t.image;
             if (str.startsWith("[[")) {
                 str = str.substring(2, str.length() - 2);
-                str = str.trim();
             }
             WikiReference ref = fReferenceParser.parse(str);
             fContext.onReference(ref);
@@ -2275,11 +2274,6 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_82() {
-    if (jj_3R_102()) return true;
-    return false;
-  }
-
   private boolean jj_3_23() {
     Token xsp;
     xsp = jj_scanpos;
@@ -2290,6 +2284,11 @@ public class XWikiScanner implements XWikiScannerConstants {
     if (jj_3R_37()) return true;
     }
     }
+    return false;
+  }
+
+  private boolean jj_3R_82() {
+    if (jj_3R_102()) return true;
     return false;
   }
 

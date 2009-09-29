@@ -1054,7 +1054,7 @@ void inline():
         |
         t = getXWIKI_URI()
         {
-            fContext.onReference(t.image.trim());
+            fContext.onReference(t.image);
         }
         |
         t = getIMAGE()
@@ -1068,10 +1068,9 @@ void inline():
         |
         t = getREFERENCE() 
         {
-            str = t.image.trim();
+            str = t.image;
             if (str.startsWith("[[")) {
                 str = str.substring(2, str.length() - 2);
-                str = str.trim();
             }
             WikiReference ref = fReferenceParser.parse(str);
             fContext.onReference(ref);
