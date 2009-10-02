@@ -24,17 +24,21 @@ public class ParagraphTagHandler extends TagHandler {
 
     @Override
     public boolean isBlockHandler(TagContext context) {
-        return true;
+        return !(context.getParent().getName().equals("blockquote"));
     }
 
     @Override
     protected void begin(TagContext context) {
-        sendEmptyLines(context);
-        context.getScannerContext().beginParagraph(context.getParams());
+        if (!(context.getParent().getName().equals("blockquote"))) {
+            sendEmptyLines(context);
+            context.getScannerContext().beginParagraph(context.getParams());
+        }
     }
 
     @Override
     protected void end(TagContext context) {
-        context.getScannerContext().endParagraph();
+        if (!(context.getParent().getName().equals("blockquote"))) {
+            context.getScannerContext().endParagraph();
+        }
     }
 }
