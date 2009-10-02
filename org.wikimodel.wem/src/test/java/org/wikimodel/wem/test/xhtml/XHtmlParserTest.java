@@ -333,6 +333,15 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
                 + "line4</blockquote></blockquote></html>",
             "<blockquote>\nline1<blockquote>\nline2<blockquote>\nline3\n</blockquote>"
                 + "\n\nline4\n</blockquote>\n\n</blockquote>");
+        
+        test(
+            "<html><blockquote><p>quote</p></blockquote></html>",
+            "<blockquote>\nquote\n</blockquote>");
+        test(
+            "<html><blockquote><p>line1</p><blockquote><p>line2</p><blockquote><p>line3</p></blockquote>"
+                + "<p>line4</p></blockquote></blockquote></html>",
+            "<blockquote>\nline1<blockquote>\nline2<blockquote>\nline3\n</blockquote>"
+                + "\n\nline4\n</blockquote>\n\n</blockquote>");
     }
 
     /**
