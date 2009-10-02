@@ -15,6 +15,7 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 /**
  * @author kotelnikov
  * @author vmassol
+ * @author thomas.mortagne
  */
 public class ParagraphTagHandler extends TagHandler {
 
@@ -22,22 +23,39 @@ public class ParagraphTagHandler extends TagHandler {
         super(false, true, true);
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.wikimodel.wem.xhtml.handler.TagHandler#isBlockHandler(org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext)
+     */
     @Override
     public boolean isBlockHandler(TagContext context) {
-        return !(context.getParent().getName().equals("blockquote"));
+        String parentName = context.getParent().getName();
+
+        return parentName == null || !parentName.equals("blockquote");
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.wikimodel.wem.xhtml.handler.TagHandler#begin(org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext)
+     */
     @Override
     protected void begin(TagContext context) {
-        if (!(context.getParent().getName().equals("blockquote"))) {
+        if (isBlockHandler(context)) {
             sendEmptyLines(context);
             context.getScannerContext().beginParagraph(context.getParams());
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see org.wikimodel.wem.xhtml.handler.TagHandler#end(org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext)
+     */
     @Override
     protected void end(TagContext context) {
-        if (!(context.getParent().getName().equals("blockquote"))) {
+        if (isBlockHandler(context)) {
             context.getScannerContext().endParagraph();
         }
     }
