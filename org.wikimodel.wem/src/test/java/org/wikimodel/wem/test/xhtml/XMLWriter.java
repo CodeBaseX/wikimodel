@@ -16,6 +16,7 @@ import org.xml.sax.SAXException;
 
 /**
  * @author vmassol
+ * @author thomas.mortagne
  */
 public class XMLWriter extends DefaultXMLFilter {
     StringBuffer fBuffer = new StringBuffer();
@@ -30,22 +31,19 @@ public class XMLWriter extends DefaultXMLFilter {
 
     @Override
     public void characters(char[] array, int start, int length)
-        throws SAXException {
+            throws SAXException {
         fBuffer.append(array, start, length);
     }
 
     @Override
-    public void startElement(
-        String uri,
-        String localName,
-        String qName,
-        Attributes atts) throws SAXException {
+    public void startElement(String uri, String localName, String qName,
+            Attributes atts) throws SAXException {
         fBuffer.append("<" + localName + ">");
     }
 
     @Override
     public void endElement(String uri, String localName, String qName)
-        throws SAXException {
+            throws SAXException {
         fBuffer.append("</" + localName + ">");
     }
 

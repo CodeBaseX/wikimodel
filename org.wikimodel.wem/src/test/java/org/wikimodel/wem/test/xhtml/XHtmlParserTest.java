@@ -380,20 +380,23 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
         test("<html><td>first cell</td></html>");
 
         test("<table><tr><td><tt class=\"wikimodel-verbatim\">x</tt></td><td><tt>y</tt></td></tr></table>", "<table><tbody>\n"
-            +"  <tr><td><code>x</code></td><td><mono>y</mono></td></tr>\n"
+            +"  <tr><td><tt class=\"wikimodel-verbatim\">x</tt></td><td><mono>y</mono></td></tr>\n"
             +"</tbody></table>");
     }
 
     /**
      * @throws WikiParserException
      */
-    public void testVerbatimeBlocks() throws WikiParserException {
-    }
-
-    /**
-     * @throws WikiParserException
-     */
-    public void testVerbatimeInline() throws WikiParserException {
+    public void testVerbatimBlocks() throws WikiParserException {
+        test(
+            "<html><pre>one\ntwo</pre></html>",
+            "<pre>one\ntwo</pre>");
+        test(
+            "<html><pre>one<br/>two</pre></html>",
+            "<pre>one\ntwo</pre>");
+        test(
+            "<html><pre><b>one</b><br/>two</pre></html>",
+            "<pre>one\ntwo</pre>");
     }
 
     /**
@@ -401,8 +404,14 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
      */
     public void testVerbatimInline() throws WikiParserException {
         test(
-            "<html><p><tt class=\"wikimodel-verbatim\">verbatim</tt></p></html>",
-            "<p><code>verbatim</code></p>");
+            "<html><p><tt class=\"wikimodel-verbatim\">one\ntwo</tt></p></html>",
+            "<p><tt class=\"wikimodel-verbatim\">one\ntwo</tt></p>");
+        test(
+            "<html><p><tt class=\"wikimodel-verbatim\">one<br/>two</tt></p></html>",
+            "<p><tt class=\"wikimodel-verbatim\">one\ntwo</tt></p>");
+        test(
+            "<html><p><tt class=\"wikimodel-verbatim\"><b>one</b><br/>two</tt></p></html>",
+            "<p><tt class=\"wikimodel-verbatim\">one\ntwo</tt></p>");
     }
 
     public void testMacro() throws WikiParserException {

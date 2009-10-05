@@ -186,11 +186,11 @@ public class PrintInlineListener extends PrintTextListener {
      */
     @Override
     public void onVerbatimInline(String str, WikiParameters params) {
-        print("<code"
+        print("<tt class=\"wikimodel-verbatim\""
             + params
             + ">"
             + WikiPageUtil.escapeXmlString(str)
-            + "</code>");
+            + "</tt>");
     }
 
 }
