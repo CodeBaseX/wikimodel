@@ -155,7 +155,7 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
                 super.startElement(uri, localName, qName, atts);
             } else if (preservedInlineContent(localName, atts)) {
                 // Flush previous content and print current one
-                flushContent();
+                flushContent(false);
 
                 ++fNoCleanUpLevel;
 
@@ -301,12 +301,21 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
      * Flush previous content and print current one.
      */
     protected void flushContent() throws SAXException {
+        flushContent(true);
+    }
+
+    /**
+     * Flush previous content and print current one.
+     */
+    protected void flushContent(boolean trimTrailing) throws SAXException {
         cleanContentLeadingSpaces();
         cleanContentExtraWhiteSpaces();
 
-        // UC2: Any white spaces group is removed if it's after a non inline
-        // (see INLINE_ELEMENTS) element.
-        trimTrailingWhiteSpaces();
+        if (trimTrailing) {
+            // UC2: Any white spaces group is removed if it's after a non inline
+            // (see INLINE_ELEMENTS) element.
+            trimTrailingWhiteSpaces();
+        }
 
         // Send previous content
         sendPreviousContent(getContent().length() == 0);
