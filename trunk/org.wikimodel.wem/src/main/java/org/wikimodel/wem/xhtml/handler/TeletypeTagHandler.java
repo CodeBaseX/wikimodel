@@ -15,11 +15,13 @@ import java.util.Arrays;
 import org.wikimodel.wem.IWemConstants;
 import org.wikimodel.wem.WikiParameter;
 import org.wikimodel.wem.WikiParameters;
+import org.wikimodel.wem.impl.WikiScannerContext;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 
 /**
  * @author kotelnikov
  * @author vmassol
+ * @author thomas.mortagne
  */
 public class TeletypeTagHandler extends TagHandler {
 
@@ -37,9 +39,9 @@ public class TeletypeTagHandler extends TagHandler {
     protected void begin(TagContext context) {
         WikiParameter param = context.getParams().getParameter("class");
         if ((param != null)
-            && Arrays.asList(param.getValue().split(" ")).contains(
-                "wikimodel-verbatim")) {
-            setAccumulateContent(true);
+                && Arrays.asList(param.getValue().split(" ")).contains(
+                    "wikimodel-verbatim")) {
+            beginVerbatim(context);
         } else {
             if (context.getParams().getSize() > 0) {
                 context.getScannerContext().beginFormat(context.getParams());
@@ -52,11 +54,9 @@ public class TeletypeTagHandler extends TagHandler {
     protected void end(TagContext context) {
         WikiParameter param = context.getParams().getParameter("class");
         if ((param != null)
-            && Arrays.asList(param.getValue().split(" ")).contains(
-                "wikimodel-verbatim")) {
-            String str = context.getContent();
-            context.getScannerContext().onVerbatim(str, true);
-            setAccumulateContent(false);
+                && Arrays.asList(param.getValue().split(" ")).contains(
+                    "wikimodel-verbatim")) {
+            endVerbatim(context);
         } else {
             context.getScannerContext().endFormat(IWemConstants.MONO);
             if (context.getParams().getSize() > 0) {
@@ -65,4 +65,19 @@ public class TeletypeTagHandler extends TagHandler {
         }
     }
 
+    private void beginVerbatim(TagContext context) {
+        // filter content of the <tt> element
+        context.getTagStack().pushScannerContext(
+            new WikiScannerContext(new PreserverListener()));
+        context.getScannerContext().beginDocument();
+    }
+
+    private void endVerbatim(TagContext context) {
+        context.getScannerContext().endDocument();
+        PreserverListener preserverListener = (PreserverListener) context
+                .getTagStack().popScannerContext().getfListener();
+
+        context.getScannerContext().onVerbatim(preserverListener.toString(),
+            true);
+    }
 }

@@ -70,6 +70,9 @@ public class XHTMLWhitespaceXMLFilterTest extends TestCase {
         assertCleanedHTML("<![CDATA[\n  one  \n]]>", "<![CDATA[\n  one  \n]]>");
         assertCleanedHTML("<pre>\n  one  \n</pre>", "<pre>\n  one  \n</pre>");
         assertCleanedHTML(
+            "<tt>\n  one  \n</tt>",
+            "<tt class=\"wikimodel-verbatim\">\n  one  \n</tt>");
+        assertCleanedHTML(
             "<p>one <!--comment-->two</p>",
             "<p>  one  <!--comment-->  two  </p>");
         assertCleanedHTML(

@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,57 +48,21 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
     private static final Pattern HTML_WHITESPACE_DUPLICATES_PATTERN = Pattern
-        .compile("\\s{2,}|[\\t\\n\\x0B\\f\\r]+");
+            .compile("\\s{2,}|[\\t\\n\\x0B\\f\\r]+");
 
     private static final Pattern HTML_WHITESPACE_HEAD_PATTERN = Pattern
-        .compile("^\\s+");
+            .compile("^\\s+");
 
     private static final Pattern HTML_WHITESPACE_TAIL_PATTERN = Pattern
-        .compile("\\s+$");
+            .compile("\\s+$");
 
     private static final Set<String> NONINLINE_ELEMENTS = new HashSet<String>(
-        Arrays.asList(
-            "address",
-            "blockquote",
-            "div",
-            "dl",
-            "dt",
-            "dd",
-            "fieldset",
-            "form",
-            "h1",
-            "h2",
-            "h3",
-            "h4",
-            "h5",
-            "h6",
-            "hr",
-            "noscript",
-            "ol",
-            "p",
-            "pre",
-            "script",
-            "table",
-            "ul",
-            "html",
-            "body",
-            "td",
-            "tr",
-            "th",
-            "tbody",
-            "head",
-            "li",
-            "thead",
-            "tfoot",
-            "caption",
-            "col",
-            "colgroup",
-            "legend",
-            "base",
-            "link",
-            "meta",
-            "style",
-            "title"));
+        Arrays.asList("address", "blockquote", "div", "dl", "dt", "dd",
+            "fieldset", "form", "h1", "h2", "h3", "h4", "h5", "h6", "hr",
+            "noscript", "ol", "p", "pre", "script", "table", "ul", "html",
+            "body", "td", "tr", "th", "tbody", "head", "li", "thead", "tfoot",
+            "caption", "col", "colgroup", "legend", "base", "link", "meta",
+            "style", "title"));
 
     /**
      * Non visible elements behave like CDATA and comments: it's part of the
@@ -115,7 +80,8 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
 
     /**
      * State indicating if the white spaces has to be cleaned. It's an int to
-     * support <code>pre</code> inside <code>pre</code>.
+     * support &lt;pre&gt;pre&lt;/pre&gt; inside &lt;tt
+     * class=&quot;wikimodel-verbatim&quot;&gt;pre&lt;/tt&gt;.
      */
     private int fNoCleanUpLevel = 0;
 
@@ -145,6 +111,8 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
      */
     private List<Event> fPreviousElements = new ArrayList<Event>();
 
+    private Stack<Attributes> fAttributes = new Stack<Attributes>();
+
     public XHTMLWhitespaceXMLFilter() {
 
     }
@@ -155,16 +123,15 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
 
     @Override
     public void characters(char[] ch, int start, int length)
-        throws SAXException {
+            throws SAXException {
         getContent().append(ch, start, length);
     }
 
     @Override
-    public void startElement(
-        String uri,
-        String localName,
-        String qName,
-        Attributes atts) throws SAXException {
+    public void startElement(String uri, String localName, String qName,
+            Attributes atts) throws SAXException {
+        Attributes clonedAtts = fAttributes.push(new AttributesImpl(atts));
+
         if (NONVISIBLE_ELEMENTS.contains(localName)) {
             startNonVisibleElement();
 
@@ -186,19 +153,23 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
                 startEmptyVisibleElement();
 
                 super.startElement(uri, localName, qName, atts);
+            } else if (preservedInlineContent(localName, atts)) {
+                // Flush previous content and print current one
+                flushContent();
+
+                ++fNoCleanUpLevel;
+
+                // send start element event
+                super.startElement(uri, localName, qName, atts);
             } else {
-                appendInlineEvent(new Event(
-                    uri,
-                    localName,
-                    qName,
-                    new AttributesImpl(atts)));
+                appendInlineEvent(new Event(uri, localName, qName, clonedAtts));
             }
         }
     }
 
     @Override
     public void endElement(String uri, String localName, String qName)
-        throws SAXException {
+            throws SAXException {
         if (NONVISIBLE_ELEMENTS.contains(localName)) {
             endNonVisibleElement();
 
@@ -220,10 +191,34 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
                 endEmptyVisibleElement();
 
                 super.endElement(uri, localName, qName);
+            } else if (preservedInlineContent(localName, fAttributes.peek())) {
+                // Flush previous content and print current one
+                flushContent();
+
+                --fNoCleanUpLevel;
+
+                super.endElement(uri, localName, qName);
             } else {
                 appendInlineEvent(new Event(uri, localName, qName));
             }
         }
+
+        fAttributes.pop();
+    }
+
+    private boolean preservedInlineContent(String localName, Attributes atts) {
+        boolean preserved = false;
+
+        if ("tt".equalsIgnoreCase(localName)) {
+            String value = atts.getValue("class");
+
+            if (value != null) {
+                preserved = Arrays.asList(value.split(" ")).contains(
+                    "wikimodel-verbatim");
+            }
+        }
+
+        return preserved;
     }
 
     @Override
@@ -274,7 +269,7 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
     }
 
     protected void sendPreviousContent(boolean trimTrailing)
-        throws SAXException {
+            throws SAXException {
         if (fPreviousContent != null && fPreviousContent.length() > 0) {
             if (trimTrailing) {
                 fPreviousContent = trimTrailingWhiteSpaces(fPreviousContent);
@@ -292,16 +287,13 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
 
     protected void sendInlineEvent(Event event) throws SAXException {
         if (event.type == Event.Type.BEGIN_ELEMENT) {
-            super.startElement(
-                event.uri,
-                event.localName,
-                event.qName,
+            super.startElement(event.uri, event.localName, event.qName,
                 event.atts);
         } else if (event.type == Event.Type.END_ELEMENT) {
             super.endElement(event.uri, event.localName, event.qName);
         } else if (event.type == Event.Type.COMMENT) {
             super.comment(event.content.toCharArray(), 0, event.content
-                .length());
+                    .length());
         }
     }
 
@@ -411,9 +403,7 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
             // element. The space will move after the element if it's needed (if
             // the element is followed by inline text);
             if (fPreviousContent != null) {
-                sendCharacters(
-                    fPreviousContent.toCharArray(),
-                    0,
+                sendCharacters(fPreviousContent.toCharArray(), 0,
                     fPreviousContent.length() - 1);
                 fPreviousContent = " ";
             }
@@ -444,7 +434,7 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
     }
 
     protected void sendCharacters(char ch[], int start, int length)
-        throws SAXException {
+            throws SAXException {
         if (length > 0) {
             super.characters(ch, start, length);
         }
@@ -460,7 +450,8 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
     private void cleanContentLeadingSpaces() {
         if (getContent().length() > 0) {
             if (fPreviousInlineText.length() == 0
-                || fPreviousInlineText.charAt(fPreviousInlineText.length() - 1) == ' ') {
+                    || fPreviousInlineText
+                            .charAt(fPreviousInlineText.length() - 1) == ' ') {
                 trimLeadingWhiteSpaces();
             }
         }
@@ -473,7 +464,7 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
         if (getContent().length() > 0) {
             if (shouldRemoveWhiteSpaces()) {
                 Matcher matcher = HTML_WHITESPACE_DUPLICATES_PATTERN
-                    .matcher(getContent());
+                        .matcher(getContent());
                 String result = matcher.replaceAll(" ");
                 getContent().setLength(0);
                 getContent().append(result);
@@ -537,7 +528,7 @@ public class XHTMLWhitespaceXMLFilter extends DefaultXMLFilter {
      */
     protected boolean isSemanticComment(String comment) {
         return comment.startsWith("startmacro:")
-            || comment.startsWith("stopmacro");
+                || comment.startsWith("stopmacro");
     }
 
     private static class Event {

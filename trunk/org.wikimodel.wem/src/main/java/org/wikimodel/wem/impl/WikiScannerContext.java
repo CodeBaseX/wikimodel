@@ -19,6 +19,9 @@ import org.wikimodel.wem.WikiStyle;
 import org.wikimodel.wem.util.SectionBuilder;
 import org.wikimodel.wem.util.SectionListener;
 
+/**
+ * @author thomas.mortagne
+ */
 public class WikiScannerContext implements IWikiScannerContext {
 
     private final IWemListener fListener;
@@ -51,7 +54,7 @@ public class WikiScannerContext implements IWikiScannerContext {
                 @Override
                 public void beginSectionContent(IPos<WikiParameters> pos) {
                     fListener.beginSectionContent(pos.getDocumentLevel(), pos
-                        .getHeaderLevel(), pos.getData());
+                            .getHeaderLevel(), pos.getData());
                 }
 
                 @Override
@@ -78,7 +81,7 @@ public class WikiScannerContext implements IWikiScannerContext {
                 @Override
                 public void endSectionContent(IPos<WikiParameters> pos) {
                     fListener.endSectionContent(pos.getDocumentLevel(), pos
-                        .getHeaderLevel(), pos.getData());
+                            .getHeaderLevel(), pos.getData());
                 }
 
                 @Override
@@ -88,6 +91,10 @@ public class WikiScannerContext implements IWikiScannerContext {
 
             });
 
+    }
+
+    public IWemListener getfListener() {
+        return this.fListener;
     }
 
     public void beginDocument() {
@@ -184,10 +191,8 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().beginTableRow(headCell);
     }
 
-    public void beginTableRow(
-        boolean head,
-        WikiParameters rowParams,
-        WikiParameters cellParams) {
+    public void beginTableRow(boolean head, WikiParameters rowParams,
+            WikiParameters cellParams) {
         getContext().beginTableRow(head, rowParams, cellParams);
     }
 
@@ -394,11 +399,8 @@ public class WikiScannerContext implements IWikiScannerContext {
         getContext().onMacro(name, params, content);
     }
 
-    public void onMacro(
-        String macroName,
-        WikiParameters params,
-        String content,
-        boolean inline) {
+    public void onMacro(String macroName, WikiParameters params,
+            String content, boolean inline) {
         if (inline) {
             onMacroInline(macroName, params, content);
         } else {
@@ -406,17 +408,13 @@ public class WikiScannerContext implements IWikiScannerContext {
         }
     }
 
-    public void onMacroBlock(
-        String macroName,
-        WikiParameters params,
-        String content) {
+    public void onMacroBlock(String macroName, WikiParameters params,
+            String content) {
         getContext().onMacroBlock(macroName, params, content);
     }
 
-    public void onMacroInline(
-        String macroName,
-        WikiParameters params,
-        String content) {
+    public void onMacroInline(String macroName, WikiParameters params,
+            String content) {
         getContext().onMacroInline(macroName, params, content);
     }
 
