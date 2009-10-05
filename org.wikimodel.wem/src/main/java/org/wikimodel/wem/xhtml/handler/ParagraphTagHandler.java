@@ -30,9 +30,10 @@ public class ParagraphTagHandler extends TagHandler {
      */
     @Override
     public boolean isBlockHandler(TagContext context) {
-        String parentName = context.getParent().getName();
+        int quoteDepth = (Integer) context.getTagStack().getStackParameter(
+            "quoteDepth");
 
-        return parentName == null || !parentName.equals("blockquote");
+        return quoteDepth == 0;
     }
 
     /**
