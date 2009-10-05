@@ -588,7 +588,7 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         test(
             "* item {{{formatted block}}} {macro}123{/macro} after",
             "<ul>\n"
-                + "  <li>item <code>formatted block</code>"
+                + "  <li>item <tt class=\"wikimodel-verbatim\">formatted block</tt>"
                 + " <span class='wikimodel-macro' macroName='macro'><![CDATA[123]]></span> after</li>\n</ul>");
 
         test("? term:  definition");
@@ -1300,34 +1300,34 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
                 + "<p>}}} - the three last symbols should be in a paragraph</p>");
 
         // inline verbatim blocks
-        test(" {{{abc}}}", "<p> <code>abc</code></p>");
-        test("before{{{abc}}}after", "<p>before<code>abc</code>after</p>");
-        test(" {{{{{{abc}}}}}}", "<p> <code>{{{abc}}}</code></p>");
+        test(" {{{abc}}}", "<p> <tt class=\"wikimodel-verbatim\">abc</tt></p>");
+        test("before{{{abc}}}after", "<p>before<tt class=\"wikimodel-verbatim\">abc</tt>after</p>");
+        test(" {{{{{{abc}}}}}}", "<p> <tt class=\"wikimodel-verbatim\">{{{abc}}}</tt></p>");
 
-        test(" {{{verbatim}}}", "<p> <code>verbatim</code></p>");
-        test(" {{{{{{verbatim}}}", "<p> <code>{{{verbatim</code></p>");
-        test(" {{{{{{verbatim}}}}}}", "<p> <code>{{{verbatim}}}</code></p>");
+        test(" {{{verbatim}}}", "<p> <tt class=\"wikimodel-verbatim\">verbatim</tt></p>");
+        test(" {{{{{{verbatim}}}", "<p> <tt class=\"wikimodel-verbatim\">{{{verbatim</tt></p>");
+        test(" {{{{{{verbatim}}}}}}", "<p> <tt class=\"wikimodel-verbatim\">{{{verbatim}}}</tt></p>");
         test(
             "before{{{xxx{{{verbatim}}}after",
-            "<p>before<code>xxx{{{verbatim}}}after</code></p>");
+            "<p>before<tt class=\"wikimodel-verbatim\">xxx{{{verbatim}}}after</tt></p>");
         test(
             "before{{{verbatim}}}after",
-            "<p>before<code>verbatim</code>after</p>");
+            "<p>before<tt class=\"wikimodel-verbatim\">verbatim</tt>after</p>");
         test(
             "before{{{verbatim}}}}}}after",
-            "<p>before<code>verbatim</code>}}}after</p>");
+            "<p>before<tt class=\"wikimodel-verbatim\">verbatim</tt>}}}after</p>");
 
-        test(" `verbatim`", "<p> <code>verbatim</code></p>");
-        test(" `{{{verbatim`", "<p> <code>{{{verbatim</code></p>");
-        test(" `{{{verbatim}}}`", "<p> <code>{{{verbatim}}}</code></p>");
-        test("before`verbatim`after", "<p>before<code>verbatim</code>after</p>");
+        test(" `verbatim`", "<p> <tt class=\"wikimodel-verbatim\">verbatim</tt></p>");
+        test(" `{{{verbatim`", "<p> <tt class=\"wikimodel-verbatim\">{{{verbatim</tt></p>");
+        test(" `{{{verbatim}}}`", "<p> <tt class=\"wikimodel-verbatim\">{{{verbatim}}}</tt></p>");
+        test("before`verbatim`after", "<p>before<tt class=\"wikimodel-verbatim\">verbatim</tt>after</p>");
         test(
             "before`verbatim`}}}after",
-            "<p>before<code>verbatim</code>}}}after</p>");
+            "<p>before<tt class=\"wikimodel-verbatim\">verbatim</tt>}}}after</p>");
         // Broken inline verbatim
         test(
             "before`xxx{{{verbatim}}}after",
-            "<p>before`xxx<code>verbatim</code>after</p>");
+            "<p>before`xxx<tt class=\"wikimodel-verbatim\">verbatim</tt>after</p>");
 
         // Complex formatting
         test("!! Syntax !! Results\n"
@@ -1349,8 +1349,8 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
     }
 
     public void testVerbatimInlineElements() throws WikiParserException {
-        test("`verbatim`", "<p><code>verbatim</code></p>");
-        test("before`verbatim`after", "<p>before<code>verbatim</code>after</p>");
+        test("`verbatim`", "<p><tt class=\"wikimodel-verbatim\">verbatim</tt></p>");
+        test("before`verbatim`after", "<p>before<tt class=\"wikimodel-verbatim\">verbatim</tt>after</p>");
 
         // Bad formed elements
         test("`verbatim", "<p>`verbatim</p>");

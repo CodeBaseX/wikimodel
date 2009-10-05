@@ -160,7 +160,7 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
         test("abc ^cde^ efg", "<p>abc <sup>cde</sup> efg</p>");
         test("abc ^cde^ ^efg^", "<p>abc <sup>cde</sup> <sup>efg</sup></p>");
 
-        test("before{{{inside}}}after", "<p>before<code>inside</code>after</p>");
+        test("before{{{inside}}}after", "<p>before<tt class=\"wikimodel-verbatim\">inside</tt>after</p>");
 
         // Mixed styles
         test(
@@ -756,17 +756,17 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
         // Inline verbatim blocks
         test(
             "before{code}xxx{code}after",
-            "<p>before<code type='code'>xxx</code>after</p>");
+            "<p>before<tt class=\"wikimodel-verbatim\" type='code'>xxx</tt>after</p>");
         test("before{noformat}\n"
             + "h1. xxx\n"
             + "* item\n"
             + "* item\n"
             + "{noformat}after", ""
-            + "<p>before<code type='noformat'>\n"
+            + "<p>before<tt class=\"wikimodel-verbatim\" type='noformat'>\n"
             + "h1. xxx\n"
             + "* item\n"
             + "* item\n"
-            + "</code>after</p>");
+            + "</tt>after</p>");
 
     }
 
