@@ -37,7 +37,7 @@ public class CreoleWikiParserTest extends AbstractWikiParserTest {
     public void testFormats() throws WikiParserException {
         test("**bold**", "<p><strong>bold</strong></p>");
         test("//italic//", "<p><em>italic</em></p>");
-        test("before{{{inside}}}after", "<p>before<code>inside</code>after</p>");
+        test("before{{{inside}}}after", "<p>before<tt class=\"wikimodel-verbatim\">inside</tt>after</p>");
 
         // Mixed styles
         test(

@@ -821,23 +821,23 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             "{{{verbatim}}}\n* not really",
             "<pre>verbatim</pre>\n<ul>\n  <li>not really</li>\n</ul>");
 
-        test("this is {{{verbatim", "<p>this is <code>verbatim</code></p>");
+        test("this is {{{verbatim", "<p>this is <tt class=\"wikimodel-verbatim\">verbatim</tt></p>");
         test("{{{abc}}}", "<pre>abc</pre>");
         test("{{{{{{abc}}}}}}", "<pre>{{{abc}}}</pre>");
 
-        // Inline verbatim // test(" {{{abc}}}", "<p> <code>abc</code></p>");
-        test("{{{abc}}}{{{cde}}}", "<p><code>abc</code><code>cde</code></p>");
-        test("{{{abc}}}after", "<p><code>abc</code>after</p>");
-        test("before{{{abc}}}after", "<p>before<code>abc</code>after</p>");
+        // Inline verbatim // test(" {{{abc}}}", "<p> <tt class=\"wikimodel-verbatim\">abc</tt></p>");
+        test("{{{abc}}}{{{cde}}}", "<p><tt class=\"wikimodel-verbatim\">abc</tt><tt class=\"wikimodel-verbatim\">cde</tt></p>");
+        test("{{{abc}}}after", "<p><tt class=\"wikimodel-verbatim\">abc</tt>after</p>");
+        test("before{{{abc}}}after", "<p>before<tt class=\"wikimodel-verbatim\">abc</tt>after</p>");
         test(
             "before{{{{{{abc}}}}}}after",
-            "<p>before<code>{{{abc}}}</code>after</p>");
+            "<p>before<tt class=\"wikimodel-verbatim\">{{{abc}}}</tt>after</p>");
         test("}}}", "<p>}}}</p>");
         test("{{{", "<pre></pre>");
         test("{{{}}}\n\n{{{}}}", "<pre></pre>\n<pre></pre>");
         test(
             "some text {{{}}}\n\n{{{}}}",
-            "<p>some text <code></code></p>\n<pre></pre>");
+            "<p>some text <tt class=\"wikimodel-verbatim\"></tt></p>\n<pre></pre>");
         test("{{{}}}\n{{{}}}\n{{{}}}", "<pre></pre>\n<pre></pre>\n<pre></pre>");
         test(
             "{{{}}}\n\n{{{}}}\n\n{{{}}}\n\n{{{}}}",
@@ -846,7 +846,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
 
         test(
             "some text {{{}}}\nsome text",
-            "<p>some text <code></code>\nsome text</p>");
+            "<p>some text <tt class=\"wikimodel-verbatim\"></tt>\nsome text</p>");
 
         // Escaping
         test("{{{ ~}~}~} }}}", "<pre> }}} </pre>");
