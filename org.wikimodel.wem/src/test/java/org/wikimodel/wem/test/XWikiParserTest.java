@@ -209,6 +209,15 @@ public class XWikiParserTest extends AbstractWikiParserTest {
                 + "</div>\n"
                 + "after </td></tr>\n"
                 + "</tbody></table>");
+        test(
+            "before\n|(% param=\"value\" %)(% docparam=\"docvalue\" %)((( inside ))) after ",
+            "<p>before</p>\n"
+                + "<table><tbody>\n"
+                + "  <tr><td param='value'><div class='wikimodel-document' docparam='docvalue'>\n"
+                + "<p>inside</p>\n"
+                + "</div>\n"
+                + "after </td></tr>\n"
+                + "</tbody></table>");
 
         test(
             "(% param=\"value\" %)\n ((( inside ))) after ",
@@ -235,6 +244,21 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test("((( {{macro/}} )))", "<div class='wikimodel-document'>\n"
             + "<pre class='wikimodel-macro' macroName='macro'/>\n"
             + "</div>");
+        
+        test(
+            "|(% param=\"value\" %)(% docparam=\"docvalue\" %)(((  )))",
+            "<table><tbody>\n"
+                + "  <tr><td param='value'><div class='wikimodel-document' docparam='docvalue'>\n"
+                + "</div>\n"
+                + "</td></tr>\n"
+                + "</tbody></table>");
+        test(
+            "| |(% param=\"value\" %)(% docparam=\"docvalue\" %)(((  )))",
+            "<table><tbody>\n"
+                + "  <tr><td> </td><td param='value'><div class='wikimodel-document' docparam='docvalue'>\n"
+                + "</div>\n"
+                + "</td></tr>\n"
+                + "</tbody></table>");
     }
 
     /**

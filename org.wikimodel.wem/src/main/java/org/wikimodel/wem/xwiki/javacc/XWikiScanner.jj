@@ -411,8 +411,12 @@ void embeddedDocument():
 }
 {
 	// match potential parameters for the embedded document block
-	( LOOKAHEAD(2)
-	  (t = getBLOCK_PARAMS() { str = t.image.trim(); } )
+	( LOOKAHEAD(3)
+	  (
+	    (t = getBLOCK_PARAMS() { str = t.image.trim(); } )
+	    |
+	    (t = getINLINE_PARAMS() { str = t.image.trim(); } )
+	  )
 	  // there can be a new line between parameters and embedded document block itself
 	  (t = getNL() { })?
 	)?
@@ -884,11 +888,11 @@ void block():
 {
 }
 {
-    // Note: the getNL() is there to support the cases where the lines() content
-    // is located on a new line.
     (
+      // Note: the getNL() is there to support the cases where the lines() content
+      // is located on a new line.
       (getNL() { fContext.onNewLine(); } )?
-      (
+      (LOOKAHEAD(3)
           embeddedDocument()
           |
           lines()
@@ -947,9 +951,16 @@ void blockHeader():
 {
 }
 {
-    // Note: the getNL() is there to support the cases where the lines() content
-    // is located on a new line.
-    ( embeddedDocument() | (getNL() { fContext.onNewLine(); } )? linesHeader() )
+    (
+      // Note: the getNL() is there to support the cases where the lines() content
+      // is located on a new line.
+      (getNL() { fContext.onNewLine(); } )?
+      (LOOKAHEAD(3)
+      	  embeddedDocument()
+          |
+          linesHeader()
+      )
+    )
 }
 
 void linesHeader():
@@ -1089,9 +1100,19 @@ void inline():
                 WikiParameters cellParams = newWikiParameters(str);
                 boolean head  = str.startsWith("|=") || str.startsWith("!=");
                 fContext.onTableCell(head, cellParams);
+
+                tableCellContent();
             } else {
                 fContext.onSpecialSymbol(t.image);
             }
         }
     )
+}
+
+void tableCellContent():
+{
+    
+}
+{
+    ( block() )?
 }
