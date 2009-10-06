@@ -70,7 +70,7 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
      */
     public void testDocuments() throws WikiParserException {
         test("<html><p>before</p>\n"
-            + "<div class='wikimodel-document'>\n"
+            + "<div>\n"
             + "<p>inside</p>\n"
             + "</div>\n"
             + "<p>after</p></html>", "<p>before</p>\n"
@@ -79,7 +79,7 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
             + "</div>\n"
             + "<p>after</p>");
         test("<html><p>before</p>\n"
-            + "<div class='wikimodel-document'>\n"
+            + "<div>\n"
             + "<p>inside</p>\n"
             + "</div>\n"
             + "<p>after</p></html>", "<p>before</p>\n"
@@ -89,11 +89,11 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
             + "<p>after</p>");
         test(
             "<html><table><tbody>\n"
-                + " <tr><td> Line One </td><td> First doc:<div class='wikimodel-document'>\n"
+                + " <tr><td> Line One </td><td> First doc:<div>\n"
                 + "<p>inside</p>\n"
                 + "</div>\n"
                 + "after</td></tr>\n"
-                + "   <tr><td>Line Two</td><td>Second doc:<div class='wikimodel-document'>\n"
+                + "   <tr><td>Line Two</td><td>Second doc:<div>\n"
                 + "<p>lkjlj</p>\n"
                 + "</div>\n"
                 + "skdjg</td></tr>\n"
@@ -110,7 +110,7 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
                 + "</tbody></table>");
         test(
             "<html><table><tbody>\n"
-                + "  <tr><td>This is a table:</td><td><div class='wikimodel-document'>\n"
+                + "  <tr><td>This is a table:</td><td><div>\n"
                 + "<ul>\n"
                 + "  <li>item one</li>\n"
                 + "  <li>item two</li>\n"
@@ -135,18 +135,18 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
                 + "</tbody></table>");
 
         test("<html><p>before</p>\n"
-            + "<div class='wikimodel-document'>\n"
+            + "<div>\n"
             + "<p>opened and not closed</p>\n"
             + "</div></html>", "<p>before</p>\n"
             + "<div class='wikimodel-document'>\n"
             + "<p>opened and not closed</p>\n"
             + "</div>");
         test("<html><p>before</p>\n"
-            + "<div class='wikimodel-document'>\n"
+            + "<div>\n"
             + "<p>one</p>\n"
-            + "<div class='wikimodel-document'>\n"
+            + "<div>\n"
             + "<p>two</p>\n"
-            + "<div class='wikimodel-document'>\n"
+            + "<div>\n"
             + "<p>three</p>\n"
             + "</div>\n"
             + "</div>\n"
@@ -183,6 +183,13 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
                 + "</div>\n"
                 + "</li>\n"
                 + "</ul>");
+        
+        test("<html><div class='toto'>\n"
+            + "<p>inside</p>\n"
+            + "</div></html>",
+            "<div class='wikimodel-document' class='toto'>\n"
+            + "<p>inside</p>\n"
+            + "</div>");
     }
 
     /**

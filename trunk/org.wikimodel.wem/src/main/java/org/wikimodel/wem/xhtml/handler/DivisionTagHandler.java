@@ -51,7 +51,7 @@ public class DivisionTagHandler extends TagHandler {
                     value);
             } else {
                 // Consider that we're inside an embedded document
-                beginDocument(context, context.getParams().remove("class"));
+                beginDocument(context, context.getParams());
             }
         } else {
             // Consider that we're inside an embedded document
