@@ -1824,47 +1824,9 @@ public class XWikiScanner implements XWikiScannerConstants {
   }
 
   final public void tableCellContent() throws ParseException {
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case I_DOC_BEGIN:
-    case I_HEADER_END:
-    case I_TABLE_CELL:
-    case I_REFERENCE:
-    case I_VERBATIM_START:
-    case I_MACRO_EMPTY:
-    case I_MACRO_START:
-    case I_FORMAT_SYMBOL:
-    case I_IMAGE:
-    case I_ATTACH:
-    case I_BR:
-    case I_BLOCK_PARAMS:
-    case I_INLINE_PARAMS:
-    case I_XWIKI_URI:
-    case I_XWIKI_SPACE:
-    case I_NL:
-    case I_WORD:
-    case I_SPECIAL_SYMBOL:
-    case D_DOC_BEGIN:
-    case D_HEADER_END:
-    case D_TABLE_CELL:
-    case D_REFERENCE:
-    case D_VERBATIM_START:
-    case D_MACRO_EMPTY:
-    case D_MACRO_START:
-    case D_FORMAT_SYMBOL:
-    case D_IMAGE:
-    case D_ATTACH:
-    case D_BR:
-    case D_BLOCK_PARAMS:
-    case D_INLINE_PARAMS:
-    case D_XWIKI_URI:
-    case D_XWIKI_SPACE:
-    case D_NL:
-    case D_WORD:
-    case D_SPECIAL_SYMBOL:
+    if (jj_2_39(2)) {
       block();
-      break;
-    default:
-      jj_la1[46] = jj_gen;
+    } else {
       ;
     }
   }
@@ -2135,6 +2097,13 @@ public class XWikiScanner implements XWikiScannerConstants {
     finally { jj_save(37, xla); }
   }
 
+  private boolean jj_2_39(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_39(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(38, xla); }
+  }
+
   private boolean jj_3R_55() {
     Token xsp;
     xsp = jj_scanpos;
@@ -2312,6 +2281,11 @@ public class XWikiScanner implements XWikiScannerConstants {
     jj_scanpos = xsp;
     if (jj_scan_token(91)) return true;
     }
+    return false;
+  }
+
+  private boolean jj_3_39() {
+    if (jj_3R_31()) return true;
     return false;
   }
 
@@ -3183,7 +3157,7 @@ public class XWikiScanner implements XWikiScannerConstants {
   private Token jj_scanpos, jj_lastpos;
   private int jj_la;
   private int jj_gen;
-  final private int[] jj_la1 = new int[47];
+  final private int[] jj_la1 = new int[46];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -3195,18 +3169,18 @@ public class XWikiScanner implements XWikiScannerConstants {
       jj_la1_init_3();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0xe,0x0,0x0,0x70,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0xe,0x0,0x0,0x70,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x4000004,0x8000008,0x10000010,0x20000020,0x40000040,0x80000080,0x100,0x200,0x400,0x800,0x1000,0x2000,0x4000,0x8000,0x10000,0x20000,0x40000,0x80000,0x100000,0x200000,0x400000,0x800000,0x1000000,0x2000000,0xfffffffc,0xfffffffc,0x436ffe40,0x43fffe40,0xc0000,0x800000,0xf7fffff4,0x8000008,0x800000,0x0,0x436bfe40,0x3000,0x0,0x436bfe40,0x40000,0x436ffe40,0x800000,0x436bfe40,0x436bfe40,0x800000,0x36bfe00,0x36bfe00,0x47effe44,};
+      jj_la1_2 = new int[] {0x4000004,0x8000008,0x10000010,0x20000020,0x40000040,0x80000080,0x100,0x200,0x400,0x800,0x1000,0x2000,0x4000,0x8000,0x10000,0x20000,0x40000,0x80000,0x100000,0x200000,0x400000,0x800000,0x1000000,0x2000000,0xfffffffc,0xfffffffc,0x436ffe40,0x43fffe40,0xc0000,0x800000,0xf7fffff4,0x8000008,0x800000,0x0,0x436bfe40,0x3000,0x0,0x436bfe40,0x40000,0x436ffe40,0x800000,0x436bfe40,0x436bfe40,0x800000,0x36bfe00,0x36bfe00,};
    }
    private static void jj_la1_init_3() {
-      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x2,0x4,0x8,0x10,0x20,0x40,0x80,0x100,0x200,0x400,0x800,0x1000,0x2000,0x4000,0x8000,0x10000,0x20000,0x3ffff,0x3ffff,0x36ffe,0x3fffe,0xc00,0x8000,0x3ffff,0x0,0x8000,0x0,0x36bfe,0x30,0x0,0x36bfe,0x400,0x36ffe,0x8000,0x36bfe,0x36bfe,0x8000,0x36bfe,0x36bfe,0x3effe,};
+      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x2,0x4,0x8,0x10,0x20,0x40,0x80,0x100,0x200,0x400,0x800,0x1000,0x2000,0x4000,0x8000,0x10000,0x20000,0x3ffff,0x3ffff,0x36ffe,0x3fffe,0xc00,0x8000,0x3ffff,0x0,0x8000,0x0,0x36bfe,0x30,0x0,0x36bfe,0x400,0x36ffe,0x8000,0x36bfe,0x36bfe,0x8000,0x36bfe,0x36bfe,};
    }
-  final private JJCalls[] jj_2_rtns = new JJCalls[38];
+  final private JJCalls[] jj_2_rtns = new JJCalls[39];
   private boolean jj_rescan = false;
   private int jj_gc = 0;
 
@@ -3221,7 +3195,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 47; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 46; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -3236,7 +3210,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 47; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 46; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -3247,7 +3221,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 47; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 46; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -3258,7 +3232,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 47; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 46; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -3268,7 +3242,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 47; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 46; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -3278,7 +3252,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 47; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 46; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -3395,7 +3369,7 @@ public class XWikiScanner implements XWikiScannerConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 47; i++) {
+    for (int i = 0; i < 46; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -3440,7 +3414,7 @@ public class XWikiScanner implements XWikiScannerConstants {
 
   private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 38; i++) {
+    for (int i = 0; i < 39; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -3485,6 +3459,7 @@ public class XWikiScanner implements XWikiScannerConstants {
             case 35: jj_3_36(); break;
             case 36: jj_3_37(); break;
             case 37: jj_3_38(); break;
+            case 38: jj_3_39(); break;
           }
         }
         p = p.next;

@@ -1093,7 +1093,7 @@ void inline():
             fContext.onReference(ref);
         }
         |
-        t = getTABLE_CELL() 
+        t = getTABLE_CELL()
         {
             if (fContext.isInTable()) {
                 str = t.image.trim();
@@ -1114,5 +1114,5 @@ void tableCellContent():
     
 }
 {
-    ( block() )?
+    ( LOOKAHEAD(2) block() )?
 }
