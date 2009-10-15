@@ -343,6 +343,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
         test("= Heading 1\n\n= Heading 2 =", "<h1>Heading 1</h1>\n<h1>Heading 2</h1>");
         test("= Heading 1 ={{macro/}}", "<h1>Heading 1</h1>\n<pre class='wikimodel-macro' macroName='macro'/>");
         test("= Heading 1 =\n{{macro/}}", "<h1>Heading 1</h1>\n<pre class='wikimodel-macro' macroName='macro'/>");
+        test("=\n\nnot header", "<h1></h1>\n<p>not header</p>");
     }
 
     public void testImages() throws WikiParserException {
@@ -795,6 +796,10 @@ public class XWikiParserTest extends AbstractWikiParserTest {
             + "<p>One,two,three</p>");
         test("this is not |= a table", "<p>this is not |= a table</p>");
         test("this is not | a table", "<p>this is not | a table</p>");
+        test("|Hi|Hello|\n\nSome Text", "<table><tbody>\n"
+                + "  <tr><td>Hi</td><td>Hello</td></tr>\n"
+                + "</tbody></table>\n"
+                + "<p>Some Text</p>");
 
         test(
             "|= //Italic header// |= **Bold header**\n"
