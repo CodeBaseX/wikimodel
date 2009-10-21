@@ -508,7 +508,7 @@ void tableRow():
         }
         fContext.beginTableRow(head, rowParams, cellParams);
     }
-    ( LOOKAHEAD(3) block() )*
+    ( LOOKAHEAD(4) block() )*
     {
         fContext.endTableRow();
     }
@@ -551,7 +551,7 @@ void listItem():
 	        str = str.replace('1', '#');
 	        fContext.beginListItem(str, params);
         }
-        ( LOOKAHEAD(3) block() )*
+        ( LOOKAHEAD(4) block() )*
         {
             fContext.endListItem();
         }
@@ -1114,5 +1114,5 @@ void tableCellContent():
     
 }
 {
-    ( LOOKAHEAD(2) block() )?
+    ( LOOKAHEAD(4) block() )?
 }

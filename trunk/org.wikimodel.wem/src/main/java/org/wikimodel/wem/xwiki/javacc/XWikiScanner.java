@@ -956,7 +956,7 @@ public class XWikiScanner implements XWikiScannerConstants {
         fContext.beginTableRow(head, rowParams, cellParams);
     label_5:
     while (true) {
-      if (jj_2_15(3)) {
+      if (jj_2_15(4)) {
         ;
       } else {
         break label_5;
@@ -1008,7 +1008,7 @@ public class XWikiScanner implements XWikiScannerConstants {
                 fContext.beginListItem(str, params);
     label_7:
     while (true) {
-      if (jj_2_19(3)) {
+      if (jj_2_19(4)) {
         ;
       } else {
         break label_7;
@@ -1824,7 +1824,7 @@ public class XWikiScanner implements XWikiScannerConstants {
   }
 
   final public void tableCellContent() throws ParseException {
-    if (jj_2_39(2)) {
+    if (jj_2_39(4)) {
       block();
     } else {
       ;
@@ -2847,12 +2847,12 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3_28() {
+  private boolean jj_3R_110() {
     if (jj_3R_41()) return true;
     return false;
   }
 
-  private boolean jj_3R_110() {
+  private boolean jj_3_28() {
     if (jj_3R_41()) return true;
     return false;
   }
@@ -2867,16 +2867,16 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_51() {
-    if (jj_3R_86()) return true;
-    return false;
-  }
-
   private boolean jj_3R_111() {
     if (jj_3R_27()) return true;
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_26()) jj_scanpos = xsp;
+    return false;
+  }
+
+  private boolean jj_3R_51() {
+    if (jj_3R_86()) return true;
     return false;
   }
 
@@ -2930,16 +2930,6 @@ public class XWikiScanner implements XWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_108() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_109()) {
-    jj_scanpos = xsp;
-    if (jj_3R_110()) return true;
-    }
-    return false;
-  }
-
   private boolean jj_3R_109() {
     Token xsp;
     xsp = jj_scanpos;
@@ -2949,6 +2939,16 @@ public class XWikiScanner implements XWikiScannerConstants {
     }
     xsp = jj_scanpos;
     if (jj_3_28()) jj_scanpos = xsp;
+    return false;
+  }
+
+  private boolean jj_3R_108() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_109()) {
+    jj_scanpos = xsp;
+    if (jj_3R_110()) return true;
+    }
     return false;
   }
 
