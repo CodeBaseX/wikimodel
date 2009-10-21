@@ -800,6 +800,10 @@ public class XWikiParserTest extends AbstractWikiParserTest {
                 + "  <tr><td>Hi</td><td>Hello</td></tr>\n"
                 + "</tbody></table>\n"
                 + "<p>Some Text</p>");
+        test("|cell\n\n(% name='value' %)\ntext", "<table><tbody>\n"
+            + "  <tr><td>cell</td></tr>\n"
+            + "</tbody></table>\n"
+            + "<p name='value'>text</p>");
 
         test(
             "|= //Italic header// |= **Bold header**\n"
