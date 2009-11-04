@@ -24,7 +24,7 @@ public class AllTests {
         suite.addTestSuite(GWikiParserTest.class);
         suite.addTestSuite(JspWikiParserTest.class);
         suite.addTestSuite(MediawikiParserTest.class);
-        suite.addTestSuite(XWikiParserTest.class);
+        suite.addTestSuite(XWiki20ParserTest.class);
         suite.addTestSuite(CommonWikiParserTest.class);
         // $JUnit-END$
         return suite;

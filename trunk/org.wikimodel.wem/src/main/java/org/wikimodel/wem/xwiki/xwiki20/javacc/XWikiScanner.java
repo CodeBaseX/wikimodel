@@ -9,18 +9,17 @@
  * Contributors:
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
-package org.wikimodel.wem.xwiki.javacc;
+package org.wikimodel.wem.xwiki.xwiki20.javacc;
 
 import org.wikimodel.wem.IWikiReferenceParser;
 import org.wikimodel.wem.WikiParameters;
+import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.WikiStyle;
 import org.wikimodel.wem.impl.IWikiScannerContext;
-import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.impl.WikiScannerUtil;
-import org.wikimodel.wem.xwiki.XWikiReferenceParser;
-import org.wikimodel.wem.xwiki.XWikiWikiParameters;
-
-import org.wikimodel.wem.xwiki.XWikiScannerUtil;
+import org.wikimodel.wem.xwiki.xwiki20.XWikiReferenceParser;
+import org.wikimodel.wem.xwiki.xwiki20.XWikiScannerUtil;
+import org.wikimodel.wem.xwiki.xwiki20.XWikiWikiParameters;
 
 /**
  * This is the internal wiki page parser generated from the grammar file.
@@ -2104,6 +2103,26 @@ public class XWikiScanner implements XWikiScannerConstants {
     finally { jj_save(38, xla); }
   }
 
+  private boolean jj_3R_40() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(87)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(111)) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_96() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(78)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(102)) return true;
+    }
+    return false;
+  }
+
   private boolean jj_3R_55() {
     Token xsp;
     xsp = jj_scanpos;
@@ -3122,26 +3141,6 @@ public class XWikiScanner implements XWikiScannerConstants {
     }
     }
     }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_40() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(87)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(111)) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_96() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(78)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(102)) return true;
     }
     return false;
   }

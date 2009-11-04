@@ -12,7 +12,7 @@ package org.wikimodel.wem.test;
 
 import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.WikiReference;
-import org.wikimodel.wem.xwiki.XWikiReferenceParser;
+import org.wikimodel.wem.xwiki.xwiki20.XWikiReferenceParser;
 
 import junit.framework.TestCase;
 

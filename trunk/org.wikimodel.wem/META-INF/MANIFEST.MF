@@ -28,5 +28,8 @@ Export-Package: org.wikimodel.wem,
  org.wikimodel.wem.xhtml.impl,
  org.wikimodel.wem.xml,
  org.wikimodel.wem.xml.sax,
- org.wikimodel.wem.xwiki,
- org.wikimodel.wem.xwiki.javacc
+ org.wikimodel.wem.xwiki.xwiki10,
+ org.wikimodel.wem.xwiki.xwiki20,
+ org.wikimodel.wem.xwiki.xwiki20.javacc,
+ org.wikimodel.wem.xwiki.xwiki21,
+ org.wikimodel.wem.xwiki.xwiki21.javacc

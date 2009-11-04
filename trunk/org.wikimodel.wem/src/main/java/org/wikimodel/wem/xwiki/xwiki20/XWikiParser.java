@@ -8,7 +8,7 @@
  * Contributors:
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
-package org.wikimodel.wem.xwiki;
+package org.wikimodel.wem.xwiki.xwiki20;
 
 import java.io.Reader;
 
@@ -16,8 +16,8 @@ import org.wikimodel.wem.IWemListener;
 import org.wikimodel.wem.IWikiParser;
 import org.wikimodel.wem.WikiParserException;
 import org.wikimodel.wem.impl.WikiScannerContext;
-import org.wikimodel.wem.xwiki.javacc.ParseException;
-import org.wikimodel.wem.xwiki.javacc.XWikiScanner;
+import org.wikimodel.wem.xwiki.xwiki20.javacc.ParseException;
+import org.wikimodel.wem.xwiki.xwiki20.javacc.XWikiScanner;
 
 /**
  * @author MikhailKotelnikov

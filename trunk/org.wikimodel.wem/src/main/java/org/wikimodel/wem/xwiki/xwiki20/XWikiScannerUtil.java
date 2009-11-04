@@ -8,7 +8,7 @@
  * Contributors:
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
-package org.wikimodel.wem.xwiki;
+package org.wikimodel.wem.xwiki.xwiki20;
 
 /**
  * @author thomas.mortagne
@@ -54,10 +54,8 @@ public class XWikiScannerUtil {
         return unescapedContent.toString();
     }
 
-    private static int matchVerbatimSyntax(
-        char buff[],
-        int currentIndex,
-        char syntax) {
+    private static int matchVerbatimSyntax(char buff[], int currentIndex,
+            char syntax) {
 
         int i = currentIndex;
         boolean escaped = true;

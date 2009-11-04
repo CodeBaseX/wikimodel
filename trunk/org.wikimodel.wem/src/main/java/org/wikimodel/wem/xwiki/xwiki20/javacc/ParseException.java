@@ -10,7 +10,7 @@
  * Contributors:
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
-package org.wikimodel.wem.xwiki.javacc;
+package org.wikimodel.wem.xwiki.xwiki20.javacc;
 
 /**
  * This exception is thrown when parse errors are encountered.
@@ -194,4 +194,4 @@ public class ParseException extends Exception {
    }
 
 }
-/* JavaCC - OriginalChecksum=4e3199085c26f0de4fc9c1f2bd1d89f7 (do not edit this line) */
+/* JavaCC - OriginalChecksum=e5a214ab41fa8624420c69b5ca0efab9 (do not edit this line) */

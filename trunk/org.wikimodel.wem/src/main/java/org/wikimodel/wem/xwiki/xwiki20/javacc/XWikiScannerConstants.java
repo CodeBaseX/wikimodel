@@ -9,7 +9,7 @@
  * Contributors:
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
-package org.wikimodel.wem.xwiki.javacc;
+package org.wikimodel.wem.xwiki.xwiki20.javacc;
 
 
 /**

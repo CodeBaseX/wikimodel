@@ -8,7 +8,7 @@
  * Contributors:
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
-package org.wikimodel.wem.xwiki;
+package org.wikimodel.wem.xwiki.xwiki20;
 
 import org.wikimodel.wem.WikiParameters;
 
@@ -17,8 +17,7 @@ import org.wikimodel.wem.WikiParameters;
  */
 public class XWikiWikiParameters extends WikiParameters {
     public static WikiParameters newWikiParameters(String str) {
-        return WikiParameters.newWikiParameters(
-            str,
+        return WikiParameters.newWikiParameters(str,
             XWikiScannerUtil.ESCAPECHAR);
     }
 

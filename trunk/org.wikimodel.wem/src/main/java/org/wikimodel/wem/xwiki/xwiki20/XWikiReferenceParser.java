@@ -8,9 +8,7 @@
  * Contributors:
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
-package org.wikimodel.wem.xwiki;
-
-import java.util.regex.Pattern;
+package org.wikimodel.wem.xwiki.xwiki20;
 
 import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.WikiReferenceParser;
@@ -21,11 +19,6 @@ import org.wikimodel.wem.WikiReferenceParser;
  * @author thomas.mortagne
  */
 public class XWikiReferenceParser extends WikiReferenceParser {
-
-    Pattern BEGINLINK_PATTERN = Pattern.compile("[~]?\\[\\[");
-
-    Pattern ENDLINK_PATTERN = Pattern.compile("[~]?\\]\\]");
-
     @Override
     protected String getLabel(String[] chunks) {
         return chunks[0];
@@ -75,9 +68,8 @@ public class XWikiReferenceParser extends WikiReferenceParser {
                     i += 2;
                     parameters.append(array, i, array.length - i);
                     break;
-                } else if (c == '['
-                    && i + 1 < array.length
-                    && array[i + 1] == '[') {
+                } else if (c == '[' && i + 1 < array.length
+                        && array[i + 1] == '[') {
                     int endLink = findEndLink(array, i + 2);
                     if (endLink != -1) {
                         // If we find an internal link we skip it
@@ -120,14 +112,12 @@ public class XWikiReferenceParser extends WikiReferenceParser {
             if (!escaped) {
                 if (array[i] == '~') {
                     escaped = true;
-                } else if (c == '['
-                    && i + 1 < array.length
-                    && array[i + 1] == '[') {
+                } else if (c == '[' && i + 1 < array.length
+                        && array[i + 1] == '[') {
                     ++linkdepth;
                     ++i;
-                } else if (c == ']'
-                    && i + 1 < array.length
-                    && array[i + 1] == ']') {
+                } else if (c == ']' && i + 1 < array.length
+                        && array[i + 1] == ']') {
                     --linkdepth;
                     ++i;
                     endLink = i + 1;
@@ -151,11 +141,8 @@ public class XWikiReferenceParser extends WikiReferenceParser {
      * @param reference the link buffer to fill
      * @param parameters the parameters buffer to fill
      */
-    private void parseReference(
-        char[] array,
-        int i,
-        StringBuffer reference,
-        StringBuffer parameters) {
+    private void parseReference(char[] array, int i, StringBuffer reference,
+            StringBuffer parameters) {
         int nb;
 
         for (boolean escaped = false; i < array.length; ++i) {

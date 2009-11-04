@@ -10,7 +10,7 @@
  * Contributors:
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
-package org.wikimodel.wem.xwiki.javacc;
+package org.wikimodel.wem.xwiki.xwiki20.javacc;
 
 /** Token Manager Error. */
 public class TokenMgrError extends Error
@@ -154,4 +154,4 @@ public class TokenMgrError extends Error
     this(LexicalError(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
   }
 }
-/* JavaCC - OriginalChecksum=bd01c25b8a4f19ad748063703fa5520d (do not edit this line) */
+/* JavaCC - OriginalChecksum=c7ba4c6099e2ea572ce66fb710d1d701 (do not edit this line) */

@@ -9,16 +9,16 @@
  * Contributors:
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
-package org.wikimodel.wem.xwiki.javacc;
+package org.wikimodel.wem.xwiki.xwiki21.javacc;
 import org.wikimodel.wem.IWikiReferenceParser;
 import org.wikimodel.wem.WikiParameters;
+import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.WikiStyle;
 import org.wikimodel.wem.impl.IWikiScannerContext;
-import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.impl.WikiScannerUtil;
-import org.wikimodel.wem.xwiki.XWikiReferenceParser;
-import org.wikimodel.wem.xwiki.XWikiWikiParameters;
-import org.wikimodel.wem.xwiki.XWikiScannerUtil;
+import org.wikimodel.wem.xwiki.xwiki20.XWikiReferenceParser;
+import org.wikimodel.wem.xwiki.xwiki20.XWikiScannerUtil;
+import org.wikimodel.wem.xwiki.xwiki20.XWikiWikiParameters;
 
 /** Token Manager. */
 public class XWikiScannerTokenManager implements XWikiScannerConstants
