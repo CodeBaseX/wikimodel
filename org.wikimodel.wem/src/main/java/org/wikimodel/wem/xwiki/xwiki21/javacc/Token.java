@@ -10,7 +10,7 @@
  * Contributors:
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
-package org.wikimodel.wem.xwiki.javacc;
+package org.wikimodel.wem.xwiki.xwiki21.javacc;
 
 /**
  * Describes the input token stream.
@@ -138,4 +138,4 @@ public class Token implements java.io.Serializable {
   }
 
 }
-/* JavaCC - OriginalChecksum=13ca4fe0174f6c2ab7815e98e658e8e1 (do not edit this line) */
+/* JavaCC - OriginalChecksum=25176112c5ed6006b20431da6a222011 (do not edit this line) */

@@ -17,18 +17,18 @@ import org.wikimodel.wem.IWikiParser;
 import org.wikimodel.wem.IWikiPrinter;
 import org.wikimodel.wem.WikiParserException;
 import org.wikimodel.wem.xhtml.PrintListener;
-import org.wikimodel.wem.xwiki.XWikiParser;
+import org.wikimodel.wem.xwiki.xwiki20.XWikiParser;
 
 /**
  * @author MikhailKotelnikov
  * @author thomas.mortagne
  */
-public class XWikiParserTest extends AbstractWikiParserTest {
+public class XWiki20ParserTest extends AbstractWikiParserTest {
 
     /**
      * @param name
      */
-    public XWikiParserTest(String name) {
+    public XWiki20ParserTest(String name) {
         super(name);
     }
 
@@ -37,7 +37,7 @@ public class XWikiParserTest extends AbstractWikiParserTest {
      * @param control
      * @throws WikiParserException
      */
-    private void doCustomTest(String string, String control)
+    protected void doCustomTest(String string, String control)
         throws WikiParserException {
         println("==================================================");
         StringReader reader = new StringReader(string);

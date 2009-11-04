@@ -11,7 +11,7 @@ import org.wikimodel.wem.IWikiParser;
 import org.wikimodel.wem.IWikiPrinter;
 import org.wikimodel.wem.WikiParserException;
 import org.wikimodel.wem.jspwiki.JspWikiParser;
-import org.wikimodel.wem.xwiki.XWikiSerializer;
+import org.wikimodel.wem.xwiki.xwiki10.XWikiSerializer;
 
 /**
  * @author kotelnikov

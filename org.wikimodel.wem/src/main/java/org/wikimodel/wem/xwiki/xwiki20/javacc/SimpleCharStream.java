@@ -10,7 +10,7 @@
  * Contributors:
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
-package org.wikimodel.wem.xwiki.javacc;
+package org.wikimodel.wem.xwiki.xwiki20.javacc;
 
 /**
  * An implementation of interface CharStream, where the stream is assumed to
@@ -476,4 +476,4 @@ public class SimpleCharStream
   }
 
 }
-/* JavaCC - OriginalChecksum=56067bf78ced03114fc919a6f0a99543 (do not edit this line) */
+/* JavaCC - OriginalChecksum=ca6eff45ffbc686e21b52381a48e7ce2 (do not edit this line) */

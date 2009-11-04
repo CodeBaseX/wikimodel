@@ -39,7 +39,11 @@
 		</antcall>
 
 		<antcall target="doBuild">
-			<param name="input.file" value="${src}/org/wikimodel/wem/xwiki/javacc/XWikiScanner.jj" />
+			<param name="input.file" value="${src}/org/wikimodel/wem/xwiki/xwiki20/javacc/XWikiScanner.jj" />
+		</antcall>
+		
+		<antcall target="doBuild">
+			<param name="input.file" value="${src}/org/wikimodel/wem/xwiki/xwiki21/javacc/XWikiScanner.jj" />
 		</antcall>
 	</target>
 

@@ -1,4 +1,4 @@
-package org.wikimodel.wem.xwiki;
+package org.wikimodel.wem.xwiki.xwiki10;
 
 import org.wikimodel.wem.IWikiPrinter;
 import org.wikimodel.wem.PrintTextListener;
