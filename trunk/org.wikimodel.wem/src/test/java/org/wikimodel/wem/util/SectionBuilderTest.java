@@ -47,13 +47,8 @@ public class SectionBuilderTest extends TestCase {
         }
 
         private String n(IPos<String> pos) {
-            return "["
-                + pos.getData()
-                + "]"
-                + "-"
-                + pos.getDocumentLevel()
-                + "-"
-                + pos.getHeaderLevel();
+            return "[" + pos.getData() + "]" + "-" + pos.getDocumentLevel()
+                    + "-" + pos.getHeaderLevel();
         }
 
         @Override
@@ -73,32 +68,6 @@ public class SectionBuilderTest extends TestCase {
     public SectionBuilderTest(String name) {
         super(name);
     }
-
-    public void _testDocumentLevels2() {
-        String prev = "";
-        fBuilder.beginDocument("X");
-        prev = check(prev, "<doc[X]-1-0>");
-
-        fBuilder.beginHeader(1, "A");
-        prev = check(prev, "<s[A]-1-1><h[A]-1-1>");
-        fBuilder.endHeader();
-        prev = check(prev, "</h[A]-1-1><c[A]-1-1>");
-
-        fBuilder.beginDocument("Y");
-        prev = check(prev, "<doc[Y]-2-0>");
-        fBuilder.endDocument();
-        prev = check(prev, "</doc[Y]-2-0>");
-
-        fBuilder.beginHeader(2, "B");
-        prev = check(prev, "<s[B]-1-1><h[B]-1-1>");
-        fBuilder.endHeader();
-        prev = check(prev, "</h[B]-1-1><c[B]-1-1>");
-
-        fBuilder.endDocument();
-        prev = check(prev, "</c[B]-1-1></s[B]-1-1>"
-            + "</c[A]-1-1></s[A]-1-1>"
-            + "</doc[X]-1-0>");
-    };
 
     private String check(String prev, String delta) {
         String test = fListener.toString();
@@ -147,7 +116,8 @@ public class SectionBuilderTest extends TestCase {
         prev = check(prev, "</h[C]-1-3><c[C]-1-3>");
 
         fBuilder.beginHeader(2, "D");
-        prev = check(prev, "</c[C]-1-3></s[C]-1-3></c[B]-1-2></s[B]-1-2><s[D]-1-2><h[D]-1-2>");
+        prev = check(prev,
+            "</c[C]-1-3></s[C]-1-3></c[B]-1-2></s[B]-1-2><s[D]-1-2><h[D]-1-2>");
         fBuilder.endHeader();
         prev = check(prev, "</h[D]-1-2><c[D]-1-2>");
 
@@ -157,10 +127,8 @@ public class SectionBuilderTest extends TestCase {
         prev = check(prev, "</h[E]-1-3><c[E]-1-3>");
 
         fBuilder.endDocument();
-        prev = check(prev, "</c[E]-1-3></s[E]-1-3>"
-            + "</c[D]-1-2></s[D]-1-2>"
-            + "</c[A]-1-1></s[A]-1-1>"
-            + "</doc[X]-1-0>");
+        prev = check(prev, "</c[E]-1-3></s[E]-1-3>" + "</c[D]-1-2></s[D]-1-2>"
+                + "</c[A]-1-1></s[A]-1-1>" + "</doc[X]-1-0>");
     }
 
     public void testWithoutLevels() {
@@ -184,7 +152,8 @@ public class SectionBuilderTest extends TestCase {
         prev = check(prev, "</h[C]-1-3><c[C]-1-3>");
 
         fBuilder.beginHeader(2, "D");
-        prev = check(prev, "</c[C]-1-3></s[C]-1-3></c[B]-1-2></s[B]-1-2><s[D]-1-2><h[D]-1-2>");
+        prev = check(prev,
+            "</c[C]-1-3></s[C]-1-3></c[B]-1-2></s[B]-1-2><s[D]-1-2><h[D]-1-2>");
         fBuilder.endHeader();
         prev = check(prev, "</h[D]-1-2><c[D]-1-2>");
 
@@ -194,11 +163,43 @@ public class SectionBuilderTest extends TestCase {
         prev = check(prev, "</h[E]-1-3><c[E]-1-3>");
 
         fBuilder.endDocument();
-        prev = check(prev, "</c[E]-1-3></s[E]-1-3>"
-            + "</c[D]-1-2></s[D]-1-2>"
-            + "</c[A]-1-1></s[A]-1-1>"
-            + "</doc[X]-1-0>");
+        prev = check(prev, "</c[E]-1-3></s[E]-1-3>" + "</c[D]-1-2></s[D]-1-2>"
+                + "</c[A]-1-1></s[A]-1-1>" + "</doc[X]-1-0>");
 
     }
 
+    public void testInSubDocument() {
+        String prev = "";
+        fBuilder.beginDocument("X");
+        prev = check(prev, "<doc[X]-1-0>");
+
+        fBuilder.beginHeader(1, "A");
+        prev = check(prev, "<s[A]-1-1><h[A]-1-1>");
+        fBuilder.endHeader();
+        prev = check(prev, "</h[A]-1-1><c[A]-1-1>");
+
+        // BEGIN DOCUMENT Y [
+
+        fBuilder.beginDocument("Y");
+        prev = check(prev, "<doc[Y]-2-0>");
+
+        fBuilder.beginHeader(1, "YA");
+        prev = check(prev, "<s[YA]-2-1><h[YA]-2-1>");
+        fBuilder.endHeader();
+        prev = check(prev, "</h[YA]-2-1><c[YA]-2-1>");
+
+        fBuilder.endDocument();
+        prev = check(prev, "</c[YA]-2-1></s[YA]-2-1></doc[Y]-2-0>");
+
+        // ] END DOCUMENT Y
+
+        fBuilder.beginHeader(2, "B");
+        prev = check(prev, "<s[B]-1-2><h[B]-1-2>");
+        fBuilder.endHeader();
+        prev = check(prev, "</h[B]-1-2><c[B]-1-2>");
+
+        fBuilder.endDocument();
+        prev = check(prev, "</c[B]-1-2></s[B]-1-2>" + "</c[A]-1-1></s[A]-1-1>"
+                + "</doc[X]-1-0>");
+    }
 }
