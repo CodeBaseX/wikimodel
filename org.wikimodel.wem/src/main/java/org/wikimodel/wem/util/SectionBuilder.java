@@ -4,6 +4,7 @@
 package org.wikimodel.wem.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
@@ -56,39 +57,7 @@ public class SectionBuilder<T> {
 
     }
 
-    TreeBuilder<TocEntry> fBuilder = new TreeBuilder<TocEntry>(
-        new TreeBuilder.ITreeListener<TocEntry>() {
-
-            public void onBeginRow(TocEntry n) {
-                if (!n.fDoc) {
-                    fListener.beginSection(n);
-                    if (n.fHeader) {
-                        fListener.beginSectionHeader(n);
-                    } else {
-                        fListener.beginSectionContent(n);
-                    }
-                }
-            }
-
-            public void onBeginTree(TocEntry n) {
-                if (n.fDoc) {
-                    fListener.beginDocument(n);
-                }
-            }
-
-            public void onEndRow(TocEntry n) {
-                if (!n.fDoc) {
-                    fListener.endSectionContent(n);
-                    fListener.endSection(n);
-                }
-            }
-
-            public void onEndTree(TocEntry n) {
-                if (n.fDoc) {
-                    fListener.endDocument(n);
-                }
-            }
-        });
+    Stack<TreeBuilder<TocEntry>> fBuilder = new Stack<TreeBuilder<TocEntry>>();
 
     private Stack<TocEntry> fDocEntries = new Stack<TocEntry>();
 
@@ -96,6 +65,46 @@ public class SectionBuilder<T> {
 
     public SectionBuilder(ISectionListener<T> listener) {
         fListener = listener;
+    }
+
+    private void pushBuilder() {
+        fBuilder.push(new TreeBuilder<TocEntry>(
+            new TreeBuilder.ITreeListener<TocEntry>() {
+
+                public void onBeginRow(TocEntry n) {
+                    if (!n.fDoc) {
+                        fListener.beginSection(n);
+                        if (n.fHeader) {
+                            fListener.beginSectionHeader(n);
+                        } else {
+                            fListener.beginSectionContent(n);
+                        }
+                    }
+                }
+
+                public void onBeginTree(TocEntry n) {
+                    if (n.fDoc) {
+                        fListener.beginDocument(n);
+                    }
+                }
+
+                public void onEndRow(TocEntry n) {
+                    if (!n.fDoc) {
+                        fListener.endSectionContent(n);
+                        fListener.endSection(n);
+                    }
+                }
+
+                public void onEndTree(TocEntry n) {
+                    if (n.fDoc) {
+                        fListener.endDocument(n);
+                    }
+                }
+            }));
+    }
+
+    private TreeBuilder<TocEntry> popBuilder() {
+        return fBuilder.pop();
     }
 
     /**
@@ -112,12 +121,16 @@ public class SectionBuilder<T> {
             entry = new TocEntry(docLevel, i, data, doc, i == level);
             entries.add(entry);
         }
-        fBuilder.align(entries);
+        fBuilder.peek().align(entries);
+
         return entry;
     }
 
     public void beginDocument(T data) {
+        pushBuilder();
+
         TocEntry entry = align(getDocLevel() + 1, 0, data, true);
+
         fDocEntries.push(entry);
     }
 
@@ -128,11 +141,12 @@ public class SectionBuilder<T> {
 
     public void endDocument() {
         fDocEntries.pop();
-        fBuilder.trim(fDocEntries);
+
+        popBuilder().align(Collections.<TocEntry> emptyList());
     }
 
     public void endHeader() {
-        TocEntry entry = fBuilder.getPeek();
+        TocEntry entry = fBuilder.peek().getPeek();
         fListener.endSectionHeader(entry);
         fListener.beginSectionContent(entry);
     }
