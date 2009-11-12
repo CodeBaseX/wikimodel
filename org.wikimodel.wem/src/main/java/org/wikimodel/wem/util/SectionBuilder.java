@@ -3,31 +3,35 @@
  */
 package org.wikimodel.wem.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 /**
  * @author kotelnikov
+ * @author thomas.mortagne
  */
 public class SectionBuilder<T> {
 
-    protected class TocEntry
-        implements
-        TreeBuilder.IPos<TocEntry>,
-        ISectionListener.IPos<T> {
+    protected class TocEntry implements TreeBuilder.IPos<TocEntry>,
+            ISectionListener.IPos<T> {
 
         T fData;
 
         protected boolean fDoc;
+        protected boolean fHeader;
 
         int fDocLevel;
 
         int fLevel;
 
-        public TocEntry(int docLevel, int level, T data, boolean doc) {
+        public TocEntry(int docLevel, int level, T data, boolean doc,
+                boolean header) {
             fDocLevel = docLevel;
             fLevel = level;
             fData = data;
             fDoc = doc;
+            fHeader = header;
         }
 
         public boolean equalsData(TocEntry pos) {
@@ -58,7 +62,11 @@ public class SectionBuilder<T> {
             public void onBeginRow(TocEntry n) {
                 if (!n.fDoc) {
                     fListener.beginSection(n);
-                    fListener.beginSectionHeader(n);
+                    if (n.fHeader) {
+                        fListener.beginSectionHeader(n);
+                    } else {
+                        fListener.beginSectionContent(n);
+                    }
                 }
             }
 
@@ -80,7 +88,6 @@ public class SectionBuilder<T> {
                     fListener.endDocument(n);
                 }
             }
-
         });
 
     private Stack<TocEntry> fDocEntries = new Stack<TocEntry>();
@@ -99,8 +106,13 @@ public class SectionBuilder<T> {
      * @return
      */
     private TocEntry align(int docLevel, int level, T data, boolean doc) {
-        TocEntry entry = new TocEntry(docLevel, level, data, doc);
-        fBuilder.align(entry);
+        TocEntry entry = null;
+        List<TocEntry> entries = new ArrayList<TocEntry>();
+        for (int i = 0; i <= level; ++i) {
+            entry = new TocEntry(docLevel, i, data, doc, i == level);
+            entries.add(entry);
+        }
+        fBuilder.align(entries);
         return entry;
     }
 

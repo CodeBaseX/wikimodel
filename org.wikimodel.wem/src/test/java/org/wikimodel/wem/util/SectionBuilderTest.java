@@ -137,7 +137,7 @@ public class SectionBuilderTest extends TestCase {
         prev = check(prev, "</h[A]-1-1><c[A]-1-1>");
 
         fBuilder.beginHeader(3, "B");
-        prev = check(prev, "<s[B]-1-3><h[B]-1-3>");
+        prev = check(prev, "<s[B]-1-2><c[B]-1-2><s[B]-1-3><h[B]-1-3>");
         fBuilder.endHeader();
         prev = check(prev, "</h[B]-1-3><c[B]-1-3>");
 
@@ -147,7 +147,7 @@ public class SectionBuilderTest extends TestCase {
         prev = check(prev, "</h[C]-1-3><c[C]-1-3>");
 
         fBuilder.beginHeader(2, "D");
-        prev = check(prev, "</c[C]-1-3></s[C]-1-3><s[D]-1-2><h[D]-1-2>");
+        prev = check(prev, "</c[C]-1-3></s[C]-1-3></c[B]-1-2></s[B]-1-2><s[D]-1-2><h[D]-1-2>");
         fBuilder.endHeader();
         prev = check(prev, "</h[D]-1-2><c[D]-1-2>");
 
@@ -174,7 +174,7 @@ public class SectionBuilderTest extends TestCase {
         prev = check(prev, "</h[A]-1-1><c[A]-1-1>");
 
         fBuilder.beginHeader(3, "B");
-        prev = check(prev, "<s[B]-1-3><h[B]-1-3>");
+        prev = check(prev, "<s[B]-1-2><c[B]-1-2><s[B]-1-3><h[B]-1-3>");
         fBuilder.endHeader();
         prev = check(prev, "</h[B]-1-3><c[B]-1-3>");
 
@@ -184,7 +184,7 @@ public class SectionBuilderTest extends TestCase {
         prev = check(prev, "</h[C]-1-3><c[C]-1-3>");
 
         fBuilder.beginHeader(2, "D");
-        prev = check(prev, "</c[C]-1-3></s[C]-1-3><s[D]-1-2><h[D]-1-2>");
+        prev = check(prev, "</c[C]-1-3></s[C]-1-3></c[B]-1-2></s[B]-1-2><s[D]-1-2><h[D]-1-2>");
         fBuilder.endHeader();
         prev = check(prev, "</h[D]-1-2><c[D]-1-2>");
 
