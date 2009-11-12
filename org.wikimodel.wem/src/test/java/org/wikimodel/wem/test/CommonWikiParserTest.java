@@ -44,8 +44,6 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
             + "</div>\n"
             + "</sectionContent-1-0>\n"
             + "</section-1-0>");
-        // FIXME: it is wrong!
-        // should be like in the commented block below
         test("=Header1=\nabc((()))\ncde", ""
             + "<section-1-0>\n"
             + "<sectionContent-1-0>\n"
@@ -59,33 +57,11 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
             + "</sectionContent-2-0>\n"
             + "</section-2-0>\n"
             + "</div>\n"
+            + "<p>cde</p>\n"
             + "</sectionContent-1-1>\n"
             + "</section-1-1>\n"
-            + "<p>cde</p>\n"
             + "</sectionContent-1-0>\n"
             + "</section-1-0>");
-        // should be like this (check the position of the "cde" paragraph)!
-        // test("=Header1=\nabc((()))\ncde", ""
-        // + "<div class='wikimodel-document'>\n"
-        // + "<section-1-0>\n"
-        // + "<sectionContent-1-0>\n"
-        // + "<section-1-1>\n"
-        // + "<h1>Header1</h1>\n"
-        // + "<sectionContent-1-1>\n"
-        // + "<p>abc</p>\n"
-        // + "<div class='wikimodel-document'>\n"
-        // + "<section-2-0>\n"
-        // + "<sectionContent-2-0>\n"
-        // + "</sectionContent-2-0>\n"
-        // + "</section-2-0>\n"
-        // + "</div>\n"
-        // + "<p>cde</p>\n"
-        // + "</sectionContent-1-1>\n"
-        // + "</section-1-1>\n"
-        // + "</sectionContent-1-0>\n"
-        // + "</section-1-0>\n"
-        // + "</div>\n");
-
     }
 
     public void testComplexFormatting() throws WikiParserException {
@@ -361,9 +337,9 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
             + "</sectionContent-2-0>\n"
             + "</section-2-0>\n"
             + "</div>\n"
+            + "<p>xyz</p>\n"
             + "</sectionContent-1-1>\n"
             + "</section-1-1>\n"
-            + "<p>xyz</p>\n"
             + ""
             // The section section at the first level
             + "<section-1-1>\n"
