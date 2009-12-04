@@ -12,8 +12,7 @@ import org.wikimodel.graph.AbstractNodeWalker.Mode;
 import org.wikimodel.iterator.ShiftIterator;
 
 /**
- * An implementation of an iterator over graph structure. This iterator can
- * return
+ * An implementation of an iterator over graph structure.
  * 
  * @author kotelnikov
  */
@@ -110,6 +109,7 @@ public class NodeWalkerIterator<T, E extends RuntimeException>
     /**
      * @see org.wikimodel.iterator.ShiftIterator#shiftItem()
      */
+    @Override
     protected T shiftItem() {
         Mode mode = getMode();
         fWalker.shift(fListener, mode);

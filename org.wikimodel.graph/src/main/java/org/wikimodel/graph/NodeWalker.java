@@ -26,6 +26,7 @@ public class NodeWalker<T, E extends Throwable>
     /**
      * @see org.wikimodel.graph.AbstractNodeWalker#getPeekNode()
      */
+    @Override
     public T getPeekNode() {
         return !fStack.isEmpty() ? fStack.get(fStack.size() - 1) : null;
     }
@@ -33,6 +34,7 @@ public class NodeWalker<T, E extends Throwable>
     /**
      * @see org.wikimodel.graph.AbstractNodeWalker#popNode()
      */
+    @Override
     protected T popNode() {
         return !fStack.isEmpty() ? fStack.remove(fStack.size() - 1) : null;
     }
@@ -40,6 +42,7 @@ public class NodeWalker<T, E extends Throwable>
     /**
      * @see org.wikimodel.graph.AbstractNodeWalker#pushNode(java.lang.Object)
      */
+    @Override
     protected void pushNode(T currentNode) {
         fStack.add(currentNode);
     }

@@ -23,6 +23,7 @@ public class FsmState {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     @SuppressWarnings("unchecked")
     public boolean equals(Object obj) {
         if (obj == this)
@@ -70,10 +71,12 @@ public class FsmState {
         return buf.toString();
     }
 
+    @Override
     public int hashCode() {
         return fDescriptor.hashCode();
     }
 
+    @Override
     public String toString() {
         return getPath();
     }

@@ -97,6 +97,7 @@ public class DescriptionReader extends ConfigParser {
              * 
              * @throws Exception
              */
+            @Override
             public void beginNode(
                 String uri,
                 String localName,
@@ -111,6 +112,7 @@ public class DescriptionReader extends ConfigParser {
                 fConfig.beginState(stateKey, map);
             }
 
+            @Override
             public void endNode(
                 String uri,
                 String localName,
@@ -122,6 +124,7 @@ public class DescriptionReader extends ConfigParser {
 
         NodeHandler transitionConfigurator = new ConfigParser.NodeHandler() {
 
+            @Override
             public void beginNode(
                 String uri,
                 String localName,

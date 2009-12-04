@@ -28,6 +28,7 @@ public class GrammarTest extends TestCase {
     private IFsmProcessListener fListener = new FsmProcessListener() {
         private int fDepth;
 
+        @Override
         public void beginState(FsmState node) throws Exception {
             String name = node.getKey();
             if (!name.startsWith("#")) {
@@ -36,6 +37,7 @@ public class GrammarTest extends TestCase {
             }
         }
 
+        @Override
         public void endState(FsmState node) throws Exception {
             String name = node.getKey();
             if (!name.startsWith("#")) {

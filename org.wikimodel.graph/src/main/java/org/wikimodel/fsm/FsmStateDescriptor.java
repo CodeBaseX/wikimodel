@@ -48,6 +48,7 @@ public class FsmStateDescriptor
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     @SuppressWarnings("unchecked")
     public boolean equals(Object obj) {
         if (obj == this)
@@ -103,7 +104,7 @@ public class FsmStateDescriptor
      */
     public String getNextSubstate(String from, String event) {
         String transitionKey = getTransitionKey(from, event);
-        return (String) fTransitionMap.get(transitionKey);
+        return fTransitionMap.get(transitionKey);
     }
 
     @SuppressWarnings("unchecked")
@@ -168,10 +169,10 @@ public class FsmStateDescriptor
      * load a transition for the specified sub-state key and the event and if
      * there is no descriptor was found then it trims the event key to the last
      * "." symbol and repeat the same operation until the event key becomes
-     * empty (""). This method can return <code>null</code> if there
-     * transition was found. In this case the FSM will closes the specified
-     * parent state: it considers that there is no sub-states of this state and
-     * it can be deactivated.
+     * empty (""). This method can return <code>null</code> if there transition
+     * was found. In this case the FSM will closes the specified parent state:
+     * it considers that there is no sub-states of this state and it can be
+     * deactivated.
      * 
      * @param parent the parent state; this method returns a target key for a
      *        transition between sub-states of this state
@@ -201,10 +202,11 @@ public class FsmStateDescriptor
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
         int a = fSubstateDescriptors.hashCode();
         int b = fTransitionMap.hashCode();
-        return (int) (a ^ (b >>> 32));
+        return (a ^ (b >>> 32));
     }
 
     /**
@@ -220,6 +222,7 @@ public class FsmStateDescriptor
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
         return fTransitionMap.toString();
     }
