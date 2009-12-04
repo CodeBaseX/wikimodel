@@ -26,7 +26,8 @@ import org.xml.sax.helpers.DefaultHandler;
 /**
  * This is a common superclass for all readers loading configurations from xml
  * files. It contains some utility methods like {@link #parse(InputStream)},
- * {@link #parseResource(ClassLoader, String)} or {@link #parseResource(String)}.
+ * {@link #parseResource(ClassLoader, String)} or {@link #parseResource(String)}
+ * .
  * 
  * @author kotelnikov
  */
@@ -144,9 +145,10 @@ public class ConfigParser {
          * @see org.xml.sax.helpers.DefaultHandler#endElement(java.lang.String,
          *      java.lang.String, java.lang.String)
          */
+        @Override
         public void endElement(String uri, String localName, String qName)
             throws SAXException {
-            NodeHandler handler = (NodeHandler) fHandlerStack.pop();
+            NodeHandler handler = fHandlerStack.pop();
             if (handler != null) {
                 try {
                     handler.endNode(
@@ -166,6 +168,7 @@ public class ConfigParser {
          * @see org.xml.sax.helpers.DefaultHandler#startElement(java.lang.String,
          *      java.lang.String, java.lang.String, org.xml.sax.Attributes)
          */
+        @Override
         public void startElement(
             String uri,
             String localName,
@@ -173,7 +176,7 @@ public class ConfigParser {
             Attributes attributes) throws SAXException {
             fRoot = new NodeInfo(fRoot, uri, localName, qName, attributes);
             String path = fRoot.getPath();
-            NodeHandler handler = (NodeHandler) fHandlerMap.get(path);
+            NodeHandler handler = fHandlerMap.get(path);
             if (handler == null) {
                 for (Map.Entry<String, NodeHandler> entry : fHandlerMap
                     .entrySet()) {

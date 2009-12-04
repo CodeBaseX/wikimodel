@@ -17,11 +17,11 @@ import java.util.List;
 /**
  * This class is used to merge iteration results and returns them in the order.
  * By default this class considers that all elements returned by iterators
- * implement {@link Comparable} interface. To change this behaviour users can
+ * implement the {@link Comparable} interface. To change this behavior users can
  * overload the method {@link #compareEntries(Object, Object)}.
  * <p>
  * This class can be very useful when it is required to merge iteration results
- * of many iterators over ordered sets and returns them as a single ordered
+ * of many iterators over ordered sets and return them as a single ordered
  * iterator.
  * </p>
  * 
@@ -64,6 +64,7 @@ public class MergeIterator<T> extends ShiftIterator<T> {
         /**
          * @see java.lang.Object#equals(java.lang.Object)
          */
+        @Override
         @SuppressWarnings("unchecked")
         public boolean equals(Object obj) {
             Slot s = (Slot) obj;
@@ -73,6 +74,7 @@ public class MergeIterator<T> extends ShiftIterator<T> {
         /**
          * @see org.semanticdesktop.common.iterator.ShiftIterator#shiftItem()
          */
+        @Override
         protected T shiftItem() {
             return fIterator.hasNext() ? fIterator.next() : null;
         }
@@ -80,6 +82,7 @@ public class MergeIterator<T> extends ShiftIterator<T> {
         /**
          * @see java.lang.Object#toString()
          */
+        @Override
         public String toString() {
             return "" + fObject;
         }
@@ -95,23 +98,23 @@ public class MergeIterator<T> extends ShiftIterator<T> {
      *
      */
     public MergeIterator() {
-        this(null, false);
+        this(false, null);
     }
 
     /**
-     * @param array
-     */
-    public MergeIterator(Iterator<T>[] array) {
-        this(array, false);
-    }
-
-    /**
-     * @param array
      * @param filterRepetedItems
+     * @param array
      */
-    public MergeIterator(Iterator<T>[] array, boolean filterRepetedItems) {
+    public MergeIterator(boolean filterRepetedItems, Iterator<T>... array) {
         setArray(array);
         fFilterRepetedItems = filterRepetedItems;
+    }
+
+    /**
+     * @param array
+     */
+    public MergeIterator(Iterator<T>... array) {
+        this(false, array);
     }
 
     /**
@@ -130,14 +133,14 @@ public class MergeIterator<T> extends ShiftIterator<T> {
 
     /**
      * Compares the iterated entries between them and returns the result of the
-     * comparision. If the result is less then zero then the first item is less
+     * comparison. If the result is less then zero then the first item is less
      * then the second one. If the result is more then zero then the first item
      * is greater then the second. If both elements are equal then this method
      * returns 0.
      * 
      * @param first the first element to compare
      * @param second the second element to compare
-     * @return comparision result of the given entries
+     * @return comparison result of the given entries
      */
     @SuppressWarnings("unchecked")
     protected int compareEntries(T first, T second) {
@@ -165,6 +168,7 @@ public class MergeIterator<T> extends ShiftIterator<T> {
     /**
      * @see org.semanticdesktop.common.iterator.ShiftIterator#shiftItem()
      */
+    @Override
     protected T shiftItem() {
         Object prev = fObject;
         while (true) {

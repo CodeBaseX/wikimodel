@@ -99,9 +99,11 @@ public class SectionBuilderTest extends TestCase {
         test(3, "B", "<level1><s><h3>B</h3><c>");
         test(3, "C", "</c></s><s><h3>C</h3><c>");
         fBuilder.endDocument();
-        test(5, "D", "<s><h5>D</h5><c>");
+        // 1/ Closes the first level started in the embedded document.
+        // 2/ Opens a new first level.
+        test(5, "D", "</c></s></level1></c></s><s><h1><level1><s><h5>D</h5><c>");
         test(5, "E", "</c></s><s><h5>E</h5><c>");
-        test(3, "F", "</c></s></level1></c></s><s><h3>F</h3><c>");
+        test(3, "F", "</c></s><s><h3>F</h3><c>");
         fBuilder.endDocument();
         check("</c></s></level1></c></s></level0>");
 
