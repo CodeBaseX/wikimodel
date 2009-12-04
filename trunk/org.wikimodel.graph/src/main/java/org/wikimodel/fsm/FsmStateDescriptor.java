@@ -49,7 +49,6 @@ public class FsmStateDescriptor
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    @SuppressWarnings("unchecked")
     public boolean equals(Object obj) {
         if (obj == this)
             return true;
@@ -206,7 +205,7 @@ public class FsmStateDescriptor
     public int hashCode() {
         int a = fSubstateDescriptors.hashCode();
         int b = fTransitionMap.hashCode();
-        return (a ^ (b >>> 32));
+        return a ^ b >>> 32;
     }
 
     /**
