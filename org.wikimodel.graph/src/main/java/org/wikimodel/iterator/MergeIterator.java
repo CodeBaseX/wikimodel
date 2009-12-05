@@ -65,7 +65,6 @@ public class MergeIterator<T> extends ShiftIterator<T> {
          * @see java.lang.Object#equals(java.lang.Object)
          */
         @Override
-        @SuppressWarnings("unchecked")
         public boolean equals(Object obj) {
             Slot s = (Slot) obj;
             return compareTo(s) == 0;
@@ -92,14 +91,6 @@ public class MergeIterator<T> extends ShiftIterator<T> {
     private boolean fFilterRepetedItems;
 
     private List<Slot> fList = new ArrayList<Slot>();
-
-    /**
-     * 
-     *
-     */
-    public MergeIterator() {
-        this(false, null);
-    }
 
     /**
      * @param filterRepetedItems
