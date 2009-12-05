@@ -106,7 +106,6 @@ public class FsmStateDescriptor
         return fTransitionMap.get(transitionKey);
     }
 
-    @SuppressWarnings("unchecked")
     private FsmStateDescriptor getStateDescriptor(FsmState parent) {
         return (FsmStateDescriptor) parent.getDescriptor();
     }
