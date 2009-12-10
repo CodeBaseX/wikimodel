@@ -574,6 +574,10 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
             "before{{x:toto /}}after",
             "<p>before<span class='wikimodel-macro' macroName='x:toto'/>after</p>");
 
+        test(
+            "**{{macro/}}** text",
+            "<p><strong><span class='wikimodel-macro' macroName='macro'/></strong> text</p>");
+
         // Bad-formed block macros (not-closed)
         test(
             "{{toto}}",
