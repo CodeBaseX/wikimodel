@@ -81,11 +81,11 @@ TOKEN_MGR_DECLS: {
     int verbatimBlockDepth = 0;
     String macroName = "";
     int macroDepth = 0;
-    void initMacro(StringBuffer buf) {
+    void initMacro(CharSequence buf) {
         macroName = getMacroName(buf);
         macroDepth = 1;
     }
-    String getMacroName(StringBuffer buf) {
+    String getMacroName(CharSequence buf) {
         String str = buf.toString();
         str = str.trim();
         str = str.substring(1, str.length() - 1);

@@ -23,10 +23,10 @@ import org.wikimodel.wem.impl.WikiScannerUtil;
 public class ConfluenceWikiScannerTokenManager implements ConfluenceWikiScannerConstants
 {
     String macroName = "";
-    void initMacro(StringBuffer buf) {
+    void initMacro(CharSequence buf) {
         macroName = getMacroName(buf);
     }
-    String getMacroName(StringBuffer buf) {
+    String getMacroName(CharSequence buf) {
         String str = buf.toString();
         str = str.trim();
         str = str.substring(1, str.length() - 1);
@@ -5645,8 +5645,8 @@ public static final int[] jjnewLexState = {
 protected SimpleCharStream input_stream;
 private final int[] jjrounds = new int[538];
 private final int[] jjstateSet = new int[1076];
-private final StringBuffer jjimage = new StringBuffer();
-private StringBuffer image = jjimage;
+private final StringBuilder jjimage = new StringBuilder();
+private StringBuilder image = jjimage;
 private int jjimageLen;
 private int lengthOfMatch;
 protected char curChar;

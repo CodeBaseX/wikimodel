@@ -27,11 +27,11 @@ public class XWikiScannerTokenManager implements XWikiScannerConstants
     int tableDepth = 0;
     String macroName = "";
     int macroDepth = 0;
-    void initMacro(StringBuffer buf) {
+    void initMacro(CharSequence buf) {
         macroName = getMacroName(buf);
         macroDepth = 1;
     }
-    String getMacroName(StringBuffer buf) {
+    String getMacroName(CharSequence buf) {
         String str = buf.toString();
         str = str.trim();
         str = str.substring(2, str.length() - 2);
@@ -3966,8 +3966,8 @@ public static final int[] jjnewLexState = {
 protected SimpleCharStream input_stream;
 private final int[] jjrounds = new int[256];
 private final int[] jjstateSet = new int[512];
-private final StringBuffer jjimage = new StringBuffer();
-private StringBuffer image = jjimage;
+private final StringBuilder jjimage = new StringBuilder();
+private StringBuilder image = jjimage;
 private int jjimageLen;
 private int lengthOfMatch;
 protected char curChar;
