@@ -85,10 +85,10 @@ PARSER_END(ConfluenceWikiScanner)
 
 TOKEN_MGR_DECLS: {
     String macroName = "";
-    void initMacro(StringBuffer buf) {
+    void initMacro(CharSequence buf) {
         macroName = getMacroName(buf);
     }
-    String getMacroName(StringBuffer buf) {
+    String getMacroName(CharSequence buf) {
         String str = buf.toString();
         str = str.trim();
         str = str.substring(1, str.length() - 1);

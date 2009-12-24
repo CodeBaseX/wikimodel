@@ -25,11 +25,11 @@ public class CommonWikiScannerTokenManager implements CommonWikiScannerConstants
     int verbatimBlockDepth = 0;
     String macroName = "";
     int macroDepth = 0;
-    void initMacro(StringBuffer buf) {
+    void initMacro(CharSequence buf) {
         macroName = getMacroName(buf);
         macroDepth = 1;
     }
-    String getMacroName(StringBuffer buf) {
+    String getMacroName(CharSequence buf) {
         String str = buf.toString();
         str = str.trim();
         str = str.substring(1, str.length() - 1);
@@ -10834,8 +10834,8 @@ public static final int[] jjnewLexState = {
 protected SimpleCharStream input_stream;
 private final int[] jjrounds = new int[746];
 private final int[] jjstateSet = new int[1492];
-private final StringBuffer jjimage = new StringBuffer();
-private StringBuffer image = jjimage;
+private final StringBuilder jjimage = new StringBuilder();
+private StringBuilder image = jjimage;
 private int jjimageLen;
 private int lengthOfMatch;
 protected char curChar;

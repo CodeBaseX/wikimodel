@@ -1980,8 +1980,8 @@ public static final int[] jjnewLexState = {
 protected SimpleCharStream input_stream;
 private final int[] jjrounds = new int[123];
 private final int[] jjstateSet = new int[246];
-private final StringBuffer jjimage = new StringBuffer();
-private StringBuffer image = jjimage;
+private final StringBuilder jjimage = new StringBuilder();
+private StringBuilder image = jjimage;
 private int jjimageLen;
 private int lengthOfMatch;
 protected char curChar;
