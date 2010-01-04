@@ -801,7 +801,7 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
         test("this is not |= a table", "<p>this is not |= a table</p>");
         test("this is not | a table", "<p>this is not | a table</p>");
         test("|Hi|Hello|\n\nSome Text", "<table><tbody>\n"
-                + "  <tr><td>Hi</td><td>Hello</td></tr>\n"
+                + "  <tr><td>Hi</td><td>Hello</td><td></td></tr>\n"
                 + "</tbody></table>\n"
                 + "<p>Some Text</p>");
         test("|cell\n\n(% name='value' %)\ntext", "<table><tbody>\n"
@@ -826,6 +826,11 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
                 + "  <tr><td> <em>Italic cell </em></td><td> <strong>Bold cell </strong></td></tr>\n"
                 + "</tbody></table>");
 
+        // Empty cells
+        test("|||cell13", "<table><tbody>\n"
+            + "  <tr><td></td><td></td><td>cell13</td></tr>\n"
+            + "</tbody></table>");
+        
         // Table parameters
         test("(%a=b%)\n|= Header ", ""
             + "<table a='b'><tbody>\n"

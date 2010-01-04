@@ -40,14 +40,14 @@ public class ConfluenceWikiParser implements IWikiParser {
      *      org.wikimodel.wem.IWemListener)
      */
     public void parse(Reader reader, IWemListener listener)
-        throws WikiParserException {
+            throws WikiParserException {
         try {
             ConfluenceWikiScanner scanner = new ConfluenceWikiScanner(reader);
-            WikiScannerContext context = new WikiScannerContext(listener);
+            ConfluenceWikiScannerContext context = new ConfluenceWikiScannerContext(
+                listener);
             scanner.parse(context);
         } catch (ParseException e) {
             throw new WikiParserException(e);
         }
     }
-
 }

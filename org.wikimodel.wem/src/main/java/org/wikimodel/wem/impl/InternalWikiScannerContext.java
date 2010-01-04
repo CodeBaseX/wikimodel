@@ -15,7 +15,7 @@ import org.wikimodel.wem.util.SectionBuilder;
  * @author MikhailKotelnikov
  * @author thomas.mortagne
  */
-class InternalWikiScannerContext implements IWikiScannerContext {
+public class InternalWikiScannerContext implements IWikiScannerContext {
 
     private interface IBlockTypes {
 
@@ -92,9 +92,9 @@ class InternalWikiScannerContext implements IWikiScannerContext {
 
     private int fTableCellCounter = -1;
 
-    private WikiParameters fTableCellParams = WikiParameters.EMPTY;
+    protected WikiParameters fTableCellParams = WikiParameters.EMPTY;
 
-    private boolean fTableHead;
+    protected boolean fTableHead;
 
     private WikiParameters fTableParams;
 
@@ -497,7 +497,7 @@ class InternalWikiScannerContext implements IWikiScannerContext {
         }
     }
 
-    private void checkStyleOpened() {
+    protected void checkStyleOpened() {
         if (isInTable()) {
             checkTableCell();
         } else if (isInList()) {
@@ -969,10 +969,11 @@ class InternalWikiScannerContext implements IWikiScannerContext {
     }
 
     public void onTableCell(boolean head, WikiParameters params) {
+        checkStyleOpened();
         endTableCell();
         fTableHead = head;
         fTableCellParams = params != null ? params : WikiParameters.EMPTY;
-        // beginTableCell(head, params);
+        beginTableCell(head, params);
     }
 
     public void onTableRow(WikiParameters params) {

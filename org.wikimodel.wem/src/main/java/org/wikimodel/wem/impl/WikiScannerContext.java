@@ -24,11 +24,11 @@ import org.wikimodel.wem.util.SectionListener;
  */
 public class WikiScannerContext implements IWikiScannerContext {
 
-    private final IWemListener fListener;
+    protected final IWemListener fListener;
 
-    private SectionBuilder<WikiParameters> fSectionBuilder;
+    protected SectionBuilder<WikiParameters> fSectionBuilder;
 
-    private final Stack<IWikiScannerContext> fStack = new Stack<IWikiScannerContext>();
+    protected final Stack<IWikiScannerContext> fStack = new Stack<IWikiScannerContext>();
 
     public WikiScannerContext(IWemListener listener) {
         fListener = listener;
@@ -332,7 +332,7 @@ public class WikiScannerContext implements IWikiScannerContext {
     /**
      * @return
      */
-    private InternalWikiScannerContext newInternalContext() {
+    protected InternalWikiScannerContext newInternalContext() {
         InternalWikiScannerContext context = new InternalWikiScannerContext(
             fSectionBuilder,
             fListener);
