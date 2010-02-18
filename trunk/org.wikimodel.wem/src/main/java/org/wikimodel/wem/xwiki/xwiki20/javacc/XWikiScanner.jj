@@ -62,7 +62,37 @@ public class XWikiScanner {
         str = WikiScannerUtil.extractSubstring(str, "(%", "%)", '~', false);
         return new XWikiWikiParameters(str);
     }
-    
+
+    protected String normalizeMacroContent(StringBuffer content) {
+      if (content == null) {
+        return null;
+      }
+
+      if (content.length() == 0) {
+        return "";
+      }
+      int startIndex = 0;
+      if (content.charAt(0) == '\u005cn') {
+          ++startIndex;
+      } else if (content.charAt(0) == '\u005cr') {
+          ++startIndex;
+          if (content.charAt(1) == '\u005cn') {
+              ++startIndex;
+          }
+      }
+
+      int endIndex = content.length();
+      if ((content.length() - startIndex) > 0 &&  content.charAt(content.length() - 1) == '\u005cn') {
+          --endIndex;
+          if (content.charAt(content.length() - 2) == '\u005cr') {
+              --endIndex;
+          }
+      } else if (content.charAt(0) == '\u005cr') {
+          --endIndex;
+      }
+
+      return content.substring(startIndex, endIndex);
+    }
 }
 
 PARSER_END(XWikiScanner)
@@ -718,7 +748,7 @@ void macro(Token t, boolean inline):
             }
         }
     )*
-    macroBody(name, paramStr, inline, buf.toString())
+    macroBody(name, paramStr, inline, normalizeMacroContent(buf))
 }
 
 void macroBody(String name, String paramStr, boolean inline, String content):
