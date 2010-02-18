@@ -615,6 +615,14 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
                 + "<![CDATA[toto {{x qsdk}} macro {{sd}} tata ]]>"
                 + "</span>after</p>");
 
+        // New lines formating
+        test("{{macro}}\n{{/macro}}", "<pre class='wikimodel-macro' macroName='macro'><![CDATA[]]></pre>");
+        test("{{macro}}\n\n{{/macro}}", "<pre class='wikimodel-macro' macroName='macro'><![CDATA[]]></pre>");
+        test("{{macro}}\ncontent\n{{/macro}}", "<pre class='wikimodel-macro' macroName='macro'><![CDATA[content]]></pre>");
+        test("text {{macro}}\n{{/macro}} text", "<p>text <span class='wikimodel-macro' macroName='macro'><![CDATA[]]></span> text</p>");
+        test("text {{macro}}\n\n{{/macro}} text", "<p>text <span class='wikimodel-macro' macroName='macro'><![CDATA[]]></span> text</p>");
+        test("text {{macro}}\ncontent\n{{/macro}} text", "<p>text <span class='wikimodel-macro' macroName='macro'><![CDATA[content]]></span> text</p>");
+        
         // Not a macro
         test("{{ toto a=b c=d}}", "<p>{{ toto a=b c=d}}</p>");
 
@@ -627,12 +635,12 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
                 + "</table>\n"
                 + "{{/toto}}",
 
-            "<p>This is a macro: <span class='wikimodel-macro' macroName='toto' x:a='b' x:c='d'><![CDATA[\n"
+            "<p>This is a macro: <span class='wikimodel-macro' macroName='toto' x:a='b' x:c='d'><![CDATA["
                 + "<table>\n"
                 + "#foreach ($x in $table)\n"
                 + "  <tr>hello, $x</tr>\n"
                 + "#end\n"
-                + "</table>\n"
+                + "</table>"
                 + "]]></span></p>");
 
         test(
