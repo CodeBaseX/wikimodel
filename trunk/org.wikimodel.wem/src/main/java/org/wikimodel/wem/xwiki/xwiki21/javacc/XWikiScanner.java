@@ -61,10 +61,11 @@ public class XWikiScanner implements XWikiScannerConstants {
       if (content.length() == 0) {
         return "";
       }
+
       int startIndex = 0;
       if (content.charAt(0) == '\u005cn') {
           ++startIndex;
-      } else if (content.charAt(0) == '\u005cr') {
+      } else if (content.length() >= 2 && content.charAt(0) == '\u005cr') {
           ++startIndex;
           if (content.charAt(1) == '\u005cn') {
               ++startIndex;
@@ -72,13 +73,15 @@ public class XWikiScanner implements XWikiScannerConstants {
       }
 
       int endIndex = content.length();
-      if ((content.length() - startIndex) > 0 &&  content.charAt(content.length() - 1) == '\u005cn') {
+      if ((content.length() - startIndex) >= 1) {
+        if (content.charAt(content.length() - 1) == '\u005cn') {
           --endIndex;
-          if (content.charAt(content.length() - 2) == '\u005cr') {
+          if ((content.length() - startIndex) >= 2 && content.charAt(content.length() - 2) == '\u005cr') {
               --endIndex;
           }
-      } else if (content.charAt(0) == '\u005cr') {
+        } else if (content.charAt(content.length() - 1) == '\u005cr') {
           --endIndex;
+        }
       }
 
       return content.substring(startIndex, endIndex);
