@@ -617,7 +617,9 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
 
         // New lines formating
         test("{{macro}}\n{{/macro}}", "<pre class='wikimodel-macro' macroName='macro'><![CDATA[]]></pre>");
+        test("{{macro}}\r\n{{/macro}}", "<pre class='wikimodel-macro' macroName='macro'><![CDATA[]]></pre>");
         test("{{macro}}\n\n{{/macro}}", "<pre class='wikimodel-macro' macroName='macro'><![CDATA[]]></pre>");
+        test("{{macro}}\r\n\r\n{{/macro}}", "<pre class='wikimodel-macro' macroName='macro'><![CDATA[]]></pre>");
         test("{{macro}}\ncontent\n{{/macro}}", "<pre class='wikimodel-macro' macroName='macro'><![CDATA[content]]></pre>");
         test("text {{macro}}\n{{/macro}} text", "<p>text <span class='wikimodel-macro' macroName='macro'><![CDATA[]]></span> text</p>");
         test("text {{macro}}\n\n{{/macro}} text", "<p>text <span class='wikimodel-macro' macroName='macro'><![CDATA[]]></span> text</p>");
