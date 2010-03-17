@@ -2,7 +2,6 @@
 /* JavaCCOptions:KEEP_LINE_COL=null */
 /*******************************************************************************
  * Copyright (c) 2005,2007 Cognium Systems SA and others.
- * Copyright (c) 2010 Andreas Jonsson
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Apache License, Version 2.0
  * which accompanies this distribution, and is available at
@@ -195,4 +194,4 @@ public class ParseException extends Exception {
    }
 
 }
-/* JavaCC - OriginalChecksum=412535bbcca20af0ba984c0f12e6fac5 (do not edit this line) */
+/* JavaCC - OriginalChecksum=f9e0ad0de44f8a52450572f41921b8c0 (do not edit this line) */
