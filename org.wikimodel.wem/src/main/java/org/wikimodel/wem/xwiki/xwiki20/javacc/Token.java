@@ -2,6 +2,7 @@
 /* JavaCCOptions:TOKEN_EXTENDS=,KEEP_LINE_COL=null,SUPPORT_CLASS_VISIBILITY_PUBLIC=true */
 /*******************************************************************************
  * Copyright (c) 2005,2007 Cognium Systems SA and others.
+ * Copyright (c) 2010 Andreas Jonsson
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Apache License, Version 2.0
  * which accompanies this distribution, and is available at
@@ -138,4 +139,4 @@ public class Token implements java.io.Serializable {
   }
 
 }
-/* JavaCC - OriginalChecksum=3e53df6f09d05ecd3774001dfa0a08b7 (do not edit this line) */
+/* JavaCC - OriginalChecksum=423388746aa1e08384ac287bd33837de (do not edit this line) */

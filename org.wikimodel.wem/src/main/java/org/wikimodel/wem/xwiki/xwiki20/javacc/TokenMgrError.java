@@ -2,6 +2,7 @@
 /* JavaCCOptions: */
 /*******************************************************************************
  * Copyright (c) 2005,2007 Cognium Systems SA and others.
+ * Copyright (c) 2010 Andreas Jonsson
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Apache License, Version 2.0
  * which accompanies this distribution, and is available at
@@ -154,4 +155,4 @@ public class TokenMgrError extends Error
     this(LexicalError(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
   }
 }
-/* JavaCC - OriginalChecksum=190f8f3aedabfe41cf786af343fd3a4d (do not edit this line) */
+/* JavaCC - OriginalChecksum=e7658f04eb8635a5eb862500f0520d41 (do not edit this line) */
