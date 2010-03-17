@@ -140,8 +140,7 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
             + "<p>inside</p>\n"
             + "</div>\n"
             + "<p>after </p>");
-        test("before inside ))) after ", "<p>before inside</p>\n"
-            + "<p>after </p>");
+        test("before inside ))) after ", "<p>before inside ))) after </p>");
         test("before (((\ninside ))) after ", "<p>before</p>\n"
             + "<div class='wikimodel-document'>\n"
             + "<p>inside</p>\n"
@@ -624,7 +623,7 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
         test("text {{macro}}\n{{/macro}} text", "<p>text <span class='wikimodel-macro' macroName='macro'><![CDATA[]]></span> text</p>");
         test("text {{macro}}\n\n{{/macro}} text", "<p>text <span class='wikimodel-macro' macroName='macro'><![CDATA[]]></span> text</p>");
         test("text {{macro}}\ncontent\n{{/macro}} text", "<p>text <span class='wikimodel-macro' macroName='macro'><![CDATA[content]]></span> text</p>");
-        
+
         // Not a macro
         test("{{ toto a=b c=d}}", "<p>{{ toto a=b c=d}}</p>");
 
