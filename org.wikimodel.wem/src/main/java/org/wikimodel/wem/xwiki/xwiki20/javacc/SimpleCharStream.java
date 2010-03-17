@@ -2,7 +2,6 @@
 /* JavaCCOptions:STATIC=false,SUPPORT_CLASS_VISIBILITY_PUBLIC=true */
 /*******************************************************************************
  * Copyright (c) 2005,2007 Cognium Systems SA and others.
- * Copyright (c) 2010 Andreas Jonsson
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Apache License, Version 2.0
  * which accompanies this distribution, and is available at
@@ -479,4 +478,4 @@ public class SimpleCharStream
   }
 
 }
-/* JavaCC - OriginalChecksum=9cd3598513255cead9887446af13adb1 (do not edit this line) */
+/* JavaCC - OriginalChecksum=3d633de4b81c8297df71218ac6814735 (do not edit this line) */
