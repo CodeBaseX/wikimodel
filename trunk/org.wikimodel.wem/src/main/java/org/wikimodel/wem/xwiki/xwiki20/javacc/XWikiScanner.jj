@@ -271,6 +271,8 @@ TOKEN_MGR_DECLS: {
 
 <DEFAULT> SKIP:
 {
+    // The lexical state is controlled in the java code, javacc fails to realize that the empty string match cannot
+    // result in an infinite loop.
     "" : BEGINNING_OF_LINE
 }
 
@@ -289,6 +291,8 @@ TOKEN_MGR_DECLS: {
 
 <BEGINNING_OF_LINE> SKIP:
 {
+    // The lexical state is controlled in the java code, javacc fails to realize that the empty string match cannot
+    // result in an infinite loop.
     "" {returnFromBeginningOfLine();}
 }
 
