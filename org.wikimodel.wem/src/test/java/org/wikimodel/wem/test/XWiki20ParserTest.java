@@ -471,13 +471,21 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
             + "</li>\n"
             + "</ul>");
         
+        test("* \n((( group ))) not group\n* item", "<ul>\n"
+            + "  <li>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<p>group</p>\n"
+            + "</div>\n"
+            + "not group</li>\n"
+            + "  <li>item</li>\n"
+            + "</ul>");
         test("* \n((( group )))\n* item", "<ul>\n"
             + "  <li>\n"
             + "<div class='wikimodel-document'>\n"
             + "<p>group</p>\n"
             + "</div>\n"
             + "</li>\n"
-            + "<li>item</li>\n"
+            + "  <li>item</li>\n"
             + "</ul>");
     }
 
