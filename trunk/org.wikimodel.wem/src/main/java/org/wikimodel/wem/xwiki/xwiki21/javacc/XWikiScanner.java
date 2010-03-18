@@ -506,6 +506,13 @@ public class XWikiScanner implements XWikiScannerConstants {
       case DOC_PARAMETERS:
       case DOC_BEGIN:
         embeddedDocument();
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case NL:
+          jj_consume_token(NL);
+          break;
+        default:
+          ;
+        }
         break;
       case INLINE_PARAMETERS:
       case D_REFERENCE:

@@ -684,7 +684,7 @@ void listItem():
         }
         (LOOKAHEAD(1) newLine() )?
         ( LOOKAHEAD(1)
-          (embeddedDocument()|lines())
+          ((embeddedDocument() [LOOKAHEAD(1) <NL>]) | lines())
         )*
         {
             fContext.endListItem();
