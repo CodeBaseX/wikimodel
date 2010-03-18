@@ -470,6 +470,15 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
             + "</div>\n"
             + "</li>\n"
             + "</ul>");
+        
+        test("* \n((( group )))\n* item", "<ul>\n"
+            + "  <li>\n"
+            + "<div class='wikimodel-document'>\n"
+            + "<p>group</p>\n"
+            + "</div>\n"
+            + "</li>\n"
+            + "<li>item</li>\n"
+            + "</ul>");
     }
 
     public void testMacro() throws WikiParserException {
