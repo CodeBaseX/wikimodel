@@ -343,6 +343,8 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
         test("= Heading 1 ={{macro/}}", "<h1>Heading 1</h1>\n<pre class='wikimodel-macro' macroName='macro'/>");
         test("= Heading 1 =\n{{macro/}}", "<h1>Heading 1</h1>\n<pre class='wikimodel-macro' macroName='macro'/>");
         test("=\n\nnot header", "<h1></h1>\n<p>not header</p>");
+
+        test("= Header = \nParagraph\n\n", "<h1>Header</h1>\n<p> \nParagraph</p>");
     }
 
     public void testImages() throws WikiParserException {
