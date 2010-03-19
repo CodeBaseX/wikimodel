@@ -54,7 +54,7 @@ public class XWikiScannerTokenManager implements XWikiScannerConstants
      *
      * Except for state transitions to BEGINNING_OF_LINE and to
      * special states, we need to control the state transitions in
-     * java code.  For this control the state we keep three variables:
+     * java code.  For this control the state we keep two variables:
      *
      * * preceedingSpecialState
      * * stateStack
@@ -6002,6 +6002,7 @@ void TokenLexicalActions(Token matchedToken)
          break;
       case 14 :
         image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
+          clearBlockState();
           matchedToken.kind = HEADER_END;
          break;
       case 15 :
