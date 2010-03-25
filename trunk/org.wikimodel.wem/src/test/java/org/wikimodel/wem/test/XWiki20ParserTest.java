@@ -719,7 +719,9 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
         test(
             "(% a='b' %)\nparagraph1\n\nparagraph2",
             "<p a='b'>paragraph1</p>\n<p>paragraph2</p>");
-        
+
+        test("(% param='value' %)\n", "<p param='value'></p>");
+
         test("(% param='value' %)\n" +
         		"{{macro}}content{{/macro}}\n\n" +
         		"after",
