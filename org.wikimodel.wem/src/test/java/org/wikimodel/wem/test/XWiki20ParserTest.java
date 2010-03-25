@@ -498,6 +498,16 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
             "<p><span class='wikimodel-macro' macroName='macro'/><span class='wikimodel-macro' macroName='macro'/></p>");
 
         test(
+            "{{macro/}}\n{{macro/}}",
+            "<p><span class='wikimodel-macro' macroName='macro'/>\n" +
+            "<span class='wikimodel-macro' macroName='macro'/></p>");
+        
+        test(
+            "{{macro/}}\ntext",
+            "<p><span class='wikimodel-macro' macroName='macro'/>\n" +
+            "text</p>");
+        
+        test(
             "{{macro/}}\n\n{{macro/}}",
             "<pre class='wikimodel-macro' macroName='macro'/>\n<pre class='wikimodel-macro' macroName='macro'/>");
 
@@ -722,7 +732,7 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
 
         test("(% param='value' %)\n{{macro}}content{{/macro}}inline",
           "<p param='value'><span class='wikimodel-macro' macroName='macro'><![CDATA[content]]></span>inline</p>");
-        
+
         test("(% param='value' %)\n", "<p param='value'></p>");
 
         test("(% param='value' %)\n" +
@@ -730,6 +740,12 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
         		"after",
         	  "<p param='value'><span class='wikimodel-macro' macroName='macro'><![CDATA[content]]></span></p>\n" +
         		"<p>after</p>");
+        
+        test("(% param='value' %)\n\n", "<p param='value'></p>");
+        
+        test("(% param='value' %)\n\na", "<p param='value'></p>\n<p>a</p>");
+        
+        test("(% param='value' %)\n\n\n", "<p param='value'></p>\n<div style='height:2em;'></div>");
     }
 
     /**

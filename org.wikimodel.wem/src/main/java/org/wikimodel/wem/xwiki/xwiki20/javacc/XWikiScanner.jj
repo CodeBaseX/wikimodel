@@ -69,6 +69,14 @@ public class XWikiScanner {
        return params;
     }
 
+    protected void consumeRemainingParameters() {
+        if (wikiParameters != WikiParameters.EMPTY) {
+            fContext.beginParagraph(wikiParameters);
+            fContext.endParagraph();
+            wikiParameters = WikiParameters.EMPTY;
+        }
+    }
+
     private int emptyLinesCount = 0;
 
     private void endBlock() {
@@ -93,9 +101,10 @@ public class XWikiScanner {
     }
 
     private void endDocument() {
-       if (emptyLinesCount > 1) {
-          fContext.onEmptyLines(emptyLinesCount);
-       }
+        consumeRemainingParameters();
+        if (emptyLinesCount > 1) {
+            fContext.onEmptyLines(emptyLinesCount);
+        }
     }
 
     private void processMacro(String start, String content, boolean inline) {
@@ -114,7 +123,13 @@ public class XWikiScanner {
         if (inline) {
             fContext.onMacro(name, params, content, inline);
         } else {
-            fContext.onMacro(name, params, content);
+            WikiParameters wikiParams = consumeWikiParameters();
+            if (wikiParams != WikiParameters.EMPTY) {
+                fContext.beginParagraph(wikiParams);
+                fContext.onMacro(name, params, content, true);
+            } else {
+                fContext.onMacro(name, params, content);
+            }
         }
     }
 
@@ -649,7 +664,11 @@ void macro(boolean inline):
          processMacro(s, c, inline);
       }
    }
-   (LOOKAHEAD(1) line())?
+   ( LOOKAHEAD(1) newLine() )?
+   ( LOOKAHEAD(1) lines() )?
+       {
+           fContext.endParagraph();
+       }
 }
 
 void list():
