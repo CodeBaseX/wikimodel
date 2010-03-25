@@ -58,6 +58,14 @@ public class XWikiScanner implements XWikiScannerConstants {
        return params;
     }
 
+    protected void consumeRemainingParameters() {
+        if (wikiParameters != WikiParameters.EMPTY) {
+            fContext.beginParagraph(wikiParameters);
+            fContext.endParagraph();
+            wikiParameters = WikiParameters.EMPTY;
+        }
+    }
+
     private int emptyLinesCount = 0;
 
     private void endBlock() {
@@ -82,9 +90,10 @@ public class XWikiScanner implements XWikiScannerConstants {
     }
 
     private void endDocument() {
-       if (emptyLinesCount > 1) {
-          fContext.onEmptyLines(emptyLinesCount);
-       }
+        consumeRemainingParameters();
+        if (emptyLinesCount > 1) {
+            fContext.onEmptyLines(emptyLinesCount);
+        }
     }
 
     private void processMacro(String start, String content, boolean inline) {
@@ -103,7 +112,13 @@ public class XWikiScanner implements XWikiScannerConstants {
         if (inline) {
             fContext.onMacro(name, params, content, inline);
         } else {
-            fContext.onMacro(name, params, content);
+            WikiParameters wikiParams = consumeWikiParameters();
+            if (wikiParams != WikiParameters.EMPTY) {
+                fContext.beginParagraph(wikiParams);
+                fContext.onMacro(name, params, content, true);
+            } else {
+                fContext.onMacro(name, params, content);
+            }
         }
     }
 
@@ -395,6 +410,13 @@ public class XWikiScanner implements XWikiScannerConstants {
          processMacro(s, c, inline);
       }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case NL:
+      newLine();
+      break;
+    default:
+      ;
+    }
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case INLINE_PARAMETERS:
     case D_REFERENCE:
     case VERBATIM_START:
@@ -414,11 +436,12 @@ public class XWikiScanner implements XWikiScannerConstants {
     case XWIKI_SPACE:
     case WORD:
     case XWIKI_SPECIAL_SYMBOL:
-      line();
+      lines();
       break;
     default:
       ;
     }
+           fContext.endParagraph();
   }
 
   final public void list() throws ParseException {
