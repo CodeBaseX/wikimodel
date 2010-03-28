@@ -324,7 +324,7 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
         test("<html><p>paragraph</p></html>", "<p>paragraph</p>");
         test(
             "<p>hello <em class=\"italic\">beautiful</em> <strong>world</strong></p>",
-            "<p>hello <em>beautiful</em> <strong>world</strong></p>");
+            "<p>hello <em><span class='wikimodel-parameters'[class='italic']>beautiful</span></em> <strong>world</strong></p>");
 
     }
 

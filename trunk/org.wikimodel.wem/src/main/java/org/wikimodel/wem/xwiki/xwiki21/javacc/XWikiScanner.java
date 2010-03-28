@@ -72,17 +72,7 @@ public class XWikiScanner implements XWikiScannerConstants {
         emptyLinesCount = 0;
     }
 
-    // TODO: No empty lines event is generated if there are
-    //       exactly two new lines before something that is
-    //       not a paragraph, macro block, or verbatim block.
     private void startBlock() {
-        if (emptyLinesCount > 2) {
-            fContext.onEmptyLines(emptyLinesCount-1);
-        }
-        emptyLinesCount = 0;
-    }
-
-    private void startBlockBeforeParagraph() {
         if (emptyLinesCount > 1) {
             fContext.onEmptyLines(emptyLinesCount-1);
         }
@@ -175,7 +165,6 @@ public class XWikiScanner implements XWikiScannerConstants {
       case LIST_ITEM:
       case HORLINE:
       case TABLE_ROW:
-      case PARAMETERS_BEGINNING_OF_LINE:
       case BLOCK_PARAMETERS:
       case QUOT_LINE_BEGIN:
       case DOC_PARAMETERS:
@@ -213,11 +202,6 @@ public class XWikiScanner implements XWikiScannerConstants {
         fContext.endDocument();
   }
 
-  final public void parametersBeginningOfLine() throws ParseException {
-    jj_consume_token(PARAMETERS_BEGINNING_OF_LINE);
-                                     setWikiParameters(token.image);
-  }
-
   final public void inlineParameters() throws ParseException {
     jj_consume_token(INLINE_PARAMETERS);
                          fContext.onFormat(newWikiParameters(token.image));
@@ -236,33 +220,6 @@ public class XWikiScanner implements XWikiScannerConstants {
     case TABLE_ROW:
     case BLOCK_PARAMETERS:
     case QUOT_LINE_BEGIN:
-      blockStart();
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case HEADER_BEGIN:
-        header();
-        break;
-      case BLOCK_PARAMETERS:
-        blockParameters();
-        break;
-      case LIST_ITEM:
-        list();
-        break;
-      case QUOT_LINE_BEGIN:
-        quot();
-        break;
-      case HORLINE:
-        horline();
-        break;
-      case TABLE_ROW:
-        table();
-        blockEnd();
-        break;
-      default:
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-      break;
-    case PARAMETERS_BEGINNING_OF_LINE:
     case DOC_PARAMETERS:
     case INLINE_PARAMETERS:
     case DOC_BEGIN:
@@ -284,8 +241,26 @@ public class XWikiScanner implements XWikiScannerConstants {
     case XWIKI_SPACE:
     case WORD:
     case XWIKI_SPECIAL_SYMBOL:
-      blockStartBeforeParagraph();
+      blockStart();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case HEADER_BEGIN:
+        header();
+        break;
+      case BLOCK_PARAMETERS:
+        blockParameters();
+        break;
+      case LIST_ITEM:
+        list();
+        break;
+      case QUOT_LINE_BEGIN:
+        quot();
+        break;
+      case HORLINE:
+        horline();
+        break;
+      case TABLE_ROW:
+        table();
+        break;
       case MACRO_EMPTY:
       case MACRO_START:
         macro(false);
@@ -311,7 +286,6 @@ public class XWikiScanner implements XWikiScannerConstants {
       case DOC_BEGIN:
         embeddedDocument();
         break;
-      case PARAMETERS_BEGINNING_OF_LINE:
       case INLINE_PARAMETERS:
       case D_REFERENCE:
       case STRONG:
@@ -851,10 +825,6 @@ public class XWikiScanner implements XWikiScannerConstants {
       startBlock();
   }
 
-  final public void blockStartBeforeParagraph() throws ParseException {
-      startBlockBeforeParagraph();
-  }
-
   final public void block() throws ParseException {
     label_9:
     while (true) {
@@ -949,61 +919,7 @@ public class XWikiScanner implements XWikiScannerConstants {
 
   final public void paragraph() throws ParseException {
       fContext.beginParagraph(consumeWikiParameters());
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case PARAMETERS_BEGINNING_OF_LINE:
-      jj_consume_token(PARAMETERS_BEGINNING_OF_LINE);
-                                       fContext.onFormat(newWikiParameters(token.image));
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case INLINE_PARAMETERS:
-      case D_REFERENCE:
-      case VERBATIM_START:
-      case MACRO_EMPTY:
-      case MACRO_START:
-      case STRONG:
-      case EM:
-      case STRIKE:
-      case INS:
-      case SUP:
-      case SUB:
-      case MONO:
-      case D_IMAGE:
-      case D_ATTACH:
-      case BR:
-      case D_XWIKI_URI:
-      case XWIKI_SPACE:
-      case WORD:
-      case XWIKI_SPECIAL_SYMBOL:
-        lines();
-        break;
-      default:
-        ;
-      }
-      break;
-    case INLINE_PARAMETERS:
-    case D_REFERENCE:
-    case VERBATIM_START:
-    case MACRO_EMPTY:
-    case MACRO_START:
-    case STRONG:
-    case EM:
-    case STRIKE:
-    case INS:
-    case SUP:
-    case SUB:
-    case MONO:
-    case D_IMAGE:
-    case D_ATTACH:
-    case BR:
-    case D_XWIKI_URI:
-    case XWIKI_SPACE:
-    case WORD:
-    case XWIKI_SPECIAL_SYMBOL:
-      lines();
-      break;
-    default:
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+    lines();
       fContext.endParagraph();
   }
 
@@ -1241,7 +1157,6 @@ public class XWikiScanner implements XWikiScannerConstants {
       case LIST_ITEM:
       case HORLINE:
       case TABLE_ROW:
-      case PARAMETERS_BEGINNING_OF_LINE:
       case BLOCK_PARAMETERS:
       case QUOT_LINE_BEGIN:
       case DOC_PARAMETERS:

@@ -746,6 +746,8 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
         test("(% param='value' %)\n\na", "<p param='value'></p>\n<p>a</p>");
         
         test("(% param='value' %)\n\n\n", "<p param='value'></p>\n<div style='height:2em;'></div>");
+        
+        test("(% param='value' %)\ntext\n(% param2='value2' %)text", "<p param='value'>text\n<span class='wikimodel-parameters'[param2='value2']>text</span></p>");
     }
 
     /**
@@ -962,5 +964,28 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
         test(
             "[[label>>reference||param=\"value ~\"value~\"\"]]",
             "<p><a href='reference' param='value &#x22;value&#x22;'>label</a></p>");
+    }
+    
+    public void testEmptyLine() throws WikiParserException {
+        test(
+            "paragraph\n\nparagraph",
+            "<p>paragraph</p>\n<p>paragraph</p>");
+        // The following doe snot seems right
+        test(
+            "paragraph\n\n\nparagraph",
+            "<p>paragraph</p>\n<p>paragraph</p>");
+        test(
+            "paragraph\n\n\n\nparagraph",
+            "<p>paragraph</p>\n<div style='height:2em;'></div>\n<p>paragraph</p>");
+        test(
+            "paragraph\n\n\n\n\nparagraph",
+            "<p>paragraph</p>\n<div style='height:3em;'></div>\n<p>paragraph</p>");
+        
+        test(
+            "paragraph\n\n\n\n----",
+            "<p>paragraph</p>\n<div style='height:2em;'></div>\n<hr />");
+        test(
+            "paragraph\n\n\n\n\n----",
+            "<p>paragraph</p>\n<div style='height:3em;'></div>\n<hr />");
     }
 }

@@ -36,6 +36,9 @@ public class PrintInlineListener extends PrintTextListener {
     @Override
     public void beginFormat(WikiFormat format) {
         print(format.getTags(true));
+        if (format.getParams().size() > 0) {
+            print("<span class='wikimodel-parameters'"+format.getParams()+">");
+        }
     }
 
     /**
@@ -53,6 +56,9 @@ public class PrintInlineListener extends PrintTextListener {
      */
     @Override
     public void endFormat(WikiFormat format) {
+        if (format.getParams().size() > 0) {
+            print("</span>");
+        }
         print(format.getTags(false));
     }
 

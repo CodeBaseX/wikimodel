@@ -29,177 +29,175 @@ public interface XWikiScannerConstants {
   /** RegularExpression Id. */
   int TABLE_ROW = 5;
   /** RegularExpression Id. */
-  int PARAMETERS_BEGINNING_OF_LINE = 6;
+  int BLOCK_PARAMETERS = 6;
   /** RegularExpression Id. */
-  int BLOCK_PARAMETERS = 7;
+  int NL_BEGINING_OF_LINE = 7;
   /** RegularExpression Id. */
-  int NL_BEGINING_OF_LINE = 8;
+  int QUOT_LINE_BEGIN = 8;
   /** RegularExpression Id. */
-  int QUOT_LINE_BEGIN = 9;
+  int TABLE_HCELL = 10;
   /** RegularExpression Id. */
-  int TABLE_HCELL = 11;
+  int TABLE_CELL = 11;
   /** RegularExpression Id. */
-  int TABLE_CELL = 12;
+  int HEADER_END = 12;
   /** RegularExpression Id. */
-  int HEADER_END = 13;
+  int HEADER_END_INLINE = 13;
   /** RegularExpression Id. */
-  int HEADER_END_INLINE = 14;
+  int NEW_HEADER_BEGIN = 14;
   /** RegularExpression Id. */
-  int NEW_HEADER_BEGIN = 15;
+  int INTERNAL_VERBATIM_START = 15;
   /** RegularExpression Id. */
-  int INTERNAL_VERBATIM_START = 16;
+  int VERBATIM_END = 16;
   /** RegularExpression Id. */
-  int VERBATIM_END = 17;
+  int VERBATIM_CONTENT = 17;
   /** RegularExpression Id. */
-  int VERBATIM_CONTENT = 18;
+  int INTERNAL_MACRO_START = 18;
   /** RegularExpression Id. */
-  int INTERNAL_MACRO_START = 19;
+  int MACRO_END = 19;
   /** RegularExpression Id. */
-  int MACRO_END = 20;
+  int MACRO_CONTENT = 20;
   /** RegularExpression Id. */
-  int MACRO_CONTENT = 21;
+  int PARAMS = 21;
   /** RegularExpression Id. */
-  int PARAMS = 22;
+  int HCELL = 22;
   /** RegularExpression Id. */
-  int HCELL = 23;
+  int CELL = 23;
   /** RegularExpression Id. */
-  int CELL = 24;
+  int MACRO_NAME = 24;
   /** RegularExpression Id. */
-  int MACRO_NAME = 25;
+  int MACRO_PARAMS = 25;
   /** RegularExpression Id. */
-  int MACRO_PARAMS = 26;
+  int HEADER_BEGIN_PATTERN = 26;
   /** RegularExpression Id. */
-  int HEADER_BEGIN_PATTERN = 27;
+  int REFERENCE_IMAGE = 27;
   /** RegularExpression Id. */
-  int REFERENCE_IMAGE = 28;
+  int REFERENCE = 28;
   /** RegularExpression Id. */
-  int REFERENCE = 29;
+  int IMAGE = 29;
   /** RegularExpression Id. */
-  int IMAGE = 30;
+  int ATTACH = 30;
   /** RegularExpression Id. */
-  int ATTACH = 31;
+  int XWIKI_URI = 31;
   /** RegularExpression Id. */
-  int XWIKI_URI = 32;
+  int XWIKI_URI_URIS = 32;
   /** RegularExpression Id. */
-  int XWIKI_URI_URIS = 33;
+  int XWIKI_CHAR = 33;
   /** RegularExpression Id. */
-  int XWIKI_CHAR = 34;
+  int EMPTY_LINE = 34;
   /** RegularExpression Id. */
-  int EMPTY_LINE = 35;
+  int NEW_LINE = 35;
   /** RegularExpression Id. */
-  int NEW_LINE = 36;
+  int SPACE = 36;
   /** RegularExpression Id. */
-  int SPACE = 37;
+  int SPECIAL_SYMBOL = 37;
   /** RegularExpression Id. */
-  int SPECIAL_SYMBOL = 38;
+  int CHAR = 38;
   /** RegularExpression Id. */
-  int CHAR = 39;
+  int URI = 39;
   /** RegularExpression Id. */
-  int URI = 40;
+  int ALPHA = 40;
   /** RegularExpression Id. */
-  int ALPHA = 41;
+  int DIGIT = 41;
   /** RegularExpression Id. */
-  int DIGIT = 42;
+  int HEXDIG = 42;
   /** RegularExpression Id. */
-  int HEXDIG = 43;
+  int URI_GEN_DELIMS = 43;
   /** RegularExpression Id. */
-  int URI_GEN_DELIMS = 44;
+  int URI_SUB_DELIMS = 44;
   /** RegularExpression Id. */
-  int URI_SUB_DELIMS = 45;
+  int URI_UNRESERVED = 45;
   /** RegularExpression Id. */
-  int URI_UNRESERVED = 46;
+  int URI_RESERVED = 46;
   /** RegularExpression Id. */
-  int URI_RESERVED = 47;
+  int URI_SCHEME = 47;
   /** RegularExpression Id. */
-  int URI_SCHEME = 48;
+  int URI_SCHEME_COMPOSITE = 48;
   /** RegularExpression Id. */
-  int URI_SCHEME_COMPOSITE = 49;
+  int URI_PCT_ENCODED = 49;
   /** RegularExpression Id. */
-  int URI_PCT_ENCODED = 50;
+  int URI_PCHAR_FIRST = 50;
   /** RegularExpression Id. */
-  int URI_PCHAR_FIRST = 51;
+  int URI_PCHAR = 51;
   /** RegularExpression Id. */
-  int URI_PCHAR = 52;
+  int URI_QUERY = 52;
   /** RegularExpression Id. */
-  int URI_QUERY = 53;
+  int URI_FRAGMENT = 53;
   /** RegularExpression Id. */
-  int URI_FRAGMENT = 54;
+  int URI_HIER_PART = 54;
   /** RegularExpression Id. */
-  int URI_HIER_PART = 55;
+  int URI_AUTHORITY = 55;
   /** RegularExpression Id. */
-  int URI_AUTHORITY = 56;
+  int URI_USERINFO = 56;
   /** RegularExpression Id. */
-  int URI_USERINFO = 57;
+  int URI_PATH_ABEMPTY = 57;
   /** RegularExpression Id. */
-  int URI_PATH_ABEMPTY = 58;
+  int URI_PATH_ABSOLUTE = 58;
   /** RegularExpression Id. */
-  int URI_PATH_ABSOLUTE = 59;
+  int URI_PATH_ROOTLESS = 59;
   /** RegularExpression Id. */
-  int URI_PATH_ROOTLESS = 60;
+  int URI_SEGMENT = 60;
   /** RegularExpression Id. */
-  int URI_SEGMENT = 61;
+  int URI_SEGMENT_NZ = 61;
   /** RegularExpression Id. */
-  int URI_SEGMENT_NZ = 62;
+  int URI_SEGMENT_NZ_NC = 62;
   /** RegularExpression Id. */
-  int URI_SEGMENT_NZ_NC = 63;
+  int URI_PORT = 63;
   /** RegularExpression Id. */
-  int URI_PORT = 64;
+  int URI_HOST = 64;
   /** RegularExpression Id. */
-  int URI_HOST = 65;
+  int URI_REG_NAME = 65;
   /** RegularExpression Id. */
-  int URI_REG_NAME = 66;
+  int DOC_PARAMETERS = 66;
   /** RegularExpression Id. */
-  int DOC_PARAMETERS = 67;
+  int INLINE_PARAMETERS = 67;
   /** RegularExpression Id. */
-  int INLINE_PARAMETERS = 68;
+  int DOC_BEGIN = 68;
   /** RegularExpression Id. */
-  int DOC_BEGIN = 69;
+  int D_REFERENCE = 69;
   /** RegularExpression Id. */
-  int D_REFERENCE = 70;
+  int VERBATIM_START = 70;
   /** RegularExpression Id. */
-  int VERBATIM_START = 71;
+  int MACRO_EMPTY = 71;
   /** RegularExpression Id. */
-  int MACRO_EMPTY = 72;
+  int MACRO_START = 72;
   /** RegularExpression Id. */
-  int MACRO_START = 73;
+  int STRONG = 73;
   /** RegularExpression Id. */
-  int STRONG = 74;
+  int EM = 74;
   /** RegularExpression Id. */
-  int EM = 75;
+  int STRIKE = 75;
   /** RegularExpression Id. */
-  int STRIKE = 76;
+  int INS = 76;
   /** RegularExpression Id. */
-  int INS = 77;
+  int SUP = 77;
   /** RegularExpression Id. */
-  int SUP = 78;
+  int SUB = 78;
   /** RegularExpression Id. */
-  int SUB = 79;
+  int MONO = 79;
   /** RegularExpression Id. */
-  int MONO = 80;
+  int D_IMAGE = 80;
   /** RegularExpression Id. */
-  int D_IMAGE = 81;
+  int D_ATTACH = 81;
   /** RegularExpression Id. */
-  int D_ATTACH = 82;
+  int BR = 82;
   /** RegularExpression Id. */
-  int BR = 83;
+  int D_XWIKI_URI = 83;
   /** RegularExpression Id. */
-  int D_XWIKI_URI = 84;
+  int XWIKI_SPACE = 84;
   /** RegularExpression Id. */
-  int XWIKI_SPACE = 85;
+  int DOC_END = 85;
   /** RegularExpression Id. */
-  int DOC_END = 86;
+  int NL = 86;
   /** RegularExpression Id. */
-  int NL = 87;
+  int WORD = 87;
   /** RegularExpression Id. */
-  int WORD = 88;
+  int XWIKI_SPECIAL_SYMBOL = 88;
   /** RegularExpression Id. */
-  int XWIKI_SPECIAL_SYMBOL = 89;
+  int TABLE_END_EMPTY_LINE = 89;
   /** RegularExpression Id. */
-  int TABLE_END_EMPTY_LINE = 90;
+  int HEADER_END_EMPTY_LINE = 90;
   /** RegularExpression Id. */
-  int HEADER_END_EMPTY_LINE = 91;
-  /** RegularExpression Id. */
-  int BLOCK_END = 92;
+  int BLOCK_END = 91;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -224,7 +222,6 @@ public interface XWikiScannerConstants {
     "<LIST_ITEM>",
     "<HORLINE>",
     "<TABLE_ROW>",
-    "<PARAMETERS_BEGINNING_OF_LINE>",
     "<BLOCK_PARAMETERS>",
     "<NL_BEGINING_OF_LINE>",
     "<QUOT_LINE_BEGIN>",
