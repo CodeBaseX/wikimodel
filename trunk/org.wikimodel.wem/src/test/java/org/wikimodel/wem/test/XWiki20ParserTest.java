@@ -508,6 +508,10 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
             "text</p>");
         
         test(
+            "{{macro/}}\n",
+            "<p><span class='wikimodel-macro' macroName='macro'/>\n</p>");
+        
+        test(
             "{{macro/}}\n\n{{macro/}}",
             "<pre class='wikimodel-macro' macroName='macro'/>\n<pre class='wikimodel-macro' macroName='macro'/>");
 
