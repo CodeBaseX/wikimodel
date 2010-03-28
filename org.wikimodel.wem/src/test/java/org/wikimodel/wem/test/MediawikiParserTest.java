@@ -24,7 +24,6 @@ import org.wikimodel.wem.xhtml.PrintListener;
  */
 public class MediawikiParserTest extends AbstractWikiParserTest
 {
-
     /**
      * @param name
      */
