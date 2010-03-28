@@ -59,159 +59,171 @@ public interface MediawikiScannerConstants {
   /** RegularExpression Id. */
   int FORMAT_SYMBOL = 19;
   /** RegularExpression Id. */
-  int NEW_LINE = 20;
+  int MACRO = 20;
   /** RegularExpression Id. */
-  int SPACE = 21;
+  int NO_INCLUDE = 21;
   /** RegularExpression Id. */
-  int SPECIAL_SYMBOL = 22;
+  int NEW_LINE = 22;
   /** RegularExpression Id. */
-  int CHAR = 23;
+  int SPACE = 23;
   /** RegularExpression Id. */
-  int URI = 24;
+  int SPECIAL_SYMBOL = 24;
   /** RegularExpression Id. */
-  int ALPHA = 25;
+  int CHAR = 25;
   /** RegularExpression Id. */
-  int DIGIT = 26;
+  int URI = 26;
   /** RegularExpression Id. */
-  int HEXDIG = 27;
+  int ALPHA = 27;
   /** RegularExpression Id. */
-  int URI_GEN_DELIMS = 28;
+  int DIGIT = 28;
   /** RegularExpression Id. */
-  int URI_SUB_DELIMS = 29;
+  int HEXDIG = 29;
   /** RegularExpression Id. */
-  int URI_UNRESERVED = 30;
+  int URI_GEN_DELIMS = 30;
   /** RegularExpression Id. */
-  int URI_RESERVED = 31;
+  int URI_SUB_DELIMS = 31;
   /** RegularExpression Id. */
-  int URI_SCHEME = 32;
+  int URI_UNRESERVED = 32;
   /** RegularExpression Id. */
-  int URI_SCHEME_COMPOSITE = 33;
+  int URI_RESERVED = 33;
   /** RegularExpression Id. */
-  int URI_PCT_ENCODED = 34;
+  int URI_SCHEME = 34;
   /** RegularExpression Id. */
-  int URI_PCHAR_FIRST = 35;
+  int URI_SCHEME_COMPOSITE = 35;
   /** RegularExpression Id. */
-  int URI_PCHAR = 36;
+  int URI_PCT_ENCODED = 36;
   /** RegularExpression Id. */
-  int URI_QUERY = 37;
+  int URI_PCHAR_FIRST = 37;
   /** RegularExpression Id. */
-  int URI_FRAGMENT = 38;
+  int URI_PCHAR = 38;
   /** RegularExpression Id. */
-  int URI_HIER_PART = 39;
+  int URI_QUERY = 39;
   /** RegularExpression Id. */
-  int URI_AUTHORITY = 40;
+  int URI_FRAGMENT = 40;
   /** RegularExpression Id. */
-  int URI_USERINFO = 41;
+  int URI_HIER_PART = 41;
   /** RegularExpression Id. */
-  int URI_PATH_ABEMPTY = 42;
+  int URI_AUTHORITY = 42;
   /** RegularExpression Id. */
-  int URI_PATH_ABSOLUTE = 43;
+  int URI_USERINFO = 43;
   /** RegularExpression Id. */
-  int URI_PATH_ROOTLESS = 44;
+  int URI_PATH_ABEMPTY = 44;
   /** RegularExpression Id. */
-  int URI_SEGMENT = 45;
+  int URI_PATH_ABSOLUTE = 45;
   /** RegularExpression Id. */
-  int URI_SEGMENT_NZ = 46;
+  int URI_PATH_ROOTLESS = 46;
   /** RegularExpression Id. */
-  int URI_SEGMENT_NZ_NC = 47;
+  int URI_SEGMENT = 47;
   /** RegularExpression Id. */
-  int URI_PORT = 48;
+  int URI_SEGMENT_NZ = 48;
   /** RegularExpression Id. */
-  int URI_HOST = 49;
+  int URI_SEGMENT_NZ_NC = 49;
   /** RegularExpression Id. */
-  int URI_REG_NAME = 50;
+  int URI_PORT = 50;
   /** RegularExpression Id. */
-  int I_ESCAPE = 51;
+  int URI_HOST = 51;
   /** RegularExpression Id. */
-  int I_TABLE_BEGIN = 52;
+  int URI_REG_NAME = 52;
   /** RegularExpression Id. */
-  int I_TABLE_END = 53;
+  int I_ESCAPE = 53;
   /** RegularExpression Id. */
-  int I_TABLE_CAPTION = 54;
+  int I_TABLE_BEGIN = 54;
   /** RegularExpression Id. */
-  int I_TABLE_ROW = 55;
+  int I_TABLE_END = 55;
   /** RegularExpression Id. */
-  int I_TABLE_CELL = 56;
+  int I_TABLE_CAPTION = 56;
   /** RegularExpression Id. */
-  int I_TABLE_CELL_NL = 57;
+  int I_TABLE_ROW = 57;
   /** RegularExpression Id. */
-  int I_LIST_ITEM = 58;
+  int I_TABLE_CELL = 58;
   /** RegularExpression Id. */
-  int I_HEADER_BEGIN = 59;
+  int I_TABLE_CELL_NL = 59;
   /** RegularExpression Id. */
-  int I_HORLINE = 60;
+  int I_LIST_ITEM = 60;
   /** RegularExpression Id. */
-  int I_REFERENCE = 61;
+  int I_HEADER_BEGIN = 61;
   /** RegularExpression Id. */
-  int I_HEADER_END = 62;
+  int I_HORLINE = 62;
   /** RegularExpression Id. */
-  int I_DD = 63;
+  int I_REFERENCE = 63;
   /** RegularExpression Id. */
-  int I_VERBATIM_BLOCK = 64;
+  int I_HEADER_END = 64;
   /** RegularExpression Id. */
-  int I_VERBATIM_INLINE = 65;
+  int I_DD = 65;
   /** RegularExpression Id. */
-  int I_FORMAT_SYMBOL = 66;
+  int I_VERBATIM_BLOCK = 66;
   /** RegularExpression Id. */
-  int I_BR = 67;
+  int I_VERBATIM_INLINE = 67;
   /** RegularExpression Id. */
-  int I_QUOT_LINE = 68;
+  int I_FORMAT_SYMBOL = 68;
   /** RegularExpression Id. */
-  int I_URI = 69;
+  int I_BR = 69;
   /** RegularExpression Id. */
-  int I_NL = 70;
+  int I_QUOT_LINE = 70;
   /** RegularExpression Id. */
-  int I_SPACE = 71;
+  int I_MACRO = 71;
   /** RegularExpression Id. */
-  int I_WORD = 72;
+  int I_NO_INCLUDE = 72;
   /** RegularExpression Id. */
-  int I_SPECIAL_SYMBOL = 73;
+  int I_URI = 73;
   /** RegularExpression Id. */
-  int D_ESCAPE = 74;
+  int I_NL = 74;
   /** RegularExpression Id. */
-  int D_TABLE_BEGIN = 75;
+  int I_SPACE = 75;
   /** RegularExpression Id. */
-  int D_TABLE_END = 76;
+  int I_WORD = 76;
   /** RegularExpression Id. */
-  int D_TABLE_CAPTION = 77;
+  int I_SPECIAL_SYMBOL = 77;
   /** RegularExpression Id. */
-  int D_TABLE_ROW = 78;
+  int D_ESCAPE = 78;
   /** RegularExpression Id. */
-  int D_TABLE_CELL = 79;
+  int D_TABLE_BEGIN = 79;
   /** RegularExpression Id. */
-  int D_TABLE_CELL_NL = 80;
+  int D_TABLE_END = 80;
   /** RegularExpression Id. */
-  int D_LIST_ITEM = 81;
+  int D_TABLE_CAPTION = 81;
   /** RegularExpression Id. */
-  int D_HEADER_BEGIN = 82;
+  int D_TABLE_ROW = 82;
   /** RegularExpression Id. */
-  int D_HORLINE = 83;
+  int D_TABLE_CELL = 83;
   /** RegularExpression Id. */
-  int D_REFERENCE = 84;
+  int D_TABLE_CELL_NL = 84;
   /** RegularExpression Id. */
-  int D_HEADER_END = 85;
+  int D_LIST_ITEM = 85;
   /** RegularExpression Id. */
-  int D_DD = 86;
+  int D_HEADER_BEGIN = 86;
   /** RegularExpression Id. */
-  int D_VERBATIM_BLOCK = 87;
+  int D_HORLINE = 87;
   /** RegularExpression Id. */
-  int D_VERBATIM_INLINE = 88;
+  int D_REFERENCE = 88;
   /** RegularExpression Id. */
-  int D_FORMAT_SYMBOL = 89;
+  int D_HEADER_END = 89;
   /** RegularExpression Id. */
-  int D_BR = 90;
+  int D_DD = 90;
   /** RegularExpression Id. */
-  int D_QUOT_LINE = 91;
+  int D_VERBATIM_BLOCK = 91;
   /** RegularExpression Id. */
-  int D_URI = 92;
+  int D_VERBATIM_INLINE = 92;
   /** RegularExpression Id. */
-  int D_NL = 93;
+  int D_FORMAT_SYMBOL = 93;
   /** RegularExpression Id. */
-  int D_SPACE = 94;
+  int D_BR = 94;
   /** RegularExpression Id. */
-  int D_WORD = 95;
+  int D_QUOT_LINE = 95;
   /** RegularExpression Id. */
-  int D_SPECIAL_SYMBOL = 96;
+  int D_MACRO = 96;
+  /** RegularExpression Id. */
+  int D_NO_INCLUDE = 97;
+  /** RegularExpression Id. */
+  int D_URI = 98;
+  /** RegularExpression Id. */
+  int D_NL = 99;
+  /** RegularExpression Id. */
+  int D_SPACE = 100;
+  /** RegularExpression Id. */
+  int D_WORD = 101;
+  /** RegularExpression Id. */
+  int D_SPECIAL_SYMBOL = 102;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -240,6 +252,8 @@ public interface MediawikiScannerConstants {
     "<TABLE_CELL_NL>",
     "<DD>",
     "<FORMAT_SYMBOL>",
+    "<MACRO>",
+    "<NO_INCLUDE>",
     "<NEW_LINE>",
     "<SPACE>",
     "<SPECIAL_SYMBOL>",
@@ -289,6 +303,8 @@ public interface MediawikiScannerConstants {
     "<I_FORMAT_SYMBOL>",
     "<I_BR>",
     "<I_QUOT_LINE>",
+    "<I_MACRO>",
+    "<I_NO_INCLUDE>",
     "<I_URI>",
     "<I_NL>",
     "<I_SPACE>",
@@ -312,6 +328,8 @@ public interface MediawikiScannerConstants {
     "<D_FORMAT_SYMBOL>",
     "<D_BR>",
     "<D_QUOT_LINE>",
+    "<D_MACRO>",
+    "<D_NO_INCLUDE>",
     "<D_URI>",
     "<D_NL>",
     "<D_SPACE>",
