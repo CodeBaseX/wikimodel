@@ -2,6 +2,7 @@ options
 {
     STATIC = false;
     UNICODE_INPUT = true;
+    IGNORE_CASE = true;
 }
 
 PARSER_BEGIN(MediawikiScanner)
@@ -33,6 +34,16 @@ public class MediawikiScanner {
 
     private IWikiScannerContext fContext;
 
+    /**
+     * Count number of empty lines to send when we emit the onEmptyLines event.
+     * We need to count them since the number we send depend on the next block
+     * element. For all block elements other than paragraph we send one more
+     * empty lines since these blocks are recognized by the lexer as NewLine
+     * token followed by the token for the element and thus that "eats" one
+     * NewLine which is why we need to add it again.
+     */
+    private int emptyLinesCount = 0;
+    
     private IWikiReferenceParser fReferenceParser = new MediaWikiReferenceParser();
 
     public void parse(IWikiScannerContext context) throws ParseException {
@@ -54,12 +65,11 @@ TOKEN_MGR_DECLS: {
 
     | <#HEADER: ("="){1, 6} >
     | <#ESCAPE: ("[[" | "~" ~[" ", "\t", "\n", "\r"]) >
-    | <#BR: "<" ("b" | "B") ("r" | "R") ("/")? ">" >
+    | <#BR: "<" ("br")(<SPACE>)* ("/")? ">" >
     | <#VERBATIM_BLOCK: ( 
-    	  "<nowiki>" ( "\\" ~[] | ~[] )* "</nowiki>"  
-    	| "<pre>" ( "\\" ~[] | ~[] )* "</pre>"
-    	| "<references" ( <SPACE> )* "/>"
-    	)  >
+    	  "<nowiki>" ( ~["<"] | "<" ~["/"] | "</" ~["n"] | "</n" ~["o"] | "</no" ~["w"] | "</now" ~["i"] | "</nowi" ~["k"] | "</nowik" ~["i"] | "</nowiki" ~[">"] )* "</nowiki>"  
+    	| ("<pre>"|"<pre style=\""(<ALPHA>|<DIGIT>|<SPACE>|["#","."])+"\">") ( ~["<"] | "<" ~["/"] | "</" ~["p"] | "</p" ~["r"] | "</pr" ~["e"] | "</pre" ~[">"])*"</pre>"
+    	)>
     | <#VERBATIM_INLINE: (
           "<math>" ( "\\" ~[] | ~[] )* "</math>"
         ) >
@@ -77,13 +87,20 @@ TOKEN_MGR_DECLS: {
 
     | <#DD: (<SPACE>)* ":" (<SPACE>)* >
     | <#FORMAT_SYMBOL : (
-           "''''" | "'''" | "''" 
+           "'''''" | "'''" | "''" 
          | "<code>" | "</code>" 
          | "<sub>" | "</sub>" 
          | "<sup>" | "</sup>" 
          | "<tt>" | "</tt>" 
-         | "<ref>" | "</ref>" 
+         | "<ref>" | "</ref>"
+         | "<ref name=\""(<ALPHA>|<DIGIT>|<SPACE>)+"\">"
+         | "<del>" | "</del>"
+         | "<s>" | "</s>"
          ) >
+
+    //MediaWiki Magic Words and Extensions.
+    | <#MACRO: ("{{"( "\\" ~[] | ~["{", "}"] )*"}}" | "__"(< ALPHA >)+"__" | "<references" ( <SPACE> )* "/>") >
+    | <#NO_INCLUDE: ("<noinclude>"|"</noinclude>") >
 
 // <common-tokens>
     // =========================================================================
@@ -187,6 +204,8 @@ TOKEN_MGR_DECLS: {
     | <I_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
     | <I_BR : <BR> > : DEFAULT
     | <I_QUOT_LINE: (<NEW_LINE>)? <QUOT_LINE> > : DEFAULT
+    | <I_MACRO :<MACRO> > : DEFAULT
+    | <I_NO_INCLUDE :<NO_INCLUDE> > : DEFAULT
 
     // "Standard" tokens. They are the same for all wikis.
     | <I_URI : <URI> > : DEFAULT
@@ -220,6 +239,8 @@ TOKEN_MGR_DECLS: {
     | <D_FORMAT_SYMBOL : <FORMAT_SYMBOL> > : DEFAULT
     | <D_BR : <BR> > : DEFAULT
     | <D_QUOT_LINE: <NEW_LINE> <QUOT_LINE> > : DEFAULT
+    | <D_MACRO :<MACRO> > : DEFAULT
+    | <D_NO_INCLUDE :<NO_INCLUDE> > : DEFAULT
 
     // "Standard" tokens. They are the same for all wikis.
     | <D_URI : <URI> > : DEFAULT
@@ -251,6 +272,8 @@ TOKEN_MGR_DECLS: {
     Token getFORMAT_SYMBOL(): {Token t=null;} {(t=<I_FORMAT_SYMBOL>|t=<D_FORMAT_SYMBOL>){return t;}}
     Token getBR(): {Token t=null;} {(t=<I_BR>|t=<D_BR>){return t;}}
     Token getQUOT_LINE(): {Token t=null;} {(t=<I_QUOT_LINE>|t=<D_QUOT_LINE>){return t;}}
+    Token getMACRO(): {Token t=null;} {(t=<I_MACRO>|t=<D_MACRO>){return t;}}
+    Token getNO_INCLUDE(): {Token t=null;} {(t=<I_NO_INCLUDE>|t=<D_NO_INCLUDE>){return t;}}
 
     // "Standard" tokens. They are the same for all wikis.
     Token getURI(): {Token t=null;} {(t=<I_URI>|t=<D_URI>){return t;}}
@@ -271,6 +294,7 @@ void doParse():
     ( docElements() )*
     <EOF>
     {
+        sendOnEmptyLinesEvent(true);
         fContext.endDocument();
     }
 }
@@ -279,7 +303,11 @@ void docElements():
 {
 }
 {
-    table() 
+    macro()
+    |
+    noInclude()
+    | 
+    LOOKAHEAD(2) table() 
     |
     header() 
     |
@@ -290,13 +318,50 @@ void docElements():
     horline()
     |
     (
-    LOOKAHEAD(2) 
+    LOOKAHEAD(2)
         quot()
         |
         paragraph()
     )
     | 
     emptyParagraph()
+}
+
+void macro():
+{
+   Token t = null;
+}
+{
+    t = getMACRO()
+    {
+        sendOnEmptyLinesEvent(false);
+	String str=t.image.trim();
+        if(str.equals("__TOC__"))
+        {
+          fContext.onMacro("toc", WikiParameters.newWikiParameters("numbered=true"), null);
+        }else if(str.equals("__NOTOC__"))
+        {
+          fContext.onMacro("notoc", WikiParameters.EMPTY, null);
+        }else if(str.equals("__FORCETOC__"))
+        {
+          fContext.onMacro("forcetoc",WikiParameters.EMPTY, null);
+        }else if(str.contains("references"))        {          fContext.onMacro("footnotes",WikiParameters.EMPTY,null);
+        }else
+        {
+          fContext.onMacro("unhandled",WikiParameters.newWikiParameters(""),str);		
+        }
+    }    
+}
+
+void noInclude():
+{
+   Token t = null;
+}
+{
+    t = getNO_INCLUDE()
+    {
+	sendOnEmptyLinesEvent(true);
+    }    
 }
 
 void header():
@@ -306,6 +371,7 @@ void header():
 {
     t = getHEADER_BEGIN()
     {
+	sendOnEmptyLinesEvent(true);
         int level = t.image.trim().length();
         fContext.beginHeader(level);
     }
@@ -325,12 +391,16 @@ void table():
 
     t = getTABLE_BEGIN()
     {
-//        fContext.beginTableExplicit();
+      sendOnEmptyLinesEvent(true);
+      str=t.image.trim();
+      str=str.substring("{|".length()).trim();
+      params = new WikiParameters(str);
+      fContext.beginTable(params);
     }
     |
     t = getTABLE_END()
     {
-//        fContext.endTableExplicit();
+      fContext.endTable();
     }
     |
     t = getTABLE_ROW()
@@ -344,11 +414,11 @@ void table():
     }
     |
     {
-        fContext.beginTable();
+      // no need to call beginTable() event here because it's called automatically
     }
     ( LOOKAHEAD(2) tableRow() )+
     {
-        fContext.endTable();
+       // no need to call endTable() event here because it's called automatically
     }
 }
 
@@ -359,6 +429,7 @@ void tableRow():
 {
     ( t = getTABLE_CELL_NL() )
     {
+      	sendOnEmptyLinesEvent(true);
         String str = t.image.trim();
         boolean head  = str.startsWith("!");
         fContext.beginTableCell(head);
@@ -373,6 +444,7 @@ void list():
 }
 {
     {
+        sendOnEmptyLinesEvent(true);
         fContext.beginList();
     }
     ( LOOKAHEAD(2) listItem() )+
@@ -388,6 +460,7 @@ void listItem():
 {
     t = getLIST_ITEM()   
     {
+        sendOnEmptyLinesEvent(true);
         fContext.beginListItem(t.image);
     }
     ( LOOKAHEAD(2) block() )*
@@ -400,7 +473,7 @@ void block():
 {
 }
 {
-    ( lines() | verbatimBlock() | table() )
+    ( lines() | verbatimBlock() )
 }
 
 void verbatimBlock():
@@ -410,17 +483,24 @@ void verbatimBlock():
 {
     t = getVERBATIM_BLOCK()
     {
+	sendOnEmptyLinesEvent(true);
         String str = t.image.trim();
+        String tag=str.substring(1,str.indexOf('>'));
         int len = 0;
-        if (str.startsWith("<nowiki>")) {
-        	len = "<nowiki>".length();
-        } else {
-			len = "<pre>".length();
+        int end = 0;
+        WikiParameters params = null;
+        if ("nowiki".equalsIgnoreCase(tag)|| "pre".equalsIgnoreCase(tag)) {
+          len = tag.length()+2;
+          end = len;
+          str = str.substring(len, str.length() - end - 1);
+          fContext.onVerbatim(str, false);
+        }else if (str.startsWith("<pre")) {
+          len = str.indexOf('>')+1;
+          end = "<pre>".length();
+          params=new WikiParameters(str.substring("<pre".length(),len-1));
+          str = str.substring(len, str.length() - end - 1);
+          fContext.onVerbatim(str, false,params);
         }
-        if (len > 0) {
-        	str = str.substring(len, str.length() - len - 1);
-        }
-        fContext.onVerbatim(str, false);
     }
 }
 
@@ -442,6 +522,7 @@ void paragraph():
 }
 {
     {
+	sendOnEmptyLinesEvent(true);
         fContext.beginParagraph();
     }
     lines()
@@ -491,7 +572,7 @@ void emptyParagraph():
 {
 }
 {
-    getNL() (LOOKAHEAD(2) getNL() )*
+    getNL() (LOOKAHEAD(2) getNL() { emptyLinesCount++; })*
 } 
 
 
@@ -512,6 +593,7 @@ void newLine():
 {
     getNL()
     {
+        sendOnEmptyLinesEvent(true);
         fContext.onNewLine();
     }
 }
@@ -527,26 +609,31 @@ void line():
         (
             t = getESCAPE()
             {
+                sendOnEmptyLinesEvent(true);
                 fContext.onEscape("" + t.image.charAt(1));
             }
             |
             t = getWORD()
             {
+                sendOnEmptyLinesEvent(true); 
                 fContext.onWord(t.image);
             }
             |
             t = getSPACE()
             {
+                sendOnEmptyLinesEvent(true);
                 fContext.onSpace(t.image);
             }
             |
             t = getSPECIAL_SYMBOL()
             {
+                sendOnEmptyLinesEvent(true);
                 fContext.onSpecialSymbol(t.image);
             }
             |
             t = getFORMAT_SYMBOL()
             {
+               sendOnEmptyLinesEvent(true);
             	str = t.image.trim();
             	if (str.startsWith("<")) {
             	    str = str.substring(1, str.length() - 1);
@@ -563,21 +650,28 @@ void line():
 	                	fContext.onFormat(IWikiScannerContext.TT, close);
             		} else if ("ref".equals(str)) {
 	                	fContext.onFormat(IWikiScannerContext.REF, close);
-            		} 
+            		} else if ("del".equals(str)) {
+	                	fContext.onFormat(IWikiScannerContext.DEL, close);
+            		}else if ("s".equals(str)) {
+	                	fContext.onFormat(IWikiScannerContext.STRIKE, close);
+            		}else if(str.startsWith("ref"))            		{
+			  WikiParameters params=new WikiParameters(str.substring("ref".length()+1).trim());
+            		  fContext.onFormat(IWikiScannerContext.REF, close);            		}
             	} else {
-					if ("''''".equals(str)) {
+			if ("'''''".equals(str)) {
 	                	fContext.onFormat(IWikiScannerContext.STRONG);
 	                	fContext.onFormat(IWikiScannerContext.EM);
-					} else if ("'''".equals(str)) {
+			} else if ("'''".equals(str)) {
 	                	fContext.onFormat(IWikiScannerContext.STRONG);
-					} else if ("''".equals(str)) {
+			} else if ("''".equals(str)) {
 	                	fContext.onFormat(IWikiScannerContext.EM);
-					}
-				}
+			}
+		}
             }
             |
             t = getVERBATIM_INLINE()
             {
+                sendOnEmptyLinesEvent(true);
                 str = t.image.trim();
                 int len = "<math>".length();
                 str = str.substring(len, str.length() - len - 1);
@@ -586,6 +680,7 @@ void line():
             |
             t = getHEADER_END()
             {
+                sendOnEmptyLinesEvent(true);
                 if (!fContext.isInHeader()) {
                     fContext.onSpecialSymbol(t.image);
                 }
@@ -593,16 +688,19 @@ void line():
             |
             t = getBR()
             {
+                sendOnEmptyLinesEvent(true);
                 fContext.onLineBreak();
             }
             |
             t = getURI()
             {
+                sendOnEmptyLinesEvent(true);
                 fContext.onReference(t.image.trim());
             }
             |
             t = getREFERENCE() 
             {
+                sendOnEmptyLinesEvent(true);
                 str = t.image.trim();
                 if (str.startsWith("[[") && str.endsWith("]]")) {
                     str = str.substring(2, str.length() - 2);
@@ -611,11 +709,26 @@ void line():
                 }
                 str = str.trim();
                 WikiReference ref = fReferenceParser.parse(str);
-                fContext.onReference(ref);
+		int pipeCount = str.replaceAll("[^|]", "").length();
+		if(str.toLowerCase().startsWith("image:")|| (str.toLowerCase().startsWith("file:") && pipeCount >1))		{
+		  fContext.onImage(ref);		}else		{		  fContext.onReference(ref);	  
+		}
             }
             |
-            t = getTABLE_CELL() 
+            t = getTABLE_CELL_NL()
+    	    {
+      		sendOnEmptyLinesEvent(true);
+                if (fContext.isInTable()) {
+                    str = t.image.trim();
+                    boolean headnl  = str.startsWith("!");
+                    fContext.onTableCell(headnl);
+                }else {
+                    fContext.onSpecialSymbol(t.image);                }
+            }
+            | 
+            t = getTABLE_CELL()
             {
+                sendOnEmptyLinesEvent(true);
                 if (fContext.isInTable()) {
                     str = t.image.trim();
                     boolean head  = str.startsWith("!");
@@ -627,6 +740,7 @@ void line():
             |
             t = getDD() 
             {
+                sendOnEmptyLinesEvent(true);
                 if (fContext.canApplyDefintionSplitter()) {
                     fContext.onDefinitionListItemSplit();
                 } else {
@@ -635,4 +749,22 @@ void line():
             }
         ) 
     )+
+}
+
+/**
+ * If shouldIncrement is true send one more empty lines. All block
+ * elements other than paragraph should call shouldIncremet with
+ * true since we need to emit one more new line for them (since the
+ * lexer "eats" a NewLine token to recognize these block elements.
+ */
+void sendOnEmptyLinesEvent(boolean shouldIncrement):
+{
+}
+{
+    {
+        if (emptyLinesCount > 1) {
+            fContext.onEmptyLines(shouldIncrement ? emptyLinesCount : emptyLinesCount - 1);
+        }
+        emptyLinesCount = 0;
+    }
 }
