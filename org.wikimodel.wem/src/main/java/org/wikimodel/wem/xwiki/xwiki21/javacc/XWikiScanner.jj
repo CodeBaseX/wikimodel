@@ -83,17 +83,7 @@ public class XWikiScanner {
         emptyLinesCount = 0;
     }
 
-    // TODO: No empty lines event is generated if there are
-    //       exactly two new lines before something that is
-    //       not a paragraph, macro block, or verbatim block.
     private void startBlock() {
-        if (emptyLinesCount > 2) {
-            fContext.onEmptyLines(emptyLinesCount-1);
-        }
-        emptyLinesCount = 0;
-    }
-
-    private void startBlockBeforeParagraph() {
         if (emptyLinesCount > 1) {
             fContext.onEmptyLines(emptyLinesCount-1);
         }
@@ -297,7 +287,6 @@ TOKEN_MGR_DECLS: {
     | <LIST_ITEM: (<SPACE>)* ( ("*")+ (":" | ";")* | ( "1" | "*" )+ "." (":" | ";")* | (":" | ";")+ ) (<SPACE>) > : INLINE
     | <HORLINE: "---" ("-")+ > : INLINE
     | <TABLE_ROW: (<PARAMS> (<SPACE>)*)? (<HCELL>|<CELL>)> { input_stream.backup(image.length()); enterBlockState(TABLE_CONTEXT); }
-    | <PARAMETERS_BEGINNING_OF_LINE: <PARAMS>> : INLINE
     | <BLOCK_PARAMETERS: <PARAMS> <NEW_LINE>>
     | <NL_BEGINING_OF_LINE: <NEW_LINE>> { matchedToken.kind = NL; }
     | <QUOT_LINE_BEGIN: (">")+ > : INLINE
@@ -566,13 +555,6 @@ void doParse():
     }
 }
 
-void parametersBeginningOfLine():
-{
-}
-{
-    <PARAMETERS_BEGINNING_OF_LINE> { setWikiParameters(token.image); }
-}
-
 void inlineParameters():
 {
 }
@@ -605,11 +587,7 @@ void docElements():
        horline()
        |
        table()
-     blockEnd())
-    )
-    |
-    (blockStartBeforeParagraph()
-      (
+       | 
        LOOKAHEAD(1) macro(false) (LOOKAHEAD(1) <NL>)?
        |
        LOOKAHEAD(1) verbatimBlock(false) (LOOKAHEAD(1) <NL>)?
@@ -863,14 +841,6 @@ void blockStart():
     { startBlock(); }
 }
 
-void blockStartBeforeParagraph():
-{
-}
-{
-    { startBlockBeforeParagraph(); }
-}
-
-
 void block():
 {
 }
@@ -894,12 +864,6 @@ void paragraph():
 {
     { fContext.beginParagraph(consumeWikiParameters());}
     (
-      // TODO: parameters at the beginning of line will always break
-      //       blocks, i.e., they are only allowed at the beginning
-      //       of a paragraph.  But they should be treated as ordinary
-      //       inlined parameters IMHO.
-     ((<PARAMETERS_BEGINNING_OF_LINE> {fContext.onFormat(newWikiParameters(token.image));}) (LOOKAHEAD(1) lines())? )
-     |
      lines()
     )
     { fContext.endParagraph();}
