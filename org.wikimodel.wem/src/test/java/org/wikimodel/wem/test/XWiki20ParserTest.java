@@ -345,6 +345,8 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
         test("=\n\nnot header", "<h1></h1>\n<p>not header</p>");
 
         test("= Header = \nParagraph\n\n", "<h1>Header</h1>\n<p> \nParagraph</p>");
+
+        test("paragraph\n\n= header =", "<p>paragraph</p>\n<h1>header</h1>");
     }
 
     public void testImages() throws WikiParserException {
