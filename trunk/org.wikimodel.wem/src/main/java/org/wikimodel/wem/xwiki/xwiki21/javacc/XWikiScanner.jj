@@ -353,7 +353,7 @@ TOKEN_MGR_DECLS: {
     | <MACRO_END: "{{/" <MACRO_NAME> (<SPACE>)* "}}" > {
         {
             String name = getMacroName(image); 
-            if (name.startsWith("/" + macroName)) {
+            if (name.equals("/" + macroName)) {
                 macroDepth--;
                 if (macroDepth == 0) {
                     returnFromSpecialState();

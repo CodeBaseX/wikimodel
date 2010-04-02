@@ -555,6 +555,10 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
             "<pre class='wikimodel-macro' macroName='toto'><![CDATA[a{{toto}}b{{/toto}}c]]></pre>");
 
         test(
+            "{{macro}}{{macro1}}{{/macro1}}{{/macro}}",
+            "<pre class='wikimodel-macro' macroName='macro'><![CDATA[{{macro1}}{{/macro1}}]]></pre>");
+        
+        test(
             "{{toto}}a{{tata}}b{{/tata}}c{{/toto}}",
             "<pre class='wikimodel-macro' macroName='toto'><![CDATA[a{{tata}}b{{/tata}}c]]></pre>");
 
