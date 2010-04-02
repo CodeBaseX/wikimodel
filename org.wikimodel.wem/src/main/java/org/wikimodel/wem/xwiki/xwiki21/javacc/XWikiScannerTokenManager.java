@@ -5993,7 +5993,7 @@ void TokenLexicalActions(Token matchedToken)
         image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
         {
             String name = getMacroName(image);
-            if (name.startsWith("/" + macroName)) {
+            if (name.equals("/" + macroName)) {
                 macroDepth--;
                 if (macroDepth == 0) {
                     returnFromSpecialState();
