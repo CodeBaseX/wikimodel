@@ -642,11 +642,10 @@ void macro(boolean inline):
          processMacro(s, c, inline);
       }
    }
-   ( LOOKAHEAD(1) newLine() )?
-   ( LOOKAHEAD(1) lines() )?
-       {
-           fContext.endParagraph();
-       }
+   linesMaybeEmpty()
+   {
+       fContext.endParagraph();
+   }
 }
 
 void list():
@@ -776,7 +775,10 @@ void verbatimBlock(boolean inline):
             }
         }
     }
-    (LOOKAHEAD(1) line())?
+   linesMaybeEmpty()
+   {
+       fContext.endParagraph();
+   }
 }
 
 void horline():
@@ -874,6 +876,20 @@ void lines():
 }
 {
     line() (LOOKAHEAD(1) <NL>)?
+    (
+       LOOKAHEAD(1) 
+       (
+          ({fContext.onNewLine();}line()) 
+          (LOOKAHEAD(1) <NL>)?
+       )
+    )*
+}
+
+void linesMaybeEmpty():
+{
+}
+{
+    [LOOKAHEAD(1) line()] (LOOKAHEAD(1) <NL>)?
     (
        LOOKAHEAD(1) 
        (
