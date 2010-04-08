@@ -383,39 +383,8 @@ public class XWikiScanner implements XWikiScannerConstants {
          }
          processMacro(s, c, inline);
       }
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case NL:
-      newLine();
-      break;
-    default:
-      ;
-    }
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case INLINE_PARAMETERS:
-    case D_REFERENCE:
-    case VERBATIM_START:
-    case MACRO_EMPTY:
-    case MACRO_START:
-    case STRONG:
-    case EM:
-    case STRIKE:
-    case INS:
-    case SUP:
-    case SUB:
-    case MONO:
-    case D_IMAGE:
-    case D_ATTACH:
-    case BR:
-    case D_XWIKI_URI:
-    case XWIKI_SPACE:
-    case WORD:
-    case XWIKI_SPECIAL_SYMBOL:
-      lines();
-      break;
-    default:
-      ;
-    }
-           fContext.endParagraph();
+    linesMaybeEmpty();
+       fContext.endParagraph();
   }
 
   final public void list() throws ParseException {
@@ -712,31 +681,8 @@ public class XWikiScanner implements XWikiScannerConstants {
                 fContext.onVerbatim(content, consumeWikiParameters() );
             }
         }
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case INLINE_PARAMETERS:
-    case D_REFERENCE:
-    case VERBATIM_START:
-    case MACRO_EMPTY:
-    case MACRO_START:
-    case STRONG:
-    case EM:
-    case STRIKE:
-    case INS:
-    case SUP:
-    case SUB:
-    case MONO:
-    case D_IMAGE:
-    case D_ATTACH:
-    case BR:
-    case D_XWIKI_URI:
-    case XWIKI_SPACE:
-    case WORD:
-    case XWIKI_SPECIAL_SYMBOL:
-      line();
-      break;
-    default:
-      ;
-    }
+    linesMaybeEmpty();
+       fContext.endParagraph();
   }
 
   final public void horline() throws ParseException {
@@ -971,6 +917,78 @@ public class XWikiScanner implements XWikiScannerConstants {
     }
   }
 
+  final public void linesMaybeEmpty() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case INLINE_PARAMETERS:
+    case D_REFERENCE:
+    case VERBATIM_START:
+    case MACRO_EMPTY:
+    case MACRO_START:
+    case STRONG:
+    case EM:
+    case STRIKE:
+    case INS:
+    case SUP:
+    case SUB:
+    case MONO:
+    case D_IMAGE:
+    case D_ATTACH:
+    case BR:
+    case D_XWIKI_URI:
+    case XWIKI_SPACE:
+    case WORD:
+    case XWIKI_SPECIAL_SYMBOL:
+      line();
+      break;
+    default:
+      ;
+    }
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case NL:
+      jj_consume_token(NL);
+      break;
+    default:
+      ;
+    }
+    label_11:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case INLINE_PARAMETERS:
+      case D_REFERENCE:
+      case VERBATIM_START:
+      case MACRO_EMPTY:
+      case MACRO_START:
+      case STRONG:
+      case EM:
+      case STRIKE:
+      case INS:
+      case SUP:
+      case SUB:
+      case MONO:
+      case D_IMAGE:
+      case D_ATTACH:
+      case BR:
+      case D_XWIKI_URI:
+      case XWIKI_SPACE:
+      case WORD:
+      case XWIKI_SPECIAL_SYMBOL:
+        ;
+        break;
+      default:
+        break label_11;
+      }
+            fContext.onNewLine();
+      line();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case NL:
+        jj_consume_token(NL);
+        break;
+      default:
+        ;
+      }
+    }
+  }
+
   final public void emptyLine() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case NL:
@@ -1006,7 +1024,7 @@ public class XWikiScanner implements XWikiScannerConstants {
   }
 
   final public void line() throws ParseException {
-    label_11:
+    label_12:
     while (true) {
       inline();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1032,7 +1050,7 @@ public class XWikiScanner implements XWikiScannerConstants {
         ;
         break;
       default:
-        break label_11;
+        break label_12;
       }
     }
   }
@@ -1150,7 +1168,7 @@ public class XWikiScanner implements XWikiScannerConstants {
     default:
       ;
     }
-    label_12:
+    label_13:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case HEADER_BEGIN:
@@ -1185,7 +1203,7 @@ public class XWikiScanner implements XWikiScannerConstants {
         ;
         break;
       default:
-        break label_12;
+        break label_13;
       }
       docElements();
     }

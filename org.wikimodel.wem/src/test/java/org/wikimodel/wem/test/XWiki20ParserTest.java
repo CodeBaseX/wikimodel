@@ -258,6 +258,19 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
                 + "</div>\n"
                 + "</td></tr>\n"
                 + "</tbody></table>");
+        test("((({{macro/}}\n)))", 
+             "<div class='wikimodel-document'>\n"+
+             "<pre class='wikimodel-macro' macroName='macro'/>\n"+
+             "</div>");
+        test("((({{macro/}})))",
+             "<div class='wikimodel-document'>\n"+
+             "<pre class='wikimodel-macro' macroName='macro'/>\n"+
+             "</div>");
+        test("((({{{verbatim}}}\n)))",
+             "<div class='wikimodel-document'>\n"+
+             "<pre>verbatim</pre>\n"+
+             "</div>");
+        test("((({{{verbatim}}})))", "<div class='wikimodel-document'>\n<pre>verbatim</pre>\n</div>");
     }
 
     /**
@@ -511,7 +524,7 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
         
         test(
             "{{macro/}}\n",
-            "<p><span class='wikimodel-macro' macroName='macro'/>\n</p>");
+            "<pre class='wikimodel-macro' macroName='macro'/>");
         
         test(
             "{{macro/}}\n\n{{macro/}}",
@@ -947,11 +960,11 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
         test(
             "some text {{{}}}\n\n{{{}}}",
             "<p>some text <tt class=\"wikimodel-verbatim\"></tt></p>\n<pre></pre>");
-        test("{{{}}}\n{{{}}}\n{{{}}}", "<pre></pre>\n<pre></pre>\n<pre></pre>");
+        test("{{{}}}\n{{{}}}\n{{{}}}", "<p><tt class=\"wikimodel-verbatim\"></tt>\n<tt class=\"wikimodel-verbatim\"></tt>\n<tt class=\"wikimodel-verbatim\"></tt></p>");
         test(
             "{{{}}}\n\n{{{}}}\n\n{{{}}}\n\n{{{}}}",
             "<pre></pre>\n<pre></pre>\n<pre></pre>\n<pre></pre>");
-        test("{{{}}}\nsome text", "<pre></pre>\n<p>some text</p>");
+        test("{{{}}}\nsome text", "<p><tt class=\"wikimodel-verbatim\"></tt>\nsome text</p>");
 
         test(
             "some text {{{}}}\nsome text",
