@@ -284,12 +284,12 @@ TOKEN_MGR_DECLS: {
 <BEGINNING_OF_LINE> TOKEN:
 {
       <HEADER_BEGIN: <HEADER_BEGIN_PATTERN> > { enterBlockState(HEADER_CONTEXT); }
-    | <LIST_ITEM: (<SPACE>)* ( ("*")+ (":" | ";")* | ( "1" | "*" )+ "." (":" | ";")* | (":" | ";")+ ) (<SPACE>) > : INLINE
-    | <HORLINE: "---" ("-")+ > : INLINE
+    | <LIST_ITEM: (<SPACE>)* ( ("*")+ (":" | ";")* | ( "1" | "*" )+ "." (":" | ";")* | (":" | ";")+ ) (<SPACE>) > { clearBlockState(); }: INLINE
+    | <HORLINE: "---" ("-")+ > { clearBlockState(); }: INLINE
     | <TABLE_ROW: (<PARAMS> (<SPACE>)*)? (<HCELL>|<CELL>)> { input_stream.backup(image.length()); enterBlockState(TABLE_CONTEXT); }
     | <BLOCK_PARAMETERS: <PARAMS> <NEW_LINE>>
     | <NL_BEGINING_OF_LINE: <NEW_LINE>> { matchedToken.kind = NL; }
-    | <QUOT_LINE_BEGIN: (">")+ > : INLINE
+    | <QUOT_LINE_BEGIN: (">")+ > { clearBlockState(); }: INLINE
 
 }
 
@@ -473,7 +473,7 @@ TOKEN_MGR_DECLS: {
 <INLINE, TABLE_CONTEXT, HEADER_CONTEXT> TOKEN:
 {
       <INLINE_PARAMETERS: <PARAMS> >
-         | <DOC_BEGIN: (<SPACE>)* "(((" (<SPACE>)* > { pushControlState(); } : BEGINNING_OF_LINE
+    | <DOC_BEGIN: (<SPACE>)* "(((" (<SPACE>)* > { pushControlState(); } : BEGINNING_OF_LINE
     | <D_REFERENCE : <REFERENCE> >
     | <VERBATIM_START: "{{{" > { verbatimBlockDepth++; }  : VERBATIM_CONTEXT
     | <MACRO_EMPTY:  "{{" <MACRO_NAME> ((<SPACE>) <MACRO_PARAMS>)? "/}}" >

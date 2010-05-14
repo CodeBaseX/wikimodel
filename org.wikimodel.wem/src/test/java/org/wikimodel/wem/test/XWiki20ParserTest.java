@@ -235,6 +235,10 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
         test("= {{macro/}}text =", "<h1><span class='wikimodel-macro' macroName='macro'/>text</h1>");
         test("= {{macro/}} text =", "<h1><span class='wikimodel-macro' macroName='macro'/> text</h1>");
         test("= {{macro/}}\ntext =", "<h1><span class='wikimodel-macro' macroName='macro'/>\ntext</h1>");
+        
+        test("= header\n* list\n \n\n", "<h1>header</h1>\n<ul>\n  <li>list\n </li>\n</ul>");
+        test("= header\n>quote\n \n\n", "<h1>header</h1>\n<blockquote>\nquote\n</blockquote>\n<p> </p>");
+        test("= header\n; term: definition\n \n\n", "<h1>header</h1>\n<dl>\n  <dt>term: definition\n </dt>\n</dl>");
     }
 
     public void testImages() throws WikiParserException {
