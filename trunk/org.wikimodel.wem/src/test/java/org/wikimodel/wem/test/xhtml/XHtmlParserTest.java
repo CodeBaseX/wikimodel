@@ -439,4 +439,13 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
             "<html><!--startmacro:name|-|param=\"value\"|-|content--><!--startmacro:subname|-|subparam=\"subvalue\"|-|subcontent--><!--stopmacro--><!--stopmacro--></html>",
             "<pre class='wikimodel-macro' macroName='name' param='value'><![CDATA[content]]></pre>");
     }
+    
+    public void testMisc() throws WikiParserException {
+        test(
+            "<html><p><a name=\"foo\">bar</a></p></html>",
+            "<p></p>");
+        test(
+            "<html><p><a id=\"foo\">bar</a></p></html>",
+            "<p></p>");
+    }
 }
