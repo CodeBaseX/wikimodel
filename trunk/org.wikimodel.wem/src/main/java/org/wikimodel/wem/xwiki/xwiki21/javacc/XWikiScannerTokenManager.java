@@ -5936,8 +5936,12 @@ void TokenLexicalActions(Token matchedToken)
                                                 enterBlockState(HEADER_CONTEXT);
          break;
       case 3 :
+        image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
+                                                                                                                    clearBlockState();
          break;
       case 4 :
+        image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
+                                 clearBlockState();
          break;
       case 5 :
         image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
@@ -5950,6 +5954,8 @@ void TokenLexicalActions(Token matchedToken)
                                           matchedToken.kind = NL;
          break;
       case 8 :
+        image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
+                                   clearBlockState();
          break;
       case 12 :
         image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
@@ -6011,7 +6017,7 @@ void TokenLexicalActions(Token matchedToken)
          break;
       case 68 :
         image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
-                                                       pushControlState();
+                                                  pushControlState();
          break;
       case 70 :
         image.append(jjstrLiteralImages[70]);
