@@ -170,7 +170,7 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
         // Not formatting
         test(
             "http://www.foo.bar",
-            "<p><a href='http://www.foo.bar'>http://www.foo.bar</a></p>");
+            "<p><a href='http://www.foo.bar' class='wikimodel-freestanding'>http://www.foo.bar</a></p>");
 
     }
 
@@ -504,54 +504,54 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
     public void testReferences() throws WikiParserException {
         test(
             "before http://www.foo.bar/com after",
-            "<p>before <a href='http://www.foo.bar/com'>http://www.foo.bar/com</a> after</p>");
+            "<p>before <a href='http://www.foo.bar/com' class='wikimodel-freestanding'>http://www.foo.bar/com</a> after</p>");
         test(
             "before this+is+a+reference:to_here after",
-            "<p>before <a href='this+is+a+reference:to_here'>this+is+a+reference:to_here</a> after</p>");
+            "<p>before <a href='this+is+a+reference:to_here' class='wikimodel-freestanding'>this+is+a+reference:to_here</a> after</p>");
         test(
             "before [toto] after",
-            "<p>before <a href='toto'>toto</a> after</p>");
+            "<p>before <a href='toto' class='wikimodel-freestanding'>toto</a> after</p>");
 
         // Tests from
         // http://wikicreole.org/wiki/Creole1.0#section-Creole1.0-
         // LinksInternalExternalAndInterwiki
-        test("[link]", "<p><a href='link'>link</a></p>");
+        test("[link]", "<p><a href='link' class='wikimodel-freestanding'>link</a></p>");
         test(
             "[Go to my page|MyBigPage]",
             "<p><a href='MyBigPage'>Go to my page</a></p>");
         test(
             "[http://www.wikicreole.org/]",
-            "<p><a href='http://www.wikicreole.org/'>http://www.wikicreole.org/</a></p>");
+            "<p><a href='http://www.wikicreole.org/' class='wikimodel-freestanding'>http://www.wikicreole.org/</a></p>");
         test(
             "http://www.rawlink.org/, http://www.another.rawlink.org",
-            "<p><a href='http://www.rawlink.org/'>http://www.rawlink.org/</a>, <a href='http://www.another.rawlink.org'>http://www.another.rawlink.org</a></p>");
+            "<p><a href='http://www.rawlink.org/' class='wikimodel-freestanding'>http://www.rawlink.org/</a>, <a href='http://www.another.rawlink.org' class='wikimodel-freestanding'>http://www.another.rawlink.org</a></p>");
         test(
             "[ Visit the WikiCreole website | http://www.wikicreole.org/ ]",
             "<p><a href='http://www.wikicreole.org/'>Visit the WikiCreole website</a></p>");
         test(
             "[Ohana:WikiFamily]",
-            "<p><a href='Ohana:WikiFamily'>Ohana:WikiFamily</a></p>");
+            "<p><a href='Ohana:WikiFamily' class='wikimodel-freestanding'>Ohana:WikiFamily</a></p>");
 
-        test("[#anchor]", "<p><a href='#anchor'>#anchor</a></p>");
+        test("[#anchor]", "<p><a href='#anchor' class='wikimodel-freestanding'>#anchor</a></p>");
         test(
             "[^attachment.ext]",
-            "<p><a href='^attachment.ext'>^attachment.ext</a></p>");
-        test("[pagetitle]", "<p><a href='pagetitle'>pagetitle</a></p>");
+            "<p><a href='^attachment.ext' class='wikimodel-freestanding'>^attachment.ext</a></p>");
+        test("[pagetitle]", "<p><a href='pagetitle' class='wikimodel-freestanding'>pagetitle</a></p>");
         test(
             "[pagetitle#anchor]",
-            "<p><a href='pagetitle#anchor'>pagetitle#anchor</a></p>");
+            "<p><a href='pagetitle#anchor' class='wikimodel-freestanding'>pagetitle#anchor</a></p>");
         test(
             "[pagetitle^attachment.ext]",
-            "<p><a href='pagetitle^attachment.ext'>pagetitle^attachment.ext</a></p>");
+            "<p><a href='pagetitle^attachment.ext' class='wikimodel-freestanding'>pagetitle^attachment.ext</a></p>");
         test(
             "[spacekey:pagetitle]",
-            "<p><a href='spacekey:pagetitle'>spacekey:pagetitle</a></p>");
+            "<p><a href='spacekey:pagetitle' class='wikimodel-freestanding'>spacekey:pagetitle</a></p>");
         test(
             "[spacekey:pagetitle#anchor]",
-            "<p><a href='spacekey:pagetitle#anchor'>spacekey:pagetitle#anchor</a></p>");
+            "<p><a href='spacekey:pagetitle#anchor' class='wikimodel-freestanding'>spacekey:pagetitle#anchor</a></p>");
         test(
             "[spacekey:pagetitle^attachment.ext]",
-            "<p><a href='spacekey:pagetitle^attachment.ext'>spacekey:pagetitle^attachment.ext</a></p>");
+            "<p><a href='spacekey:pagetitle^attachment.ext' class='wikimodel-freestanding'>spacekey:pagetitle^attachment.ext</a></p>");
         test(
             "[link alias|#anchor|link tip]",
             "<p><a href='#anchor' title='link tip'>link alias</a></p>");
@@ -578,53 +578,53 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
             "<p><a href='spacekey:pagetitle^attachment.ext' title='link tip'>link alias</a></p>");
         test(
             "[/2004/01/12/My Blog Post]",
-            "<p><a href='/2004/01/12/My Blog Post'>/2004/01/12/My Blog Post</a></p>");
+            "<p><a href='/2004/01/12/My Blog Post' class='wikimodel-freestanding'>/2004/01/12/My Blog Post</a></p>");
         test(
             "[spacekey:/2004/01/12/My Blog Post]",
-            "<p><a href='spacekey:/2004/01/12/My Blog Post'>spacekey:/2004/01/12/My Blog Post</a></p>");
-        test("[/2004/01/12]", "<p><a href='/2004/01/12'>/2004/01/12</a></p>");
+            "<p><a href='spacekey:/2004/01/12/My Blog Post' class='wikimodel-freestanding'>spacekey:/2004/01/12/My Blog Post</a></p>");
+        test("[/2004/01/12]", "<p><a href='/2004/01/12' class='wikimodel-freestanding'>/2004/01/12</a></p>");
         test(
             "[spacekey:/2004/01/12]",
-            "<p><a href='spacekey:/2004/01/12'>spacekey:/2004/01/12</a></p>");
+            "<p><a href='spacekey:/2004/01/12' class='wikimodel-freestanding'>spacekey:/2004/01/12</a></p>");
         test(
             "[my link name|/2004/01/12]",
             "<p><a href='/2004/01/12'>my link name</a></p>");
         test(
             "[my link name|spacekey:/2004/01/12]",
             "<p><a href='spacekey:/2004/01/12'>my link name</a></p>");
-        test("[$12345]", "<p><a href='$12345'>$12345</a></p>");
+        test("[$12345]", "<p><a href='$12345' class='wikimodel-freestanding'>$12345</a></p>");
         test(
             "[my link name|$12345]",
             "<p><a href='$12345'>my link name</a></p>");
-        test("[spacekey:]", "<p><a href='spacekey:'>spacekey:</a></p>");
+        test("[spacekey:]", "<p><a href='spacekey:' class='wikimodel-freestanding'>spacekey:</a></p>");
         test(
             "[custom link title|spacekey:]",
             "<p><a href='spacekey:'>custom link title</a></p>");
-        test("[~username]", "<p><a href='~username'>~username</a></p>");
+        test("[~username]", "<p><a href='~username' class='wikimodel-freestanding'>~username</a></p>");
         test(
             "[custom link title|~username]",
             "<p><a href='~username'>custom link title</a></p>");
         test(
             "[phrase@shortcut]",
-            "<p><a href='phrase@shortcut'>phrase@shortcut</a></p>");
+            "<p><a href='phrase@shortcut' class='wikimodel-freestanding'>phrase@shortcut</a></p>");
         test(
             "[custom link text|phrase@shortcut]",
             "<p><a href='phrase@shortcut'>custom link text</a></p>");
         test(
             "[http://confluence.atlassian.com]",
-            "<p><a href='http://confluence.atlassian.com'>http://confluence.atlassian.com</a></p>");
+            "<p><a href='http://confluence.atlassian.com' class='wikimodel-freestanding'>http://confluence.atlassian.com</a></p>");
         test(
             "[Atlassian|http://atlassian.com]",
             "<p><a href='http://atlassian.com'>Atlassian</a></p>");
         test(
             "[mailto:legendaryservice@atlassian.com]",
-            "<p><a href='mailto:legendaryservice@atlassian.com'>mailto:legendaryservice@atlassian.com</a></p>");
+            "<p><a href='mailto:legendaryservice@atlassian.com' class='wikimodel-freestanding'>mailto:legendaryservice@atlassian.com</a></p>");
         test(
             "[file://c:/temp/foo.txt]",
-            "<p><a href='file://c:/temp/foo.txt'>file://c:/temp/foo.txt</a></p>");
+            "<p><a href='file://c:/temp/foo.txt' class='wikimodel-freestanding'>file://c:/temp/foo.txt</a></p>");
         test(
             "[file://z:/file/on/network/share.txt]",
-            "<p><a href='file://z:/file/on/network/share.txt'>file://z:/file/on/network/share.txt</a></p>");
+            "<p><a href='file://z:/file/on/network/share.txt' class='wikimodel-freestanding'>file://z:/file/on/network/share.txt</a></p>");
         // Not a reference
         test(
             "before \\[toto] after",

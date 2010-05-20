@@ -302,11 +302,11 @@ public class MediawikiParserTest extends AbstractWikiParserTest
     public void testReferences() throws WikiParserException
     {
         test("before http://www.foo.bar/com after",
-            "<p>before <a href='http://www.foo.bar/com'>http://www.foo.bar/com</a> after</p>");
-        test("before [toto] after", "<p>before <a href='toto'>toto</a> after</p>");
-        test("before wiki:Hello after", "<p>before <a href='wiki:Hello'>wiki:Hello</a> after</p>");
+            "<p>before <a href='http://www.foo.bar/com' class='wikimodel-freestanding'>http://www.foo.bar/com</a> after</p>");
+        test("before [toto] after", "<p>before <a href='toto' class='wikimodel-freestanding'>toto</a> after</p>");
+        test("before wiki:Hello after", "<p>before <a href='wiki:Hello' class='wikimodel-freestanding'>wiki:Hello</a> after</p>");
         test("before wiki~:Hello after", "<p>before wiki<span class='wikimodel-escaped'>:</span>Hello after</p>");
-        test("before [#local ancor] after", "<p>before <a href='#local ancor'>#local ancor</a> after</p>");
+        test("before [#local ancor] after", "<p>before <a href='#local ancor' class='wikimodel-freestanding'>#local ancor</a> after</p>");
         test("not [[a reference] at all!", "<p>not <span class='wikimodel-escaped'>[</span>a reference] at all!</p>");
     }
 
@@ -315,10 +315,10 @@ public class MediawikiParserTest extends AbstractWikiParserTest
      */
     public void testInternalLinks() throws WikiParserException
     {
-        test("[[Main Page]]", "<p><a href='Main Page'>Main Page</a></p>");
+        test("[[Main Page]]", "<p><a href='Main Page' class='wikimodel-freestanding'>Main Page</a></p>");
         test("[[Main Page|different text]]", "<p><a href='Main Page'>different text</a></p>");
-        test("[[Internationalisation]]s", "<p><a href='Internationalisation'>Internationalisation</a>s</p>");
-        test("[[/example]]", "<p><a href='/example'>/example</a></p>");
+        test("[[Internationalisation]]s", "<p><a href='Internationalisation' class='wikimodel-freestanding'>Internationalisation</a>s</p>");
+        test("[[/example]]", "<p><a href='/example' class='wikimodel-freestanding'>/example</a></p>");
     }
 
     /**
@@ -326,9 +326,9 @@ public class MediawikiParserTest extends AbstractWikiParserTest
      */
     public void testExternalLinks() throws WikiParserException
     {
-        test("http://mediawiki.org", "<p><a href='http://mediawiki.org'>http://mediawiki.org</a></p>");
+        test("http://mediawiki.org", "<p><a href='http://mediawiki.org' class='wikimodel-freestanding'>http://mediawiki.org</a></p>");
         test("[http://mediawiki.org MediaWiki]", "<p><a href='http://mediawiki.org'>MediaWiki</a></p>");
-        test("[http://mediawiki.org]", "<p><a href='http://mediawiki.org'>http://mediawiki.org</a></p>");
+        test("[http://mediawiki.org]", "<p><a href='http://mediawiki.org' class='wikimodel-freestanding'>http://mediawiki.org</a></p>");
         test("[mailto:info@example.org email me]", "<p><a href='mailto:info@example.org'>email me</a></p>");
     }
 
