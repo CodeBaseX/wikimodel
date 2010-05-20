@@ -20,6 +20,11 @@ public abstract class ReferenceHandler {
         String link = ref.getLink();
         String label = ref.getLabel();
         WikiParameters params = ref.getParameters();
+        
+        if (params.getSize() == 0 && label == null) {
+            params = params.addParameter("class", "wikimodel-freestanding");
+        }
+        
         if (link.startsWith(PREFIX_IMAGE)) {
             link = link.substring(PREFIX_IMAGE.length());
             if (label == null || "".equals(label)) {

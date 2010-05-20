@@ -340,8 +340,9 @@ public class PrintTextListener implements IWemListener {
     }
 
     public void onImage(String ref) {
-        WikiReference reference = new WikiReference(ref);
-        onImage(reference);
+        print("<img");
+        print(" src='" + ref + "'");
+        print(" class=\"wikimodel-freestanding\"/>");
     }
 
     public void onImage(WikiReference ref) {

@@ -21,26 +21,27 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 public class ImgTagHandler extends ReferenceTagHandler {
     @Override
     protected void end(TagContext context) {
-        WikiParameter src = context.getParams().getParameter("src");
+        WikiParameters parameters = context.getParams();
+
+        WikiParameter src = parameters.getParameter("src");
 
         if (src != null) {
-            // Remove src and alt parameters for event parameters since it
-            // already consumed as reference and label
-            WikiParameters parameters = context.getParams().remove("src");
-
             if (isFreeStandingReference(context)) {
                 context.getScannerContext().onImage(src.getValue());
             } else {
                 WikiParameter alt = parameters.getParameter("alt");
-                parameters = parameters.remove("alt");
 
                 WikiReference reference = new WikiReference(
                     src.getValue(),
                     alt != null ? alt.getValue() : null,
-                    parameters);
+                    removeMeaningfulParameters(parameters));
 
                 context.getScannerContext().onImage(reference);
             }
         }
+    }
+
+    protected WikiParameters removeMeaningfulParameters(WikiParameters parameters) {
+        return removeFreestanding(parameters).remove("alt").remove("src");
     }
 }

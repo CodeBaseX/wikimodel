@@ -262,6 +262,14 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
         test(
             "<html><img src=\"target\" alt=\"some description\"/></html>",
             "<p><img src='target' title='some description'/></p>");
+        
+        test(
+            "<html><img src=\"target\" alt=\"some description\" class=\"wikimodel-freestanding\" param1=\"value1\"/></html>",
+            "<p><img src='target' param1='value1' title='some description'/></p>");
+        
+        test(
+            "<html><img src=\"target\" alt=\"some description\" class=\"wikimodel-freestanding\"/></html>",
+            "<p><img src='target' class=\"wikimodel-freestanding\"/></p>");
     }
 
     /**
@@ -270,6 +278,7 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
     public void testLineBreak() throws WikiParserException {
         test("<html>before<br />after</html>", "<p>before\nafter</p>");
     }
+    
 
     /**
      * @throws WikiParserException
@@ -357,6 +366,8 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
     public void testReferences() throws WikiParserException {
         test("<html><a href=\"reference\">label</a></html>", "<p><a href='reference'>label</a></p>");
         test("<html><a href=\"reference\" param=\"value\">label</a></html>", "<p><a href='reference' param='value'>label</a></p>");
+        test("<html><a href=\"reference\" class=\"wikimodel-freestanding\" param=\"value\">label</a></html>", "<p><a href='reference' param='value'>label</a></p>");
+        test("<html><a href=\"reference\" class=\"wikimodel-freestanding\">label</a></html>", "<p><a href='reference' class='wikimodel-freestanding'>reference</a></p>");
     }
 
     /**
