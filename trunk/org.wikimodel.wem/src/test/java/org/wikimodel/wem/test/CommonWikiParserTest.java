@@ -907,9 +907,9 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
                 + "<div class='wikimodel-property' url='name'><p>Cognium Systems</p>\n"
                 + "</div>\n"
                 + "<div class='wikimodel-property' url='addr'>\n"
-                + "<div class='wikimodel-property' url='country'><p><a href='France'>France</a></p>\n"
+                + "<div class='wikimodel-property' url='country'><p><a href='France' class='wikimodel-freestanding'>France</a></p>\n"
                 + "</div>\n"
-                + "<div class='wikimodel-property' url='city'><p><a href='Paris'>Paris</a></p>\n"
+                + "<div class='wikimodel-property' url='city'><p><a href='Paris' class='wikimodel-freestanding'>Paris</a></p>\n"
                 + "</div>\n"
                 + "<div class='wikimodel-property' url='street'><p>Cité Nollez</p>\n"
                 + "</div>\n"
@@ -936,7 +936,7 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
                 + "<div class='wikimodel-property' url='name'><p>Cognium Systems</p>\n"
                 + "</div>\n"
                 + "<div class='wikimodel-property' url='addr'>\n"
-                + "<div class='wikimodel-property' url='country'><p><a href='France'>France</a></p>\n"
+                + "<div class='wikimodel-property' url='country'><p><a href='France' class='wikimodel-freestanding'>France</a></p>\n"
                 + "</div>\n"
                 + "<div class='wikimodel-property' url='city'><p>Paris</p>\n"
                 + "</div>\n"
@@ -1010,48 +1010,48 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
     public void testReferences() throws WikiParserException {
         test(
             "Это (=ссылка=) на внешний документ...",
-            "<p>Это <a href='ссылка'>ссылка</a> на внешний документ&hellip;</p>");
+            "<p>Это <a href='ссылка' class='wikimodel-freestanding'>ссылка</a> на внешний документ&hellip;</p>");
         test(
             "Это (=http://www.google.com ссылка=) на внешний документ...",
             "<p>Это <a href='http://www.google.com'>ссылка</a> на внешний документ&hellip;</p>");
         test(
             "This is a (=reference=) to an external document...",
-            "<p>This is a <a href='reference'>reference</a> to an external document&hellip;</p>");
+            "<p>This is a <a href='reference' class='wikimodel-freestanding'>reference</a> to an external document&hellip;</p>");
         test(
             "This is a (=http://www.google.com reference=) to an external document...",
             "<p>This is a <a href='http://www.google.com'>reference</a> to an external document&hellip;</p>");
 
         test(
             "before http://www.foo.bar/com after",
-            "<p>before <a href='http://www.foo.bar/com'>http://www.foo.bar/com</a> after</p>");
+            "<p>before <a href='http://www.foo.bar/com' class='wikimodel-freestanding'>http://www.foo.bar/com</a> after</p>");
         test(
             "before http://www.foo.bar/com?q=abc#ancor after",
-            "<p>before <a href='http://www.foo.bar/com?q=abc#ancor'>http://www.foo.bar/com?q=abc#ancor</a> after</p>");
+            "<p>before <a href='http://www.foo.bar/com?q=abc#ancor' class='wikimodel-freestanding'>http://www.foo.bar/com?q=abc#ancor</a> after</p>");
         test(
             "before wiki:Hello after",
-            "<p>before <a href='wiki:Hello'>wiki:Hello</a> after</p>");
+            "<p>before <a href='wiki:Hello' class='wikimodel-freestanding'>wiki:Hello</a> after</p>");
         test(
             "before abc:cde#efg after",
-            "<p>before <a href='abc:cde#efg'>abc:cde#efg</a> after</p>");
+            "<p>before <a href='abc:cde#efg' class='wikimodel-freestanding'>abc:cde#efg</a> after</p>");
         // Opaque URIs
         test(
             "before first:second:third:anonymous@hello/path/?query=value#ancor after",
-            "<p>before <a href='first:second:third:anonymous@hello/path/?query=value#ancor'>first:second:third:anonymous@hello/path/?query=value#ancor</a> after</p>");
+            "<p>before <a href='first:second:third:anonymous@hello/path/?query=value#ancor' class='wikimodel-freestanding'>first:second:third:anonymous@hello/path/?query=value#ancor</a> after</p>");
         test(
             "http://123.234.245.34/toto/titi/MyDoc.pdf",
-            "<p><a href='http://123.234.245.34/toto/titi/MyDoc.pdf'>http://123.234.245.34/toto/titi/MyDoc.pdf</a></p>");
+            "<p><a href='http://123.234.245.34/toto/titi/MyDoc.pdf' class='wikimodel-freestanding'>http://123.234.245.34/toto/titi/MyDoc.pdf</a></p>");
 
         // "Magic" references (starting with "image:", "download:", ...)
         test(
             "before image:http://www.foo.com/bar.gif after",
-            "<p>before <img src='http://www.foo.com/bar.gif'/> after</p>");
+            "<p>before <img src='http://www.foo.com/bar.gif' class='wikimodel-freestanding'/> after</p>");
         test(
             "before download:http://www.foo.com/bar.zip after",
-            "<p>before <a href='http://www.foo.com/bar.zip'>http://www.foo.com/bar.zip</a> after</p>");
-        test("download:MyDoc.pdf", "<p><a href='MyDoc.pdf'>MyDoc.pdf</a></p>");
+            "<p>before <a href='http://www.foo.com/bar.zip' class='wikimodel-freestanding'>http://www.foo.com/bar.zip</a> after</p>");
+        test("download:MyDoc.pdf", "<p><a href='MyDoc.pdf' class='wikimodel-freestanding'>MyDoc.pdf</a></p>");
         test(
             "Reference: download:MyDoc.pdf :not a reference",
-            "<p>Reference: <a href='MyDoc.pdf'>MyDoc.pdf</a> :not a reference</p>");
+            "<p>Reference: <a href='MyDoc.pdf' class='wikimodel-freestanding'>MyDoc.pdf</a> :not a reference</p>");
 
         // Escaped reference
         test(
@@ -1068,10 +1068,10 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         // Explicit references.
         test(
             "before [toto] after",
-            "<p>before <a href='toto'>toto</a> after</p>");
+            "<p>before <a href='toto' class='wikimodel-freestanding'>toto</a> after</p>");
         test(
             "before (=toto=) after",
-            "<p>before <a href='toto'>toto</a> after</p>");
+            "<p>before <a href='toto' class='wikimodel-freestanding'>toto</a> after</p>");
         test(
             "before [#local ancor] after",
             "<p>before <a href='#local'>ancor</a> after</p>");
@@ -1079,22 +1079,22 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
         test("before (((doc-before(=toto=)doc-after))) after", ""
             + "<p>before</p>\n"
             + "<div class='wikimodel-document'>\n"
-            + "<p>doc-before<a href='toto'>toto</a>doc-after</p>\n"
+            + "<p>doc-before<a href='toto' class='wikimodel-freestanding'>toto</a>doc-after</p>\n"
             + "</div>\n"
             + "<p>after</p>");
         test("before ((((=toto=)))) after", ""
             + "<p>before</p>\n"
             + "<div class='wikimodel-document'>\n"
-            + "<p><a href='toto'>toto</a></p>\n"
+            + "<p><a href='toto' class='wikimodel-freestanding'>toto</a></p>\n"
             + "</div>\n"
             + "<p>after</p>");
         test(" ((((=toto=))))", ""
             + "<div class='wikimodel-document'>\n"
-            + "<p><a href='toto'>toto</a></p>\n"
+            + "<p><a href='toto' class='wikimodel-freestanding'>toto</a></p>\n"
             + "</div>");
         test("((((=toto=))))", ""
             + "<div class='wikimodel-document'>\n"
-            + "<p><a href='toto'>toto</a></p>\n"
+            + "<p><a href='toto' class='wikimodel-freestanding'>toto</a></p>\n"
             + "</div>");
 
         test("((((((toto))))))", ""

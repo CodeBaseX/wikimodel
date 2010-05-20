@@ -269,7 +269,7 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
         
         test(
             "<html><img src=\"target\" alt=\"some description\" class=\"wikimodel-freestanding\"/></html>",
-            "<p><img src='target' class=\"wikimodel-freestanding\"/></p>");
+            "<p><img src='target' class='wikimodel-freestanding'/></p>");
     }
 
     /**

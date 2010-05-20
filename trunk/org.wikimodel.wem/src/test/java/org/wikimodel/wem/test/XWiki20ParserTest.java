@@ -242,18 +242,18 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
     }
 
     public void testImages() throws WikiParserException {
-        test("image:reference", "<p><img src='reference'/></p>");
-        test("image:reference ", "<p><img src='reference'/> </p>");
-        test("image:reference~ ", "<p><img src='reference~ '/></p>");
-        test("image:wiki:space.page", "<p><img src='wiki:space.page'/></p>");
-        test("image:wiki:space.page@file.ext", "<p><img src='wiki:space.page@file.ext'/></p>");
+        test("image:reference", "<p><img src='reference' class='wikimodel-freestanding'/></p>");
+        test("image:reference ", "<p><img src='reference' class='wikimodel-freestanding'/> </p>");
+        test("image:reference~ ", "<p><img src='reference~ ' class='wikimodel-freestanding'/></p>");
+        test("image:wiki:space.page", "<p><img src='wiki:space.page' class='wikimodel-freestanding'/></p>");
+        test("image:wiki:space.page@file.ext", "<p><img src='wiki:space.page@file.ext' class='wikimodel-freestanding'/></p>");
     }
 
     public void testAttach() throws WikiParserException {
-        test("attach:reference", "<p><a href='attach:reference'>attach:reference</a></p>");
-        test("attach:wiki:space.page", "<p><a href='attach:wiki:space.page'>attach:wiki:space.page</a></p>");
+        test("attach:reference", "<p><a href='attach:reference' class='wikimodel-freestanding'>attach:reference</a></p>");
+        test("attach:wiki:space.page", "<p><a href='attach:wiki:space.page' class='wikimodel-freestanding'>attach:wiki:space.page</a></p>");
         test("attach:wiki:space.page@file.ext",
-            "<p><a href='attach:wiki:space.page@file.ext'>attach:wiki:space.page@file.ext</a></p>");
+            "<p><a href='attach:wiki:space.page@file.ext' class='wikimodel-freestanding'>attach:wiki:space.page@file.ext</a></p>");
     }
 
     /**
@@ -513,15 +513,15 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
      */
     public void testReferences() throws WikiParserException {
         test("before [[xx[[image:img.gif]]yy]] after",
-            "<p>before <a href='xx[[image:img.gif]]yy'>xx[[image:img.gif]]yy</a> after</p>");
+            "<p>before <a href='xx[[image:img.gif]]yy' class='wikimodel-freestanding'>xx[[image:img.gif]]yy</a> after</p>");
         test("before [[xx[[image:img.gif bqdf]]yy]] after",
-            "<p>before <a href='xx[[image:img.gif bqdf]]yy'>xx[[image:img.gif bqdf]]yy</a> after</p>");
+            "<p>before <a href='xx[[image:img.gif bqdf]]yy' class='wikimodel-freestanding'>xx[[image:img.gif bqdf]]yy</a> after</p>");
         test("before http://www.foo.bar/com after",
-            "<p>before <a href='http://www.foo.bar/com'>http://www.foo.bar/com</a> after</p>");
-        test("before [[toto]] after", "<p>before <a href='toto'>toto</a> after</p>");
-        test("before [[ [toto] [tata] ]] after", "<p>before <a href=' [toto] [tata] '> [toto] [tata] </a> after</p>");
+            "<p>before <a href='http://www.foo.bar/com' class='wikimodel-freestanding'>http://www.foo.bar/com</a> after</p>");
+        test("before [[toto]] after", "<p>before <a href='toto' class='wikimodel-freestanding'>toto</a> after</p>");
+        test("before [[ [toto] [tata] ]] after", "<p>before <a href=' [toto] [tata] ' class='wikimodel-freestanding'> [toto] [tata] </a> after</p>");
         test("before wiki:Hello after", "<p>before wiki:Hello after</p>");
-        test("before mailto:Hello after", "<p>before <a href='mailto:Hello'>mailto:Hello</a> after</p>");
+        test("before mailto:Hello after", "<p>before <a href='mailto:Hello' class='wikimodel-freestanding'>mailto:Hello</a> after</p>");
         test("before wiki~:Hello after", "<p>before wiki:Hello after</p>");
 
         // Not a reference

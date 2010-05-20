@@ -48,7 +48,7 @@ public class CreoleWikiParserTest extends AbstractWikiParserTest {
         test("_nothing special_", "<p>_nothing special_</p>");
         test(
             "http://www.foo.bar",
-            "<p><a href='http://www.foo.bar'>http://www.foo.bar</a></p>");
+            "<p><a href='http://www.foo.bar' class='wikimodel-freestanding'>http://www.foo.bar</a></p>");
 
     }
 
@@ -250,27 +250,27 @@ public class CreoleWikiParserTest extends AbstractWikiParserTest {
     public void testReferences() throws WikiParserException {
         test(
             "before http://www.foo.bar/com after",
-            "<p>before <a href='http://www.foo.bar/com'>http://www.foo.bar/com</a> after</p>");
+            "<p>before <a href='http://www.foo.bar/com' class='wikimodel-freestanding'>http://www.foo.bar/com</a> after</p>");
         test(
             "before this+is+a+reference:to_here after",
-            "<p>before <a href='this+is+a+reference:to_here'>this+is+a+reference:to_here</a> after</p>");
+            "<p>before <a href='this+is+a+reference:to_here' class='wikimodel-freestanding'>this+is+a+reference:to_here</a> after</p>");
         test(
             "before [[toto]] after",
-            "<p>before <a href='toto'>toto</a> after</p>");
+            "<p>before <a href='toto' class='wikimodel-freestanding'>toto</a> after</p>");
 
         // Tests from
         // http://wikicreole.org/wiki/Creole1.0#section-Creole1.0-
         // LinksInternalExternalAndInterwiki
-        test("[[link]]", "<p><a href='link'>link</a></p>");
+        test("[[link]]", "<p><a href='link' class='wikimodel-freestanding'>link</a></p>");
         test(
             "[[MyBigPage|Go to my page]]",
             "<p><a href='MyBigPage'>Go to my page</a></p>");
         test(
             "[[http://www.wikicreole.org/]]",
-            "<p><a href='http://www.wikicreole.org/'>http://www.wikicreole.org/</a></p>");
+            "<p><a href='http://www.wikicreole.org/' class='wikimodel-freestanding'>http://www.wikicreole.org/</a></p>");
         test(
             "http://www.rawlink.org/, http://www.another.rawlink.org",
-            "<p><a href='http://www.rawlink.org/'>http://www.rawlink.org/</a>, <a href='http://www.another.rawlink.org'>http://www.another.rawlink.org</a></p>");
+            "<p><a href='http://www.rawlink.org/' class='wikimodel-freestanding'>http://www.rawlink.org/</a>, <a href='http://www.another.rawlink.org' class='wikimodel-freestanding'>http://www.another.rawlink.org</a></p>");
         test(
             "[[http://www.wikicreole.org/|Visit the WikiCreole website]]",
             "<p><a href='http://www.wikicreole.org/'>Visit the WikiCreole website</a></p>");
@@ -280,7 +280,7 @@ public class CreoleWikiParserTest extends AbstractWikiParserTest {
         test("[[Weird Stuff|**Weird** // Stuff//]]");
         test(
             "[[Ohana:WikiFamily]]",
-            "<p><a href='Ohana:WikiFamily'>Ohana:WikiFamily</a></p>");
+            "<p><a href='Ohana:WikiFamily' class='wikimodel-freestanding'>Ohana:WikiFamily</a></p>");
 
         // Not a reference
         test("before [toto] after", "<p>before [toto] after</p>");
