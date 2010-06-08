@@ -231,6 +231,10 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
         test(
             "<html>a<em><strong><em>b</em></strong></em>c</html>",
             "<p>a<em><strong>b</strong></em>c</p>");
+
+        test(
+            "<html><p>12<strong>34<span param='value'>56</span>78</strong>90</p></html>",
+            "<p>12<strong>34</strong><strong><span class='wikimodel-parameters'[param='value']>56</span></strong><strong>78</strong>90</p>");
     }
 
     /**
