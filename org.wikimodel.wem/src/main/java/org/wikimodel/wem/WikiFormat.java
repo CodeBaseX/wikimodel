@@ -39,20 +39,22 @@ public class WikiFormat {
      * 
      */
     public WikiFormat() {
-        super();
     }
 
     /**
      * @param styles
      */
     public WikiFormat(Set<WikiStyle> styles) {
-        super();
-        fStyles.addAll(styles);
+        this(styles, Collections.<WikiParameter> emptyList());
     }
 
     public WikiFormat(Set<WikiStyle> styles, Collection<WikiParameter> params) {
-        this(styles);
-        fParams = new WikiParameters(params);
+        if (!styles.isEmpty()) {
+            fStyles.addAll(styles);
+        }
+        if (!params.isEmpty()) {
+            fParams = new WikiParameters(params);
+        }
     }
 
     public WikiFormat(Collection<WikiParameter> params) {
@@ -63,11 +65,11 @@ public class WikiFormat {
      * @param style
      */
     public WikiFormat(WikiStyle style) {
-        fStyles.add(style);
+        this(Collections.<WikiStyle> singleton(style));
     }
 
     public WikiFormat(WikiStyle style, Collection<WikiParameter> params) {
-        this(Collections.<WikiStyle> singleton(style));
+        this(Collections.<WikiStyle> singleton(style), params);
     }
 
     /**
