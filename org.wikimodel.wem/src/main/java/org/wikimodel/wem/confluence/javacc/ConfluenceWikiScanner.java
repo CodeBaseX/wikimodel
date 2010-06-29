@@ -15,6 +15,7 @@ import org.wikimodel.wem.IWikiReferenceParser;
 import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.WikiStyle;
+import org.wikimodel.wem.confluence.ConfluenceImageWikiReferenceParser;
 import org.wikimodel.wem.confluence.ConfluenceWikiReferenceParser;
 import org.wikimodel.wem.impl.IWikiScannerContext;
 import org.wikimodel.wem.impl.InlineState;
@@ -30,6 +31,8 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     private IWikiScannerContext fContext;
 
     private IWikiReferenceParser fReferenceParser = new ConfluenceWikiReferenceParser();
+
+    private IWikiReferenceParser fImageReferenceParser = new ConfluenceImageWikiReferenceParser();
 
     public void parse(IWikiScannerContext context) throws ParseException {
         fContext = context;
@@ -936,10 +939,7 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     }
         str = buf.toString();
         params = newMacroParameters(paramStr);
-        if ("noformat".equals(name) || "code".equals(name)) {
-            params = params.addParameter("type", name);
-            fContext.onVerbatim(str, !block, params);
-        } else if (block) {
+        if (block) {
             fContext.onMacroBlock(name, params, str);
         } else {
             fContext.onMacroInline(name, params, str);
@@ -1084,7 +1084,7 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
                 switch (ch) {
                     case '{':
                     case '}':
-                        style  = IWikiScannerContext.CODE;
+                        style  = IWikiScannerContext.MONO;
                         break;
                     case '*':
                         style  = IWikiScannerContext.STRONG;
@@ -1104,7 +1104,7 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
                     case '+':
                         // Underlined text was explicitly forbidden. 
                         // So replace it by TT.
-                        style  = IWikiScannerContext.TT;
+                        style  = IWikiScannerContext.INS;
                         checkStyleContext = true;
                         break;
                     case '-':
@@ -1147,16 +1147,15 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
       case D_REFERENCE:
         t = getREFERENCE();
                 str = t.image.trim();
+                WikiReference ref;
                 if (str.startsWith("!")) {
                    str = str.substring(1, str.length() - 1);
+                   ref = fImageReferenceParser.parse(str);
+                   fContext.onImage(ref);
                 } else {
-                    str = str.substring(1, str.length() - 1);
-                }
-                WikiReference ref = fReferenceParser.parse(str);
-                if (isImage(ref)) {
-                    fContext.onImage(ref);
-                } else {
-                    fContext.onReference(ref);
+                   str = str.substring(1, str.length() - 1);
+                   ref = fReferenceParser.parse(str);
+                   fContext.onReference(ref);
                 }
         break;
       case I_TABLE_CELL:
@@ -1283,28 +1282,13 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     finally { jj_save(12, xla); }
   }
 
-  private boolean jj_3_3() {
-    if (jj_3R_12()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_20() {
-    if (jj_3R_42()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_29() {
-    if (jj_3R_51()) return true;
-    return false;
-  }
-
   private boolean jj_3R_28() {
     if (jj_3R_50()) return true;
     return false;
   }
 
-  private boolean jj_3R_59() {
-    if (jj_3R_61()) return true;
+  private boolean jj_3R_38() {
+    if (jj_3R_56()) return true;
     return false;
   }
 
@@ -1351,21 +1335,6 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_38() {
-    if (jj_3R_56()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_11() {
-    Token xsp;
-    if (jj_3_13()) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_13()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
   private boolean jj_3R_58() {
     if (jj_3R_60()) return true;
     return false;
@@ -1377,6 +1346,16 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     if (jj_3R_58()) {
     jj_scanpos = xsp;
     if (jj_3R_59()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_11() {
+    Token xsp;
+    if (jj_3_13()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_13()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
@@ -1396,13 +1375,13 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_18() {
-    if (jj_3R_19()) return true;
+  private boolean jj_3R_55() {
+    if (jj_3R_57()) return true;
     return false;
   }
 
-  private boolean jj_3R_55() {
-    if (jj_3R_57()) return true;
+  private boolean jj_3R_18() {
+    if (jj_3R_19()) return true;
     return false;
   }
 
@@ -1421,17 +1400,6 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3_12() {
-    if (jj_3R_18()) return true;
-    if (jj_3R_11()) return true;
-    return false;
-  }
-
-  private boolean jj_3_11() {
-    if (jj_3R_19()) return true;
-    return false;
-  }
-
   private boolean jj_3R_46() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1439,6 +1407,12 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     jj_scanpos = xsp;
     if (jj_scan_token(91)) return true;
     }
+    return false;
+  }
+
+  private boolean jj_3_12() {
+    if (jj_3R_18()) return true;
+    if (jj_3R_11()) return true;
     return false;
   }
 
@@ -1469,6 +1443,11 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
 
   private boolean jj_3_1() {
     if (jj_3R_10()) return true;
+    return false;
+  }
+
+  private boolean jj_3_11() {
+    if (jj_3R_19()) return true;
     return false;
   }
 
@@ -1669,25 +1648,8 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3_10() {
-    if (jj_3R_11()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_9()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
   private boolean jj_3R_40() {
     if (jj_scan_token(INTERNAL_MACRO)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_34() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_10()) jj_scanpos = xsp;
     return false;
   }
 
@@ -1708,6 +1670,23 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     jj_scanpos = xsp;
     if (jj_scan_token(74)) return true;
     }
+    return false;
+  }
+
+  private boolean jj_3_10() {
+    if (jj_3R_11()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_9()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_34() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_10()) jj_scanpos = xsp;
     return false;
   }
 
@@ -1746,13 +1725,13 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_24() {
-    if (jj_3R_46()) return true;
+  private boolean jj_3_4() {
+    if (jj_3R_13()) return true;
     return false;
   }
 
-  private boolean jj_3_4() {
-    if (jj_3R_13()) return true;
+  private boolean jj_3R_24() {
+    if (jj_3R_46()) return true;
     return false;
   }
 
@@ -1786,9 +1765,29 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
+  private boolean jj_3_3() {
+    if (jj_3R_12()) return true;
+    return false;
+  }
+
   private boolean jj_3R_10() {
     if (jj_3R_33()) return true;
     if (jj_3R_34()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_20() {
+    if (jj_3R_42()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_29() {
+    if (jj_3R_51()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_59() {
+    if (jj_3R_61()) return true;
     return false;
   }
 
