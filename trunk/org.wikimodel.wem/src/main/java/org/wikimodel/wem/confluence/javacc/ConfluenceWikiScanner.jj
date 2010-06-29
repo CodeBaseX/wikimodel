@@ -34,6 +34,11 @@ import org.wikimodel.wem.impl.WikiScannerUtil;
  */
 public class ConfluenceWikiScanner {
 
+    /**
+     * Indicate if {noformat} macro should be seen as a macro or a verbatim block.
+     */
+    private boolean fNoformatAsMacro = true;
+
     private IWikiScannerContext fContext;
 
     private IWikiReferenceParser fReferenceParser = new ConfluenceWikiReferenceParser();
@@ -44,7 +49,10 @@ public class ConfluenceWikiScanner {
         fContext = context;
         doParse();
     }
-     
+
+    public void setNoformatAsMacro(boolean noformatAsMacro) {
+      	fNoformatAsMacro = noformatAsMacro;    }
+
     private boolean isImage(WikiReference ref) {
         String str = ref.getLink().toLowerCase();
         return str.endsWith(".gif") ||
@@ -706,7 +714,7 @@ void macro(Token t, boolean block):
             if (prevEnd != null) {
                 buf.append(prevEnd);
             }
-            if (macro) {
+            if (block) {
                 prevEnd = t.image;
             } else {
                 prevEnd = null;
@@ -718,7 +726,10 @@ void macro(Token t, boolean block):
     {
         str = buf.toString();
         params = newMacroParameters(paramStr);
-        if (block) {
+        if (!fNoformatAsMacro && "noformat".equals(name)) {
+           	params = params.addParameter("type", name);
+           	fContext.onVerbatim(str, !block, params);
+        } else if (block) {
             fContext.onMacroBlock(name, params, str);
         } else {
             fContext.onMacroInline(name, params, str);
