@@ -27,24 +27,31 @@ import org.wikimodel.wem.impl.WikiScannerContext;
  * @author MikhailKotelnikov
  */
 public class ConfluenceWikiParser implements IWikiParser {
+    /**
+     * Indicate if {noformat} macro should be seen as a macro or a verbatim
+     * block.
+     */
+    private boolean fNoformatAsMacro = true;
+
+    public ConfluenceWikiParser() {
+    }
 
     /**
      * 
      */
-    public ConfluenceWikiParser() {
-        super();
+    public ConfluenceWikiParser(boolean noformatAsMacro) {
+        fNoformatAsMacro = noformatAsMacro;
     }
 
     /**
      * @see org.wikimodel.wem.IWikiParser#parse(java.io.Reader,
      *      org.wikimodel.wem.IWemListener)
      */
-    public void parse(Reader reader, IWemListener listener)
-            throws WikiParserException {
+    public void parse(Reader reader, IWemListener listener) throws WikiParserException {
         try {
             ConfluenceWikiScanner scanner = new ConfluenceWikiScanner(reader);
-            ConfluenceWikiScannerContext context = new ConfluenceWikiScannerContext(
-                listener);
+            scanner.setNoformatAsMacro(fNoformatAsMacro);
+            ConfluenceWikiScannerContext context = new ConfluenceWikiScannerContext(listener);
             scanner.parse(context);
         } catch (ParseException e) {
             throw new WikiParserException(e);
