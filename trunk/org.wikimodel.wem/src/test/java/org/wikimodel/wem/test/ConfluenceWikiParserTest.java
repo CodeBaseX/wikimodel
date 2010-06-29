@@ -72,7 +72,7 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
         // (mkotelnikov)
         test(
             "Makes text +underlined+.",
-            "<p>Makes text <tt>underlined</tt>.</p>");
+            "<p>Makes text <ins>underlined</ins>.</p>");
         test(
             "Makes text ^superscript^.",
             "<p>Makes text <sup>superscript</sup>.</p>");
@@ -81,7 +81,7 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
             "<p>Makes text <sub>subscript</sub>.</p>");
         test(
             "Makes text as {{code text}}.",
-            "<p>Makes text as <code>code text</code>.</p>");
+            "<p>Makes text as <mono>code text</mono>.</p>");
         test(
             "bq. Some block quoted text.",
             "<blockquote>\n Some block quoted text.\n</blockquote>");
@@ -140,11 +140,11 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
         // not a STRIKE
         test("abc - cde", "<p>abc - cde</p>");
 
-        // TT
-        test("+abc+", "<p><tt>abc</tt></p>");
-        test(" +abc+", "<p> <tt>abc</tt></p>");
-        test("abc +cde+ efg", "<p>abc <tt>cde</tt> efg</p>");
-        test("abc +cde+ +efg+", "<p>abc <tt>cde</tt> <tt>efg</tt></p>");
+        // INS
+        test("+abc+", "<p><ins>abc</ins></p>");
+        test(" +abc+", "<p> <ins>abc</ins></p>");
+        test("abc +cde+ efg", "<p>abc <ins>cde</ins> efg</p>");
+        test("abc +cde+ +efg+", "<p>abc <ins>cde</ins> <ins>efg</ins></p>");
         // not a TT
         test("abc + cde", "<p>abc + cde</p>");
 
@@ -213,6 +213,12 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
         test(
             "!/2007/05/23/My Blog Post^image.gif!",
             "<p><img src='/2007/05/23/My Blog Post^image.gif'/></p>");
+        test(
+            "!image.gif|a=b!",
+            "<p><img src='image.gif' a='b' title='image.gif'/></p>");
+        test(
+            "!image.gif|a=b,c=d!",
+            "<p><img src='image.gif' a='b' c='d' title='image.gif'/></p>");
 
     }
 
@@ -456,17 +462,17 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
 
     public void testMacroEmpty() throws WikiParserException {
         test(
-            "{toto}a{toto}b",
+            "{code}a{code}b",
             ""
-                + "<pre class='wikimodel-macro' macroName='toto'><![CDATA[]]></pre>\n"
-                + "<p>a<span class='wikimodel-macro' macroName='toto'><![CDATA[b]]></span></p>");
+                + "<pre class='wikimodel-macro' macroName='code'><![CDATA[a]]></pre>\n"
+                + "<p>b</p>");
 
         // Empty macros with parameters
         test(
-            "{toto:x=X|y=Y}a{toto}b",
+            "{code:x=X|y=Y}a{code}b",
             ""
-                + "<pre class='wikimodel-macro' macroName='toto' x='X' y='Y'><![CDATA[]]></pre>\n"
-                + "<p>a<span class='wikimodel-macro' macroName='toto'><![CDATA[b]]></span></p>");
+                + "<pre class='wikimodel-macro' macroName='code' x='X' y='Y'><![CDATA[a]]></pre>\n"
+                + "<p>b</p>");
     }
 
     /**
@@ -700,53 +706,27 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
     }
 
     public void testVerbatimBlock() throws WikiParserException {
-        test("{code}xxx{code}", "<pre type='code'>xxx</pre>");
+        test("{{{xxx}}}", "<pre>xxx</pre>");
         test(
-            "before\n{code}xxx{code}after",
-            "<p>before</p>\n<pre type='code'>xxx</pre>\n<p>after</p>");
-        test(
-            "{code:title=Bar.java|borderStyle=solid}\n"
-                + "// Some comments here\n"
-                + "public String getFoo()\n"
-                + "{\n"
-                + "    return foo;\n"
-                + "}\n"
-                + "{code}\n"
-                + "\n"
-                + "{code:xml}\n"
-                + "<test>\n"
-                + "  <another tag=\"attribute\"/>\n"
-                + "</test>\n"
-                + "{code}",
-            "<pre title='Bar.java' borderStyle='solid' type='code'>\n"
-                + "// Some comments here\n"
-                + "public String getFoo()\n"
-                + "{\n"
-                + "    return foo;\n"
-                + "}\n"
-                + "</pre>\n"
-                + "<pre value='xml' type='code'>\n"
-                + "&#x3c;test&#x3e;\n"
-                + "  &#x3c;another tag=\"attribute\"/&#x3e;\n"
-                + "&#x3c;/test&#x3e;\n"
-                + "</pre>");
-        test("{noformat}\n"
+            "before\n{{{xxx}}}after",
+            "<p>before</p>\n<pre>xxx</pre>\n<p>after</p>");
+        test("{{{\n"
             + "h1. xxx\n"
             + "* item\n"
             + "* item\n"
-            + "{noformat}", ""
-            + "<pre type='noformat'>\n"
+            + "}}}", ""
+            + "<pre>\n"
             + "h1. xxx\n"
             + "* item\n"
             + "* item\n"
             + "</pre>");
-        test("before\n{noformat}\n"
+        test("before\n{{{\n"
             + "h1. xxx\n"
             + "* item\n"
             + "* item\n"
-            + "{noformat}after", ""
+            + "}}}after", ""
             + "<p>before</p>\n"
-            + "<pre type='noformat'>\n"
+            + "<pre>\n"
             + "h1. xxx\n"
             + "* item\n"
             + "* item\n"
@@ -755,14 +735,14 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
 
         // Inline verbatim blocks
         test(
-            "before{code}xxx{code}after",
-            "<p>before<tt class=\"wikimodel-verbatim\" type='code'>xxx</tt>after</p>");
-        test("before{noformat}\n"
+            "before{{{xxx}}}after",
+            "<p>before<tt class=\"wikimodel-verbatim\">xxx</tt>after</p>");
+        test("before{{{\n"
             + "h1. xxx\n"
             + "* item\n"
             + "* item\n"
-            + "{noformat}after", ""
-            + "<p>before<tt class=\"wikimodel-verbatim\" type='noformat'>\n"
+            + "}}}after", ""
+            + "<p>before<tt class=\"wikimodel-verbatim\">\n"
             + "h1. xxx\n"
             + "* item\n"
             + "* item\n"

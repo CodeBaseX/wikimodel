@@ -21,6 +21,7 @@ import org.wikimodel.wem.IWikiReferenceParser;
 import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.WikiStyle;
+import org.wikimodel.wem.confluence.ConfluenceImageWikiReferenceParser;
 import org.wikimodel.wem.confluence.ConfluenceWikiReferenceParser;
 import org.wikimodel.wem.impl.IWikiScannerContext;
 import org.wikimodel.wem.impl.InlineState;
@@ -36,6 +37,8 @@ public class ConfluenceWikiScanner {
     private IWikiScannerContext fContext;
 
     private IWikiReferenceParser fReferenceParser = new ConfluenceWikiReferenceParser();
+
+    private IWikiReferenceParser fImageReferenceParser = new ConfluenceImageWikiReferenceParser();
 
     public void parse(IWikiScannerContext context) throws ParseException {
         fContext = context;
@@ -203,6 +206,12 @@ TOKEN_MGR_DECLS: {
             | "slide"
             | "note"
             | "warning"
+            | "important"
+            | "caution"
+            | "example"
+            | "docbook"
+            | "screen"
+            | "table-plus"
             | "info"
             | "tip"
             | "cache"
@@ -409,7 +418,7 @@ TOKEN_MGR_DECLS: {
 
     | <I_MACRO_BLOCK_START: (<NEW_LINE>)? <MACRO_BLOCK> > { initMacro(image); } : MACRO_CONTEXT
     | <I_MACRO_EMPTY_BLOCK: (<NEW_LINE>)? <MACRO> > : DEFAULT
-    | <I_MACRO_INLINE_START: <MACRO> > { initMacro(image); } : MACRO_CONTEXT
+    | <I_MACRO_INLINE_START: <MACRO_BLOCK> > { initMacro(image); } : MACRO_CONTEXT
     | <I_MACRO_EMPTY_INLINE: <MACRO> > : DEFAULT
     
     | <I_ESCAPED: <ESCAPED> > : DEFAULT
@@ -442,7 +451,7 @@ TOKEN_MGR_DECLS: {
 
     | <D_MACRO_BLOCK_START: <NEW_LINE> <MACRO_BLOCK> > { initMacro(image); } : MACRO_CONTEXT
     | <D_MACRO_EMPTY_BLOCK: <NEW_LINE> <MACRO> > : DEFAULT
-    | <D_MACRO_INLINE_START: <MACRO> > { initMacro(image); } : MACRO_CONTEXT
+    | <D_MACRO_INLINE_START: <MACRO_BLOCK> > { initMacro(image); } : MACRO_CONTEXT
     | <D_MACRO_EMPTY_INLINE: <MACRO> > : DEFAULT
     
     | <D_ESCAPED: <ESCAPED> > : DEFAULT
@@ -709,10 +718,7 @@ void macro(Token t, boolean block):
     {
         str = buf.toString();
         params = newMacroParameters(paramStr);
-        if ("noformat".equals(name) || "code".equals(name)) {
-            params = params.addParameter("type", name);
-            fContext.onVerbatim(str, !block, params);
-        } else if (block) {
+        if (block) {
             fContext.onMacroBlock(name, params, str);
         } else {
             fContext.onMacroInline(name, params, str);
@@ -871,7 +877,7 @@ void line():
                 switch (ch) {
                     case '{': 
                     case '}': 
-                        style  = IWikiScannerContext.CODE;
+                        style  = IWikiScannerContext.MONO;
                         break;
                     case '*': 
                         style  = IWikiScannerContext.STRONG;
@@ -891,7 +897,7 @@ void line():
                     case '+': 
                         // Underlined text was explicitly forbidden. 
                         // So replace it by TT.
-                        style  = IWikiScannerContext.TT;
+                        style  = IWikiScannerContext.INS;
                         checkStyleContext = true;
                         break;
                     case '-': 
@@ -934,16 +940,15 @@ void line():
             t = getREFERENCE() 
             {
                 str = t.image.trim();
+                WikiReference ref;
                 if (str.startsWith("!")) {
-                   str = str.substring(1, str.length() - 1); 
+                   str = str.substring(1, str.length() - 1);
+                   ref = fImageReferenceParser.parse(str);
+                   fContext.onImage(ref);
                 } else {
-                    str = str.substring(1, str.length() - 1);
-                }
-                WikiReference ref = fReferenceParser.parse(str);
-                if (isImage(ref)) {
-                    fContext.onImage(ref);
-                } else {
-                    fContext.onReference(ref);
+                   str = str.substring(1, str.length() - 1);
+                   ref = fReferenceParser.parse(str);
+                   fContext.onReference(ref);
                 }
             }
             |
