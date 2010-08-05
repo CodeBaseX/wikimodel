@@ -398,7 +398,8 @@ public class MediawikiParserTest extends AbstractWikiParserTest
     /**
      * @throws WikiParserException
      */
-    public void testTableCaption() throws WikiParserException {
+    public void testTableCaption() throws WikiParserException
+    {
         test("before\n"
             + "{|\n"
             + "|+ THIS IS MY CAPTION"
