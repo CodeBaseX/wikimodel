@@ -403,6 +403,15 @@ void table():
       fContext.endTable();
     }
     |
+    t = getTABLE_CAPTION()
+    {
+        if  (fContext.isInTable())  {
+            str = t.image.trim();
+            str = str.substring("|+".length()).trim();
+            fContext.onTableCaption(str);
+        }
+    }
+    |
     t = getTABLE_ROW()
     {
         if  (fContext.isInTable())  {

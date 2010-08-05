@@ -506,6 +506,7 @@ public class MediawikiScanner implements MediawikiScannerConstants {
       case I_ESCAPE:
       case I_TABLE_BEGIN:
       case I_TABLE_END:
+      case I_TABLE_CAPTION:
       case I_TABLE_ROW:
       case I_TABLE_CELL:
       case I_TABLE_CELL_NL:
@@ -530,6 +531,7 @@ public class MediawikiScanner implements MediawikiScannerConstants {
       case D_ESCAPE:
       case D_TABLE_BEGIN:
       case D_TABLE_END:
+      case D_TABLE_CAPTION:
       case D_TABLE_ROW:
       case D_TABLE_CELL:
       case D_TABLE_CELL_NL:
@@ -737,6 +739,15 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     case D_TABLE_END:
       t = getTABLE_END();
       fContext.endTable();
+      break;
+    case I_TABLE_CAPTION:
+    case D_TABLE_CAPTION:
+      t = getTABLE_CAPTION();
+        if  (fContext.isInTable())  {
+            str = t.image.trim();
+            str = str.substring("|+".length()).trim();
+            fContext.onTableCaption(str);
+        }
       break;
     case I_TABLE_ROW:
     case D_TABLE_ROW:
@@ -1231,36 +1242,13 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     finally { jj_save(11, xla); }
   }
 
-  private boolean jj_3R_17() {
-    if (jj_3R_40()) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_9()) jj_scanpos = xsp;
-    return false;
-  }
-
-  private boolean jj_3R_15() {
-    if (jj_3R_39()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_7()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_30() {
-    if (jj_3R_51()) return true;
+  private boolean jj_3R_23() {
+    if (jj_3R_46()) return true;
     return false;
   }
 
   private boolean jj_3_6() {
     if (jj_3R_15()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_23() {
-    if (jj_3R_45()) return true;
     return false;
   }
 
@@ -1271,12 +1259,12 @@ public class MediawikiScanner implements MediawikiScannerConstants {
   }
 
   private boolean jj_3R_29() {
-    if (jj_3R_36()) return true;
+    if (jj_3R_37()) return true;
     return false;
   }
 
   private boolean jj_3R_22() {
-    if (jj_3R_44()) return true;
+    if (jj_3R_45()) return true;
     return false;
   }
 
@@ -1291,7 +1279,7 @@ public class MediawikiScanner implements MediawikiScannerConstants {
   }
 
   private boolean jj_3R_21() {
-    if (jj_3R_43()) return true;
+    if (jj_3R_44()) return true;
     return false;
   }
 
@@ -1301,12 +1289,12 @@ public class MediawikiScanner implements MediawikiScannerConstants {
   }
 
   private boolean jj_3R_20() {
-    if (jj_3R_42()) return true;
+    if (jj_3R_43()) return true;
     return false;
   }
 
   private boolean jj_3R_13() {
-    if (jj_3R_36()) return true;
+    if (jj_3R_37()) return true;
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
@@ -1316,27 +1304,17 @@ public class MediawikiScanner implements MediawikiScannerConstants {
   }
 
   private boolean jj_3R_19() {
-    if (jj_3R_41()) return true;
+    if (jj_3R_42()) return true;
     return false;
   }
 
   private boolean jj_3R_28() {
-    if (jj_3R_50()) return true;
+    if (jj_3R_51()) return true;
     return false;
   }
 
   private boolean jj_3_4() {
     if (jj_3R_13()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_44() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(77)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(102)) return true;
-    }
     return false;
   }
 
@@ -1384,7 +1362,7 @@ public class MediawikiScanner implements MediawikiScannerConstants {
   }
 
   private boolean jj_3R_27() {
-    if (jj_3R_49()) return true;
+    if (jj_3R_50()) return true;
     return false;
   }
 
@@ -1398,7 +1376,7 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_35() {
+  private boolean jj_3R_36() {
     Token xsp;
     if (jj_3_4()) return true;
     while (true) {
@@ -1409,6 +1387,26 @@ public class MediawikiScanner implements MediawikiScannerConstants {
   }
 
   private boolean jj_3R_26() {
+    if (jj_3R_49()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_45() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(77)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(102)) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_35() {
+    if (jj_3R_57()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_25() {
     if (jj_3R_48()) return true;
     return false;
   }
@@ -1418,7 +1416,12 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_46() {
+  private boolean jj_3R_18() {
+    if (jj_3R_16()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_47() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(67)) {
@@ -1428,7 +1431,7 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_43() {
+  private boolean jj_3R_44() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(75)) {
@@ -1438,7 +1441,7 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_42() {
+  private boolean jj_3R_43() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(76)) {
@@ -1448,7 +1451,7 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_45() {
+  private boolean jj_3R_46() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(68)) {
@@ -1458,7 +1461,7 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_58() {
+  private boolean jj_3R_60() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(66)) {
@@ -1468,7 +1471,7 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_40() {
+  private boolean jj_3R_41() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(70)) {
@@ -1479,16 +1482,16 @@ public class MediawikiScanner implements MediawikiScannerConstants {
   }
 
   private boolean jj_3R_34() {
-    if (jj_3R_55()) return true;
+    if (jj_3R_56()) return true;
     return false;
   }
 
-  private boolean jj_3R_25() {
+  private boolean jj_3R_24() {
     if (jj_3R_47()) return true;
     return false;
   }
 
-  private boolean jj_3R_49() {
+  private boolean jj_3R_50() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(73)) {
@@ -1508,8 +1511,9 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_18() {
-    if (jj_3R_16()) return true;
+  private boolean jj_3_11() {
+    if (jj_3R_18()) return true;
+    if (jj_3R_12()) return true;
     return false;
   }
 
@@ -1518,7 +1522,27 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_47() {
+  private boolean jj_3_10() {
+    if (jj_3R_16()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_58() {
+    if (jj_3R_12()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_11()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_39() {
+    if (jj_3R_59()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_48() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(64)) {
@@ -1529,11 +1553,11 @@ public class MediawikiScanner implements MediawikiScannerConstants {
   }
 
   private boolean jj_3R_33() {
-    if (jj_3R_54()) return true;
+    if (jj_3R_55()) return true;
     return false;
   }
 
-  private boolean jj_3R_50() {
+  private boolean jj_3R_51() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(63)) {
@@ -1543,7 +1567,12 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_48() {
+  private boolean jj_3R_59() {
+    if (jj_3R_60()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_49() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(69)) {
@@ -1553,7 +1582,7 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_36() {
+  private boolean jj_3R_37() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(59)) {
@@ -1563,18 +1592,7 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_24() {
-    if (jj_3R_46()) return true;
-    return false;
-  }
-
-  private boolean jj_3_11() {
-    if (jj_3R_18()) return true;
-    if (jj_3R_12()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_39() {
+  private boolean jj_3R_40() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(60)) {
@@ -1584,7 +1602,17 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_52() {
+  private boolean jj_3R_56() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(56)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(81)) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_53() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(65)) {
@@ -1594,22 +1622,7 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3_10() {
-    if (jj_3R_16()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_56() {
-    if (jj_3R_12()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_11()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_51() {
+  private boolean jj_3R_52() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(58)) {
@@ -1620,7 +1633,7 @@ public class MediawikiScanner implements MediawikiScannerConstants {
   }
 
   private boolean jj_3R_38() {
-    if (jj_3R_57()) return true;
+    if (jj_3R_58()) return true;
     return false;
   }
 
@@ -1633,7 +1646,10 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     jj_scanpos = xsp;
     if (jj_3R_34()) {
     jj_scanpos = xsp;
-    if (jj_3R_35()) return true;
+    if (jj_3R_35()) {
+    jj_scanpos = xsp;
+    if (jj_3R_36()) return true;
+    }
     }
     }
     }
@@ -1641,11 +1657,11 @@ public class MediawikiScanner implements MediawikiScannerConstants {
   }
 
   private boolean jj_3R_32() {
-    if (jj_3R_53()) return true;
+    if (jj_3R_54()) return true;
     return false;
   }
 
-  private boolean jj_3R_55() {
+  private boolean jj_3R_57() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(57)) {
@@ -1655,7 +1671,7 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_53() {
+  private boolean jj_3R_54() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(54)) {
@@ -1665,12 +1681,17 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_57() {
-    if (jj_3R_58()) return true;
+  private boolean jj_3R_14() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_38()) {
+    jj_scanpos = xsp;
+    if (jj_3R_39()) return true;
+    }
     return false;
   }
 
-  private boolean jj_3R_54() {
+  private boolean jj_3R_55() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(55)) {
@@ -1680,7 +1701,17 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_41() {
+  private boolean jj_3_9() {
+    if (jj_3R_12()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_31() {
+    if (jj_3R_53()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_42() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(53)) {
@@ -1690,18 +1721,8 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_37() {
-    if (jj_3R_56()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_14() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_37()) {
-    jj_scanpos = xsp;
-    if (jj_3R_38()) return true;
-    }
+  private boolean jj_3_7() {
+    if (jj_3R_14()) return true;
     return false;
   }
 
@@ -1710,18 +1731,26 @@ public class MediawikiScanner implements MediawikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3_9() {
-    if (jj_3R_12()) return true;
+  private boolean jj_3R_17() {
+    if (jj_3R_41()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_9()) jj_scanpos = xsp;
     return false;
   }
 
-  private boolean jj_3R_31() {
+  private boolean jj_3R_15() {
+    if (jj_3R_40()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_7()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_30() {
     if (jj_3R_52()) return true;
-    return false;
-  }
-
-  private boolean jj_3_7() {
-    if (jj_3R_14()) return true;
     return false;
   }
 
@@ -1751,10 +1780,10 @@ public class MediawikiScanner implements MediawikiScannerConstants {
       jj_la1_0 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x200000,0x400000,0x800000,0x1000000,0x2000000,0x4000000,0x8000000,0x10000000,0x20000000,0x40000000,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xfee00000,0x8c200000,0x0,0xfc200000,0xac00000,0x8c200000,0x8c200000,};
+      jj_la1_1 = new int[] {0x200000,0x400000,0x800000,0x1000000,0x2000000,0x4000000,0x8000000,0x10000000,0x20000000,0x40000000,0x80000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffe00000,0x8c200000,0x0,0xfc200000,0xbc00000,0x8c200000,0x8c200000,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x4000,0x8000,0x10000,0x20000,0x40000,0x80000,0x100000,0x200000,0x400000,0x800000,0x1000000,0x2000001,0x4000002,0x8000004,0x10000008,0x20000010,0x40000020,0x80000040,0x80,0x100,0x200,0x400,0x800,0x1000,0x2000,0xfffdffff,0x77187a3b,0x180,0xfff87e7f,0x158000,0x7f187a3f,0x77187a3b,};
+      jj_la1_2 = new int[] {0x4000,0x8000,0x10000,0x20000,0x40000,0x80000,0x100000,0x200000,0x400000,0x800000,0x1000000,0x2000001,0x4000002,0x8000004,0x10000008,0x20000010,0x40000020,0x80000040,0x80,0x100,0x200,0x400,0x800,0x1000,0x2000,0xffffffff,0x77187a3b,0x180,0xfff87e7f,0x178000,0x7f187a3f,0x77187a3b,};
    }
    private static void jj_la1_init_3() {
       jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x2,0x4,0x8,0x10,0x20,0x40,0x7f,0x74,0x3,0x7c,0x0,0x74,0x74,};

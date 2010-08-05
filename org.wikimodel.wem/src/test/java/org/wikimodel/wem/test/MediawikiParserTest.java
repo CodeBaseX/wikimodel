@@ -395,4 +395,19 @@ public class MediawikiParserTest extends AbstractWikiParserTest
 
     }
 
+    /**
+     * @throws WikiParserException
+     */
+    public void testTableCaption() throws WikiParserException {
+        test("before\n"
+            + "{|\n"
+            + "|+ THIS IS MY CAPTION"
+            + "| Cell a.1 || Cell a.2 \n"
+            + "|-\n"
+            + "| Cell b.1 || Cell b.2 \n"
+            + "|-\n"
+            + "| Cell c.1 || Cell c.2 \n"
+            + "|}\n"
+            + "after");
+    }
 }
