@@ -172,10 +172,10 @@ public class MediawikiParserTest extends AbstractWikiParserTest
 
         test(
             "[[Image:Yahoo Headquarters.jpg|thumb|right|250px|Yahoo headquarters in Sunnyvale]]",
-            "<p><img src='Yahoo Headquarters.jpg' format='thumb' align='right' width='250px' alt='Yahoo headquarters in Sunnyvale'/></p>");
+            "<p><img src='Yahoo Headquarters.jpg' format='thumb' align='right' width='250px' alt='Yahoo headquarters in Sunnyvale' title='Yahoo headquarters in Sunnyvale'/></p>");
         test("[[Image:Jerry Yang and David Filo.jpg|thumb|right|250px|Yahoo! co-founders [[Jerry Yang (entrepreneur)|Jerry Yang]] (left) and [[David Filo]] (right)]]");
         test("[[File:example.jpg|frameless|border|caption]]",
-            "<p><img src='example.jpg' format='frameless' format='border' alt='caption'/></p>");
+            "<p><img src='example.jpg' format='frameless' format='border' alt='caption' title='caption'/></p>");
     }
 
     /**

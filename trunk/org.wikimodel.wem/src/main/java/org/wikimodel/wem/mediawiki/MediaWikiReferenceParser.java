@@ -4,7 +4,7 @@
  * are made available under the terms of the Apache License, Version 2.0
  * which accompanies this distribution, and is available at
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Contributors:
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
@@ -13,8 +13,6 @@ package org.wikimodel.wem.mediawiki;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.wikimodel.wem.WikiParameter;
 import org.wikimodel.wem.WikiParameters;
@@ -23,9 +21,14 @@ import org.wikimodel.wem.WikiReferenceParser;
 
 /**
  * @author kotelnikov
+ * @author mkirst(at portolancs dot com)
  */
 public class MediaWikiReferenceParser extends WikiReferenceParser
 {
+
+    private static final String PREFIX_IMAGE = "^\\s*(?:i|I)mage:.*";
+    private static final String PREFIX_FILE = "^\\s*(?:f|F)ile:.*";
+    private static final String PREFIX_MAILTO = "^\\s*(?:m|M)ailto:.*";
 
     private static final List<String> format = Arrays.asList("border", "frame", "thumb", "frameless");
 
@@ -34,36 +37,51 @@ public class MediaWikiReferenceParser extends WikiReferenceParser
     private static final List<String> valign =
         Arrays.asList("baseline", "sub", "super", "top", "text-top", "middle", "bottom", "text-bottom");
 
+    @Override
     public WikiReference parse(String str)
     {
-
-        WikiReference wikiReference;
-
         // Piped Internal Link
         // [[Main Page|different text]]
         // [[File:image.png|thumb|250px|center|Image Caption]]
-        if (str.contains("|") && !str.endsWith("|")) {
-            String reference = str.trim().substring(0, str.indexOf('|'));
-            String label = str.trim().substring(str.indexOf('|') + 1);
-            int pipeCount = str.replaceAll("[^|]", "").length();
-            if ((reference.toLowerCase().startsWith("file:") && pipeCount > 1)
-                || (reference.toLowerCase().startsWith("image:") && pipeCount > 0)) {
+        // [[Image:foobar.png]]
+        str = str.trim();
+        String reference = null;
+        String label = null;
+        if (str.contains("|")) {
+            reference = str.substring(0, str.indexOf('|'));
+            label = str.substring(str.indexOf('|') + 1);
+        } else {
+            reference = str;
+        }
+        
+        // special case images ...
+        if (reference.matches(PREFIX_IMAGE) || reference.matches(PREFIX_FILE)) {
+            reference = reference.substring(reference.indexOf(':') + 1);
+            if (label != null) {
                 WikiParameters params = this.generateImageParams(label);
-                reference = reference.trim().substring(reference.indexOf(":")+1);
-                wikiReference = new WikiReference(reference, params);
-            } else {
-                return new WikiReference(reference, label);
+                if (params.getParameter("alt") != null) {
+                    label = params.getParameter("alt").getValue();
+                } else {
+                    label = "";
+                }
+                // copy ALT attribute to TITLE attribute, cause it's more user friendly
+                if (params.getParameter("title") == null && "".equals(label)) {
+                    params.addParameter("title", label);
+                }
+                return new WikiReference(reference, label, params);
             }
+            return new WikiReference(reference);
         }
 
         // External link with label
         // Case: [http://mediawiki.org MediaWiki]
-        else if (-1 != str.trim().indexOf(' ') && (str.contains("://") || str.contains("mailto:"))) {
+        WikiReference wikiReference;
+        if (-1 != str.indexOf(' ') && (str.contains("://") || str.matches(PREFIX_MAILTO))) {
             String link = str.substring(0, str.indexOf(' ')).trim();
-            String label = str.substring(str.indexOf(' ') + 1).trim();
+            label = str.substring(str.indexOf(' ') + 1).trim();
             wikiReference = new WikiReference(link, label);
         } else {
-            wikiReference = new WikiReference(str.trim());
+            wikiReference = new WikiReference(reference, label);
         }
         return wikiReference;
 
