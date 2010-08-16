@@ -9,12 +9,15 @@ package org.wikimodel.wem;
  * references and downloads.
  * 
  * @author kotelnikov
+ * @author mkirst(at portolancs dot com)
  */
 public abstract class ReferenceHandler {
 
-    public static final String PREFIX_DOWNLOAD = "download:";
+    public static final String PREFIX_DOWNLOAD = "^(?:d|F)ownload:.*";
+    public static final int    PREFIX_DOWNLOAD_LEN = "download:".length();
 
-    public static final String PREFIX_IMAGE = "image:";
+    public static final String PREFIX_IMAGE = "^(?:i|I)mage:.*";
+    public static final int    PREFIX_IMAGE_LEN = "image:".length();
 
     public void handle(WikiReference ref) {
         String link = ref.getLink();
@@ -25,14 +28,14 @@ public abstract class ReferenceHandler {
             params = params.addParameter("class", "wikimodel-freestanding");
         }
         
-        if (link.startsWith(PREFIX_IMAGE)) {
-            link = link.substring(PREFIX_IMAGE.length());
+        if (link.matches(PREFIX_IMAGE)) {
+            link = link.substring(PREFIX_IMAGE_LEN);
             if (label == null || "".equals(label)) {
                 label = link;
             }
             handleImage(link, label, params);
-        } else if (link.startsWith(PREFIX_DOWNLOAD)) {
-            link = link.substring(PREFIX_DOWNLOAD.length());
+        } else if (link.matches(PREFIX_DOWNLOAD)) {
+            link = link.substring(PREFIX_DOWNLOAD_LEN);
             if (label == null || "".equals(label)) {
                 label = link;
             }
