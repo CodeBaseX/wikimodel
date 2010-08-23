@@ -5,16 +5,18 @@
  * are made available under the terms of the Apache License, Version 2.0
  * which accompanies this distribution, and is available at
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Contributors:
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
 package org.wikimodel.wem.mediawiki.javacc;
+import org.wikimodel.wem.IWikiMacroParser;
 import org.wikimodel.wem.IWikiReferenceParser;
-import org.wikimodel.wem.WikiStyle;
+import org.wikimodel.wem.WikiMacro;
 import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.impl.IWikiScannerContext;
+import org.wikimodel.wem.mediawiki.MediaWikiMacroParser;
 import org.wikimodel.wem.mediawiki.MediaWikiReferenceParser;
 
 /** Token Manager. */
