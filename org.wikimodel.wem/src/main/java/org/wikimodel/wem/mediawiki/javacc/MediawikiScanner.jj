@@ -12,22 +12,24 @@ PARSER_BEGIN(MediawikiScanner)
  * are made available under the terms of the Apache License, Version 2.0
  * which accompanies this distribution, and is available at
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Contributors:
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
 package org.wikimodel.wem.mediawiki.javacc;
 
+import org.wikimodel.wem.IWikiMacroParser;
 import org.wikimodel.wem.IWikiReferenceParser;
-import org.wikimodel.wem.WikiStyle;
+import org.wikimodel.wem.WikiMacro;
 import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.impl.IWikiScannerContext;
+import org.wikimodel.wem.mediawiki.MediaWikiMacroParser;
 import org.wikimodel.wem.mediawiki.MediaWikiReferenceParser;
 
 /**
  * This is the internal wiki page parser generated from the grammar file.
- * 
+ *
  * @author kotelnikov
  */
 public class MediawikiScanner {
@@ -43,20 +45,21 @@ public class MediawikiScanner {
      * NewLine which is why we need to add it again.
      */
     private int emptyLinesCount = 0;
-    
+
     private IWikiReferenceParser fReferenceParser = new MediaWikiReferenceParser();
+    private IWikiMacroParser fMacroParser = new MediaWikiMacroParser();
 
     public void parse(IWikiScannerContext context) throws ParseException {
         fContext = context;
         doParse();
     }
-    
+
 }
 
 PARSER_END(MediawikiScanner)
 
 TOKEN_MGR_DECLS: {
-    int tableDepth = 0; 
+    int tableDepth = 0;
 }
 <DEFAULT, INITIAL_CONTEXT> TOKEN:
 {
@@ -66,10 +69,10 @@ TOKEN_MGR_DECLS: {
     | <#HEADER: ("="){1, 6} >
     | <#ESCAPE: ("[[" | "~" ~[" ", "\t", "\n", "\r"]) >
     | <#BR: "<" ("br")(<SPACE>)* ("/")? ">" >
-    | <#VERBATIM_BLOCK: ( 
-    	  "<nowiki>" ( ~["<"] | "<" ~["/"] | "</" ~["n"] | "</n" ~["o"] | "</no" ~["w"] | "</now" ~["i"] | "</nowi" ~["k"] | "</nowik" ~["i"] | "</nowiki" ~[">"] )* "</nowiki>"  
-    	| ("<pre>"|"<pre style=\""(<ALPHA>|<DIGIT>|<SPACE>|["#","."])+"\">") ( ~["<"] | "<" ~["/"] | "</" ~["p"] | "</p" ~["r"] | "</pr" ~["e"] | "</pre" ~[">"])*"</pre>"
-    	)>
+    | <#VERBATIM_BLOCK: (
+          "<nowiki>" ( ~["<"] | "<" ~["/"] | "</" ~["n"] | "</n" ~["o"] | "</no" ~["w"] | "</now" ~["i"] | "</nowi" ~["k"] | "</nowik" ~["i"] | "</nowiki" ~[">"] )* "</nowiki>"
+          | ("<pre>"|"<pre style=\""(<ALPHA>|<DIGIT>|<SPACE>|["#","."])+"\">") ( ~["<"] | "<" ~["/"] | "</" ~["p"] | "</p" ~["r"] | "</pr" ~["e"] | "</pre" ~[">"])*"</pre>"
+        )>
     | <#VERBATIM_INLINE: (
           "<math>" ( "\\" ~[] | ~[] )* "</math>"
         ) >
@@ -87,11 +90,11 @@ TOKEN_MGR_DECLS: {
 
     | <#DD: (<SPACE>)* ":" (<SPACE>)* >
     | <#FORMAT_SYMBOL : (
-           "'''''" | "'''" | "''" 
-         | "<code>" | "</code>" 
-         | "<sub>" | "</sub>" 
-         | "<sup>" | "</sup>" 
-         | "<tt>" | "</tt>" 
+           "'''''" | "'''" | "''"
+         | "<code>" | "</code>"
+         | "<sub>" | "</sub>"
+         | "<sup>" | "</sup>"
+         | "<tt>" | "</tt>"
          | "<ref>" | "</ref>"
          | "<ref name=\""(<ALPHA>|<DIGIT>|<SPACE>)+"\">"
          | "<del>" | "</del>"
@@ -213,7 +216,7 @@ TOKEN_MGR_DECLS: {
     | <I_SPACE : ( <SPACE> )+ > : DEFAULT
     | <I_WORD : ( <CHAR> )+ > : DEFAULT
     | <I_SPECIAL_SYMBOL : <SPECIAL_SYMBOL> > : DEFAULT
-// </initial-context>    
+// </initial-context>
 }
 
 <DEFAULT> TOKEN:
@@ -303,13 +306,13 @@ void docElements():
 {
 }
 {
-    macro()
+    LOOKAHEAD(2) macro()
     |
     noInclude()
-    | 
-    LOOKAHEAD(2) table() 
     |
-    header() 
+    LOOKAHEAD(2) table()
+    |
+    header()
     |
     list()
     |
@@ -323,7 +326,7 @@ void docElements():
         |
         paragraph()
     )
-    | 
+    |
     emptyParagraph()
 }
 
@@ -335,22 +338,10 @@ void macro():
     t = getMACRO()
     {
         sendOnEmptyLinesEvent(false);
-	String str=t.image.trim();
-        if(str.equals("__TOC__"))
-        {
-          fContext.onMacro("toc", WikiParameters.newWikiParameters("numbered=true"), null);
-        }else if(str.equals("__NOTOC__"))
-        {
-          fContext.onMacro("notoc", WikiParameters.EMPTY, null);
-        }else if(str.equals("__FORCETOC__"))
-        {
-          fContext.onMacro("forcetoc",WikiParameters.EMPTY, null);
-        }else if(str.contains("references"))        {          fContext.onMacro("footnotes",WikiParameters.EMPTY,null);
-        }else
-        {
-          fContext.onMacro("unhandled",WikiParameters.newWikiParameters(""),str);		
-        }
-    }    
+        String str=t.image.trim();
+        WikiMacro macro = fMacroParser.parse(str);
+        fContext.onMacro(macro.getName(), macro.getWikiParameters(), macro.getContent(), false);
+    }
 }
 
 void noInclude():
@@ -360,8 +351,8 @@ void noInclude():
 {
     t = getNO_INCLUDE()
     {
-	sendOnEmptyLinesEvent(true);
-    }    
+        sendOnEmptyLinesEvent(true);
+    }
 }
 
 void header():
@@ -371,7 +362,7 @@ void header():
 {
     t = getHEADER_BEGIN()
     {
-	sendOnEmptyLinesEvent(true);
+        sendOnEmptyLinesEvent(true);
         int level = t.image.trim().length();
         fContext.beginHeader(level);
     }
@@ -383,19 +374,19 @@ void header():
 
 void table():
 {
-   Token t = null;
-   String str = "";
-   WikiParameters params = null;
+    Token t = null;
+    String str = "";
+    WikiParameters params = null;
 }
 {
 
     t = getTABLE_BEGIN()
     {
-      sendOnEmptyLinesEvent(true);
-      str=t.image.trim();
-      str=str.substring("{|".length()).trim();
-      params = new WikiParameters(str);
-      fContext.beginTable(params);
+        sendOnEmptyLinesEvent(true);
+        str=t.image.trim();
+        str=str.substring("{|".length()).trim();
+        params = new WikiParameters(str);
+        fContext.beginTable(params);
     }
     |
     t = getTABLE_END()
@@ -438,7 +429,7 @@ void tableRow():
 {
     ( t = getTABLE_CELL_NL() )
     {
-      	sendOnEmptyLinesEvent(true);
+        sendOnEmptyLinesEvent(true);
         String str = t.image.trim();
         boolean head  = str.startsWith("!");
         fContext.beginTableCell(head);
@@ -467,7 +458,7 @@ void listItem():
     Token t = null;
 }
 {
-    t = getLIST_ITEM()   
+    t = getLIST_ITEM()
     {
         sendOnEmptyLinesEvent(true);
         fContext.beginListItem(t.image);
@@ -492,23 +483,23 @@ void verbatimBlock():
 {
     t = getVERBATIM_BLOCK()
     {
-	sendOnEmptyLinesEvent(true);
+        sendOnEmptyLinesEvent(true);
         String str = t.image.trim();
         String tag=str.substring(1,str.indexOf('>'));
         int len = 0;
         int end = 0;
         WikiParameters params = null;
         if ("nowiki".equalsIgnoreCase(tag)|| "pre".equalsIgnoreCase(tag)) {
-          len = tag.length()+2;
-          end = len;
-          str = str.substring(len, str.length() - end - 1);
-          fContext.onVerbatim(str, false);
-        }else if (str.startsWith("<pre")) {
-          len = str.indexOf('>')+1;
-          end = "<pre>".length();
-          params=new WikiParameters(str.substring("<pre".length(),len-1));
-          str = str.substring(len, str.length() - end - 1);
-          fContext.onVerbatim(str, false,params);
+            len = tag.length()+2;
+            end = len;
+            str = str.substring(len, str.length() - end - 1);
+            fContext.onVerbatim(str, false);
+        } else if (str.startsWith("<pre")) {
+            len = str.indexOf('>')+1;
+            end = "<pre>".length();
+            params=new WikiParameters(str.substring("<pre".length(),len-1));
+            str = str.substring(len, str.length() - end - 1);
+            fContext.onVerbatim(str, false,params);
         }
     }
 }
@@ -531,7 +522,7 @@ void paragraph():
 }
 {
     {
-	sendOnEmptyLinesEvent(true);
+        sendOnEmptyLinesEvent(true);
         fContext.beginParagraph();
     }
     lines()
@@ -582,7 +573,7 @@ void emptyParagraph():
 }
 {
     getNL() (LOOKAHEAD(2) getNL() { emptyLinesCount++; })*
-} 
+}
 
 
 void lines():
@@ -624,7 +615,7 @@ void line():
             |
             t = getWORD()
             {
-                sendOnEmptyLinesEvent(true); 
+                sendOnEmptyLinesEvent(true);
                 fContext.onWord(t.image);
             }
             |
@@ -642,40 +633,40 @@ void line():
             |
             t = getFORMAT_SYMBOL()
             {
-               sendOnEmptyLinesEvent(true);
-            	str = t.image.trim();
-            	if (str.startsWith("<")) {
-            	    str = str.substring(1, str.length() - 1);
-            		boolean close = str.startsWith("/");
-            		if (close)
-            		   str = str.substring(1);
-            		if ("sub".equals(str)) {
-	                	fContext.onFormat(IWikiScannerContext.SUB, close);
-            		} else if ("sup".equals(str)) {
-	                	fContext.onFormat(IWikiScannerContext.SUP, close);
-            		} else if ("code".equals(str)) {
-	                	fContext.onFormat(IWikiScannerContext.CODE, close);
-            		} else if ("tt".equals(str)) {
-	                	fContext.onFormat(IWikiScannerContext.TT, close);
-            		} else if ("ref".equals(str)) {
-	                	fContext.onFormat(IWikiScannerContext.REF, close);
-            		} else if ("del".equals(str)) {
-	                	fContext.onFormat(IWikiScannerContext.DEL, close);
-            		}else if ("s".equals(str)) {
-	                	fContext.onFormat(IWikiScannerContext.STRIKE, close);
-            		}else if(str.startsWith("ref"))            		{
-			  WikiParameters params=new WikiParameters(str.substring("ref".length()+1).trim());
-            		  fContext.onFormat(IWikiScannerContext.REF, close);            		}
-            	} else {
-			if ("'''''".equals(str)) {
-	                	fContext.onFormat(IWikiScannerContext.STRONG);
-	                	fContext.onFormat(IWikiScannerContext.EM);
-			} else if ("'''".equals(str)) {
-	                	fContext.onFormat(IWikiScannerContext.STRONG);
-			} else if ("''".equals(str)) {
-	                	fContext.onFormat(IWikiScannerContext.EM);
-			}
-		}
+                sendOnEmptyLinesEvent(true);
+                str = t.image.trim();
+                if (str.startsWith("<")) {
+                    str = str.substring(1, str.length() - 1);
+                    boolean close = str.startsWith("/");
+                    if (close)
+                        str = str.substring(1);
+                    if ("sub".equals(str)) {
+                        fContext.onFormat(IWikiScannerContext.SUB, close);
+                    } else if ("sup".equals(str)) {
+                        fContext.onFormat(IWikiScannerContext.SUP, close);
+                    } else if ("code".equals(str)) {
+                        fContext.onFormat(IWikiScannerContext.CODE, close);
+                    } else if ("tt".equals(str)) {
+                        fContext.onFormat(IWikiScannerContext.TT, close);
+                    } else if ("ref".equals(str)) {
+                        fContext.onFormat(IWikiScannerContext.REF, close);
+                    } else if ("del".equals(str)) {
+                        fContext.onFormat(IWikiScannerContext.DEL, close);
+                    } else if ("s".equals(str)) {
+                        fContext.onFormat(IWikiScannerContext.STRIKE, close);
+                    } else if(str.startsWith("ref")) {
+                        WikiParameters params=new WikiParameters(str.substring("ref".length()+1).trim());
+                        fContext.onFormat(IWikiScannerContext.REF, close);                    }
+                } else {
+                    if ("'''''".equals(str)) {
+                        fContext.onFormat(IWikiScannerContext.STRONG);
+                        fContext.onFormat(IWikiScannerContext.EM);
+                    } else if ("'''".equals(str)) {
+                        fContext.onFormat(IWikiScannerContext.STRONG);
+                    } else if ("''".equals(str)) {
+                        fContext.onFormat(IWikiScannerContext.EM);
+                    }
+                }
             }
             |
             t = getVERBATIM_INLINE()
@@ -707,7 +698,7 @@ void line():
                 fContext.onReference(t.image.trim());
             }
             |
-            t = getREFERENCE() 
+            t = getREFERENCE()
             {
                 sendOnEmptyLinesEvent(true);
                 str = t.image.trim();
@@ -718,15 +709,15 @@ void line():
                 }
                 str = str.trim();
                 WikiReference ref = fReferenceParser.parse(str);
-		int pipeCount = str.replaceAll("[^|]", "").length();
-		if(str.toLowerCase().startsWith("image:")|| (str.toLowerCase().startsWith("file:") && pipeCount >1))		{
-		  fContext.onImage(ref);		}else		{		  fContext.onReference(ref);	  
-		}
+                int pipeCount = str.replaceAll("[^|]", "").length();
+                if(str.toLowerCase().startsWith("image:")|| (str.toLowerCase().startsWith("file:") && pipeCount >1)) {
+                    fContext.onImage(ref);                } else {                    fContext.onReference(ref);
+                }
             }
             |
             t = getTABLE_CELL_NL()
-    	    {
-      		sendOnEmptyLinesEvent(true);
+            {
+              sendOnEmptyLinesEvent(true);
                 if (fContext.isInTable()) {
                     str = t.image.trim();
                     boolean headnl  = str.startsWith("!");
@@ -734,7 +725,7 @@ void line():
                 }else {
                     fContext.onSpecialSymbol(t.image);                }
             }
-            | 
+            |
             t = getTABLE_CELL()
             {
                 sendOnEmptyLinesEvent(true);
@@ -747,7 +738,7 @@ void line():
                 }
             }
             |
-            t = getDD() 
+            t = getDD()
             {
                 sendOnEmptyLinesEvent(true);
                 if (fContext.canApplyDefintionSplitter()) {
@@ -756,7 +747,15 @@ void line():
                     fContext.onSpecialSymbol(t.image);
                 }
             }
-        ) 
+            |
+            t = getMACRO()
+            {                // this is an inline macro
+                sendOnEmptyLinesEvent(false);
+                str = t.image.trim();
+                WikiMacro macro = fMacroParser.parse(str);
+                fContext.onMacro(macro.getName(), macro.getWikiParameters(), macro.getContent(), true);
+            }
+        )
     )+
 }
 

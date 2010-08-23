@@ -239,14 +239,19 @@ public class MediawikiParserTest extends AbstractWikiParserTest
 
         test(";term: ''definition''", "<dl>\n" + "  <dt>term</dt>\n" + "  <dd><em>definition</em></dd>\n" + "</dl>");
 
-        test("; __term__ : ''definition''", "<dl>\n" + "  <dt></dt>\n" + "</dl>\n"
-            + "<pre class='wikimodel-macro' macroName='unhandled'><![CDATA[__term__]]></pre>\n"
-            + "<p> : <em>definition</em></p>");
+        // using an inlined macro as term
+        test("; __term__ : ''definition''", "<dl>\n"
+            + "  <dt><span class='wikimodel-macro' macroName='unhandled'><![CDATA[__term__]]></span></dt>\n"
+            + "  <dd><em>definition</em></dd>\n" +
+              "</dl>");
 
-        test("this is not a definition --\n" + " ;__not__ a term: ''not'' a definition\n" + "----toto",
-            "<p>this is not a definition --</p>\n" + "<blockquote>\n" + ";\n" + "</blockquote>\n"
-                + "<pre class='wikimodel-macro' macroName='unhandled'><![CDATA[__not__]]></pre>\n"
-                + "<p> a term: <em>not</em> a definition</p>\n" + "<hr />\n" + "<p>toto</p>");
+        // again using an inlined macro
+        test("this is not a definition --\n" + "<p>this is not a definition --</p>\n"
+            + "<blockquote>\n"
+            + ";<span class='wikimodel-macro' macroName='unhandled'><![CDATA[__not__]]></span> a term: <em>not</em> a definition\n"
+            + "</blockquote>\n"
+            + "<hr />\n"
+            + "<p>toto</p>\n");
 
         test("#list item A1\n" + "##list item B1\n" + "##list item B2\n" + "#:continuing list item A1\n"
             + "#list item A2", "<ol>\n" + "  <li>list item A1<ol>\n" + "  <li>list item B1</li>\n"
@@ -376,10 +381,14 @@ public class MediawikiParserTest extends AbstractWikiParserTest
      */
     public void testMacros() throws WikiParserException
     {
-        test("__TOC__", "<pre class='wikimodel-macro' macroName='toc' numbered='true'/>");
-        test("__FORCETOC__", "<pre class='wikimodel-macro' macroName='forcetoc'/>");
-        test("{{MAGIC_WORD}}", "<pre class='wikimodel-macro' macroName='unhandled'><![CDATA[{{MAGIC_WORD}}]]></pre>");
-        test("<references />", "<pre class='wikimodel-macro' macroName='footnotes'/>");
+        test("__TOC__", "<pre class='wikimodel-macro' macroName='toc' numbered='true'><![CDATA[__TOC__]]></pre>");
+        test("__FORCETOC__", "<pre class='wikimodel-macro' macroName='forcetoc'><![CDATA[__FORCETOC__]]></pre>");
+        test("{{MAGICWORD}}", "<pre class='wikimodel-macro' macroName='MAGICWORD'><![CDATA[{{MAGICWORD}}]]></pre>");
+        test("{{TestMacro|paramA|paramB}}", "<pre class='wikimodel-macro' macroName='TestMacro' 1='paramA' 2='paramB'><![CDATA[{{TestMacro|paramA|paramB}}]]></pre>");
+        test("{{TestMacro|1=paramA|2=paramB}}", "<pre class='wikimodel-macro' macroName='TestMacro' 1='paramA' 2='paramB'><![CDATA[{{TestMacro|1=paramA|2=paramB}}]]></pre>");
+        test("{{TestMacro|param1=X|param2=Y|lastparam}}", "<pre class='wikimodel-macro' macroName='TestMacro' param1='X' param2='Y' 3='lastparam'><![CDATA[{{TestMacro|param1=X|param2=Y|lastparam}}]]></pre>");
+        test("{{NameSpace:TestMacro|paramA|paramB}}", "<pre class='wikimodel-macro' macroName='NameSpace:TestMacro' 1='paramA' 2='paramB'><![CDATA[{{NameSpace:TestMacro|paramA|paramB}}]]></pre>");
+        test("<references />", "<pre class='wikimodel-macro' macroName='footnotes'><![CDATA[<references />]]></pre>");
     }
 
     /**
