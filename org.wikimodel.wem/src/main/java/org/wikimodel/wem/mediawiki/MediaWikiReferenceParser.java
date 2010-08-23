@@ -99,10 +99,13 @@ public class MediaWikiReferenceParser extends WikiReferenceParser
         String[] params = paramString.split("[|]");
 
         for (String param : params) {
-
             if (param.indexOf("=") != -1) {
                 String[] p = param.split("[=]");
-                paramsList.add(new WikiParameter(p[0], p[1]));
+                if (p.length > 1) {
+                    paramsList.add(new WikiParameter(p[0], p[1]));
+                } else {
+                    paramsList.add(new WikiParameter(p[0], ""));
+                }
             } else if (format.contains(param.toLowerCase())) {
                 paramsList.add(new WikiParameter("format", param));
             } else if (align.contains(param.toLowerCase())) {

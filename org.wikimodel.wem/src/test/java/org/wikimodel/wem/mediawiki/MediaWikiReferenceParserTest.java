@@ -95,4 +95,19 @@ public class MediaWikiReferenceParserTest extends TestCase {
         assertEquals("Main Page", actual.getLink());
         assertEquals("", actual.getLabel());
     }
+    
+    /**
+     * @see http://code.google.com/p/wikimodel/issues/attachmentText?id=184
+     */
+    public void testNamedParameters() {
+        WikiReference actual;
+
+        actual = clazz.parse("File:example.jpg|link=Main Page|caption");
+        assertEquals("example.jpg", actual.getLink());
+        assertEquals("Main Page", actual.getParameters().getParameter("link").getValue());
+        
+        actual = clazz.parse("File:example.jpg|link=|caption");
+        assertEquals("example.jpg", actual.getLink());
+        assertEquals("", actual.getParameters().getParameter("link").getValue());
+    }
 }
