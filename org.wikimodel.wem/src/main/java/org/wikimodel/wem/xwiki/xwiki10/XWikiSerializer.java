@@ -4,6 +4,10 @@ import org.wikimodel.wem.IWikiPrinter;
 import org.wikimodel.wem.PrintTextListener;
 import org.wikimodel.wem.WikiParameters;
 
+/**
+ * Serializing XWiki 1.0 syntax ...
+ * @see {@link org.wikimodel.wem.xwiki.xwiki20.XWikiSerializer2}
+ */
 public class XWikiSerializer extends PrintTextListener {
 
     private boolean fNewTableRow;
@@ -12,6 +16,7 @@ public class XWikiSerializer extends PrintTextListener {
         super(printer);
     }
 
+    @Override
     public void beginHeader(int headerLevel, WikiParameters params) {
         print("1");
         for (int i = 0; i < headerLevel - 1; i++) {
@@ -20,10 +25,12 @@ public class XWikiSerializer extends PrintTextListener {
         print(" ");
     }
 
+    @Override
     public void beginListItem() {
         print("* ");
     }
 
+    @Override
     public void beginTable(WikiParameters params) {
         println("{table}");
     }
@@ -41,15 +48,18 @@ public class XWikiSerializer extends PrintTextListener {
         fNewTableRow = true;
     }
 
+    @Override
     public void endHeader(int headerLevel, WikiParameters params) {
         println();
         println();
     }
 
+    @Override
     public void endList(WikiParameters params, boolean ordered) {
         println();
     }
 
+    @Override
     public void endListItem() {
         println();
     }
@@ -60,11 +70,13 @@ public class XWikiSerializer extends PrintTextListener {
         println();
     }
 
+    @Override
     public void endTable(WikiParameters params) {
         println("{table}");
         println();
     }
 
+    @Override
     public void endTableRow(WikiParameters params) {
         println();
     }
@@ -78,11 +90,13 @@ public class XWikiSerializer extends PrintTextListener {
 
     }
 
+    @Override
     public void onLineBreak() {
         println();
         println();
     }
 
+    @Override
     public void onReference(String ref) {
         if (ref.indexOf("Image") == 0)
             print("{image" + ref.substring(5) + "}");
@@ -101,14 +115,17 @@ public class XWikiSerializer extends PrintTextListener {
         }
     }
 
+    @Override
     public void onSpecialSymbol(String str) {
         print(str);
     }
 
+    @Override
     public void onTableCaption(String str) {
         println(str);
     }
 
+    @Override
     public void onVerbatimInline(String str, WikiParameters params) {
         println("{code}");
         println(str);
