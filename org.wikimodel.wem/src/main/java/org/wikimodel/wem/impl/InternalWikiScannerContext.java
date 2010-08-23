@@ -657,7 +657,9 @@ public class InternalWikiScannerContext implements IWikiScannerContext {
     public void endQuot() {
         if ((fBlockType & IBlockTypes.QUOT) != 0) {
             closeFormat();
-            fQuotBuilder.alignContext("");
+            if (fQuotBuilder != null) {
+                fQuotBuilder.alignContext("");
+            }
             fQuotBuilder = null;
             fBlockType = IBlockTypes.NONE;
         }
