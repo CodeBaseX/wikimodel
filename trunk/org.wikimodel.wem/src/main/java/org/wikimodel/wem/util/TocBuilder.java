@@ -21,7 +21,7 @@ public class TocBuilder {
 
     protected int fBaseLevel;
 
-    protected Stack fBaseLevelStack = new Stack();
+    protected Stack<Integer> fBaseLevelStack = new Stack<Integer>();
 
     protected int fLevel;
 
@@ -108,7 +108,7 @@ public class TocBuilder {
      */
     public void endDocument() {
         setHeaderLevel(0);
-        Integer level = (Integer) fBaseLevelStack.pop();
+        Integer level = fBaseLevelStack.pop();
         fBaseLevel = level.intValue();
     }
 
