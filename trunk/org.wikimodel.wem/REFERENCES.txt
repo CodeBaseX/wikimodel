@@ -7,6 +7,9 @@
  + MediaWiki: 
    * http://meta.wikimedia.org/wiki/Help:Editing
    * http://meta.wikimedia.org/wiki/Help:Wikitext
+   * http://www.mediawiki.org/wiki/Help:Tables
+   * http://www.mediawiki.org/wiki/Help:Magic_words
+   * http://www.mediawiki.org/wiki/Help:Images#Syntax
  * Confluence: http://confluence.atlassian.com/renderer/notationhelp.action?section=all
  * MoinMoin: http://moinmoin.wikiwikiweb.de/SyntaxReference
  * Tikiwiki: http://doc.tikiwiki.org/tiki-index.php
