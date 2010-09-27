@@ -495,6 +495,9 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
 
         test("(% param='value' %)\ntext\n(% param2='value2' %)text",
             "<p param='value'>text\n<span class='wikimodel-parameters'[param2='value2']>text</span></p>");
+        
+        // TODO: this is a bug but too old to be fixed now, should be fixed for 2.1
+        test("toto\n(% param='value' %)\ntiti", "<p>toto</p>\n<p param='value'>titi</p>");
     }
 
     /**
@@ -599,6 +602,23 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
 
         test("(%a=b%)\n(%c=d%)|=(%e=f%) cell");
         test("(%a=b%)\n(%c=d%)!!(%e=f%) cell !!(%g=h%)");
+
+        // Cell content
+        // TODO: this is a bug but too old to be fixed now, should be fixed for 2.1
+        test("|Bla\n(% param='value' %)\nBla Bla", "<table><tbody>\n" +
+        		"  <tr><td>Bla</td></tr>\n" +
+        		"</tbody></table>\n" +
+        		"<p param='value'>Bla Bla</p>");
+        
+        // Misc
+        test("|cell\n(% param='value' %)\nparagraph|", "<table><tbody>\n" +
+        		"  <tr><td>cell</td></tr>\n" +
+                "</tbody></table>\n" +
+                "<p param='value'>paragraph|</p>");
+        test("|Bla\n(% parm='value' %)\nBla Bla\n\n", "<table><tbody>\n" +
+                "  <tr><td>Bla</td></tr>\n" +
+                "</tbody></table>\n" +
+                "<p parm='value'>Bla Bla</p>");
     }
 
     public void testVerbatim() throws WikiParserException {
