@@ -287,7 +287,7 @@ TOKEN_MGR_DECLS: {
     | <LIST_ITEM: (<SPACE>)* ( ("*")+ (":" | ";")* | ( "1" | "*" )+ "." (":" | ";")* | (":" | ";")+ ) (<SPACE>) > { clearBlockState(); }: INLINE
     | <HORLINE: "---" ("-")+ > { clearBlockState(); }: INLINE
     | <TABLE_ROW: (<PARAMS> (<SPACE>)*)? (<HCELL>|<CELL>)> { input_stream.backup(image.length()); enterBlockState(TABLE_CONTEXT); }
-    | <BLOCK_PARAMETERS: <PARAMS> <NEW_LINE>>
+    | <BLOCK_PARAMETERS: <PARAMS> <NEW_LINE>> {clearBlockState();} : BEGINNING_OF_LINE
     | <NL_BEGINING_OF_LINE: <NEW_LINE>> { matchedToken.kind = NL; }
     | <QUOT_LINE_BEGIN: (">")+ > { clearBlockState(); }: INLINE
 
