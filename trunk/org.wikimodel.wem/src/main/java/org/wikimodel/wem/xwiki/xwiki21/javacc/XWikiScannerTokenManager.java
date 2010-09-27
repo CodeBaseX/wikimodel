@@ -5948,6 +5948,8 @@ void TokenLexicalActions(Token matchedToken)
                                                              input_stream.backup(image.length()); enterBlockState(TABLE_CONTEXT);
          break;
       case 6 :
+        image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
+                                               clearBlockState();
          break;
       case 7 :
         image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
