@@ -6,7 +6,7 @@
  * are made available under the terms of the Apache License, Version 2.0
  * which accompanies this distribution, and is available at
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Contributors:
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
@@ -478,4 +478,4 @@ public class SimpleCharStream
   }
 
 }
-/* JavaCC - OriginalChecksum=6e1e4547950f7969c043c1fa0a5ff264 (do not edit this line) */
+/* JavaCC - OriginalChecksum=36b981afd9d4056ddc2ece094ab3afb1 (do not edit this line) */
