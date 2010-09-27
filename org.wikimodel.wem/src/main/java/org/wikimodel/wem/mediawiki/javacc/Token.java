@@ -6,7 +6,7 @@
  * are made available under the terms of the Apache License, Version 2.0
  * which accompanies this distribution, and is available at
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Contributors:
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
@@ -138,4 +138,4 @@ public class Token implements java.io.Serializable {
   }
 
 }
-/* JavaCC - OriginalChecksum=b5ed4622b7ea82ae128e36b0589f3086 (do not edit this line) */
+/* JavaCC - OriginalChecksum=6252889594ed72cdfcd504f528bd41a9 (do not edit this line) */

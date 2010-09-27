@@ -6,7 +6,7 @@
  * are made available under the terms of the Apache License, Version 2.0
  * which accompanies this distribution, and is available at
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Contributors:
  *     Cognium Systems SA - initial API and implementation
  *******************************************************************************/
@@ -154,4 +154,4 @@ public class TokenMgrError extends Error
     this(LexicalError(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
   }
 }
-/* JavaCC - OriginalChecksum=808bd1b8e10a506fa781ec3b555cbff7 (do not edit this line) */
+/* JavaCC - OriginalChecksum=3344baf6efc4d7e4e864a185006e698b (do not edit this line) */
