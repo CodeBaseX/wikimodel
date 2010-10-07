@@ -10,6 +10,7 @@ package org.wikimodel.wem;
  * 
  * @author kotelnikov
  * @author mkirst(at portolancs dot com)
+ * @author thomas.mortagne
  */
 public abstract class ReferenceHandler {
 
@@ -19,6 +20,14 @@ public abstract class ReferenceHandler {
     public static final String PREFIX_IMAGE = "^(?:i|I)mage:.*";
     public static final int    PREFIX_IMAGE_LEN = "image:".length();
 
+    private boolean supportImage;
+    private boolean supportDownload;
+
+    protected ReferenceHandler(boolean supportImage, boolean supportDownload) {
+        this.supportImage = supportImage;
+        this.supportDownload = supportDownload;
+    }
+    
     public void handle(WikiReference ref) {
         String link = ref.getLink();
         String label = ref.getLabel();
@@ -28,13 +37,13 @@ public abstract class ReferenceHandler {
             params = params.addParameter("class", "wikimodel-freestanding");
         }
         
-        if (link.matches(PREFIX_IMAGE)) {
+        if (this.supportImage && link.matches(PREFIX_IMAGE)) {
             link = link.substring(PREFIX_IMAGE_LEN);
             if (label == null || "".equals(label)) {
                 label = link;
             }
             handleImage(link, label, params);
-        } else if (link.matches(PREFIX_DOWNLOAD)) {
+        } else if (this.supportDownload && link.matches(PREFIX_DOWNLOAD)) {
             link = link.substring(PREFIX_DOWNLOAD_LEN);
             if (label == null || "".equals(label)) {
                 label = link;

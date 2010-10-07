@@ -247,6 +247,7 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
         test("image:reference~ ", "<p><img src='reference~ ' class='wikimodel-freestanding'/></p>");
         test("image:wiki:space.page", "<p><img src='wiki:space.page' class='wikimodel-freestanding'/></p>");
         test("image:wiki:space.page@file.ext", "<p><img src='wiki:space.page@file.ext' class='wikimodel-freestanding'/></p>");
+        test("[[image:reference]]", "<p><img src='reference'/></p>");
     }
 
     public void testAttach() throws WikiParserException {

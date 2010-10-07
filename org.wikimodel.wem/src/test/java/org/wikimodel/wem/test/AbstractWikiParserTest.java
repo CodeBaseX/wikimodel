@@ -30,11 +30,22 @@ public abstract class AbstractWikiParserTest extends TestCase {
 
     private boolean fShowSections;
 
+    private boolean supportImage;
+
+    private boolean supportDownload;
+
     /**
      * @param name
      */
     public AbstractWikiParserTest(String name) {
         super(name);
+    }
+    
+    public AbstractWikiParserTest(String name, boolean supportImage, boolean supportDownload) {
+        super(name);
+        
+        this.supportImage = supportImage;
+        this.supportDownload = supportDownload;
     }
 
     /**
@@ -43,9 +54,8 @@ public abstract class AbstractWikiParserTest extends TestCase {
      */
     protected void checkResults(String control, String test) {
         if (control != null) {
-            control = "<div class='wikimodel-document'>\n"
-                + control
-                + "\n</div>\n";
+            control = "<div class='wikimodel-document'>\n" + control
+                    + "\n</div>\n";
             assertEquals(control, test);
         }
     }
@@ -62,53 +72,34 @@ public abstract class AbstractWikiParserTest extends TestCase {
         IWikiPrinter printer = newPrinter(buf);
         IWemListener listener;
         if (!fShowSections) {
-            listener = new PrintListener(printer);
+            listener = new PrintListener(printer, this.supportImage, this.supportDownload);
         } else {
-            listener = new PrintListener(printer) {
+            listener = new PrintListener(printer, this.supportImage, this.supportDownload) {
                 @Override
-                public void beginSection(
-                    int docLevel,
-                    int headerLevel,
-                    WikiParameters params) {
-                    println("<section-"
-                        + docLevel
-                        + "-"
-                        + headerLevel
-                        + params
-                        + ">");
+                public void beginSection(int docLevel, int headerLevel,
+                        WikiParameters params) {
+                    println("<section-" + docLevel + "-" + headerLevel + params
+                            + ">");
                 }
 
                 @Override
-                public void beginSectionContent(
-                    int docLevel,
-                    int headerLevel,
-                    WikiParameters params) {
-                    println("<sectionContent-"
-                        + docLevel
-                        + "-"
-                        + headerLevel
-                        + params
-                        + ">");
+                public void beginSectionContent(int docLevel, int headerLevel,
+                        WikiParameters params) {
+                    println("<sectionContent-" + docLevel + "-" + headerLevel
+                            + params + ">");
                 }
 
                 @Override
-                public void endSection(
-                    int docLevel,
-                    int headerLevel,
-                    WikiParameters params) {
+                public void endSection(int docLevel, int headerLevel,
+                        WikiParameters params) {
                     println("</section-" + docLevel + "-" + headerLevel + ">");
                 }
 
                 @Override
-                public void endSectionContent(
-                    int docLevel,
-                    int headerLevel,
-                    WikiParameters params) {
-                    println("</sectionContent-"
-                        + docLevel
-                        + "-"
-                        + headerLevel
-                        + ">");
+                public void endSectionContent(int docLevel, int headerLevel,
+                        WikiParameters params) {
+                    println("</sectionContent-" + docLevel + "-" + headerLevel
+                            + ">");
                 }
             };
         }
@@ -164,7 +155,7 @@ public abstract class AbstractWikiParserTest extends TestCase {
      * @throws WikiParserException
      */
     protected void test(String string, String control)
-        throws WikiParserException {
+            throws WikiParserException {
         println("==================================================");
         StringReader reader = new StringReader(string);
         IWikiParser parser = newWikiParser();

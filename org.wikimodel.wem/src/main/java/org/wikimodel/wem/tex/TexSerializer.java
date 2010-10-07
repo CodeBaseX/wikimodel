@@ -458,7 +458,7 @@ public class TexSerializer extends PrintTextListener {
 
     @Override
     protected ReferenceHandler newReferenceHandler() {
-        return new ReferenceHandler() {
+        return new ReferenceHandler(true, true) {
 
             Map<String, int[]> fImageSizes = new HashMap<String, int[]>();
 

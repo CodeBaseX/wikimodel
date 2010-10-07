@@ -23,7 +23,7 @@ public class CommonWikiParserTest extends AbstractWikiParserTest {
      * @param name
      */
     public CommonWikiParserTest(String name) {
-        super(name);
+        super(name, true, true);
     }
 
     @Override
