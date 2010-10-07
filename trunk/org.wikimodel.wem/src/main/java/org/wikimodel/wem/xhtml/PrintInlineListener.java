@@ -29,6 +29,10 @@ public class PrintInlineListener extends PrintTextListener {
     public PrintInlineListener(IWikiPrinter printer) {
         super(printer);
     }
+    
+    public PrintInlineListener(IWikiPrinter printer, boolean supportImage, boolean supportDownload) {
+        super(printer, supportImage, supportDownload);
+    }
 
     /**
      * @see org.wikimodel.wem.IWemListener#beginFormat(org.wikimodel.wem.WikiFormat)
@@ -115,8 +119,7 @@ public class PrintInlineListener extends PrintTextListener {
 
     @Override
     protected ReferenceHandler newReferenceHandler() {
-        return new ReferenceHandler() {
-
+        return new ReferenceHandler(isSupportImage(), isSupportDownload()) {
             @Override
             protected void handleImage(
                 String ref,

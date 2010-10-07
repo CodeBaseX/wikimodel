@@ -1136,7 +1136,12 @@ public class XWikiScanner implements XWikiScannerConstants {
                 str = str.substring(2, str.length() - 2);
             }
             WikiReference ref = fReferenceParser.parse(str);
-            fContext.onReference(ref);
+
+            if (ref.getLink().startsWith("image:")) {
+              fContext.onImage(new WikiReference(ref.getLink().substring("image:".length()), ref.getLabel(), ref.getParameters()));
+            } else {
+              fContext.onReference(ref);
+            }
       break;
     case VERBATIM_START:
       verbatimBlock(true);

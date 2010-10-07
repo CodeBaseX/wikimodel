@@ -26,6 +26,10 @@ public class PrintListener extends PrintInlineListener {
         super(printer);
     }
 
+    public PrintListener(IWikiPrinter printer, boolean supportImage, boolean supportDownload) {
+        super(printer, supportImage, supportDownload);
+    }
+    
     @Override
     public void beginDefinitionDescription() {
         print("  <dd>");

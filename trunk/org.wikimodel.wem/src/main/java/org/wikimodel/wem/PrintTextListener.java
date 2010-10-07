@@ -2,21 +2,41 @@ package org.wikimodel.wem;
 
 /**
  * @author MikhailKotelnikov
+ * @author thomas.mortagne
  */
 public class PrintTextListener implements IWemListener {
 
     private final IWikiPrinter fPrinter;
 
     protected ReferenceHandler fRefHandler;
+    
+    private boolean supportImage;
+
+    private boolean supportDownload;
 
     /**
      * @param printer
      */
     public PrintTextListener(IWikiPrinter printer) {
+        this(printer, false, false);
+    }
+    
+    public PrintTextListener(IWikiPrinter printer, boolean supportImage, boolean supportDownload) {
+        this.supportImage = supportImage;
+        this.supportDownload = supportDownload;
+        
         fPrinter = printer;
         fRefHandler = newReferenceHandler();
     }
 
+    public boolean isSupportImage() {
+        return supportImage;
+    }
+    
+    public boolean isSupportDownload() {
+        return supportDownload;
+    }
+    
     /**
      * @see org.wikimodel.wem.IWemListener#beginDefinitionDescription()
      */
@@ -292,7 +312,7 @@ public class PrintTextListener implements IWemListener {
     }
 
     protected ReferenceHandler newReferenceHandler() {
-        return new ReferenceHandler() {
+        return new ReferenceHandler(supportImage, supportDownload) {
 
             @Override
             protected void handleImage(

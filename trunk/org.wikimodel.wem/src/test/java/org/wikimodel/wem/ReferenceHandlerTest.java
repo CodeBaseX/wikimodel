@@ -23,10 +23,10 @@ import junit.framework.TestCase;
 public class ReferenceHandlerTest extends TestCase {
 
     private TestReferenceHandler clazz;
-    
+
     protected void setUp() throws Exception {
         super.setUp();
-        this.clazz = new TestReferenceHandler(); 
+        this.clazz = new TestReferenceHandler(true, true);
     }
 
     public void testHandleImageUppercase() {
@@ -42,11 +42,11 @@ public class ReferenceHandlerTest extends TestCase {
         assertEquals("bar.png", clazz.getImgRef());
         assertEquals("foo", clazz.getImgLabel());
     }
-    
+
     /*
      * ========================================================================
      */
-    
+
     /**
      * @author mkirst(at portolancs dot com)
      */
@@ -54,21 +54,35 @@ public class ReferenceHandlerTest extends TestCase {
 
         private String imgRef;
         private String imgLabel;
-        
-        /* (non-Javadoc)
-         * @see org.wikimodel.wem.ReferenceHandler#handleImage(java.lang.String, java.lang.String, org.wikimodel.wem.WikiParameters)
+
+        protected TestReferenceHandler(boolean supportImage,
+                boolean supportDownload) {
+            super(supportImage, supportDownload);
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.wikimodel.wem.ReferenceHandler#handleImage(java.lang.String,
+         * java.lang.String, org.wikimodel.wem.WikiParameters)
          */
         @Override
-        protected void handleImage(String ref, String label, WikiParameters params) {
+        protected void handleImage(String ref, String label,
+                WikiParameters params) {
             imgRef = ref;
             imgLabel = label;
         }
 
-        /* (non-Javadoc)
-         * @see org.wikimodel.wem.ReferenceHandler#handleReference(java.lang.String, java.lang.String, org.wikimodel.wem.WikiParameters)
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * org.wikimodel.wem.ReferenceHandler#handleReference(java.lang.String,
+         * java.lang.String, org.wikimodel.wem.WikiParameters)
          */
         @Override
-        protected void handleReference(String ref, String label, WikiParameters params) {
+        protected void handleReference(String ref, String label,
+                WikiParameters params) {
             // not interested in.
         }
 
@@ -85,6 +99,6 @@ public class ReferenceHandlerTest extends TestCase {
         public String getImgLabel() {
             return imgLabel;
         }
-        
+
     }
 }
