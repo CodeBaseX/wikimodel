@@ -14,8 +14,10 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 
 /**
  * @author vmassol
+ * @author thomass.mortagne
  */
 public class QuoteTagHandler extends TagHandler {
+    public static final String QUOTEDEPTH = "quoteDepth";
 
     public QuoteTagHandler() {
         super(false, false, true);
@@ -32,19 +34,19 @@ public class QuoteTagHandler extends TagHandler {
     @Override
     protected void begin(TagContext context) {
         int quoteDepth = (Integer) context.getTagStack().getStackParameter(
-            "quoteDepth");
+            QUOTEDEPTH);
         if (quoteDepth == 0) {
             context.getScannerContext().beginQuot(context.getParams());
         }
         quoteDepth++;
         context.getScannerContext().beginQuotLine(quoteDepth);
-        context.getTagStack().setStackParameter("quoteDepth", quoteDepth);
+        context.getTagStack().setStackParameter(QUOTEDEPTH, quoteDepth);
     }
 
     @Override
     protected void end(TagContext context) {
         int quoteDepth = (Integer) context.getTagStack().getStackParameter(
-            "quoteDepth");
+            QUOTEDEPTH);
         quoteDepth--;
         if (quoteDepth < 0) {
             quoteDepth = 0;
@@ -53,6 +55,6 @@ public class QuoteTagHandler extends TagHandler {
         if (quoteDepth == 0) {
             context.getScannerContext().endQuot();
         }
-        context.getTagStack().setStackParameter("quoteDepth", quoteDepth);
+        context.getTagStack().setStackParameter(QUOTEDEPTH, quoteDepth);
     }
 }

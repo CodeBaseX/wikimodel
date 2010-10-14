@@ -362,6 +362,13 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
                 + "<p>line4</p></blockquote></blockquote></html>",
             "<blockquote>\nline1<blockquote>\nline2<blockquote>\nline3\n</blockquote>"
                 + "\n\nline4\n</blockquote>\n\n</blockquote>");
+        
+        test(
+            "<html><blockquote><span param='vale'>line1<br/>line2</span></blockquote></html>",
+            "<blockquote>\n" +
+            "<span class='wikimodel-parameters'[param='vale']>line1</span>\n" +
+            "<span class='wikimodel-parameters'[param='vale']>line2</span>\n" +
+            "</blockquote>");
     }
 
     /**
