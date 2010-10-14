@@ -390,6 +390,15 @@ public class XhtmlHandler extends DefaultHandler implements LexicalHandler {
                 return set.peek();
             }
         }
+        
+        public Object getStackParameter(String name, int index) {
+            Stack<Object> set = (Stack<Object>) getStackParameters().get(name);
+            if (set == null || set.size() <= index) {
+                return null;
+            } else {
+                return set.get(index);
+            }
+        }
 
         public void pushStackParameter(String name, Object data) {
             Stack<Object> set = (Stack<Object>) getStackParameters().get(name);
