@@ -71,7 +71,6 @@ public class WikiParameters implements Iterable<WikiParameter> {
      * @param list
      */
     public WikiParameters(Collection<WikiParameter> list) {
-        super();
         fList.addAll(list);
     }
 
@@ -79,12 +78,10 @@ public class WikiParameters implements Iterable<WikiParameter> {
      * @param str
      */
     public WikiParameters(String str) {
-        super();
         WikiScannerUtil.splitToPairs(str, fList);
     }
 
     public WikiParameters(String str, char escapeChar) {
-        super();
         WikiScannerUtil.splitToPairs(str, fList, escapeChar);
     }
 
@@ -93,12 +90,10 @@ public class WikiParameters implements Iterable<WikiParameter> {
      * @param delimiter
      */
     public WikiParameters(String str, String delimiter) {
-        super();
         WikiScannerUtil.splitToPairs(str, fList, delimiter);
     }
 
     public WikiParameters(WikiParameters parameters) {
-        super();
         fList.addAll(parameters.fList);
     }
 
@@ -114,6 +109,13 @@ public class WikiParameters implements Iterable<WikiParameter> {
         WikiParameters result = new WikiParameters();
         result.fList.addAll(fList);
         result.fList.add(new WikiParameter(key, value));
+        return result;
+    }
+    
+    public WikiParameters addParameters(WikiParameters parameters) {
+        WikiParameters result = new WikiParameters();
+        result.fList.addAll(fList);
+        result.fList.addAll(parameters.fList);
         return result;
     }
 
