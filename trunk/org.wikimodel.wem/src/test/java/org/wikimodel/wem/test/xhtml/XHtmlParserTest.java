@@ -235,6 +235,10 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
         test(
             "<html><p>12<strong>34<span param='value'>56</span>78</strong>90</p></html>",
             "<p>12<strong>34</strong><strong><span class='wikimodel-parameters'[param='value']>56</span></strong><strong>78</strong>90</p>");
+        
+        test(
+            "<html><p><span param1='value1'><span param2='value2'>word</span></span></p></html>",
+            "<p><span class='wikimodel-parameters'[param1='value1', param2='value2']>word</span></p>");
     }
 
     /**
@@ -368,6 +372,13 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
             "<blockquote>\n" +
             "<span class='wikimodel-parameters'[param='vale']>line1</span>\n" +
             "<span class='wikimodel-parameters'[param='vale']>line2</span>\n" +
+            "</blockquote>");
+        
+        test(
+            "<html><blockquote><span param1='value1'><span param2='vale2'>line1<br/>line2</span></span></blockquote></html>",
+            "<blockquote>\n" +
+            "<span class='wikimodel-parameters'[param1='value1', param2='vale2']>line1</span>\n" +
+            "<span class='wikimodel-parameters'[param1='value1', param2='vale2']>line2</span>\n" +
             "</blockquote>");
     }
 

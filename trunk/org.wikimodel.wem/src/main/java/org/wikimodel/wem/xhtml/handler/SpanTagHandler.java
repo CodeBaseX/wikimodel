@@ -26,9 +26,16 @@ public class SpanTagHandler extends TagHandler {
 
     @Override
     protected void begin(TagContext context) {
-        context.getTagStack().pushStackParameter(SPANPARAMETERS, new WikiParameters(context.getParams()));
+        WikiParameters spanParameters = (WikiParameters)context.getTagStack().getStackParameter(SPANPARAMETERS);
+        if (spanParameters != null) {
+            spanParameters = spanParameters.addParameters(context.getParams());
+        } else {
+            spanParameters = new WikiParameters(context.getParams());
+        }
+        context.getTagStack().pushStackParameter(SPANPARAMETERS, spanParameters);
+        
         if (context.getParams().getSize() > 0) {
-            context.getScannerContext().beginFormat(context.getParams());
+            context.getScannerContext().beginFormat(spanParameters);
         }
     }
 
