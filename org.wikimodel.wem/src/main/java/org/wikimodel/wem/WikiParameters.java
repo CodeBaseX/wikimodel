@@ -118,6 +118,10 @@ public class WikiParameters implements Iterable<WikiParameter> {
         result.fList.addAll(parameters.fList);
         return result;
     }
+    
+    public WikiParameters setParameter(String key, String value) {
+        return remove(key).addParameter(key, value);
+    }
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)

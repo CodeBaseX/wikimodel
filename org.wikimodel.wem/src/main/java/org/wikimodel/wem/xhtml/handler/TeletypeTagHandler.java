@@ -14,7 +14,6 @@ import java.util.Arrays;
 
 import org.wikimodel.wem.IWemConstants;
 import org.wikimodel.wem.WikiParameter;
-import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.impl.WikiScannerContext;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 
@@ -23,8 +22,7 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  * @author vmassol
  * @author thomas.mortagne
  */
-public class TeletypeTagHandler extends TagHandler {
-
+public class TeletypeTagHandler extends AbstractFormatTagHandler {
     // There are 2 possible output for <tt>:
     // * If there a class="wikimodel-verbatim" specified then we emit a
     // onVerbatimInline() event
@@ -32,7 +30,7 @@ public class TeletypeTagHandler extends TagHandler {
     // Monospace Format event.
 
     public TeletypeTagHandler() {
-        super(false, false, true);
+        super(IWemConstants.MONO);
     }
 
     @Override
@@ -43,10 +41,7 @@ public class TeletypeTagHandler extends TagHandler {
                     "wikimodel-verbatim")) {
             beginVerbatim(context);
         } else {
-            if (context.getParams().getSize() > 0) {
-                context.getScannerContext().beginFormat(context.getParams());
-            }
-            context.getScannerContext().beginFormat(IWemConstants.MONO);
+            super.begin(context);
         }
     }
 
@@ -58,10 +53,7 @@ public class TeletypeTagHandler extends TagHandler {
                     "wikimodel-verbatim")) {
             endVerbatim(context);
         } else {
-            context.getScannerContext().endFormat(IWemConstants.MONO);
-            if (context.getParams().getSize() > 0) {
-                context.getScannerContext().endFormat(WikiParameters.EMPTY);
-            }
+            super.end(context);
         }
     }
 

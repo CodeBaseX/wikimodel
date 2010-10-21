@@ -37,7 +37,7 @@ public class BreakTagHandler extends TagHandler {
             WikiParameters spanParameters;
             for (int i = 0; (spanParameters = (WikiParameters) context
                     .getTagStack().getStackParameter(
-                        SpanTagHandler.SPANPARAMETERS, i)) != null; ++i) {
+                        AbstractFormatTagHandler.FORMATPARAMETERS, i)) != null; ++i) {
                 context.getScannerContext().beginFormat(spanParameters);
             }
         } else {

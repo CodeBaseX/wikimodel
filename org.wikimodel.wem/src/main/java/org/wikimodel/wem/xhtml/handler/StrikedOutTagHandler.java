@@ -11,33 +11,14 @@
 package org.wikimodel.wem.xhtml.handler;
 
 import org.wikimodel.wem.IWemConstants;
-import org.wikimodel.wem.WikiParameters;
-import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 
 /**
  * @author kotelnikov
  * @author vmassol
+ * @author thomass.mortagne
  */
-public class StrikedOutTagHandler extends TagHandler {
-
+public class StrikedOutTagHandler extends AbstractFormatTagHandler {
     public StrikedOutTagHandler() {
-        super(false, false, true);
+        super(IWemConstants.STRIKE);
     }
-
-    @Override
-    protected void begin(TagContext context) {
-        if (context.getParams().getSize() > 0) {
-            context.getScannerContext().beginFormat(context.getParams());
-        }
-        context.getScannerContext().beginFormat(IWemConstants.STRIKE);
-    }
-
-    @Override
-    protected void end(TagContext context) {
-        context.getScannerContext().endFormat(IWemConstants.STRIKE);
-        if (context.getParams().getSize() > 0) {
-            context.getScannerContext().endFormat(WikiParameters.EMPTY);
-        }
-    }
-
 }
