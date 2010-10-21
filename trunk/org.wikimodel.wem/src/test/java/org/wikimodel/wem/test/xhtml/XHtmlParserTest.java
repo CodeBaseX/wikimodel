@@ -239,6 +239,50 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
         test(
             "<html><p><span param1='value1'><span param2='value2'>word</span></span></p></html>",
             "<p><span class='wikimodel-parameters'[param1='value1', param2='value2']>word</span></p>");
+        
+       
+        // merging
+        
+        // style
+
+        test(
+            "<html><p><span param1='value1'><span param2='value2'>word</span></span></p></html>",
+            "<p><span class='wikimodel-parameters'[param1='value1', param2='value2']>word</span></p>");
+        
+        test(
+            "<html><p><span param1='value1'><strong param2='value2'>word</strong></span></p></html>",
+            "<p><strong><span class='wikimodel-parameters'[param1='value1', param2='value2']>word</span></strong></p>");
+        
+        test(
+            "<html><p><strong param1='value1'><span param2='value2'>word</span>word2</strong></p></html>",
+            "<p><strong><span class='wikimodel-parameters'[param1='value1', param2='value2']>word</span></strong>" +
+            "<strong><span class='wikimodel-parameters'[param1='value1']>word2</span></strong></p>");
+
+        test(
+            "<html><p><span style='color: red;'><span style='background-color: yellow;'>word</span></span></p></html>",
+            "<p><span class='wikimodel-parameters'[style='color: red; background-color: yellow']>word</span></p>");
+        
+        test(
+            "<html><p><span style='color: red;'>word1<span style='background-color: yellow;'>word2</span></span></p></html>",
+            "<p><span class='wikimodel-parameters'[style='color: red;']>word1</span><span class='wikimodel-parameters'[style='color: red; background-color: yellow']>word2</span></p>");
+
+        test(
+            "<html><p><span style='font-family: times new roman'>x<span style='font-family: arial black'>y</span>z</span></p></html>",
+            "<p><span class='wikimodel-parameters'[style='font-family: times new roman']>x</span>" +
+            "<span class='wikimodel-parameters'[style='font-family: times new roman; font-family: arial black']>y</span>" +
+            "<span class='wikimodel-parameters'[style='font-family: times new roman']>z</span></p>");
+        
+        // class
+
+        test(
+            "<html><p><span class='class1'><span class='class2'>word</span></span></p></html>",
+            "<p><span class='wikimodel-parameters'[class='class1 class2']>word</span></p>");
+
+        test(
+            "<html><p><span class='class1'>word1<span class='class2'>word2</span>word3</span></p></html>",
+            "<p><span class='wikimodel-parameters'[class='class1']>word1</span>" +
+            "<span class='wikimodel-parameters'[class='class1 class2']>word2</span>" +
+            "<span class='wikimodel-parameters'[class='class1']>word3</span></p>");
     }
 
     /**

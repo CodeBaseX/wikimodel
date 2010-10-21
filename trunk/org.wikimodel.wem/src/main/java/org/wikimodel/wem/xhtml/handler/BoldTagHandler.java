@@ -11,32 +11,14 @@
 package org.wikimodel.wem.xhtml.handler;
 
 import org.wikimodel.wem.IWemConstants;
-import org.wikimodel.wem.WikiParameters;
-import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 
 /**
  * @author kotelnikov
  * @author vmassol
+ * @author thomass.mortagne
  */
-public class BoldTagHandler extends TagHandler {
-
+public class BoldTagHandler extends AbstractFormatTagHandler {
     public BoldTagHandler() {
-        super(false, false, true);
-    }
-
-    @Override
-    protected void begin(TagContext context) {
-        if (context.getParams().getSize() > 0) {
-            context.getScannerContext().beginFormat(context.getParams());
-        }
-        context.getScannerContext().beginFormat(IWemConstants.STRONG);
-    }
-
-    @Override
-    protected void end(TagContext context) {
-        context.getScannerContext().endFormat(IWemConstants.STRONG);
-        if (context.getParams().getSize() > 0) {
-            context.getScannerContext().endFormat(WikiParameters.EMPTY);
-        }
+        super(IWemConstants.STRONG);
     }
 }
