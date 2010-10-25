@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.wikimodel</groupId>
+    <artifactId>org.wikimodel.wem</artifactId>
+    <version>2.0.7-SNAPSHOT</version>
+    <name>WikiModel :: Aggregator</name>
+    <url>http://code.google.com/p/wikimodel/</url>
+    <inceptionYear>2005</inceptionYear>
+    <packaging>pom</packaging>
+    <description>
+        WikiEventModel makes parsing wiki syntax easier with a unified
+        event model.
+    </description>
+
+    <scm>
+        <connection>scm:svn:http://wikimodel.googlecode.com/svn/trunk/org.wikimodel.wem</connection>
+        <developerConnection>scm:svn:https://wikimodel.googlecode.com/svn/trunk/org.wikimodel.wem</developerConnection>
+    </scm>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.wikimodel</groupId>
+                <artifactId>org.wikimodel.wem.core</artifactId>
+                <version>${project.version}</version>
+                <type>test-jar</type>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>    
+    </dependencyManagement>
+    
+    <dependencies>
+        <dependency>
+            <groupId>net.java.dev.javacc</groupId>
+            <artifactId>javacc</artifactId>
+            <version>5.0</version>
+            <scope>compile</scope>
+            <exclusions>
+              <exclusion>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+              </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- testing dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        
+    </dependencies>
+
+    <modules>
+        <module>org.wikimodel.wem.confluence</module>
+        <module>org.wikimodel.wem.core</module>
+        <module>org.wikimodel.wem.creole</module>
+        <module>org.wikimodel.wem.gwiki</module>
+        <module>org.wikimodel.wem.jspwiki</module>
+        <module>org.wikimodel.wem.mediawiki</module>
+        <module>org.wikimodel.wem.tex</module>
+        <!-- <module>org.wikimodel.wem.xhtml</module> -->
+        <module>org.wikimodel.wem.xml</module>
+        <!-- <module>org.wikimodel.wem.xwiki</module> -->
+    </modules>
+
+    <!-- the deploy repositories: normal/snapshot/site generation 
+        make sure the porper rights for the given ids are set in 
+        the user's settings.xml -->
+  <distributionManagement>
+    <site>
+      <id>maven.xwiki.org</id>
+      <url>scp://maven.xwiki.org/home/maven/public_html/site</url>
+    </site>
+    <repository>
+      <id>maven.xwiki.org</id>
+      <name>XWiki Maven2 Remote Repository for Externals</name>
+      <url>scp://maven.xwiki.org/home/maven/public_html/externals</url>
+    </repository>
+  </distributionManagement>
+
+    <!-- to find the parent -->
+    <repositories>
+        <repository>
+            <id>semweb4j-repo</id>
+            <name>Semweb4j.org maven repo</name>
+            <url>http://semweb4j.org/repo/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+
+
+    <!-- plugin configuration -->
+    <!-- #################### -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                  <groupId>org.apache.felix</groupId>
+                  <artifactId>maven-bundle-plugin</artifactId>
+                  <version>2.0.1</version>
+                  <extensions>true</extensions>
+                  <executions>
+                    <execution>
+                      <id>bundle-manifest</id>
+                      <phase>process-classes</phase>
+                      <goals>
+                        <goal>manifest</goal>
+                      </goals>
+                    </execution>
+                  </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+
+            <!-- always use Java 1.5 while compiling -->
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <target>1.5</target>
+                    <source>1.5</source>
+                </configuration>
+            </plugin>
+
+            <!-- generate a DOAP file  
+                usage: http://maven.apache.org/plugins/maven-doap-plugin/generate-mojo.html -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-doap-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <doapFile>
+                                ${basedir}/src/site/resources/doap.rdf
+                            </doapFile>
+                            <category>semantic web</category>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
