@@ -29,24 +29,23 @@ import org.wikimodel.wem.WikiParameters;
 import org.wikimodel.wem.WikiReference;
 
 /**
- * Serializing XWiki 2.0 syntax ...
- * <br><br>
+ * Serializing XWiki 2.0 syntax ... <br>
+ * <br>
  * Implementation hints:
  * <ul>
  * <li>This serializer is only tested with transformed MediaWiki sources</li>
  * <li>To support nested tables, we're using a stack of tables.</li>
- * <li>To get the table caption in front of a table definition,
- *     we're using a simple model for --> see nested Table class</li>
+ * <li>To get the table caption in front of a table definition, we're using a
+ * simple model for --> see nested Table class</li>
  * <li>Nested definition lists are NOT supported</li>
  * </ul>
- *
+ * 
  * @see {@link org.wikimodel.wem.xwiki.xwiki10.XWikiSerializer}
  * @author mkirst(at portolancs dot com)
  */
 public class XWikiSerializer2 extends PrintTextListener {
 
-    private static final String[] HEADERS = { "", "=", "==", "===", "====",
-            "=====", "======" };
+    private static final String[] HEADERS = { "", "=", "==", "===", "====", "=====", "======" };
 
     private Stack<ListOrdering> listOrdering = new Stack<ListOrdering>();
     private Stack<Table> tables = new Stack<Table>();
@@ -98,8 +97,7 @@ public class XWikiSerializer2 extends PrintTextListener {
 
     @Override
     public void beginListItem() {
-        final ListOrdering[] orders = listOrdering
-                .toArray(new ListOrdering[listOrdering.size()]);
+        final ListOrdering[] orders = listOrdering.toArray(new ListOrdering[listOrdering.size()]);
         StringBuilder sb = new StringBuilder();
         boolean isordered = false;
         for (int i = 0; i < orders.length; i++) {
@@ -166,9 +164,9 @@ public class XWikiSerializer2 extends PrintTextListener {
     }
 
     /**
-     * Special case when detected, that there are image thumbnail.
-     * Thus it's possible to insert something like XWiki "LightBox" macro.
-     * (Default implementation will set "width:200px")
+     * Special case when detected, that there are image thumbnail. Thus it's
+     * possible to insert something like XWiki "LightBox" macro. (Default
+     * implementation will set "width:200px")
      * 
      * @param ref
      * @return
@@ -179,8 +177,8 @@ public class XWikiSerializer2 extends PrintTextListener {
         if (oldstyle != null) {
             // remove existing
             params.remove("style");
-            params = params.addParameter("style", oldstyle.getValue()
-                    + ";" + "float: right; width:"+getImageThumbwidth());
+            params = params.addParameter("style", oldstyle.getValue() + ";" + "float: right; width:"
+                    + getImageThumbwidth());
         } else {
             params = params.addParameter("style", "float: right; width:" + getImageThumbwidth());
         }
@@ -290,9 +288,9 @@ public class XWikiSerializer2 extends PrintTextListener {
     public void endFormat(WikiFormat format) {
         if (format.hasStyle(IWemConstants.TT)) {
             print("##");
-        } else if(format.hasStyle(IWemConstants.MONO)) {
+        } else if (format.hasStyle(IWemConstants.MONO)) {
             print("##");
-        } else if(format.hasStyle(IWemConstants.EM)) {
+        } else if (format.hasStyle(IWemConstants.EM)) {
             print("//");
         } else if (format.hasStyle(IWemConstants.STRONG)) {
             print("**");
@@ -350,7 +348,7 @@ public class XWikiSerializer2 extends PrintTextListener {
 
     @Override
     public void beginDefinitionDescription() {
-       print(": ");
+        print(": ");
     }
 
     @Override
@@ -358,8 +356,6 @@ public class XWikiSerializer2 extends PrintTextListener {
         println();
     }
 
-    
-    
     /*
      * ========================================================================
      */
@@ -370,7 +366,7 @@ public class XWikiSerializer2 extends PrintTextListener {
     protected String getImageThumbwidth() {
         return "200px";
     }
-    
+
     @Override
     protected void print(String str) {
         if (!tables.isEmpty()) {
@@ -398,14 +394,16 @@ public class XWikiSerializer2 extends PrintTextListener {
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.wikimodel.wem.PrintTextListener#newReferenceHandler()
      */
     @Override
     protected ReferenceHandler newReferenceHandler() {
-       return new XWiki2ReferenzeHandler();
+        return new XWiki2ReferenzeHandler();
     }
-    
+
     /*
      * ========================================================================
      */
@@ -464,11 +462,11 @@ public class XWikiSerializer2 extends PrintTextListener {
         temp = temp.replaceAll("[\u00d1\u0143\u0145\u0147\u014a\u01f8]", "N");
         temp = temp.replaceAll("[\u00f1\u0144\u0146\u0148\u0149\u014b\u01f9\u0235]", "n");
         temp = temp.replaceAll(
-            "[\u00d2\u00d3\u00d4\u00d5\u00d6\u00d8\u014c\u014e\u0150\u01d1\u01ea\u01ec\u01fe\u020c\u020e\u022a\u022c" +
-            "\u022e\u0230]", "O");
+            "[\u00d2\u00d3\u00d4\u00d5\u00d6\u00d8\u014c\u014e\u0150\u01d1\u01ea\u01ec\u01fe\u020c\u020e\u022a\u022c"
+                    + "\u022e\u0230]", "O");
         temp = temp.replaceAll(
-            "[\u00f2\u00f3\u00f4\u00f5\u00f6\u00f8\u014d\u014f\u0151\u01d2\u01eb\u01ed\u01ff\u020d\u020f\u022b\u022d" +
-            "\u022f\u0231]", "o");
+            "[\u00f2\u00f3\u00f4\u00f5\u00f6\u00f8\u014d\u014f\u0151\u01d2\u01eb\u01ed\u01ff\u020d\u020f\u022b\u022d"
+                    + "\u022f\u0231]", "o");
         temp = temp.replaceAll("[\u0156\u0158\u0210\u0212]", "R");
         temp = temp.replaceAll("[\u0157\u0159\u0211\u0213]", "r");
         temp = temp.replaceAll("[\u015a\u015c\u015e\u0160\u0218]", "S");
@@ -507,12 +505,12 @@ public class XWikiSerializer2 extends PrintTextListener {
 
         return name;
     }
-    
+
     /**
      * Clears the name of files; used while uploading attachments within XWiki
      * 
-     * RECOMMENDED FOR NAMES OF UPLOADED FILES.
-     * (boolean stripDots = false; boolean ascii = true;)
+     * RECOMMENDED FOR NAMES OF UPLOADED FILES. (boolean stripDots = false;
+     * boolean ascii = true;)
      * 
      * @param name
      * @see {@link com.xpn.xwiki.XWiki#clearName(String, boolean, boolean, com.xpn.xwiki.XWikiContext)}
@@ -523,6 +521,7 @@ public class XWikiSerializer2 extends PrintTextListener {
         boolean ascii = true;
         return clearName(name, stripDots, ascii);
     }
+
     /*
      * ========================================================================
      */
@@ -533,8 +532,16 @@ public class XWikiSerializer2 extends PrintTextListener {
     /*
      * ========================================================================
      */
-    
+
     private class XWiki2ReferenzeHandler extends ReferenceHandler {
+
+        protected XWiki2ReferenzeHandler() {
+            this(false, false);
+        }
+
+        protected XWiki2ReferenzeHandler(boolean supportImage, boolean supportDownload) {
+            super(supportImage, supportDownload);
+        }
 
         @Override
         protected void handleImage(String ref, String label, WikiParameters params) {
@@ -542,8 +549,7 @@ public class XWikiSerializer2 extends PrintTextListener {
         }
 
         @Override
-        protected void handleReference(String ref, String label,
-                WikiParameters params) {
+        protected void handleReference(String ref, String label, WikiParameters params) {
             print("[[");
             if (label != null) {
                 print(label + ">>");
@@ -552,23 +558,25 @@ public class XWikiSerializer2 extends PrintTextListener {
             print("]]");
         }
     }
-    
+
     /*
      * ========================================================================
      */
-    
+
     /**
      * Workaround to put a caption in front of a table.
      */
     private static class Table {
         private StringBuilder text = new StringBuilder();
         private String caption;
+
         /**
          * @param caption the caption to set
          */
         public void setCaption(String caption) {
             this.caption = caption;
         }
+
         /**
          * @param s
          * @return
@@ -577,6 +585,7 @@ public class XWikiSerializer2 extends PrintTextListener {
         public StringBuilder appendText(CharSequence s) {
             return text.append(s);
         }
+
         /**
          * @return
          * @see java.lang.StringBuilder#toString()
@@ -584,6 +593,7 @@ public class XWikiSerializer2 extends PrintTextListener {
         public String getText() {
             return text.toString();
         }
+
         /**
          * @return the caption
          */
