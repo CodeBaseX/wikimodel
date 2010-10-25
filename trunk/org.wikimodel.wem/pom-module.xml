@@ -33,11 +33,9 @@
                     <instructions>
                         <Export-Package>org.wikimodel.wem.@MODULE@.*;version="${pom.version}"</Export-Package>
                         <Import-Package>
-                          org.wikimodel.wem.*;version="[0,2)",
-                          *;resolution:=optional
+                          org.wikimodel.wem.*;version="[0,2)",*;resolution:=optional
                         </Import-Package>
                     </instructions>
-                    <manifestLocation>META-INF</manifestLocation>
                 </configuration>                
             </plugin>
             <plugin>
