@@ -1,7 +1,0 @@
-<module>
-    <source path="graph" />
-    <source path="iterator" />
-    <source path="template">
-        <exclude name="dom" />
-    </source>
-</module>
