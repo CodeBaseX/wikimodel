@@ -9,7 +9,7 @@
     </parent>    
     <groupId>org.wikimodel</groupId>
     <artifactId>org.wikimodel.wem</artifactId>
-    <version>2.0.7-SNAPSHOT</version>
+    <version>2.0.7</version>
     <packaging>jar</packaging>
     <name>WikiEventModel</name>
     <url>http://code.google.com/p/wikimodel/</url>
@@ -20,9 +20,9 @@
     </description>
 
     <scm>
-        <connection>scm:svn:http://wikimodel.googlecode.com/svn/trunk/org.wikimodel.wem</connection>
-        <developerConnection>scm:svn:https://wikimodel.googlecode.com/svn/trunk/org.wikimodel.wem</developerConnection>
-      <url>http://svn.sonatype.org/spice/tags/oss-parent-5/org.wikimodel.wem</url>
+        <connection>scm:svn:http://wikimodel.googlecode.com/svn/tags/org.wikimodel.wem-2.0.7</connection>
+        <developerConnection>scm:svn:https://wikimodel.googlecode.com/svn/tags/org.wikimodel.wem-2.0.7</developerConnection>
+      <url>http://svn.sonatype.org/spice/tags/org.wikimodel.wem-2.0.7</url>
   </scm>
 
     <dependencies>
