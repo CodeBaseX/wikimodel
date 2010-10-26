@@ -22,7 +22,7 @@
     <scm>
         <connection>scm:svn:http://wikimodel.googlecode.com/svn/trunk/org.wikimodel.wem</connection>
         <developerConnection>scm:svn:https://wikimodel.googlecode.com/svn/trunk/org.wikimodel.wem</developerConnection>
-       <url>http://svn.sonatype.org/spice/tags/oss-parent-5/org.wikimodel.wem</url>
+        <url>http://code.google.com/p/wikimodel/source/browse/</url>
     </scm>
 
     <dependencies>
