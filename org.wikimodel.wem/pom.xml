@@ -9,7 +9,7 @@
     </parent>    
     <groupId>org.wikimodel</groupId>
     <artifactId>org.wikimodel.wem</artifactId>
-    <version>2.0.8-SNAPSHOT</version>
+    <version>2.0.7-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>WikiEventModel</name>
     <url>http://code.google.com/p/wikimodel/</url>
@@ -64,11 +64,6 @@
       <id>maven.xwiki.org</id>
       <url>scp://maven.xwiki.org/home/maven/public_html/site</url>
     </site>
-    <repository>
-      <id>maven.xwiki.org</id>
-      <name>XWiki Maven2 Remote Repository for Externals</name>
-      <url>scp://maven.xwiki.org/home/maven/public_html/externals</url>
-    </repository>
   </distributionManagement>
 
     <!-- to find the parent -->
