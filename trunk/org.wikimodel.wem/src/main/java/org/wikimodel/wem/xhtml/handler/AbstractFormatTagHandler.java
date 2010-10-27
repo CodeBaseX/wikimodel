@@ -12,6 +12,7 @@ package org.wikimodel.wem.xhtml.handler;
 
 import java.io.StringReader;
 
+import com.steadystate.css.parser.SACParserCSS21;
 import org.w3c.css.sac.InputSource;
 import org.wikimodel.wem.WikiParameter;
 import org.wikimodel.wem.WikiParameters;
@@ -23,7 +24,7 @@ import com.steadystate.css.parser.CSSOMParser;
 
 /**
  * @author vmassol
- * @author thomass.mortagne
+ * @author thomas.mortagne
  */
 public abstract class AbstractFormatTagHandler extends TagHandler {
     public static final String FORMATWIKISTYLE = "formatWikiStyle";
@@ -35,9 +36,11 @@ public abstract class AbstractFormatTagHandler extends TagHandler {
     private final WikiStyle style;
 
     /**
-     * The object used to parse the style attribute.
+     * The object used to parse the style attribute. Explicitly specify the
+     * parser to use, since otherwise cssparser overrides the default parser
+     * used in the JVM, breaking css4j.
      */
-    private final CSSOMParser cssParser = new CSSOMParser();
+    private final CSSOMParser cssParser = new CSSOMParser(new SACParserCSS21());
 
     public AbstractFormatTagHandler() {
         this(null);
