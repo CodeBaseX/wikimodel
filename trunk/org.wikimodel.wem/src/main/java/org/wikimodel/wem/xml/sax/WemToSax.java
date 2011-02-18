@@ -55,7 +55,7 @@ public class WemToSax implements ITagListener {
                 tagName), atts);
             fDepth++;
         } catch (Throwable e) {
-            throw handleError(e);
+            handleError("beginTag error " + tagParams.toString(), e);
         }
     }
 
@@ -76,7 +76,7 @@ public class WemToSax implements ITagListener {
                 fHandler.endDocument();
             }
         } catch (Throwable t) {
-            throw handleError(t);
+            handleError("endTag error " + tagParams.toString(), t);
         }
     }
 
@@ -241,10 +241,12 @@ public class WemToSax implements ITagListener {
             : tagName;
     }
 
-    private RuntimeException handleError(Throwable e) {
-        if (e instanceof Error)
-            throw ((Error) e);
-        return new RuntimeException(e);
+    private void handleError(String s, Throwable e) {
+        System.out.println( s );
+//        if (e instanceof Error) {            
+//            throw ((Error) e);
+//        }
+//        return new RuntimeException(e);
     }
 
     /**
@@ -275,7 +277,7 @@ public class WemToSax implements ITagListener {
             char[] chars = content.toCharArray();
             fHandler.characters(chars, 0, chars.length);
         } catch (Throwable e) {
-            throw handleError(e);
+            handleError("onText error " + content, e);
         }
     }
 
