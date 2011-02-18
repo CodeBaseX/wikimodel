@@ -242,7 +242,7 @@ public class WemToSax implements ITagListener {
     }
 
     private void handleError(String s, Throwable e) {
-        System.out.println( s );
+        System.out.println( s + " --> " + e.getMessage());
 //        if (e instanceof Error) {            
 //            throw ((Error) e);
 //        }
