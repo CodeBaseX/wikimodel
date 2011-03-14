@@ -239,6 +239,8 @@ public class XWiki20ParserTest extends AbstractWikiParserTest {
         test("= header\n* list\n \n\n", "<h1>header</h1>\n<ul>\n  <li>list\n </li>\n</ul>");
         test("= header\n>quote\n \n\n", "<h1>header</h1>\n<blockquote>\nquote\n</blockquote>\n<p> </p>");
         test("= header\n; term: definition\n \n\n", "<h1>header</h1>\n<dl>\n  <dt>term: definition\n </dt>\n</dl>");
+
+        test("(% param='vale' %)\n= header =", "<h1 param='vale'>header</h1>");
     }
 
     public void testImages() throws WikiParserException {
