@@ -137,16 +137,18 @@ public class XmlUtil {
     }
 
     public static String lookupNamespaceURI(Node root, String specifiedPrefix) {
-        if (root == null)
+        if (root == null) {
             return null;
+        }
         if (root.hasAttributes()) {
             NamedNodeMap nnm = root.getAttributes();
             for (int i = 0; i < nnm.getLength(); i++) {
                 Node n = nnm.item(i);
                 if (("xmlns".equals(n.getPrefix()) && specifiedPrefix.equals(n
                     .getNodeName()))
-                    || ("xmlns:" + specifiedPrefix).equals(n.getNodeName()))
+                    || ("xmlns:" + specifiedPrefix).equals(n.getNodeName())) {
                     return n.getNodeValue();
+                }
             }
         }
         return lookupNamespaceURI(root.getParentNode(), specifiedPrefix);
@@ -216,8 +218,9 @@ public class XmlUtil {
     }
 
     public static Document readXML(String str) throws Exception {
-        if (str == null)
+        if (str == null) {
             return null;
+        }
         Reader reader = new StringReader(str);
         return readXML(reader);
     }
@@ -291,16 +294,20 @@ public class XmlUtil {
         throws TransformerConfigurationException,
         TransformerFactoryConfigurationError,
         TransformerException {
+        write(input, output, true);
+    }
+
+    public static void write(Source input, Result output, boolean indent)
+        throws TransformerConfigurationException,
+        TransformerFactoryConfigurationError,
+        TransformerException {
         boolean omitxmldeclaration = true;
-        boolean indent = true;
-        String method = null;
-        String doctype = null;
         Transformer idTransform = TransformerFactory
             .newInstance()
             .newTransformer();
-        if (omitxmldeclaration)
+        if (omitxmldeclaration) {
             idTransform.setOutputProperty("omit-xml-declaration", "yes");
-
+        }
         idTransform.setOutputProperty("encoding", "UTF-8");
         if (indent) {
             idTransform.setOutputProperty("indent", "yes");
@@ -312,11 +319,6 @@ public class XmlUtil {
                 //
             }
         }
-        if (method != null)
-            idTransform.setOutputProperty("method", method);
-        if (doctype != null)
-            idTransform.setOutputProperty("doctype-public", doctype);
-
         idTransform.transform(input, output);
     }
 
