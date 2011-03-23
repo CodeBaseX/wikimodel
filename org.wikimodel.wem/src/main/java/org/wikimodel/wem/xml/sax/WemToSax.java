@@ -3,8 +3,11 @@
  */
 package org.wikimodel.wem.xml.sax;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.wikimodel.wem.WikiPageUtil;
 import org.wikimodel.wem.xml.ITagListener;
@@ -15,6 +18,8 @@ import org.xml.sax.ContentHandler;
  * @author kotelnikov
  */
 public class WemToSax implements ITagListener {
+
+    private static Logger log = Logger.getLogger(WemToSax.class.getName());
 
     public final static String USER_NS = "http://www.wikimodel.org/ns/user-defined-params#";
 
@@ -43,19 +48,29 @@ public class WemToSax implements ITagListener {
         String tagName,
         Map<String, String> tagParams,
         Map<String, String> userParams) {
+        String qualifiedTagName = null;
         try {
+            qualifiedTagName = getQualifiedName(WEM_PREFIX, tagName);
             if (fDepth == 0) {
                 fHandler.startDocument();
                 fHandler.startPrefixMapping(WEM_PREFIX, WEM_NS);
                 fHandler.startPrefixMapping(USER_PREFIX, USER_NS);
             }
             Attributes atts = getAttributes(tagParams, userParams);
-            fHandler.startElement(WEM_NS, tagName, getQualifiedName(
-                WEM_PREFIX,
-                tagName), atts);
+            fHandler.startElement(WEM_NS, tagName, qualifiedTagName, atts);
             fDepth++;
-        } catch (Throwable e) {
-            handleError("beginTag error " + tagParams.toString(), e);
+        } catch (Throwable t) {
+            handleError("[BEGIN_TAG]"
+                + " Tag: '"
+                + tagName
+                + "'. QualifiedTagName: '"
+                + qualifiedTagName
+                + "'. "
+                + "TagParams: ["
+                + tagParams
+                + "]. UserParams: ["
+                + userParams
+                + "]", t);
         }
     }
 
@@ -67,104 +82,101 @@ public class WemToSax implements ITagListener {
         String tagName,
         Map<String, String> tagParams,
         Map<String, String> userParams) {
+        String qualifiedTagName = null;
         try {
-            fHandler.endElement(WEM_NS, tagName, getQualifiedName(
-                WEM_PREFIX,
-                tagName));
+            qualifiedTagName = getQualifiedName(WEM_PREFIX, tagName);
+            fHandler.endElement(WEM_NS, tagName, qualifiedTagName);
             fDepth--;
             if (fDepth == 0) {
                 fHandler.endDocument();
             }
         } catch (Throwable t) {
-            handleError("endTag error " + tagParams.toString(), t);
+            handleError("[END_TAG]"
+                + " Tag: '"
+                + tagName
+                + "'. QualifiedTagName: '"
+                + qualifiedTagName
+                + "'. "
+                + "TagParams: ["
+                + tagParams
+                + "]. UserParams: ["
+                + userParams
+                + "]", t);
         }
     }
 
     private Attributes getAttributes(
-        final Map<String, String> tagParams,
-        final Map<String, String> userParams) {
-        final Object[] tArray = tagParams.entrySet().toArray();
-        final Object[] uArray = userParams.entrySet().toArray();
+        Map<String, String> tagParams,
+        Map<String, String> userParams) {
+        final Map<String, String> attrs = new LinkedHashMap<String, String>();
+        for (Map.Entry<String, String> entry : tagParams.entrySet()) {
+            String qName = getQualifiedName(WEM_PREFIX, entry.getKey());
+            if (qName == null) {
+                continue;
+            }
+            String value = entry.getValue();
+            attrs.put(qName, value);
+        }
+        for (Map.Entry<String, String> entry : userParams.entrySet()) {
+            String qName = getQualifiedName(USER_PREFIX, entry.getKey());
+            if (qName == null) {
+                continue;
+            }
+            String value = entry.getValue();
+            attrs.put(qName, value);
+        }
+        @SuppressWarnings("unchecked")
+        final Map.Entry<String, String>[] array = attrs.entrySet().toArray(
+            new Map.Entry[attrs.size()]);
+
         return new Attributes() {
 
-            @SuppressWarnings("unchecked")
             private Map.Entry<String, String> getEntry(int index) {
-                if (index < 0 || index > tArray.length + uArray.length)
-                    return null;
-                if (index < tArray.length)
-                    return ((Map.Entry<String, String>) tArray[index]);
-                index -= tArray.length;
-                return ((Map.Entry<String, String>) uArray[index]);
+                return array[index];
             }
 
             public int getIndex(String qName) {
-                int idx = qName.indexOf(':');
-                String prefix = (idx >= 0) ? qName.substring(0, idx) : "";
-                qName = qName.substring(idx + 1);
-                return getIndex(prefix, qName, WEM_PREFIX, USER_PREFIX);
-            }
-
-            public int getIndex(String uri, String localName) {
-                return getIndex(uri, localName, WEM_NS, USER_NS);
-            }
-
-            /**
-             * @param uri
-             * @param localName
-             * @param wemNS
-             * @param usrNS
-             * @return
-             */
-            @SuppressWarnings("unchecked")
-            private int getIndex(
-                String uri,
-                String localName,
-                String wemNS,
-                String usrNS) {
-                Object[] array = null;
-                int base = 0;
-                if (wemNS.equals(uri)) {
-                    array = tArray;
-                } else if (usrNS.equals(uri)) {
-                    base = tArray.length;
-                    array = uArray;
-                }
-                if (array == null)
-                    return -1;
                 int result = -1;
-                int pos = 0;
-                for (Object obj : array) {
-                    Map.Entry<String, String> entry = (Entry<String, String>) obj;
-                    if (localName.equals(entry.getKey())) {
-                        result = base + pos;
+                for (int i = 0; i < array.length; i++) {
+                    if (qName.equals(array[i].getKey())) {
+                        result = i;
                         break;
                     }
-                    pos++;
                 }
                 return result;
             }
 
+            public int getIndex(String uri, String localName) {
+                String prefix = null;
+                if (WEM_NS.equals(uri)) {
+                    prefix = WEM_PREFIX;
+                } else if (USER_NS.equals(uri)) {
+                    prefix = USER_PREFIX;
+                }
+                if (prefix == null) {
+                    return -1;
+                }
+                return getIndex(prefix + ":" + localName);
+            }
+
             public int getLength() {
-                return tArray.length + uArray.length;
+                return array.length;
             }
 
             public String getLocalName(int index) {
                 Map.Entry<String, String> entry = getEntry(index);
-                if (entry == null)
+                if (entry == null) {
                     return null;
+                }
                 return entry.getKey();
             }
 
             public String getQName(int index) {
-                Map.Entry<String, String> entry = getEntry(index);
-                if (entry == null)
+                if (index < 0 || index >= array.length) {
                     return null;
-                String prefix = null;
-                if (isUserParam(index))
-                    prefix = USER_PREFIX;
-                else if (isTagParam(index))
-                    prefix = WEM_PREFIX;
-                return getQualifiedName(prefix, entry.getKey());
+                }
+                Entry<String, String> entry = array[index];
+                return entry.getKey();
             }
 
             public String getType(int index) {
@@ -180,53 +192,36 @@ public class WemToSax implements ITagListener {
             }
 
             public String getURI(int index) {
-                if (isTagParam(index))
-                    return WEM_NS;
-                if (isUserParam(index))
-                    return USER_NS;
-                return null;
+                String qName = getQName(index);
+                if (qName == null) {
+                    return null;
+                }
+                return qName.startsWith(WEM_PREFIX) ? WEM_NS : qName
+                    .startsWith(USER_PREFIX) ? USER_NS : null;
+            }
+
+            private String getValue(Entry<String, String> entry) {
+                String value = entry != null ? entry.getValue() : null;
+                return value != null ? value : "";
             }
 
             public String getValue(int index) {
                 Entry<String, String> entry = getEntry(index);
-                if (entry != null)
-                    return entry.getValue();
-                return null;
-            }
-
-            private String getValue(Map<String, String> map, String key) {
-                String value = map.get(key);
-                value = WikiPageUtil.escapeXmlAttribute(value);
-                return value;
+                return getValue(entry);
             }
 
             public String getValue(String qName) {
-                int idx = qName.indexOf(':');
-                String prefix = qName.substring(0, idx);
-                qName = qName.substring(idx + 1);
-                if (WEM_PREFIX.equals(prefix))
-                    return getValue(tagParams, qName);
-                if (USER_PREFIX.equals(prefix))
-                    return getValue(userParams, qName);
-                return null;
+                int idx = getIndex(qName);
+                Entry<String, String> entry = idx >= 0 ? array[idx] : null;
+                return getValue(entry);
             }
 
             public String getValue(String uri, String localName) {
-                if (WEM_NS.equals(uri))
-                    return getValue(tagParams, localName);
-                if (USER_NS.equals(uri))
-                    return getValue(userParams, localName);
-                return null;
+                int idx = getIndex(uri, localName);
+                Entry<String, String> entry = idx >= 0 ? array[idx] : null;
+                return entry != null ? entry.getValue() : null;
             }
 
-            private boolean isTagParam(int index) {
-                return (index >= 0 && index < tArray.length);
-            }
-
-            private boolean isUserParam(int index) {
-                return (index >= tArray.length && index < tArray.length
-                    + uArray.length);
-            }
         };
     }
 
@@ -235,25 +230,34 @@ public class WemToSax implements ITagListener {
      * @return
      */
     private String getQualifiedName(String prefix, String tagName) {
+        if (tagName == null || tagName.length() == 0) {
+            return null;
+        }
         tagName = WikiPageUtil.escapeXmlAttribute(tagName);
+        tagName = tagName.replaceAll(" ", "-");
+        boolean valid = WikiPageUtil.isValidXmlName(tagName, false);
+        if (!valid) {
+            return null;
+        }
         return prefix != null && !"".equals(prefix)
             ? prefix + ":" + tagName
             : tagName;
     }
 
     private void handleError(String s, Throwable e) {
-        System.out.println( s + " --> " + e.getMessage());
-//        if (e instanceof Error) {            
-//            throw ((Error) e);
-//        }
-//        return new RuntimeException(e);
+        log.log(Level.SEVERE, s, e);
+        if (e instanceof Error) {
+            throw ((Error) e);
+        }
+        throw new RuntimeException(e);
     }
 
     /**
      * @see org.wikimodel.wem.xml.ITagListener#onCDATA(java.lang.String)
      */
     public void onCDATA(String content) {
-        onText(content);
+        // FIXME: restore CDATA blocks notification
+        // onText(content);
     }
 
     /**
@@ -273,9 +277,35 @@ public class WemToSax implements ITagListener {
      */
     public void onText(String content) {
         try {
-            content = WikiPageUtil.escapeXmlString(content, false);
-            char[] chars = content.toCharArray();
-            fHandler.characters(chars, 0, chars.length);
+            if (content != null) {
+                char[] array = content.toCharArray();
+                int start = 0;
+                int i;
+                for (i = 0; i < array.length; i++) {
+                    char c = array[i];
+                    int ch = c;
+                    if (WikiPageUtil.isValidXmlChar(ch)) {
+                        boolean toEscape = (ch == '\''
+                            || ch == '\"'
+                            || ch == '['
+                            || ch == ']'
+                            || ch == '&' || ch == '|');
+                        if (!toEscape) {
+                            continue;
+                        }
+                    }
+                    if (i != start) {
+                        fHandler.characters(array, start, i - start);
+                        start = i;
+                    }
+                    // FIXME: add notifications about the found entity
+                    // buf.append("&#x" + Integer.toHexString(array[i]) +
+                    // ";");
+                }
+                if (i != start) {
+                    fHandler.characters(array, start, i - start);
+                }
+            }
         } catch (Throwable e) {
             handleError("onText error " + content, e);
         }
