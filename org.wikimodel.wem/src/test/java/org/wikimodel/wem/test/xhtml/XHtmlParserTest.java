@@ -475,11 +475,18 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
 
         // Automatic sub document
         
-        test("<html><table><tr><td><div class='wikimodel-document'/></td></tr></table></html>",
+        test("<html><table><tr><td><p>text</p></td></tr></table></html>",
             "<table><tbody>\n"
             + "  <tr><td><div class='wikimodel-document'>\n"
-            + "<div class='wikimodel-document' class='wikimodel-document'>\n"
+            + "<p>text</p>\n"
             + "</div>\n"
+            + "</td></tr>\n"
+            + "</tbody></table>");
+        
+        test("<html><table><tr><td><div class='wikimodel-emptyline'/><p>text</p></td></tr></table></html>",
+            "<table><tbody>\n"
+            + "  <tr><td><div class='wikimodel-document'>\n"
+            + "<p>text</p>\n"
             + "</div>\n"
             + "</td></tr>\n"
             + "</tbody></table>");
