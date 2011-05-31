@@ -440,28 +440,64 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testTables() throws WikiParserException {
-        test("<html><table><tr><td>first cell</td><td>second cell</td></tr></table></html>");
-        test("<html><table><tr><td>first cell</td></tr></table></html>");
+        test("<html><table><tr><td>first cell</td><td>second cell</td></tr></table></html>",
+            "<table><tbody>\n"
+            + "  <tr><td>first cell</td><td>second cell</td></tr>\n"
+            + "</tbody></table>");
+        test("<html><table><tr><td>first cell</td></tr></table></html>",
+            "<table><tbody>\n"
+            + "  <tr><td>first cell</td></tr>\n"
+            + "</tbody></table>");
         test("<html><table>"
             + "<tr><th>first header</th><th>second header</th></tr>"
             + "<tr><td>first cell</td><td>second cell</td></tr>"
-            + "</table></html>");
+            + "</table></html>",
+            "<table><tbody>\n"
+            + "  <tr><th>first header</th><th>second header</th></tr>\n"
+            + "  <tr><td>first cell</td><td>second cell</td></tr>\n"
+            + "</tbody></table>");
         test("<html><table>"
             + "<tr><th>first row</th><td>first cell</td></tr>"
             + "<tr><th>second row</th><td>before <table><tr><td>first cell</td></tr></table> after</td></tr>"
             + "<tr><th>third row</th><td>third cell</td></tr>"
-            + "</table></html>");
+            + "</table></html>",
+            "<table><tbody>\n"
+            + "  <tr><th>first row</th><td>first cell</td></tr>\n"
+            + "  <tr><th>second row</th><td>before<div class='wikimodel-document'>\n"
+            + "<table><tbody>\n"
+            + "  <tr><td>first cell</td></tr>\n"
+            + "</tbody></table>\n"
+            + "<p>after</p>\n"
+            + "</div>\n"
+            + "</td></tr>\n"
+            + "  <tr><th>third row</th><td>third cell</td></tr>\n"
+            + "</tbody></table>");
 
+        // Automatic sub document
+        
+        test("<html><table><tr><td><div class='wikimodel-document'/></td></tr></table></html>",
+            "<table><tbody>\n"
+            + "  <tr><td><div class='wikimodel-document'>\n"
+            + "<div class='wikimodel-document' class='wikimodel-document'>\n"
+            + "</div>\n"
+            + "</div>\n"
+            + "</td></tr>\n"
+            + "</tbody></table>");
+        
         // "Bad-formed" tables...
 
         // The content is completely ignored.
-        test("<html><table>first cell</table></html>");
+        test("<html><table>first cell</table></html>", "<table><tbody>\n</tbody></table>");
 
         // A "td" element directly in the table
-        test("<html><table><td>first cell</td></table></html>");
+        test("<html><table><td>first cell</td></table></html>", "<table><tbody>\n"
+            + "  <tr><td>first cell</td></tr>\n"
+            + "</tbody></table>");
 
         // Not a table at all
-        test("<html><td>first cell</td></html>");
+        test("<html><td>first cell</td></html>", "<table><tbody>\n"
+            + "  <tr><td>first cell</td></tr>\n"
+            + "</tbody></table>");
 
         test("<table><tr><td><tt class=\"wikimodel-verbatim\">x</tt></td><td><tt>y</tt></td></tr></table>", "<table><tbody>\n"
             +"  <tr><td><tt class=\"wikimodel-verbatim\">x</tt></td><td><mono>y</mono></td></tr>\n"
