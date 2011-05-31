@@ -26,6 +26,12 @@ public class DivisionTagHandler extends TagHandler {
         super(true, false, true);
     }
 
+    @Override
+    public boolean isBlockHandler(TagContext context)
+    {
+        return true;
+    }
+
     /**
      * @return the class used to indicate the division block is an embedded
      *         document. Note that use a method instead of a static private
