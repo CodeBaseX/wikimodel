@@ -203,6 +203,7 @@ TOKEN_MGR_DECLS: {
             | "csv"
             | "table-plus"          // TODO: {table-plus:width=100..} table {table-plus}
             | "code"
+            | "html"
             | "composition-setup"
             | "float"               // TODO: {float:xx} paragraph {float}
             | "cloak" 
