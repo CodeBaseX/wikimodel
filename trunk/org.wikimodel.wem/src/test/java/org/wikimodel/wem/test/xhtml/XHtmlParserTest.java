@@ -434,6 +434,7 @@ public class XHtmlParserTest extends AbstractWikiParserTest {
         test("<html><a href=\"reference\" param=\"value\">label</a></html>", "<p><a href='reference' param='value'>label</a></p>");
         test("<html><a href=\"reference\" class=\"wikimodel-freestanding\" param=\"value\">label</a></html>", "<p><a href='reference' param='value'>label</a></p>");
         test("<html><a href=\"reference\" class=\"wikimodel-freestanding\">label</a></html>", "<p><a href='reference' class='wikimodel-freestanding'>reference</a></p>");
+        test("<html><a href='#foo'>test</a></html>", "<p><a href='#foo'>test</a></p>");
     }
 
     /**
