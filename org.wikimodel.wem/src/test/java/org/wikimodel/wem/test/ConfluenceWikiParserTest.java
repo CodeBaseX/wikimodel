@@ -402,7 +402,9 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
             "fancy-bullets",
             "contentformattingtest",
             "toc-zone",
-            "excerpt");
+            "excerpt",
+            "code",
+            "html");
 
         test(
             ""
