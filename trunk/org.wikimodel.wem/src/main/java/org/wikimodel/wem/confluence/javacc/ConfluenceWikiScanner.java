@@ -1294,11 +1294,6 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     finally { jj_save(12, xla); }
   }
 
-  private boolean jj_3_2() {
-    if (jj_3R_11()) return true;
-    return false;
-  }
-
   private boolean jj_3R_26() {
     if (jj_3R_48()) return true;
     return false;
@@ -1800,6 +1795,11 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
 
   private boolean jj_3R_27() {
     if (jj_3R_49()) return true;
+    return false;
+  }
+
+  private boolean jj_3_2() {
+    if (jj_3R_11()) return true;
     return false;
   }
 
