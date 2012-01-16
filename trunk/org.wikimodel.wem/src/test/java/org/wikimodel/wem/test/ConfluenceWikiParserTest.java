@@ -31,6 +31,12 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
         return new ConfluenceWikiParser();
     }
 
+    public void testMacroInTextLine() throws WikiParserException {
+        test(
+            "this is no format text: {noformat}text no format{noformat}",
+            "<p>this is no format text: <span class='wikimodel-macro' macroName='noformat'><![CDATA[text no format]]></span></p>");
+    }
+
     public void testConfluenceHeadings() throws WikiParserException {
         test("h1. Biggest heading", "<h1>Biggest heading</h1>");
         test("h2. Bigger heading", "<h2>Bigger heading</h2>");
