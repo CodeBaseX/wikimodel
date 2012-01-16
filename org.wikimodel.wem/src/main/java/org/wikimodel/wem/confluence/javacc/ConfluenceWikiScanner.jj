@@ -713,15 +713,13 @@ void macro(Token t, boolean block):
         )
         {
             if (prevEnd != null) {
-                buf.append(prevEnd);
+                if (block) {
+                    buf.append(prevEnd);
+                } else {
+                    buf.append(WikiScannerUtil.unescape(prevEnd));
+                }
             }
-            if (block) {
                 prevEnd = t.image;
-            } else {
-                prevEnd = null;
-                str = WikiScannerUtil.unescape(t.image);
-                buf.append(str);        
-            }
         }
     )*
     {

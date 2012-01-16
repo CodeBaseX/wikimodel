@@ -936,15 +936,13 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
         throw new ParseException();
       }
             if (prevEnd != null) {
-                buf.append(prevEnd);
+                if (block) {
+                    buf.append(prevEnd);
+                } else {
+                    buf.append(WikiScannerUtil.unescape(prevEnd));
+                }
             }
-            if (block) {
                 prevEnd = t.image;
-            } else {
-                prevEnd = null;
-                str = WikiScannerUtil.unescape(t.image);
-                buf.append(str);
-            }
     }
         str = buf.toString();
         params = newMacroParameters(paramStr);
@@ -1299,13 +1297,13 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_18() {
-    if (jj_3R_19()) return true;
+  private boolean jj_3R_55() {
+    if (jj_3R_57()) return true;
     return false;
   }
 
-  private boolean jj_3R_55() {
-    if (jj_3R_57()) return true;
+  private boolean jj_3R_18() {
+    if (jj_3R_19()) return true;
     return false;
   }
 
@@ -1330,11 +1328,6 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3_11() {
-    if (jj_3R_19()) return true;
-    return false;
-  }
-
   private boolean jj_3R_46() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1352,6 +1345,11 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     jj_scanpos = xsp;
     if (jj_scan_token(88)) return true;
     }
+    return false;
+  }
+
+  private boolean jj_3_11() {
+    if (jj_3R_19()) return true;
     return false;
   }
 
@@ -1572,25 +1570,8 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3_10() {
-    if (jj_3R_11()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_9()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
   private boolean jj_3R_40() {
     if (jj_scan_token(INTERNAL_MACRO)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_34() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_10()) jj_scanpos = xsp;
     return false;
   }
 
@@ -1604,6 +1585,16 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
+  private boolean jj_3_10() {
+    if (jj_3R_11()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_9()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
   private boolean jj_3R_39() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1611,6 +1602,13 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     jj_scanpos = xsp;
     if (jj_scan_token(74)) return true;
     }
+    return false;
+  }
+
+  private boolean jj_3R_34() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_10()) jj_scanpos = xsp;
     return false;
   }
 
@@ -1649,13 +1647,13 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_24() {
-    if (jj_3R_46()) return true;
+  private boolean jj_3_4() {
+    if (jj_3R_13()) return true;
     return false;
   }
 
-  private boolean jj_3_4() {
-    if (jj_3R_13()) return true;
+  private boolean jj_3R_24() {
+    if (jj_3R_46()) return true;
     return false;
   }
 
@@ -1710,13 +1708,18 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
+  private boolean jj_3R_59() {
+    if (jj_3R_61()) return true;
+    return false;
+  }
+
   private boolean jj_3R_28() {
     if (jj_3R_50()) return true;
     return false;
   }
 
-  private boolean jj_3R_59() {
-    if (jj_3R_61()) return true;
+  private boolean jj_3R_38() {
+    if (jj_3R_56()) return true;
     return false;
   }
 
@@ -1763,21 +1766,6 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     return false;
   }
 
-  private boolean jj_3R_38() {
-    if (jj_3R_56()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_11() {
-    Token xsp;
-    if (jj_3_13()) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_13()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
   private boolean jj_3R_58() {
     if (jj_3R_60()) return true;
     return false;
@@ -1789,6 +1777,16 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
     if (jj_3R_58()) {
     jj_scanpos = xsp;
     if (jj_3R_59()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_11() {
+    Token xsp;
+    if (jj_3_13()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_13()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
