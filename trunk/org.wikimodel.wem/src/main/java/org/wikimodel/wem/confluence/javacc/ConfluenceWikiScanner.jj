@@ -947,7 +947,7 @@ void line():
             |
             t = getURI()
             {
-                fContext.onReference(t.image.trim());
+                fContext.onWord(t.image);
             }
             |
             t = getREFERENCE() 

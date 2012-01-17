@@ -176,7 +176,7 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
         // Not formatting
         test(
             "http://www.foo.bar",
-            "<p><a href='http://www.foo.bar' class='wikimodel-freestanding'>http://www.foo.bar</a></p>");
+            "<p>http://www.foo.bar</p>");
 
     }
 
@@ -516,12 +516,15 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
      * @throws WikiParserException
      */
     public void testReferences() throws WikiParserException {
+//      The Confluence does not support this syntax as a reference.    
         test(
             "before http://www.foo.bar/com after",
-            "<p>before <a href='http://www.foo.bar/com' class='wikimodel-freestanding'>http://www.foo.bar/com</a> after</p>");
+            "<p>before http://www.foo.bar/com after</p>");
+        
+//        The Confluence does not support the uri format: "scheme:hier_path" 
         test(
             "before this+is+a+reference:to_here after",
-            "<p>before <a href='this+is+a+reference:to_here' class='wikimodel-freestanding'>this+is+a+reference:to_here</a> after</p>");
+            "<p>before this+is+a+reference:to_here after</p>");
         test(
             "before [toto] after",
             "<p>before <a href='toto' class='wikimodel-freestanding'>toto</a> after</p>");
@@ -538,7 +541,7 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
             "<p><a href='http://www.wikicreole.org/' class='wikimodel-freestanding'>http://www.wikicreole.org/</a></p>");
         test(
             "http://www.rawlink.org/, http://www.another.rawlink.org",
-            "<p><a href='http://www.rawlink.org/' class='wikimodel-freestanding'>http://www.rawlink.org/</a>, <a href='http://www.another.rawlink.org' class='wikimodel-freestanding'>http://www.another.rawlink.org</a></p>");
+            "<p>http://www.rawlink.org/, http://www.another.rawlink.org</p>");
         test(
             "[ Visit the WikiCreole website | http://www.wikicreole.org/ ]",
             "<p><a href='http://www.wikicreole.org/'>Visit the WikiCreole website</a></p>");

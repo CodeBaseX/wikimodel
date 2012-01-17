@@ -1155,7 +1155,7 @@ public class ConfluenceWikiScanner implements ConfluenceWikiScannerConstants {
       case I_URI:
       case D_URI:
         t = getURI();
-                fContext.onReference(t.image.trim());
+                fContext.onWord(t.image);
         break;
       case I_REFERENCE:
       case D_REFERENCE:
