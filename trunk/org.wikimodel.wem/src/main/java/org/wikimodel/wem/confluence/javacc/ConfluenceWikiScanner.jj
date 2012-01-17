@@ -23,7 +23,7 @@ import org.wikimodel.wem.WikiReference;
 import org.wikimodel.wem.WikiStyle;
 import org.wikimodel.wem.confluence.ConfluenceImageWikiReferenceParser;
 import org.wikimodel.wem.confluence.ConfluenceWikiReferenceParser;
-import org.wikimodel.wem.impl.IWikiScannerContext;
+import org.wikimodel.wem.confluence.ConfluenceWikiScannerContext;
 import org.wikimodel.wem.impl.InlineState;
 import org.wikimodel.wem.impl.WikiScannerUtil;
 
@@ -39,13 +39,13 @@ public class ConfluenceWikiScanner {
      */
     private boolean fNoformatAsMacro = true;
 
-    private IWikiScannerContext fContext;
+    private ConfluenceWikiScannerContext fContext;
 
     private IWikiReferenceParser fReferenceParser = new ConfluenceWikiReferenceParser();
 
     private IWikiReferenceParser fImageReferenceParser = new ConfluenceImageWikiReferenceParser();
 
-    public void parse(IWikiScannerContext context) throws ParseException {
+    public void parse(ConfluenceWikiScannerContext context) throws ParseException {
         fContext = context;
         doParse();
     }
@@ -412,15 +412,16 @@ TOKEN_MGR_DECLS: {
 
 <INITIAL_CONTEXT> TOKEN:
 {
+      <I_TABLE_ROW: (<NEW_LINE>)? <CELL> >
+    | <I_TABLE_CELL : <CELL> > : DEFAULT
 // <initial-context>
-      <I_LIST_ITEM: (<NEW_LINE>)? <LIST_ITEM> > : DEFAULT
-    | <I_TABLE_ROW: (<NEW_LINE>)? <CELL> > : DEFAULT
+    | <I_LIST_ITEM: (<NEW_LINE>)? (<SPACE>)* <LIST_ITEM> > : DEFAULT
     | <I_HEADER: (<NEW_LINE>)? <HEADER> (<SPACE>)* > : DEFAULT
     | <I_VERBATIM_BLOCK: (<NEW_LINE>)? <VERBATIM> > : DEFAULT
     | <I_HORLINE: (<NEW_LINE>)? <HORLINE> > : DEFAULT
     | <I_VERBATIM_INLINE: <VERBATIM> > : DEFAULT
     | <I_REFERENCE : <REFERENCE> > : DEFAULT
-    | <I_TABLE_CELL : <CELL> > : DEFAULT 
+     
     | <I_QUOT_BLOCK: (<NEW_LINE>)? <QUOT_BLOCK> > : DEFAULT
     | <I_QUOT_BLOCK_MACRO: (<NEW_LINE>)? <QUOT_BLOCK_MACRO> > : DEFAULT
     | <I_BR : <BR> > : DEFAULT
@@ -445,15 +446,16 @@ TOKEN_MGR_DECLS: {
 
 <DEFAULT> TOKEN:
 {
+      <D_TABLE_ROW: <NEW_LINE> <CELL> > : INITIAL_CONTEXT
+    | <D_TABLE_CELL : <CELL> > : INITIAL_CONTEXT
 // <default-context>
-      <D_LIST_ITEM: <NEW_LINE> <LIST_ITEM> > : DEFAULT
-    | <D_TABLE_ROW: <NEW_LINE> <CELL> > : DEFAULT
+    | <D_LIST_ITEM: <NEW_LINE> (<SPACE>)* <LIST_ITEM> > : DEFAULT
     | <D_HEADER: <NEW_LINE> <HEADER> (<SPACE>)* > : DEFAULT
     | <D_VERBATIM_BLOCK: <NEW_LINE> <VERBATIM> > : DEFAULT
     | <D_HORLINE: <NEW_LINE> <HORLINE> > : DEFAULT
     | <D_VERBATIM_INLINE: <VERBATIM> > : DEFAULT
     | <D_REFERENCE : <REFERENCE> > : DEFAULT
-    | <D_TABLE_CELL : <CELL> > : DEFAULT 
+     
     | <D_QUOT_BLOCK: <NEW_LINE> <QUOT_BLOCK> > : DEFAULT
     | <D_QUOT_BLOCK_MACRO: <NEW_LINE> <QUOT_BLOCK_MACRO> > : DEFAULT
     | <D_BR : <BR> > : DEFAULT
@@ -478,15 +480,16 @@ TOKEN_MGR_DECLS: {
 
     Token getINTERNAL_MACRO(): {Token t=null;} {(t=<INTERNAL_MACRO>){return t;}}
     Token getINTERNAL_MACRO_CONTENT(): {Token t=null;} {(t=<INTERNAL_MACRO_CONTENT>){return t;}}
+    Token getTABLE_ROW(): {Token t=null;} {(t=<I_TABLE_ROW>|t=<D_TABLE_ROW>){return t;}}
+    Token getTABLE_CELL(): {Token t=null;} {(t=<I_TABLE_CELL>|t=<D_TABLE_CELL>){return t;}}
 // <getters>
     Token getLIST_ITEM(): {Token t=null;} {(t=<I_LIST_ITEM>|t=<D_LIST_ITEM>){return t;}}
-    Token getTABLE_ROW(): {Token t=null;} {(t=<I_TABLE_ROW>|t=<D_TABLE_ROW>){return t;}}
     Token getHEADER(): {Token t=null;} {(t=<I_HEADER>|t=<D_HEADER>){return t;}}
     Token getVERBATIM_BLOCK(): {Token t=null;} {(t=<I_VERBATIM_BLOCK>|t=<D_VERBATIM_BLOCK>){return t;}}
     Token getHORLINE(): {Token t=null;} {(t=<I_HORLINE>|t=<D_HORLINE>){return t;}}
     Token getVERBATIM_INLINE(): {Token t=null;} {(t=<I_VERBATIM_INLINE>|t=<D_VERBATIM_INLINE>){return t;}}
     Token getREFERENCE(): {Token t=null;} {(t=<I_REFERENCE>|t=<D_REFERENCE>){return t;}}
-    Token getTABLE_CELL(): {Token t=null;} {(t=<I_TABLE_CELL>|t=<D_TABLE_CELL>){return t;}}
+     
     Token getQUOT_BLOCK(): {Token t=null;} {(t=<I_QUOT_BLOCK>|t=<D_QUOT_BLOCK>){return t;}}
     Token getQUOT_BLOCK_MACRO(): {Token t=null;} {(t=<I_QUOT_BLOCK_MACRO>|t=<D_QUOT_BLOCK_MACRO>){return t;}}
     Token getBR(): {Token t=null;} {(t=<I_BR>|t=<D_BR>){return t;}}
@@ -623,7 +626,7 @@ void listItem():
         {
             fContext.beginListItem(t.image.trim());
         }
-        (LOOKAHEAD(2) line())?
+        (LOOKAHEAD(2) lines())?
         {
             fContext.endListItem();
         }
@@ -634,7 +637,7 @@ void block():
 {
 }
 {
-    ( line() | verbatimBlock() | macroBlock() )
+    (list() | lines() | verbatimBlock() | macroBlock()  )
 }
 void multilineBlock():
 {
@@ -887,31 +890,31 @@ void line():
                 switch (ch) {
                     case '{': 
                     case '}': 
-                        style  = IWikiScannerContext.MONO;
+                        style  = ConfluenceWikiScannerContext.MONO;
                         break;
                     case '*': 
-                        style  = IWikiScannerContext.STRONG;
+                        style  = ConfluenceWikiScannerContext.STRONG;
                         break;
                     case '_': 
-                        style  = IWikiScannerContext.EM;
+                        style  = ConfluenceWikiScannerContext.EM;
                         break;
                     case '?': 
-                        style  = IWikiScannerContext.CITE;
+                        style  = ConfluenceWikiScannerContext.CITE;
                         break;
                     case '^': 
-                        style  = IWikiScannerContext.SUP;
+                        style  = ConfluenceWikiScannerContext.SUP;
                         break;
                     case '~': 
-                        style  = IWikiScannerContext.SUB;
+                        style  = ConfluenceWikiScannerContext.SUB;
                         break;
                     case '+': 
                         // Underlined text was explicitly forbidden. 
                         // So replace it by TT.
-                        style  = IWikiScannerContext.INS;
+                        style  = ConfluenceWikiScannerContext.INS;
                         checkStyleContext = true;
                         break;
                     case '-': 
-                        style  = IWikiScannerContext.STRIKE;
+                        style  = ConfluenceWikiScannerContext.STRIKE;
                         checkStyleContext = true;
                         break;
                 }
@@ -964,7 +967,7 @@ void line():
             |
             t = getTABLE_CELL() 
             {
-                if (fContext.isInTable()) {
+                if (fContext.isExplicitInTable()) {
                     str = t.image.trim();
                     fContext.onTableCell(str.length() > 1);
                 } else {
