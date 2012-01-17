@@ -121,21 +121,21 @@ public interface ConfluenceWikiScannerConstants {
   /** RegularExpression Id. */
   int URI_REG_NAME = 50;
   /** RegularExpression Id. */
-  int I_LIST_ITEM = 51;
+  int I_TABLE_ROW = 51;
   /** RegularExpression Id. */
-  int I_TABLE_ROW = 52;
+  int I_TABLE_CELL = 52;
   /** RegularExpression Id. */
-  int I_HEADER = 53;
+  int I_LIST_ITEM = 53;
   /** RegularExpression Id. */
-  int I_VERBATIM_BLOCK = 54;
+  int I_HEADER = 54;
   /** RegularExpression Id. */
-  int I_HORLINE = 55;
+  int I_VERBATIM_BLOCK = 55;
   /** RegularExpression Id. */
-  int I_VERBATIM_INLINE = 56;
+  int I_HORLINE = 56;
   /** RegularExpression Id. */
-  int I_REFERENCE = 57;
+  int I_VERBATIM_INLINE = 57;
   /** RegularExpression Id. */
-  int I_TABLE_CELL = 58;
+  int I_REFERENCE = 58;
   /** RegularExpression Id. */
   int I_QUOT_BLOCK = 59;
   /** RegularExpression Id. */
@@ -167,21 +167,21 @@ public interface ConfluenceWikiScannerConstants {
   /** RegularExpression Id. */
   int I_SPECIAL_SYMBOL = 73;
   /** RegularExpression Id. */
-  int D_LIST_ITEM = 74;
+  int D_TABLE_ROW = 74;
   /** RegularExpression Id. */
-  int D_TABLE_ROW = 75;
+  int D_TABLE_CELL = 75;
   /** RegularExpression Id. */
-  int D_HEADER = 76;
+  int D_LIST_ITEM = 76;
   /** RegularExpression Id. */
-  int D_VERBATIM_BLOCK = 77;
+  int D_HEADER = 77;
   /** RegularExpression Id. */
-  int D_HORLINE = 78;
+  int D_VERBATIM_BLOCK = 78;
   /** RegularExpression Id. */
-  int D_VERBATIM_INLINE = 79;
+  int D_HORLINE = 79;
   /** RegularExpression Id. */
-  int D_REFERENCE = 80;
+  int D_VERBATIM_INLINE = 80;
   /** RegularExpression Id. */
-  int D_TABLE_CELL = 81;
+  int D_REFERENCE = 81;
   /** RegularExpression Id. */
   int D_QUOT_BLOCK = 82;
   /** RegularExpression Id. */
@@ -273,14 +273,14 @@ public interface ConfluenceWikiScannerConstants {
     "<URI_PORT>",
     "<URI_HOST>",
     "<URI_REG_NAME>",
-    "<I_LIST_ITEM>",
     "<I_TABLE_ROW>",
+    "<I_TABLE_CELL>",
+    "<I_LIST_ITEM>",
     "<I_HEADER>",
     "<I_VERBATIM_BLOCK>",
     "<I_HORLINE>",
     "<I_VERBATIM_INLINE>",
     "<I_REFERENCE>",
-    "<I_TABLE_CELL>",
     "<I_QUOT_BLOCK>",
     "<I_QUOT_BLOCK_MACRO>",
     "<I_BR>",
@@ -296,14 +296,14 @@ public interface ConfluenceWikiScannerConstants {
     "<I_SPACE>",
     "<I_WORD>",
     "<I_SPECIAL_SYMBOL>",
-    "<D_LIST_ITEM>",
     "<D_TABLE_ROW>",
+    "<D_TABLE_CELL>",
+    "<D_LIST_ITEM>",
     "<D_HEADER>",
     "<D_VERBATIM_BLOCK>",
     "<D_HORLINE>",
     "<D_VERBATIM_INLINE>",
     "<D_REFERENCE>",
-    "<D_TABLE_CELL>",
     "<D_QUOT_BLOCK>",
     "<D_QUOT_BLOCK_MACRO>",
     "<D_BR>",

@@ -17,7 +17,7 @@ import org.wikimodel.wem.util.SectionBuilder;
  */
 public class InternalWikiScannerContext implements IWikiScannerContext {
 
-    private interface IBlockTypes {
+    protected interface IBlockTypes {
 
         int HEADER = 1 << 1;
 
@@ -48,63 +48,65 @@ public class InternalWikiScannerContext implements IWikiScannerContext {
         int TABLE_ROW_CELL = (1 << 13) | TABLE_ROW;
     }
 
-    private int fBlockType = IBlockTypes.NONE;
+    protected int fBlockType = IBlockTypes.NONE;
+    
+    private int fPreBlockType = IBlockTypes.NONE;
 
-    private WikiFormat fFormat;
+    protected WikiFormat fFormat;
 
-    private int fHeaderLevel;
+    protected int fHeaderLevel;
 
-    private WikiParameters fInfoParams;
+    protected WikiParameters fInfoParams;
 
-    private String fInfoType;
+    protected String fInfoType;
 
-    private String fInlineProperty;
+    protected String fInlineProperty;
 
-    private InlineState fInlineState = new InlineState();
+    protected InlineState fInlineState = new InlineState();
 
-    private ListBuilder fListBuilder;
+    protected ListBuilder fListBuilder;
 
-    private final IWemListener fListener;
+    protected final IWemListener fListener;
 
-    private WikiParameters fListParams;
+    protected WikiParameters fListParams;
 
-    private String fMacroContent = null;
+    protected String fMacroContent = null;
 
-    private String fMacroName = null;
+    protected String fMacroName = null;
 
-    private WikiParameters fMacroParameters = WikiParameters.EMPTY;
+    protected WikiParameters fMacroParameters = WikiParameters.EMPTY;
 
-    private WikiFormat fNewFormat = WikiFormat.EMPTY;
+    protected WikiFormat fNewFormat = WikiFormat.EMPTY;
 
-    private WikiParameters fParagraphParams;
+    protected WikiParameters fParagraphParams;
 
-    private Stack<Boolean> fPropertyDocStack = new Stack<Boolean>();
+    protected Stack<Boolean> fPropertyDocStack = new Stack<Boolean>();
 
-    private Stack<String> fPropertyStack = new Stack<String>();
+    protected Stack<String> fPropertyStack = new Stack<String>();
 
-    private ListBuilder fQuotBuilder;
+    protected ListBuilder fQuotBuilder;
 
-    private int fQuoteDepth = 0;
+    protected int fQuoteDepth = 0;
 
-    private WikiParameters fQuotParams;
+    protected WikiParameters fQuotParams;
 
-    private SectionBuilder<WikiParameters> fSectionBuilder;
+    protected SectionBuilder<WikiParameters> fSectionBuilder;
 
-    private int fTableCellCounter = -1;
+    protected int fTableCellCounter = -1;
 
     protected WikiParameters fTableCellParams = WikiParameters.EMPTY;
 
     protected boolean fTableHead;
 
-    private WikiParameters fTableParams;
+    protected WikiParameters fTableParams;
 
-    private int fTableRowCounter = -1;
+    protected int fTableRowCounter = -1;
 
-    private WikiParameters fTableRowParams;
+    protected WikiParameters fTableRowParams;
 
-    private String fVerbatimContent = null;
+    protected String fVerbatimContent = null;
 
-    private WikiParameters fVerbatimParameters = WikiParameters.EMPTY;
+    protected WikiParameters fVerbatimParameters = WikiParameters.EMPTY;
 
     public InternalWikiScannerContext(
         SectionBuilder<WikiParameters> sectionBuilder,
@@ -370,7 +372,7 @@ public class InternalWikiScannerContext implements IWikiScannerContext {
         fQuotBuilder.alignContext(buf.toString());
     }
 
-    private void beginStyleContainer() {
+    protected void beginStyleContainer() {
         fInlineState.set(InlineState.BEGIN);
     }
 
@@ -673,7 +675,7 @@ public class InternalWikiScannerContext implements IWikiScannerContext {
         fBlockType = IBlockTypes.QUOT;
     }
 
-    private void endStyleContainer() {
+    protected void endStyleContainer() {
         fInlineState.set(InlineState.BEGIN);
     }
 

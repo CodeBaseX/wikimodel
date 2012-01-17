@@ -708,9 +708,13 @@ public class ConfluenceWikiParserTest extends AbstractWikiParserTest {
         test("before\n|cell1|cell2\nafter", ""
             + "<p>before</p>\n"
             + "<table><tbody>\n"
-            + "  <tr><td>cell1</td><td>cell2</td></tr>\n"
-            + "</tbody></table>\n"
-            + "<p>after</p>");
+            + "  <tr><td>cell1</td><td>cell2\nafter"
+            + "</td></tr>\n"
+            + "</tbody></table>");
+        test("|* Item 1|* Item 2",
+          "<table><tbody>\n  <tr><td><ul>\n  <li>Item 1</li>\n</ul>\n</td><td><ul>\n  <li>Item 2</li>\n</ul>\n</td></tr>\n</tbody></table>");
+        test("|* Item 1\n|* Item 2",
+          "<table><tbody>\n  <tr><td><ul>\n  <li>Item 1</li>\n</ul>\n</td></tr>\n  <tr><td><ul>\n  <li>Item 2</li>\n</ul>\n</td></tr>\n</tbody></table>");
     }
 
     public void testVerbatimBlock() throws WikiParserException {
