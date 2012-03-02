@@ -13,6 +13,7 @@ package org.wikimodel.wem.xhtml.handler;
 import java.util.Stack;
 
 import org.wikimodel.wem.WikiParameters;
+import org.wikimodel.wem.xhtml.impl.XhtmlHandler;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack;
 import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
 
@@ -22,29 +23,6 @@ import org.wikimodel.wem.xhtml.impl.XhtmlHandler.TagStack.TagContext;
  * @author thomas.mortagne
  */
 public class TagHandler {
-
-    /**
-     * @param context
-     * @return <code>true</code> if the current tag represented by the given
-     *         context requires a parent document
-     */
-    private static boolean requiresParentDocument(TagContext context) {
-        if (context == null)
-            return true;
-        if (context.fHandler == null || !context.fHandler.requiresDocument())
-            return false;
-        boolean inContainer = false;
-        TagContext parent = context.getParent();
-        while (parent != null) {
-            if (parent.fHandler != null) {
-                inContainer = parent.fHandler.isDocumentContainer();
-                break;
-            }
-            parent = parent.getParent();
-        }
-        return inContainer;
-    }
-
     private boolean fAccumulateContent;
 
     /**
@@ -160,12 +138,15 @@ public class TagHandler {
     /**
      * Check if we need to emit an onEmptyLines() event.
      */
-    public static void sendEmptyLines(TagContext context) {
-        int lineCount = (Integer) context.getTagStack().getStackParameter(
-            "emptyLinesCount");
+    public static void sendEmptyLines(XhtmlHandler.TagStack.TagContext context) {
+        sendEmptyLines(context.getTagStack());
+    }
+
+    public static void sendEmptyLines(TagStack stack) {
+        int lineCount = (Integer) stack.getStackParameter("emptyLinesCount");
         if (lineCount > 0) {
-            context.getScannerContext().onEmptyLines(lineCount);
-            context.getTagStack().setStackParameter("emptyLinesCount", 0);
+            stack.getScannerContext().onEmptyLines(lineCount);
+            stack.setStackParameter("emptyLinesCount", 0);
         }
     }
 

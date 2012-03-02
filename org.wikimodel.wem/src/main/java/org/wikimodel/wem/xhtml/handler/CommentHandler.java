@@ -95,6 +95,7 @@ public class CommentHandler {
                         macroParams,
                         macroContent);
                 } else {
+                    TagHandler.sendEmptyLines(stack);
                     stack.getScannerContext().onMacroBlock(
                         macroName,
                         macroParams,
