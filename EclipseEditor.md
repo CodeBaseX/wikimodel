@@ -1,0 +1,1 @@
+Content moved to the [SWID project](http://code.google.com/p/swid/wiki/SwidFeatures).
